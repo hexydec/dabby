@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dabby.js Test Page</title>
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />	
+		<script src="../dist/dabby.js"></script>
+		<script>
+			$(function () {
+				console.log($(".main").css({border: "10px solid red", fontFamily: "arial"}).css(["borderTopWidth", "height"]));
+				$.ajax("index.html", function (resp) {
+					console.log(resp);
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="main">
+			<h1>Dabby Test</h1>
+			<p>This is the dabby.js test page.</p>
+		</div>
+	</body>
+</html>

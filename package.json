@@ -1,0 +1,14 @@
+{
+	"name": "Dabby.js",
+	"version": "1.0.0",
+	"keywords": ["util", "functional", "server", "client", "browser"],
+	"author": "will.earp",
+	"contributors": [],
+	"dependencies": {
+		"amdclean": "^2.7.0",
+		"grunt": "*",
+		"grunt-amdclean": "^0.1.2",
+		"grunt-contrib-requirejs": "*",
+		"grunt-contrib-watch": "*"
+	}
+}
