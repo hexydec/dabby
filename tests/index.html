@@ -6,7 +6,7 @@
 		<script src="../dist/dabby.js"></script>
 		<script>
 			$(function () {
-				console.log($(".main").css({border: "10px solid red", fontFamily: "arial"}).css(["borderTopWidth", "height"]));
+				console.log($(".main").not("div"));
 				$.ajax("index.html", function (resp) {
 					console.log(resp);
 				});

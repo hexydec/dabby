@@ -1,15 +1,109 @@
 define(["core"], function ($) {
+	
+	function filterNodes(filter, not) {
+		var i = 0,
+			nodes,
+			func,
+			len;
+		
+		// selector
+		if (typeof filter === "string") {
+			func = function (node) {
+				return node.matches(filter);
+			};
+		
+		// function
+		} else if (typeof filter === "function") {
+			func = filter;
+		
+		// nodes
+		} else {
+			if (!$.isArray(filter)) {
+				filter = [filter];
+			}
+			len = filter.length;
+			func = function (node) {
+				for (var i = 0; i < len; i += 1) {
+					if (this.isSameNode(filter[i])) {
+						return true;
+					}
+				}
+				return false;
+			};
+		}
+		return $([].filter.call(this, not ? function (item) {return !func(item);} : func));
+	}
+	
+	["filter", "not"].forEach(function (name) {
+		$.fn[name] = function (selector) {
+			return filterNodes.call(this, selector, name === "not");
+		};
+	});
+	
+	$.fn.is = function (selector) {
+		return filterNodes.call(this, selector).length !== 0;
+	};
+	
 	$.fn.eq = function (i) {
 		return $(this[i >= 0 ? i : i + this.length]);
 	};
+	
 	$.fn.find = function (selector) {
 		return $(selector, this);
 	};
+	
 	$.fn.first = function () {
-		return this[0] ? $(this[0]) : $();
+		return $(this.shift());
 	};
+	
 	$.fn.last = function () {
-		var len = this.length;
-		return len ? $(this[len - 1]) : $();
+		return $(this.pop());
+	};
+	
+	$.fn.children = function (selector) {
+		var i = n = 0,
+			nodes = [],
+			children;
+		
+		for (; i < this.length; i += 1) {
+			children = [].filter.call(this[i].childNodes, function (node) {
+				if (node.nodeType === 1) {
+					return selector ? node.matches(selector) : true;
+				}
+				return false;
+			});
+			$.extend(nodes, children);
+		}
+		return $(nodes);
+	};
+	
+	$.fn.parent = function (selector) {
+		var i = 0,
+			nodes = [];
+		
+		for (; i < this.length; i += 1) {
+			if (!selector || this[i].parentNode.matches(selector)) {
+				nodes.push(this[i].parentNode);
+			}
+		}
+		return $(nodes);
+	};
+	
+	$.fn.parents = function (selector) {
+		
+	};
+	
+	$.fn.prev = function (selector) {
+		return $(this.length ? this[0].previousSibling() : null);
+	};
+	
+	$.fn.next = function (selector) {
+		return $(this.length ? this[0].nextSibling() : null);
+	};
+	
+	$.fn.has = function (selector) {
+		return $([].filter.call(this, function (node) {
+			return node.querySelectorAll(selector).length > 0;
+		}));
 	};
 });

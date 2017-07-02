@@ -1,4 +1,38 @@
 define(["core"], function ($) {
+	$.fn.html = function (html) {
+		
+	};
+	$.fn.empty = function (html) {
+		
+	};
+	$.fn.append = function (html) {
+		
+	};
+	$.fn.appendTo = function (html) {
+		
+	};
+	$.fn.prepend = function (html) {
+		
+	};
+	$.fn.prependTo = function (html) {
+		
+	};
+	$.fn.before = function (html) {
+		
+	};
+	$.fn.after = function (html) {
+		
+	};
+	$.fn.addClass = function (html) {
+		
+	};
+	$.fn.removeClass = function (html) {
+		
+	};
+	$.fn.toggleClass = function (html) {
+		
+	};
+	
 	$.fn.attr = function (prop, value) {
 		if (prop) {
 			
@@ -49,6 +83,10 @@ define(["core"], function ($) {
 				return this[prop];
 			}
 		}
+	};
+	
+	$.fn.val = function (html) {
+		
 	};
 	
 	$.fn.css = function (props, value) {

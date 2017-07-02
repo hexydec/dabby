@@ -1,7 +1,13 @@
 {
 	"name": "Dabby.js",
 	"version": "1.0.0",
-	"keywords": ["util", "functional", "server", "client", "browser"],
+	"keywords": [
+		"util",
+		"functional",
+		"server",
+		"client",
+		"browser"
+	],
 	"author": "will.earp",
 	"contributors": [],
 	"dependencies": {

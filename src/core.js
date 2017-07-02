@@ -98,6 +98,7 @@ define(function () {
 
 			// build nodes
 			this.selector = selector || "";
+			this.context = context;
 			this.length = nodes.length;
 			for (i = 0; i < this.length; i++) {
 				this[i] = nodes[i];
@@ -110,20 +111,6 @@ define(function () {
 		each: function (callback) {
 			dabby.each(this.get(), callback);
 			return this;
-		},
-		is: function (selector) {
-			var found = false,
-				nodes = this,
-				len = nodes.length;
-			dabby(selector).each(function () {
-				for (var i = 0; i < len; i += 1) {
-					if (this.isSameNode(nodes[i])) {
-						found = true;
-						break;
-					}
-				}
-			});
-			return found;
 		}
 	};
 	dabby.fn.init.prototype = dabby.fn;
