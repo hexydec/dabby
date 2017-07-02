@@ -1,37 +1,77 @@
 define(["core"], function ($) {
 	$.fn.html = function (html) {
+		var $this = this,
+			i;
 		
+		// set
+		if (html) {
+			for (i = 0; i < $this.length; i += 1) {
+				$this[i].innerHTML = html;
+			}
+			return $this;
+		
+		// get
+		} else if (this[0]) {
+			return this[0].innerHTML;
+		}
 	};
+	
 	$.fn.empty = function (html) {
-		
+		var $this = this,
+			i = 0;
+			
+		for (; i < $this.length; i += 1) {
+			$this[i].innerHTML = "";
+		}
+		return $this;
 	};
-	$.fn.append = function (html) {
+	
+	$.fn.clone = function () {
+		var $this = this,
+			nodes = [],
+			i = 0;
 		
+		for (; i < $this.length; i += 1) {
+			nodes.push($this[i].cloneNode(true));
+		}
+		return $(nodes);
 	};
+	
 	$.fn.appendTo = function (html) {
 		
 	};
-	$.fn.prepend = function (html) {
-		
-	};
+	
 	$.fn.prependTo = function (html) {
 		
 	};
-	$.fn.before = function (html) {
-		
-	};
-	$.fn.after = function (html) {
-		
-	};
-	$.fn.addClass = function (html) {
-		
-	};
-	$.fn.removeClass = function (html) {
-		
-	};
-	$.fn.toggleClass = function (html) {
-		
-	};
+	
+	$.each({
+		before: "beforeBegin",
+		prepend: "afterBegin",
+		append: "beforeEnd",
+		after: "afterEnd"
+	}, function (pos, name) {
+		$.fn[name] = function (html) {
+			var $this = this,
+				i = 0;
+			for (; i < $this.length; i += 1) {
+				$this[i].insertAdjacentHtml(pos, html);
+			}
+			return $this;
+		};
+	});
+	
+	["add", "remove", "toggle"].forEach(function (name) {
+		$.fn[name + "Class"] = function (cls) {
+			var $this = this,
+				i = 0;
+				
+			for (; i < $this.length; i += 1) {
+				$this[i].classList[name](cls);
+			}
+			return $this;
+		};
+	});
 	
 	$.fn.attr = function (prop, value) {
 		if (prop) {
@@ -72,21 +112,46 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.prop = function (prop, value) {
-		if (prop) {
-			prop = prop.toLower();
-			
-			// set
-			if (value || value === "") {
-				this[prop] = value;
-				return this;
-			} else {
-				return this[prop];
-			}
+		prop = prop.toLower();
+		
+		// set
+		if (value || value === "") {
+			this[prop] = value;
+			return this;
+		} else {
+			return this[prop];
 		}
 	};
 	
-	$.fn.val = function (html) {
-		
+	$.fn.val = function (value) {
+		var $this = this;
+		if (value === undefined) {
+			if ($this[0].multiple) {
+			return $($this[0])
+				.find("option")
+				.filter(function () {
+					return this.selected;
+				})
+				.map(function () {
+					return this.value;
+				});
+			} else {
+				return $this[0].value;
+			}
+		} else {
+			for (var i = 0; i < $this.length; i += 1) {
+				if ($this[i].multiple) {
+					$($this[0])
+						.find("option")
+						.each(function () {
+							this.selected = [].indexOf.call(value, this.value);
+						});
+				} else {
+					$this[i].value = value;
+				}
+			}
+			return $this;
+		}
 	};
 	
 	$.fn.css = function (props, value) {

@@ -4,20 +4,22 @@ define(function () {
 	var doc = document,
 		ready = [],
 		domready = false,
-		dabby = function (selector, context) {
-			return new dabby.fn.init(selector, context);
+		$ = function (selector, context) {
+			return new $.fn.init(selector, context);
 		};
 	
-	dabby.isWindow = function (obj) {
+	$.isWindow = function (obj) {
 		return obj !== null && obj === obj.window;
 	};
-	dabby.isEmptyObject = function (obj) {
+	
+	$.isEmptyObject = function (obj) {
 		for (var name in obj) {
 			return false;
 		}
 		return true;
 	};
-	dabby.extend = function (obj) {
+	
+	$.extend = function (obj) {
 		var arrs = arguments,
 			len = arguments.length,
 			i = 1,
@@ -31,7 +33,8 @@ define(function () {
 		}
 		return obj;
 	};
-	dabby.each = function (obj, callback) {
+	
+	$.each = function (obj, callback) {
 		var length, i = 0;
 
 		if (obj instanceof Array) {
@@ -45,15 +48,17 @@ define(function () {
 		}
 		return obj;
 	};
-	dabby.inArray = function(elem, arr, i) {
-		return arr === null ? -1 : [].indexOf.call( arr, elem, i );
+	
+	$.inArray = function(elem, arr, i) {
+		return arr === null ? -1 : [].indexOf.call(arr, elem, i);
 	};
-	dabby.isFunction = function (obj) {
+	
+	$.isFunction = function (obj) {
 		return typeof obj === "function";
 	};
 	
-	dabby.fn = {
-		constructor: dabby,
+	$.fn = {
+		constructor: $,
 		root: document,
 		init: function (selector, context) {
 			var nodes = [], i;
@@ -62,8 +67,8 @@ define(function () {
 			if (!selector) {
 				return this;
 
-			// dabby collection
-			} else if (selector instanceof dabby) {
+			// $ collection
+			} else if (selector instanceof $) {
 				return selector;
 
 			// array of nodes
@@ -73,7 +78,7 @@ define(function () {
 				});
 
 			// single node
-			} else if (selector.nodeType && dabby.inArray(selector.nodeType, [1, 9])) {
+			} else if (selector.nodeType && $.inArray(selector.nodeType, [1, 9])) {
 				nodes = [selector];
 
 			// CSS selector
@@ -83,12 +88,12 @@ define(function () {
 				if (selector.indexOf("<") === 0) {
 
 				} else {
-					context = dabby(context).get(0) || this.root;
+					context = $(context).get(0) || this.root;
 					nodes = context.querySelectorAll(selector);
 				}
 
 			// ready function
-			} else if (dabby.isFunction(selector)) {
+			} else if ($.isFunction(selector)) {
 				if (domready) {
 					selector();
 				} else {
@@ -109,11 +114,11 @@ define(function () {
 			return i === undefined ? [].slice.call(this) : this[i >= 0 ? i : i + this.length];
 		},
 		each: function (callback) {
-			dabby.each(this.get(), callback);
+			$.each(this.get(), callback);
 			return this;
 		}
 	};
-	dabby.fn.init.prototype = dabby.fn;
+	$.fn.init.prototype = $.fn;
 	
 	// bind ready functions
 	doc.addEventListener("DOMContentLoaded", function () {
@@ -124,5 +129,5 @@ define(function () {
 	}, false);
 	
 	// wrap it up and return
-	return dabby;
+	return $;
 });

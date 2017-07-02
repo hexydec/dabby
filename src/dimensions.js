@@ -1,4 +1,4 @@
-define(["core", "attributes"], function ($) {
+define(["core"], function ($) {
 	["Width", "Height"].forEach(function (dim) { // inner / outer ??
 		var diml = dim.toLowerCase();
 		$.fn[diml] = function (val) {
@@ -7,7 +7,7 @@ define(["core", "attributes"], function ($) {
 
 				// set value
 				if (val !== undefined) {
-					return this.css(diml, val);
+					return obj.style[diml] = val;
 
 				// window
 				} else if ($.isWindow(obj)) {

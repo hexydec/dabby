@@ -94,11 +94,13 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.prev = function (selector) {
-		return $(this.length ? this[0].previousSibling() : null);
+		var node = this[0];
+		return $(node ? node.previousElementSibling() : null);
 	};
 	
 	$.fn.next = function (selector) {
-		return $(this.length ? this[0].nextSibling() : null);
+		var node = this[0];
+		return $(node ? node.nextElementSibling() : null);
 	};
 	
 	$.fn.has = function (selector) {
