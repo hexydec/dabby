@@ -66,12 +66,12 @@ define(["core"], function ($) {
 			children;
 		
 		for (; i < this.length; i += 1) {
-			children = [].filter.call(this[i].childNodes, function (node) {
-				if (node.nodeType === 1) {
-					return selector ? node.matches(selector) : true;
-				}
-				return false;
-			});
+			children = this[i].children;
+			if (selector) {
+				children = [].filter.call(children, function (node) {
+					return node.matches(selector);
+				});
+			}
 			$.extend(nodes, children);
 		}
 		return $(nodes);
