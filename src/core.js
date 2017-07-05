@@ -56,7 +56,7 @@ define(["utils"], function (utils) {
 			var arr = [], i;
 			for (i in obj) {
 				if (obj.hasOwnProperty(i)) {
-					arr[i] = callback(obj[i], i);
+					arr.push(callback(obj[i], i));
 				}
 			}
 			return arr;
@@ -64,7 +64,7 @@ define(["utils"], function (utils) {
 	};
 	
 	$.inArray = function(elem, arr, i) {
-		return arr === null ? -1 : [].indexOf.call(arr, elem, i);
+		return arr.indexOf(elem, i);
 	};
 	
 	$.isFunction = function (obj) {
@@ -92,7 +92,7 @@ define(["utils"], function (utils) {
 				});
 
 			// single node
-			} else if (selector.nodeType && $.inArray(selector.nodeType, [1, 9])) {
+			} else if (selector.nodeType && $.inArray(selector.nodeType, [1, 9]) > -1) {
 				nodes = [selector];
 
 			// ready function

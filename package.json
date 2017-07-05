@@ -16,5 +16,9 @@
 		"grunt-amdclean": "^0.1.2",
 		"grunt-contrib-requirejs": "*",
 		"grunt-contrib-watch": "*"
+	},
+	"devDependencies": {
+		"grunt-contrib-qunit": "^2.0.0",
+		"qunitjs": "^2.3.3"
 	}
 }

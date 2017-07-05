@@ -3,20 +3,17 @@
 	<head>
 		<title>Dabby.js Test Page</title>
 		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />	
+		<link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css"></script>
+		<script src="../node_modules/qunitjs/qunit/qunit.js"></script>
 		<script src="../dist/dabby.js"></script>
-		<script>
-			$(function () {
-				console.log($(".main").not("div"));
-				$.ajax("index.html", function (resp) {
-					console.log(resp);
-				});
-			});
-		</script>
+		<script src="test.js"></script>
 	</head>
 	<body>
 		<div class="main">
 			<h1>Dabby Test</h1>
 			<p>This is the dabby.js test page.</p>
 		</div>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
 	</body>
 </html>
