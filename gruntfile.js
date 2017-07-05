@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 				skipModuleInsertion: true,
 				findNestedDependencies: true,
 				optimize: "none",
-				include: ["main"],
+				include: ["amd"],
 				baseUrl: "src/",
 				//wrap: true,
 				preserveLicenseComments: false,
@@ -20,7 +20,8 @@ module.exports = function (grunt) {
 					require("fs").writeFileSync(
 						data.path,
 						require("amdclean").clean({
-							filePath: data.path/*,
+							filePath: data.path,
+							transformAMDChecks: false/*,
 							wrap: false,
 							sourceMap: grunt.file.readJSON(data.path + ".map"),
 							esprima: {source: data.path},

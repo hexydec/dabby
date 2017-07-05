@@ -53,11 +53,11 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.first = function () {
-		return $(this.shift());
+		return this.eq(0);
 	};
 	
 	$.fn.last = function () {
-		return $(this.pop());
+		return this.eq(-1);
 	};
 	
 	$.fn.children = function (selector) {
@@ -107,5 +107,17 @@ define(["core"], function ($) {
 		return $([].filter.call(this, function (node) {
 			return node.querySelectorAll(selector).length > 0;
 		}));
+	};
+	
+	$.fn.add = function (nodes) {
+		var $this = this,
+			len = $this.length,
+			i = 0;
+		
+		nodes = $(nodes);
+		for (; i < nodes.length; i += 1) {
+			$this[i + len] = nodes[0];
+		}
+		return $this;
 	};
 });

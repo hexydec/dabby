@@ -1,4 +1,4 @@
-define(["core", "attributes", "traversal", "events", "ajax", "dimensions", "amd"], function ($) {
+define(["core", "attributes", "traversal", "events", "ajax", "dimensions"], function ($) {
 	"use strict";
 	
 	if (!window.$) {

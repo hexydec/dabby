@@ -1,4 +1,4 @@
-define(function () {
+define(["utils"], function (utils) {
 	"use strict";
 	
 	var doc = document,
@@ -35,10 +35,10 @@ define(function () {
 	};
 	
 	$.each = function (obj, callback) {
-		var length, i = 0;
+		var length, i;
 
 		if (obj instanceof Array) {
-			obj.forEach(callback);
+			obj.forEach(callback, obj);
 		} else {
 			for (i in obj) {
 				if (obj.hasOwnProperty(i) && callback.call(obj[i], i, obj[i]) === false) {
@@ -47,6 +47,20 @@ define(function () {
 			}
 		}
 		return obj;
+	};
+	
+	$.map = function (obj, callback) {
+		if (obj instanceof Array) {
+			return obj.map(callback);
+		} else {
+			var arr = [], i;
+			for (i in obj) {
+				if (obj.hasOwnProperty(i)) {
+					arr[i] = callback(obj[i], i);
+				}
+			}
+			return arr;
+		}
 	};
 	
 	$.inArray = function(elem, arr, i) {
@@ -61,7 +75,7 @@ define(function () {
 		constructor: $,
 		root: document,
 		init: function (selector, context) {
-			var nodes = [], i;
+			var nodes = [], i, match, frag;
 
 			// if no selector, return empty colletion
 			if (!selector) {
@@ -81,23 +95,36 @@ define(function () {
 			} else if (selector.nodeType && $.inArray(selector.nodeType, [1, 9])) {
 				nodes = [selector];
 
-			// CSS selector
-			} else if (typeof selector === "string") {
-
-				// if is HTML create nodes
-				if (selector.indexOf("<") === 0) {
-
-				} else {
-					context = $(context).get(0) || this.root;
-					nodes = context.querySelectorAll(selector);
-				}
-
 			// ready function
-			} else if ($.isFunction(selector)) {
+			} else if (typeof selector === "function") {
 				if (domready) {
 					selector();
 				} else {
 					ready.push(selector);
+				}
+
+			// CSS selector
+			} else if (typeof selector === "string") {
+				if (selector.indexOf("<") === -1) {
+					context = $(context).get(0) || this.root;
+					nodes = context.querySelectorAll(selector);
+
+				// match single selector
+				} else if ((match = selector.match(/^<([a-z0-9]+)( ?\/?|><\/\\1)>/i)) !== null) {
+					nodes.push(doc.createElement(match[1]));
+					if (context instanceof Array) {
+						return utils.setCss($(nodes), context);
+					}
+				
+				// create document fragment
+				} else {
+					frag = (context || doc).createDocumentFragment();
+					frag.innerHTML = selector;
+					for (i in frag.children) {
+						if (frag.children.hasOwnProperty(i)) {
+							nodes.push(frag.children[i]);
+						}
+					}
 				}
 			}
 
@@ -116,6 +143,15 @@ define(function () {
 		each: function (callback) {
 			$.each(this.get(), callback);
 			return this;
+		},
+		map: function (callback) {
+			var $this = this,
+				nodes = [],
+				i = 0;
+			for (; i < $this.length; i += 1) {
+				nodes.push(callback.call($this[0], i, $this[0]));
+			}
+			return $(nodes);
 		}
 	};
 	$.fn.init.prototype = $.fn;

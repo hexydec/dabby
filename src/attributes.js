@@ -1,4 +1,4 @@
-define(["core"], function ($) {
+define(["core", "utils"], function ($, utils) {
 	$.fn.html = function (html) {
 		var $this = this,
 			i;
@@ -50,12 +50,18 @@ define(["core"], function ($) {
 		prepend: "afterBegin",
 		append: "beforeEnd",
 		after: "afterEnd"
-	}, function (pos, name) {
+	}, function (name, pos) {
 		$.fn[name] = function (html) {
 			var $this = this,
 				i = 0;
 			for (; i < $this.length; i += 1) {
-				$this[i].insertAdjacentHtml(pos, html);
+				if (typeof html === "string") {
+					$this[i].insertAdjacentHtml(pos, html);
+				} else {
+					$(html).each(function () {
+						$this[i].insertAdjacentElement(pos, this);
+					});
+				}
 			}
 			return $this;
 		};
@@ -111,15 +117,36 @@ define(["core"], function ($) {
 		}
 	};
 	
+	$.fn.data = function (name, data) {
+		var $this = this,
+			i = 0;
+		
+		if (data) {
+			for (; i < $this.length; i += 1) {
+				$this[i].dataset[name] = data;
+			}
+			return this;
+		} else if ($this[0] && $this[0].dataset[name]) {
+			try {
+				data = JSON.parse($this[0].dataset[name]);
+			} catch(e) {
+				data = $this[0].dataset[name];
+			}
+			return data;
+		}
+	};
+	
 	$.fn.prop = function (prop, value) {
-		prop = prop.toLower();
+		var $this = this;
+		prop = prop.toLowerCase();
 		
 		// set
 		if (value || value === "") {
-			this[prop] = value;
-			return this;
-		} else {
-			return this[prop];
+			return $this.each(function () {
+				this[prop] = value;
+			});
+		} else if ($this[0]) {
+			return $this[prop];
 		}
 	};
 	
@@ -160,10 +187,7 @@ define(["core"], function ($) {
 			n = 0,
 			len = props.length,
 			css,
-			output = {},
-			dasherise = function (prop) {
-				return prop.replace(/[A-Z]/g, function (letter) {return "-" + letter.toLowerCase();});
-			};
+			output = {};
 		
 		// retrieve value from first property
 		if (value === undefined && props.constructor === Array) {
@@ -173,7 +197,7 @@ define(["core"], function ($) {
 					props = [name];
 				}
 				for (; n < len; n += 1) {
-					props[n] = dasherise(props[n]);
+					props[n] = utils.dasherise(props[n]);
 					output[props[n]] = css.getPropertyValue(props[n]);
 					if (len === 1) {
 						return output[props[n]];
@@ -184,22 +208,7 @@ define(["core"], function ($) {
 		
 		// set the values
 		} else {
-			if (typeof name === "string") {
-				props = {};
-				props[name] = value;
-			}
-			$.each(props, function (prop, val) {
-				prop = dasherise(prop);
-				//prop = prop.replace(/-([a-z])/gi, function (text, letter) {return letter.toUpperCase();});
-				for (var i = 0; i < $this.length; i += 1) {
-					if (!val && val !== 0) {
-						$this[i].style.removeProperty(prop);
-					} else {
-						$this[i].style.setProperty(prop, val);
-					}
-				}
-			});
-			return $this;
+			return utils.setCss($this, props, value);
 		}
 	};
 });

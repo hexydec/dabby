@@ -15,8 +15,23 @@ define(["core"], function ($) {
 			success: function () {}
 		}, settings);
 		
-		xhr = new XMLHttpRequest();
-		if (xhr) {
+		if (settings.dataType === "script" || settings.url.lastIndexOf(".js") === settings.url.length - 3) {
+			var script = document.createElement("script");
+			
+			// add success handler
+			if (settings.success) {
+				script.addEventListener("load", settings.success);
+			}
+			
+			// add error handler
+			if (settings.error) {
+				script.addEventListener("error", settings.error);
+			}
+			
+			script.src = settings.url;
+			document.head.appendChild(script);
+		} else {
+			xhr = new XMLHttpRequest();
 			if (!settings.cache) {
 				settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + timestamp;
 			}
@@ -31,7 +46,7 @@ define(["core"], function ($) {
 				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			}
 			xhr.send();
+			return xhr;
 		}
-		return xhr;
 	};
 });

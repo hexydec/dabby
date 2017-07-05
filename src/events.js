@@ -54,4 +54,22 @@ define(["core"], function ($) {
 		}
 		return this;
 	};
+	
+	$.fn.trigger = function (event) {
+		var $this = this,
+			obj = new Event(event),
+			i = 0;
+			
+		for (; i < $this.length; i += 1) {
+			$this[i].dispatchEvent(obj);
+		}
+		return $this;
+	};
+	
+	["focusin", "focusout", "focus", "blur", "load", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "change", "select", "keydown", "keypress", "keyup", "error"].forEach(function (event) {
+		$.fn[event] = function (callback) {
+			var $this = this;
+			return callback ? $this.on(event, callback) : $this.trigger(event);
+		}
+	});
 });
