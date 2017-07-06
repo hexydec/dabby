@@ -12,7 +12,7 @@ define(["core"], function ($) {
 		events = events.split(" ");
 		
 		// sort out args
-		if ($.isFunction(selector)) {
+		if (typeof selector === "function") {
 			callback = selector;
 			selector = null;
 		}
@@ -36,7 +36,7 @@ define(["core"], function ($) {
 		events = events.split(" ");
 		
 		// sort out args
-		if ($.isFunction(selector)) {
+		if (typeof selector === "function") {
 			callback = selector;
 			selector = null;
 		}

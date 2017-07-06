@@ -42,7 +42,7 @@ define(["core"], function ($) {
 				}
 			};
 			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-			if ($.inArray(settings.method, ["POST", "PUT"])) {
+			if (["POST", "PUT"].indexOf(settings.method) > -1) {
 				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			}
 			xhr.send();

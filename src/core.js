@@ -25,7 +25,7 @@ define(["utils"], function (utils) {
 			i = 1,
 			n;
 		for (; i < len; i += 1) {
-			for (var n in arrs[i]) {
+			for (n in arrs[i]) {
 				if (arrs[i].hasOwnProperty(n)) {
 					obj[n] = arrs[i][n];
 				}
@@ -35,12 +35,10 @@ define(["utils"], function (utils) {
 	};
 	
 	$.each = function (obj, callback) {
-		var length, i;
-
 		if (obj instanceof Array) {
 			obj.forEach(callback, obj);
 		} else {
-			for (i in obj) {
+			for (var i in obj) {
 				if (obj.hasOwnProperty(i) && callback.call(obj[i], i, obj[i]) === false) {
 					break;
 				}
@@ -63,17 +61,9 @@ define(["utils"], function (utils) {
 		}
 	};
 	
-	$.inArray = function(elem, arr, i) {
-		return arr.indexOf(elem, i);
-	};
-	
-	$.isFunction = function (obj) {
-		return typeof obj === "function";
-	};
-	
 	$.fn = {
 		constructor: $,
-		root: document,
+		root: doc,
 		init: function (selector, context) {
 			var nodes = [], i, match, frag;
 
@@ -92,7 +82,7 @@ define(["utils"], function (utils) {
 				});
 
 			// single node
-			} else if (selector.nodeType && $.inArray(selector.nodeType, [1, 9]) > -1) {
+			} else if (selector.nodeType && [1, 9].indexOf(selector.nodeType) > -1) {
 				nodes = [selector];
 
 			// ready function
