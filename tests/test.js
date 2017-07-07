@@ -54,6 +54,8 @@ QUnit.test("$.fn.init CSS selector", function (assert) {
 	assert.ok($(".main > h1:first-child").get(0) === h1, "Can select first child");
 	assert.ok($("input[type=checkbox]").get(0) === checkbox, "Can select with attributes");
 	assert.ok($("input[type=checkbox]:checked").get(0) === checkbox, "Can select with attributes");
+	
+	assert.ok($($(".main")).get(0) === main, "Can select object from Dabby object");
 });
 
 /*QUnit.test("$.fn.init Ready Function", function (assert) {

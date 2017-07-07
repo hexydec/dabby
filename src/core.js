@@ -3,10 +3,13 @@ define(["utils"], function (utils) {
 	
 	var doc = document,
 		ready = [],
-		domready = false,
-		$ = function (selector, context) {
-			return new $.fn.init(selector, context);
-		};
+		domready = false;
+	
+	function dabby(selector, context) {
+		return new dabby.fn.init(selector, context);
+	};
+	
+	$ = dabby;
 	
 	$.isWindow = function (obj) {
 		return obj !== null && obj === obj.window;
@@ -61,9 +64,9 @@ define(["utils"], function (utils) {
 		}
 	};
 	
-	$.fn = {
-		constructor: $,
+	$.fn = $.prototype = {
 		root: doc,
+		constructor: dabby,
 		init: function (selector, context) {
 			var nodes = [], i, match, frag;
 
@@ -72,7 +75,7 @@ define(["utils"], function (utils) {
 				return this;
 
 			// $ collection
-			} else if (selector instanceof $) {
+			} else if (selector instanceof dabby) {
 				return selector;
 
 			// array of nodes
@@ -82,7 +85,7 @@ define(["utils"], function (utils) {
 				});
 
 			// single node
-			} else if (selector.nodeType && [1, 9].indexOf(selector.nodeType) > -1) {
+			} else if (selector.nodeType) {
 				nodes = [selector];
 
 			// ready function
@@ -95,7 +98,7 @@ define(["utils"], function (utils) {
 
 			// CSS selector
 			} else if (typeof selector === "string") {
-				if (selector.indexOf("<") === -1) {
+				if (selector[0] !== "<") {
 					context = $(context).get(0) || this.root;
 					nodes = context.querySelectorAll(selector);
 
