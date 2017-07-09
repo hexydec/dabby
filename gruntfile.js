@@ -21,7 +21,7 @@ module.exports = function (grunt) {
 						data.path,
 						require("amdclean").clean({
 							filePath: data.path,
-							transformAMDChecks: false/*,
+							transformAMDChecks: true/*,
 							wrap: false,
 							sourceMap: grunt.file.readJSON(data.path + ".map"),
 							esprima: {source: data.path},

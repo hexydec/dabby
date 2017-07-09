@@ -78,8 +78,8 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.parent = function (selector) {
-		var i = 0,
-			nodes = [];
+		var nodes = [],
+			i = 0;
 		
 		for (; i < this.length; i += 1) {
 			if (!selector || this[i].parentNode.matches(selector)) {
@@ -90,7 +90,20 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.parents = function (selector) {
+		var nodes = [],
+			i = 0,
+			node;
 		
+		for (; i < this.length; i += 1) {
+			node = this[i];
+			while (node.parentNode) {
+				if (!selector || node.parentNode.matches(selector)) {
+					nodes.push(node.parentNode);
+				}
+				node = node.parentNode;
+			}
+		}
+		return $(nodes);
 	};
 	
 	$.fn.prev = function (selector) {
@@ -110,14 +123,23 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.add = function (nodes) {
-		var $this = this,
-			len = $this.length,
+		var len = $this.length,
 			i = 0;
 		
 		nodes = $(nodes);
 		for (; i < nodes.length; i += 1) {
-			$this[i + len] = nodes[0];
+			this[i + len] = nodes[0];
 		}
-		return $this;
+		return this;
+	};
+	
+	$.fn.clone = function () {
+		var nodes = [],
+			i = 0;
+		
+		for (; i < this.length; i += 1) {
+			nodes.push(this[i].cloneNode(true));
+		}
+		return $(nodes);
 	};
 });
