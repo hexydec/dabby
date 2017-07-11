@@ -3,7 +3,8 @@ define(["core", "utils"], function ($, utils) {
 		
 		// set
 		if (html) {
-			for (var i = 0; i < this.length; i += 1) {
+			var i = this.length;
+			while (i--) {
 				this[i].innerHTML = html;
 			}
 			return this;
@@ -15,7 +16,8 @@ define(["core", "utils"], function ($, utils) {
 	};
 	
 	$.fn.empty = function (html) {
-		for (var i = 0; i < this.length; i += 1) {
+		var i = this.length;
+		while (i--) {
 			this[i].innerHTML = "";
 		}
 		return this;
@@ -23,10 +25,10 @@ define(["core", "utils"], function ($, utils) {
 	
 	$.fn.clone = function () {
 		var nodes = [],
-			i = 0;
+			i = this.length;
 		
-		for (; i < this.length; i += 1) {
-			nodes.push(this[i].cloneNode(true));
+		while (i--) {
+			nodes[i] = this[i].cloneNode(true);
 		}
 		return $(nodes);
 	};
@@ -61,7 +63,8 @@ define(["core", "utils"], function ($, utils) {
 	
 	["add", "remove", "toggle"].forEach(function (name) {
 		$.fn[name + "Class"] = function (cls) {
-			for (var i = 0; i < this.length; i += 1) {
+			var i = this.length;
+			while (i--) {
 				this[i].classList[name](cls);
 			}
 			return this;
@@ -73,7 +76,8 @@ define(["core", "utils"], function ($, utils) {
 			
 			// set
 			if (value || value === "") {
-				for (var i = 0; i < this.length; i += 1) {
+				var i = this.length;
+				while (i--) {
 					if (prop === "style") {
 						this[i].style.cssText = value;
 					} else if (prop === "class") {
@@ -90,25 +94,20 @@ define(["core", "utils"], function ($, utils) {
 			// get
 			if (this[0]) {
 				if (prop === "style") {
-					if (this[0].style.cssText) {
-						return this[0].style.cssText;
-					}
-				} else if (prop === "class") {
-					if (this[0].className) {
-						return this[0].className;
-					}
-				} else {
-					if (this[0].getAttribute(prop)) {
-						return this[0].getAttribute(prop);
-					}
+					return this[0].style.cssText;
 				}
+				if (prop === "class") {
+					return this[0].className;
+				}
+				return this[0].getAttribute(prop);
 			}
 		}
 	};
 	
 	$.fn.data = function (name, data) {
 		if (data) {
-			for (var i = 0; i < this.length; i += 1) {
+			var i = this.length;
+			while (i--) {
 				this[i].dataset[name] = data;
 			}
 			return this;
@@ -145,7 +144,8 @@ define(["core", "utils"], function ($, utils) {
 				return this[0].value;
 			}
 		} else {
-			for (var i = 0; i < this.length; i += 1) {
+			var i = this.length;
+			while (i--) {
 				if (this[i].multiple) {
 					$(this[0])
 						.find("option")
@@ -162,23 +162,22 @@ define(["core", "utils"], function ($, utils) {
 	
 	$.fn.css = function (props, value) {
 		var name = props,
-			n = 0,
-			len = props.length,
+			i = props.length,
 			css,
 			output = {};
 		
 		// retrieve value from first property
-		if (value === undefined && props.constructor === Array) {
-			if (this.length) {
+		if (value === undefined) {
+			if (this[0]) {
 				css = getComputedStyle(this[0], "");
 				if (typeof name === "string") {
 					props = [name];
 				}
-				for (; n < len; n += 1) {
-					props[n] = utils.dasherise(props[n]);
-					output[props[n]] = css.getPropertyValue(props[n]);
+				while (i--) {
+					props[i] = utils.dasherise(props[i]);
+					output[props[i]] = css.getPropertyValue(props[i]);
 					if (len === 1) {
-						return output[props[n]];
+						return output[props[i]];
 					}
 				}
 				return output;

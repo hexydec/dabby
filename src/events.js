@@ -8,68 +8,48 @@ define(["core"], function ($) {
 		};
 	}
 	
-	$.fn.on = function (events, selector, callback) {
-		events = events.split(" ");
-		
-		// sort out args
-		if (typeof selector === "function") {
-			callback = selector;
-			selector = null;
-		}
-		
-		// check for bubble
-		var i,
-			e, 
-			fn = getDelegate(callback, selector);
-		
-		// attach event
-		for (i = 0; i < this.length; i += 1) {
-			for (e = 0; e < events.length; e += 1) {
-				this[i].addEventListener(events[e], callback, false);
+	// add and remove event handlers
+	$.each({
+		on: "addEventListener",
+		off: "removeEventListener"
+	}, function (name, func) {
+		$.fn[name] = function (events, selector, callback) {
+			events = events.split(" ");
+			
+			// sort out args
+			if (selector.constructor === Function) {
+				callback = selector;
+				selector = null;
 			}
-		}
-		return this;
-	};
-	
-	// Remove event handler
-	$.fn.off = function (event, selector, callback) {
-		events = events.split(" ");
-		
-		// sort out args
-		if (typeof selector === "function") {
-			callback = selector;
-			selector = null;
-		}
-		
-		// check for bubble
-		var i,
-			e, 
-			fn = getDelegate(callback, selector);
-		
-		// attach event
-		for (i = 0; i < this.length; i += 1) {
-			for (e = 0; e < events.length; e += 1) {
-				this[i].removeEventListener(events[e], fn, false);
+			
+			// check for bubble
+			var i = this.length,
+				e = events.length, 
+				fn = getDelegate(callback, selector);
+			
+			// attach event
+			while (i--) {
+				while (e--) {
+					this[i][func](events[e], callback, false);
+				}
 			}
-		}
-		return this;
-	};
+			return this;
+		};
+	});
 	
 	$.fn.trigger = function (event) {
-		var $this = this,
-			obj = new Event(event),
-			i = 0;
+		var obj = new Event(event),
+			i = this.length;
 			
-		for (; i < $this.length; i += 1) {
-			$this[i].dispatchEvent(obj);
+		while (i--) {
+			this[i].dispatchEvent(obj);
 		}
-		return $this;
+		return this;
 	};
 	
 	["focusin", "focusout", "focus", "blur", "load", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "change", "select", "keydown", "keypress", "keyup", "error"].forEach(function (event) {
 		$.fn[event] = function (callback) {
-			var $this = this;
-			return callback ? $this.on(event, callback) : $this.trigger(event);
-		}
+			return callback ? this.on(event, callback) : this.trigger(event);
+		};
 	});
 });

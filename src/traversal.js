@@ -13,17 +13,18 @@ define(["core"], function ($) {
 			};
 		
 		// function
-		} else if (typeof filter === "function") {
+		} else if (filter.constructor === Function) {
 			func = filter;
 		
 		// nodes
 		} else {
-			if (!$.isArray(filter)) {
+			if (![].isArray(filter)) {
 				filter = [filter];
 			}
 			len = filter.length;
 			func = function (node) {
-				for (var i = 0; i < len; i += 1) {
+				var i = len;
+				while (i--) {
 					if (this.isSameNode(filter[i])) {
 						return true;
 					}
@@ -61,11 +62,11 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.children = function (selector) {
-		var i = n = 0,
+		var i = this.length,
 			nodes = [],
 			children;
 		
-		for (; i < this.length; i += 1) {
+		while (i--) {
 			children = this[i].children;
 			if (selector) {
 				children = [].filter.call(children, function (node) {
@@ -79,9 +80,9 @@ define(["core"], function ($) {
 	
 	$.fn.parent = function (selector) {
 		var nodes = [],
-			i = 0;
+			i = this.length;
 		
-		for (; i < this.length; i += 1) {
+		while (i--) {
 			if (!selector || this[i].parentNode.matches(selector)) {
 				nodes.push(this[i].parentNode);
 			}
@@ -91,10 +92,10 @@ define(["core"], function ($) {
 	
 	$.fn.parents = function (selector) {
 		var nodes = [],
-			i = 0,
+			i = this.length,
 			node;
 		
-		for (; i < this.length; i += 1) {
+		while (i--) {
 			node = this[i];
 			while (node.parentNode) {
 				if (!selector || node.parentNode.matches(selector)) {
@@ -106,15 +107,21 @@ define(["core"], function ($) {
 		return $(nodes);
 	};
 	
-	$.fn.prev = function (selector) {
-		var node = this[0];
-		return $(node ? node.previousElementSibling() : null);
-	};
-	
-	$.fn.next = function (selector) {
-		var node = this[0];
-		return $(node ? node.nextElementSibling() : null);
-	};
+	$.each({
+		next: "nextElementSibling",
+		prev: "previousElementSibling"
+	}, function (name, func) {
+		$.fn[name] = function (selector) {
+			var sibling = null;
+			if (this[0]) {
+				sibling = node[func]();
+				if (selector && !sibling.matches(selector)) {
+					sibling = null;
+				}
+			}
+			return $(sibling);
+		};
+	});
 	
 	$.fn.has = function (selector) {
 		return $([].filter.call(this, function (node) {
@@ -123,22 +130,22 @@ define(["core"], function ($) {
 	};
 	
 	$.fn.add = function (nodes) {
-		var len = $this.length,
-			i = 0;
-		
 		nodes = $(nodes);
-		for (; i < nodes.length; i += 1) {
-			this[i + len] = nodes[0];
+		var len = this.length,
+			i = nodes.length;
+		
+		while (i--) {
+			this[i + len] = nodes[i];
 		}
 		return this;
 	};
 	
 	$.fn.clone = function () {
 		var nodes = [],
-			i = 0;
+			i = this.length;
 		
-		for (; i < this.length; i += 1) {
-			nodes.push(this[i].cloneNode(true));
+		while (i--) {
+			nodes[i] = this[i].cloneNode(true);
 		}
 		return $(nodes);
 	};

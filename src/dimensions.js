@@ -28,16 +28,16 @@ define(["core", "utils"], function ($, utils) {
 	$.fn.offset = function (coords) {
 		var rect,
 			doc = document.documentElement,
-			i = 0,
+			i = this.length,
 			pos;
 		
 		// set
 		if (coords) {
-			for (; i < this.length; i += 1) {
+			while (i--) {
 				pos = getComputedStyle(this[i], "").position;
 				
 				// if coords is callback, generate value
-				if (typeof coords === "function") {
+				if (coords.constructor === Function) {
 					coords = coords(i, pos);
 				}
 				
@@ -78,9 +78,10 @@ define(["core", "utils"], function ($, utils) {
 		item = "scroll" + item;
 		$.fn[item] = function (pos) {
 			if (pos) {
-				return this.each(function (node) {
-					node[item] = pos;
-				});
+				var i = this.length;
+				while (i--) {
+					this[i][item] = pos;
+				};
 			} else if (this[0]) {
 				return this[0][item];
 			}

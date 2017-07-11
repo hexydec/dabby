@@ -11,26 +11,16 @@ define(["utils"], function (utils) {
 	
 	$ = dabby;
 	
-	/*$.isWindow = function (obj) {
-		return obj !== null && obj === obj.window;
-	};
-	
-	$.isEmptyObject = function (obj) {
-		for (var name in obj) {
-			return false;
-		}
-		return true;
-	};*/
-	
 	$.extend = function (obj) {
 		var arrs = arguments,
 			len = arguments.length,
 			i = 1,
 			keys,
-			k = 0;
+			k;
 		for (; i < len; i += 1) {
 			keys = Object.keys(arrs[i]);
-			for (; k < keys.length; k += 1) {
+			k = keys.length;
+			while (k--) {
 				obj[keys[k]] = arrs[i][keys[k]];
 			}
 		}
@@ -72,7 +62,7 @@ define(["utils"], function (utils) {
 		constructor: dabby,
 		init: function (selector, context) {
 			var nodes = [],
-				i = 0,
+				i,
 				match,
 				frag,
 				keys;
@@ -86,7 +76,7 @@ define(["utils"], function (utils) {
 				return selector;
 
 			// array of nodes
-			} else if (selector instanceof Array) {
+			} else if (Array.isArray(selector)) {
 				nodes = [].filter.call(selector, function (item) {
 					return item !== null;
 				});
@@ -96,7 +86,7 @@ define(["utils"], function (utils) {
 				nodes = [selector];
 
 			// ready function
-			} else if (typeof selector === "function") {
+			} else if (selector.constructor === Function) {
 				if (domready) {
 					selector();
 				} else {
@@ -121,8 +111,9 @@ define(["utils"], function (utils) {
 					frag = (context || doc).createRange().createContextualFragment(selector);
 					frag.innerHTML = selector;
 					keys = Object.keys(frag.children);
-					for (; i < keys.length; i += 1) {
-						nodes.push(frag.children[keys[i]]);
+					i = keys.length;
+					while (i--) {
+						nodes[i] = frag.children[keys[i]];
 					}
 				}
 			}
@@ -130,8 +121,8 @@ define(["utils"], function (utils) {
 			// build nodes
 			this.selector = selector || "";
 			this.context = context;
-			this.length = nodes.length;
-			for (i = 0; i < this.length; i++) {
+			this.length = i = nodes.length;
+			while (i--) {
 				this[i] = nodes[i];
 			}
 			return this;
@@ -144,11 +135,10 @@ define(["utils"], function (utils) {
 			return this;
 		},
 		map: function (callback) {
-			var $this = this,
-				nodes = [],
+			var nodes = [],
 				i = 0;
-			for (; i < $this.length; i += 1) {
-				nodes.push(callback.call($this[0], i, $this[0]));
+			for (; i < this.length; i += 1) {
+				nodes.push(callback.call(this[0], i, this[0]));
 			}
 			return $(nodes);
 		}
@@ -159,8 +149,7 @@ define(["utils"], function (utils) {
 	
 	// bind ready functions
 	doc.addEventListener("DOMContentLoaded", function () {
-		var i = 0;
-		for (i = 0; i < ready.length; i += 1) {
+		for (var i = 0; i < ready.length; i += 1) {
 			ready[i]();
 		}
 	}, false);

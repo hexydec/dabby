@@ -8,18 +8,24 @@ define(function () {
 			return prop.replace(/-([a-z])/gi, function (text, letter) {return letter.toUpperCase();});
 		},
 		setCss: function (dabby, props, value) {
-			var name = props,
-				i = 0,
-				k = 0,
-				keys;
+			
+			// normalise props
 			if (typeof name === "string") {
 				props = {};
 				props[name] = value;
 			}
-			keys = Object.keys(props);
-			for (; k < keys.length; k += 1) {
+			
+			// set vars
+			var name = props,
+				i,
+				keys = Object.keys(props),
+				k = keys.length;
+			
+			// set properties
+			while (k--) {
 				props[keys[k]] = func.dasherise(props[keys[k]]);
-				for (var i = 0; i < dabby.length; i += 1) {
+				i = dabby.length;
+				while (i--) {
 					if (!value && value !== 0) {
 						dabby[i].style.removeProperty(props[keys[k]]);
 					} else {
