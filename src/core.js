@@ -26,12 +26,12 @@ define(["utils"], function (utils) {
 		var arrs = arguments,
 			len = arguments.length,
 			i = 1,
-			n;
+			keys,
+			k = 0;
 		for (; i < len; i += 1) {
-			for (n in arrs[i]) {
-				if (arrs[i].hasOwnProperty(n)) {
-					obj[n] = arrs[i][n];
-				}
+			keys = Object.keys(arrs[i]);
+			for (; k < keys.length; k += 1) {
+				obj[keys[k]] = arrs[i][keys[k]];
 			}
 		}
 		return obj;
@@ -41,8 +41,10 @@ define(["utils"], function (utils) {
 		if (obj instanceof Array) {
 			obj.forEach(callback, obj);
 		} else {
-			for (var i in obj) {
-				if (obj.hasOwnProperty(i) && callback.call(obj[i], i, obj[i]) === false) {
+			var keys = Object.keys(obj),
+				i = 0;
+			for (; i < keys.length; i += 1) {
+				if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
 					break;
 				}
 			}
@@ -54,11 +56,11 @@ define(["utils"], function (utils) {
 		if (obj instanceof Array) {
 			return obj.map(callback);
 		} else {
-			var arr = [], i;
-			for (i in obj) {
-				if (obj.hasOwnProperty(i)) {
-					arr.push(callback(obj[i], i));
-				}
+			var arr = [],
+				keys = Object.keys(obj)
+				i = 0;
+			for (; i < keys.length; i += 1) {
+				arr.push(callback(obj[keys[i]], keys[i]));
 			}
 			return arr;
 		}
@@ -68,7 +70,11 @@ define(["utils"], function (utils) {
 		root: doc,
 		constructor: dabby,
 		init: function (selector, context) {
-			var nodes = [], i, match, frag;
+			var nodes = [],
+				i = 0,
+				match,
+				frag,
+				keys;
 
 			// if no selector, return empty colletion
 			if (!selector) {
@@ -113,10 +119,9 @@ define(["utils"], function (utils) {
 				} else {
 					frag = (context || doc).createDocumentFragment();
 					frag.innerHTML = selector;
-					for (i in frag.children) {
-						if (frag.children.hasOwnProperty(i)) {
-							nodes.push(frag.children[i]);
-						}
+					keys = Object.keys(frag.children);
+					for (; i < keys.length; i += 1) {
+						nodes.push(frag.children[keys[i]]);
 					}
 				}
 			}
