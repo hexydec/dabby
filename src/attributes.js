@@ -1,14 +1,12 @@
 define(["core", "utils"], function ($, utils) {
 	$.fn.html = function (html) {
-		var $this = this,
-			i;
 		
 		// set
 		if (html) {
-			for (i = 0; i < $this.length; i += 1) {
-				$this[i].innerHTML = html;
+			for (var i = 0; i < this.length; i += 1) {
+				this[i].innerHTML = html;
 			}
-			return $this;
+			return this;
 		
 		// get
 		} else if (this[0]) {
@@ -17,22 +15,18 @@ define(["core", "utils"], function ($, utils) {
 	};
 	
 	$.fn.empty = function (html) {
-		var $this = this,
-			i = 0;
-			
-		for (; i < $this.length; i += 1) {
-			$this[i].innerHTML = "";
+		for (var i = 0; i < this.length; i += 1) {
+			this[i].innerHTML = "";
 		}
-		return $this;
+		return this;
 	};
 	
 	$.fn.clone = function () {
-		var $this = this,
-			nodes = [],
+		var nodes = [],
 			i = 0;
 		
-		for (; i < $this.length; i += 1) {
-			nodes.push($this[i].cloneNode(true));
+		for (; i < this.length; i += 1) {
+			nodes.push(this[i].cloneNode(true));
 		}
 		return $(nodes);
 	};
@@ -52,30 +46,25 @@ define(["core", "utils"], function ($, utils) {
 		after: "afterEnd"
 	}, function (name, pos) {
 		$.fn[name] = function (html) {
-			var $this = this,
-				i = 0;
-			for (; i < $this.length; i += 1) {
+			for (var i = 0; i < this.length; i += 1) {
 				if (typeof html === "string") {
-					$this[i].insertAdjacentHtml(pos, html);
+					this[i].insertAdjacentHtml(pos, html);
 				} else {
 					$(html).each(function () {
-						$this[i].insertAdjacentElement(pos, this);
+						this[i].insertAdjacentElement(pos, this);
 					});
 				}
 			}
-			return $this;
+			return this;
 		};
 	});
 	
 	["add", "remove", "toggle"].forEach(function (name) {
 		$.fn[name + "Class"] = function (cls) {
-			var $this = this,
-				i = 0;
-				
-			for (; i < $this.length; i += 1) {
-				$this[i].classList[name](cls);
+			for (var i = 0; i < this.length; i += 1) {
+				this[i].classList[name](cls);
 			}
-			return $this;
+			return this;
 		};
 	});
 	
@@ -118,43 +107,33 @@ define(["core", "utils"], function ($, utils) {
 	};
 	
 	$.fn.data = function (name, data) {
-		var $this = this,
-			i = 0;
-		
 		if (data) {
-			for (; i < $this.length; i += 1) {
-				$this[i].dataset[name] = data;
+			for (var i = 0; i < this.length; i += 1) {
+				this[i].dataset[name] = data;
 			}
 			return this;
-		} else if ($this[0] && $this[0].dataset[name]) {
-			try {
-				data = JSON.parse($this[0].dataset[name]);
-			} catch(e) {
-				data = $this[0].dataset[name];
-			}
-			return data;
+		} else if (this[0] && this[0].dataset[name]) {
+			return JSON.parse(this[0].dataset[name]) || this[0].dataset[name];
 		}
 	};
 	
 	$.fn.prop = function (prop, value) {
-		var $this = this;
 		prop = prop.toLowerCase();
 		
 		// set
 		if (value || value === "") {
-			return $this.each(function () {
+			return this.each(function () {
 				this[prop] = value;
 			});
-		} else if ($this[0]) {
-			return $this[prop];
+		} else if (this[0]) {
+			return this[prop];
 		}
 	};
 	
 	$.fn.val = function (value) {
-		var $this = this;
 		if (value === undefined) {
-			if ($this[0].multiple) {
-			return $($this[0])
+			if (this[0].multiple) {
+			return $(this[0])
 				.find("option")
 				.filter(function () {
 					return this.selected;
@@ -163,27 +142,26 @@ define(["core", "utils"], function ($, utils) {
 					return this.value;
 				});
 			} else {
-				return $this[0].value;
+				return this[0].value;
 			}
 		} else {
-			for (var i = 0; i < $this.length; i += 1) {
-				if ($this[i].multiple) {
-					$($this[0])
+			for (var i = 0; i < this.length; i += 1) {
+				if (this[i].multiple) {
+					$(this[0])
 						.find("option")
 						.each(function () {
 							this.selected = [].indexOf.call(value, this.value);
 						});
 				} else {
-					$this[i].value = value;
+					this[i].value = value;
 				}
 			}
-			return $this;
+			return this;
 		}
 	};
 	
 	$.fn.css = function (props, value) {
-		var $this = this,
-			name = props,
+		var name = props,
 			n = 0,
 			len = props.length,
 			css,
@@ -192,7 +170,7 @@ define(["core", "utils"], function ($, utils) {
 		// retrieve value from first property
 		if (value === undefined && props.constructor === Array) {
 			if (this.length) {
-				css = getComputedStyle($this[0], "");
+				css = getComputedStyle(this[0], "");
 				if (typeof name === "string") {
 					props = [name];
 				}
@@ -208,7 +186,7 @@ define(["core", "utils"], function ($, utils) {
 		
 		// set the values
 		} else {
-			return utils.setCss($this, props, value);
+			return utils.setCss(this, props, value);
 		}
 	};
 });

@@ -1,4 +1,4 @@
-QUnit.test("$.isWindow", function (assert) {
+/*QUnit.test("$.isWindow", function (assert) {
 	assert.equal($.isWindow(window), true);
 	assert.equal($.isWindow(document), false);
 });
@@ -6,7 +6,7 @@ QUnit.test("$.isWindow", function (assert) {
 QUnit.test("$.isEmptyObject", function (assert) {
 	assert.equal($.isEmptyObject({}), true);
 	assert.equal($.isEmptyObject({foo: "bar"}), false);
-});
+});*/
 
 QUnit.test("$.extend", function (assert) {
 	assert.deepEqual($.extend({foo: "foo"}, {bar: "bar"}), {foo: "foo", bar: "bar"}, "$.extend simple");
@@ -47,7 +47,10 @@ QUnit.test("$.map", function (assert) {
 QUnit.test("$.fn.init CSS selector", function (assert) {
 	var main = document.getElementsByClassName("main")[0],
 		h1 = document.getElementsByTagName("h1")[0],
-		checkbox = document.querySelectorAll("input[type=checkbox]")[0];
+		checkbox = document.querySelectorAll("input[type=checkbox]")[0],
+		html = '<h1>Hello <strong>How are you?</strong></h1>',
+		newh1 = document.createElement("h1");
+	
 	assert.ok($(".main").get(0) === main, "Can select object by class");
 	assert.ok($(".main h1").get(0) === h1, "Can select child object");
 	assert.ok($(".main > h1").get(0) === h1, "Can select direct child object");
@@ -56,6 +59,14 @@ QUnit.test("$.fn.init CSS selector", function (assert) {
 	assert.ok($("input[type=checkbox]:checked").get(0) === checkbox, "Can select with attributes");
 	
 	assert.ok($($(".main")).get(0) === main, "Can select object from Dabby object");
+	assert.ok($(main).get(0) === main, "Can select object from node");
+	assert.deepEqual($([main, h1]).get(), [main, h1], "Can select object from node");
+	
+	assert.deepEqual($('<h1>').get(0), newh1, "Can create HTML objects");
+	assert.deepEqual($('<h1/>').get(0), newh1, "Can create HTML objects");
+	assert.deepEqual($('<h1 />').get(0), newh1, "Can create HTML objects");
+	assert.deepEqual($('<h1></h1>').get(0), newh1, "Can create HTML objects");
+	assert.equal($(html).get(0).outerHTML, html, "Can create HTML nodes");
 });
 
 /*QUnit.test("$.fn.init Ready Function", function (assert) {

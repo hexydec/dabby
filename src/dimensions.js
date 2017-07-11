@@ -1,4 +1,4 @@
-define(["core"], function ($) {
+define(["core", "utils"], function ($, utils) {
 	["Width", "Height"].forEach(function (dim) { // inner / outer ??
 		var diml = dim.toLowerCase();
 		$.fn[diml] = function (val) {
@@ -10,7 +10,7 @@ define(["core"], function ($) {
 					return obj.style[diml] = val;
 
 				// window
-				} else if ($.isWindow(obj)) {
+				} else if (obj === window) {
 					return obj["inner" + dim];
 
 				// document
@@ -26,12 +26,43 @@ define(["core"], function ($) {
 	});
 	
 	$.fn.offset = function (coords) {
-		var rect = el.getBoundingClientRect(),
-			doc = document.documentElement;
-	    return {
-	    	top: rect.top + doc.scrollTop,
-	    	left: rect.left + doc.scrollLeft
-	    };
+		var rect,
+			doc = document.documentElement,
+			i = 0,
+			pos;
+		
+		// set
+		if (coords) {
+			for (; i < this.length; i += 1) {
+				pos = getComputedStyle(this[i], "").position;
+				
+				// if coords is callback, generate value
+				if (typeof coords === "function") {
+					coords = coords(i, pos);
+				}
+				
+				if (coords.top && coords.left) {
+				
+					// set position relative if static
+					if (pos === "static") {
+						this[i].style.setProperty("position", "relative");
+					}
+					
+					// set offset
+					this[i].style.setProperty("top", parseint(coords.top) + (pos === "fixed" ? 0 : doc.scrollTop));
+					this[i].style.setProperty("left", parseint(coords.left) + (pos === "fixed" ? 0 : doc.scrollLeft));
+				}
+			}
+			return this;
+		
+		// get
+		} else if (this[0]) {
+			rect = this[0].getBoundingClientRect();
+		    return {
+		    	top: rect.top + doc.scrollTop,
+		    	left: rect.left + doc.scrollLeft
+			};
+		}
 	};
 	
 	$.fn.offsetParent = function (coords) {

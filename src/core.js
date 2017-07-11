@@ -11,7 +11,7 @@ define(["utils"], function (utils) {
 	
 	$ = dabby;
 	
-	$.isWindow = function (obj) {
+	/*$.isWindow = function (obj) {
 		return obj !== null && obj === obj.window;
 	};
 	
@@ -20,7 +20,7 @@ define(["utils"], function (utils) {
 			return false;
 		}
 		return true;
-	};
+	};*/
 	
 	$.extend = function (obj) {
 		var arrs = arguments,
@@ -66,6 +66,7 @@ define(["utils"], function (utils) {
 		}
 	};
 	
+	// basic functionality
 	$.fn = $.prototype = {
 		root: doc,
 		constructor: dabby,
@@ -109,7 +110,7 @@ define(["utils"], function (utils) {
 					nodes = context.querySelectorAll(selector);
 
 				// match single selector
-				} else if ((match = selector.match(/^<([a-z0-9]+)( ?\/?|><\/\\1)>/i)) !== null) {
+				} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
 					nodes.push(doc.createElement(match[1]));
 					if (context instanceof Array) {
 						return utils.setCss($(nodes), context);
@@ -117,7 +118,7 @@ define(["utils"], function (utils) {
 				
 				// create document fragment
 				} else {
-					frag = (context || doc).createDocumentFragment();
+					frag = (context || doc).createRange().createContextualFragment(selector);
 					frag.innerHTML = selector;
 					keys = Object.keys(frag.children);
 					for (; i < keys.length; i += 1) {
@@ -152,6 +153,8 @@ define(["utils"], function (utils) {
 			return $(nodes);
 		}
 	};
+	
+	// alias functions
 	$.fn.init.prototype = $.fn;
 	
 	// bind ready functions
