@@ -57,7 +57,7 @@ define(["utils"], function (utils) {
 			return obj.map(callback);
 		} else {
 			var arr = [],
-				keys = Object.keys(obj)
+				keys = Object.keys(obj),
 				i = 0;
 			for (; i < keys.length; i += 1) {
 				arr.push(callback(obj[keys[i]], keys[i]));
