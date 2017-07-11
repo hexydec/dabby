@@ -14,7 +14,7 @@ define(["core"], function ($) {
 		}
 		
 		// settings is success function
-		if (typeof settings === "function") {
+		if (settings.constructor === Function) {
 			settings = {success: settings};
 		}
 		
