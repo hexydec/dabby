@@ -17,7 +17,7 @@ QUnit.test("$.each", function (assert) {
 	var arr = ["foo", "bar"],
 		output = [],
 		obj = {foo: "foo", bar: "bar"};
-	$.each(arr, function (item) {
+	$.each(arr, function (i, item) {
 		output.push(item);
 	});
 	assert.deepEqual(arr, output, "$.each array");
@@ -44,7 +44,7 @@ QUnit.test("$.map", function (assert) {
 	assert.deepEqual(arr, output, "$.extend object");
 });
 
-QUnit.test("$.fn.init CSS selector", function (assert) {
+QUnit.test("$.fn.init", function (assert) {
 	var main = document.getElementsByClassName("main")[0],
 		h1 = document.getElementsByTagName("h1")[0],
 		checkbox = document.querySelectorAll("input[type=checkbox]")[0],
@@ -67,6 +67,23 @@ QUnit.test("$.fn.init CSS selector", function (assert) {
 	assert.deepEqual($('<h1 />').get(0), newh1, "Can create HTML objects");
 	assert.deepEqual($('<h1></h1>').get(0), newh1, "Can create HTML objects");
 	assert.equal($(html).get(0).outerHTML, html, "Can create HTML nodes");
+});
+
+QUnit.test("$.fn.get", function (assert) {
+	var main = document.getElementsByClassName("main")[0],
+		h1 = document.getElementsByClassName("heading")[0];
+	assert.deepEqual($(".main, .heading").get(), [main, h1]);
+	assert.deepEqual($(".main, .heading").get(0), main);
+});
+
+QUnit.test("$.fn.each", function (assert) {
+	var main = document.getElementsByClassName("main")[0],
+		h1 = document.getElementsByClassName("heading")[0],
+		output = [];
+	$(".main, .heading").each(function () {
+		output.push(this.tagName.toLowerCase());
+	});
+	assert.deepEqual(output, ["div", "h1"]);
 });
 
 /*QUnit.test("$.fn.init Ready Function", function (assert) {

@@ -13,10 +13,10 @@ define(["utils"], function (utils) {
 	
 	$.extend = function (obj) {
 		var arrs = arguments,
-			len = arguments.length,
 			i = 1,
 			keys,
 			k;
+		const len = arguments.length;
 		for (; i < len; i += 1) {
 			keys = Object.keys(arrs[i]);
 			k = keys.length;
@@ -28,15 +28,12 @@ define(["utils"], function (utils) {
 	};
 	
 	$.each = function (obj, callback) {
-		if (obj instanceof Array) {
-			obj.forEach(callback, obj);
-		} else {
-			var keys = Object.keys(obj),
-				i = 0;
-			for (; i < keys.length; i += 1) {
-				if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
-					break;
-				}
+		var keys = Object.keys(obj),
+			i = 0;
+		const len = keys.length;
+		for (; i < len; i += 1) {
+			if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
+				break;
 			}
 		}
 		return obj;
@@ -46,10 +43,10 @@ define(["utils"], function (utils) {
 		if (obj instanceof Array) {
 			return obj.map(callback);
 		} else {
-			var arr = [],
+			const arr = [],
 				keys = Object.keys(obj),
-				i = 0;
-			for (; i < keys.length; i += 1) {
+				len = keys.length;
+			for (var i = 0; i < len; i += 1) {
 				arr.push(callback(obj[keys[i]], keys[i]));
 			}
 			return arr;
@@ -135,9 +132,9 @@ define(["utils"], function (utils) {
 			return this;
 		},
 		map: function (callback) {
-			var nodes = [],
-				i = 0;
-			for (; i < this.length; i += 1) {
+			const nodes = [],
+				len = this.length;
+			for (var i = 0; i < len; i += 1) {
 				nodes.push(callback.call(this[0], i, this[0]));
 			}
 			return $(nodes);

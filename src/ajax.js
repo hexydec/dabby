@@ -43,7 +43,7 @@ define(["core"], function ($) {
 		
 		// make xhr request
 		} else {
-			xhr = new XMLHttpRequest();
+			var xhr = new XMLHttpRequest();
 			xhr.open(settings.method, settings.url, true);
 			xhr.onreadystatechange = function () {
 				var response = JSON.parse(xhr.responseText) || xhr.responseText;
