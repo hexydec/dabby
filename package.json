@@ -1,24 +1,24 @@
 {
-	"name": "Dabby.js",
-	"version": "1.0.0",
-	"keywords": [
-		"util",
-		"functional",
-		"server",
-		"client",
-		"browser"
-	],
-	"author": "will.earp",
-	"contributors": [],
-	"dependencies": {
-		"amdclean": "^2.7.0",
-		"grunt": "*",
-		"grunt-amdclean": "^0.1.2",
-		"grunt-contrib-requirejs": "*",
-		"grunt-contrib-watch": "*"
-	},
-	"devDependencies": {
-		"grunt-contrib-qunit": "^2.0.0",
-		"qunitjs": "^2.3.3"
-	}
+  "name": "Dabby.js",
+  "version": "1.0.0",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "will.earp",
+  "contributors": [],
+  "dependencies": {
+    "grunt": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "uglify-es": "^3.0.24"
+  },
+  "devDependencies": {
+    "grunt-contrib-qunit": "^2.0.0",
+    "qunitjs": "^2.3.3"
+  }
 }

@@ -7,50 +7,44 @@ module.exports = function (grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
-		requirejs: {
+		concat: {
+			main: {
+				options: {
+					banner: "/*! <%= pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today('yyyy-mm-dd') %> */\n(function () {\n\"use strict\";\n",
+					footer: "}());",
+					sourceMap: true,
+					sourceMapStyle: "link"
+				},
+				files: {
+					"dist/dabby.js": ["src/utils/**/*.js", "src/dabby.js", "src/core/**/*.js", "src/**/*.js", "src/export.js", "!src/**/test.js"]
+					//'documentation.md': ['src/readme.md', 'src/plugins/**/readme.md']
+				}
+			},
+			test: {
+				files: {
+					"tests/test.js": ["src/test.js", "src/**/test.js"]
+				}
+			}
+		},
+		uglify: {
 			options: {
-				skipModuleInsertion: true,
-				findNestedDependencies: true,
-				optimize: "none",
-				include: ["amd"],
-				baseUrl: "src/",
-				//wrap: true,
-				preserveLicenseComments: false,
-				onModuleBundleComplete: function (data) {
-					require("fs").writeFileSync(
-						data.path,
-						require("amdclean").clean({
-							filePath: data.path,
-							transformAMDChecks: true/*,
-							wrap: false,
-							sourceMap: grunt.file.readJSON(data.path + ".map"),
-							esprima: {source: data.path},
-							escodegen: {sourceMap: true, sourceMapWithCode: false}*/
-						})
-					);
-				}
+				banner: "/* Dabby.js " + grunt.file.readJSON('package.json').version + " by Will Earp */\n"
 			},
-			dev: {
-				options: {
-					generateSourceMaps: true,
-					out: "dist/dabby.js"
-				}
-			},
-			live: {
-				options: {
-					optimize: "uglify2",
-					out: "dist/dabby.min.js"
+			my_target: {
+				files: {
+					"dist/dabby.min.js": "dist/dabby.js"
 				}
 			}
 		},
 		watch: {
 			js: {
 				files: ["src/**/*.js", "gruntfile.js", "package.json"],
-				tasks: ["requirejs"]
+				tasks: ["concat", "uglify"]
 			}
 		}
 	});
-	grunt.loadNpmTasks("grunt-contrib-requirejs");
+	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks("grunt-contrib-watch");
-	grunt.registerTask("default", ["requirejs"]);
+	grunt.registerTask("default", ["concat", "uglify"]);
 };

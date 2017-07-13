@@ -1,48 +1,4 @@
-/*QUnit.test("$.isWindow", function (assert) {
-	assert.equal($.isWindow(window), true);
-	assert.equal($.isWindow(document), false);
-});
-
-QUnit.test("$.isEmptyObject", function (assert) {
-	assert.equal($.isEmptyObject({}), true);
-	assert.equal($.isEmptyObject({foo: "bar"}), false);
-});*/
-
-QUnit.test("$.extend", function (assert) {
-	assert.deepEqual($.extend({foo: "foo"}, {bar: "bar"}), {foo: "foo", bar: "bar"}, "$.extend simple");
-	assert.deepEqual($.extend({foo: "foo", bar: "foo"}, {bar: "bar"}), {foo: "foo", bar: "bar"}, "$.extend overwrite");
-});
-
-QUnit.test("$.each", function (assert) {
-	var arr = ["foo", "bar"],
-		output = [],
-		obj = {foo: "foo", bar: "bar"};
-	$.each(arr, function (i, item) {
-		output.push(item);
-	});
-	assert.deepEqual(arr, output, "$.each array");
-	
-	output = {};
-	$.each(obj, function (item, index) {
-		output[index] = item;
-	});
-	assert.deepEqual(obj, output, "$.extend object");
-});
-
-QUnit.test("$.map", function (assert) {
-	var arr = ["foo", "bar"],
-		output = [],
-		obj = {foo: "foo", bar: "bar"};
-	output = $.map(arr, function (item) {
-		return item;
-	});
-	assert.deepEqual(arr, output, "$.map array");
-	
-	output = $.map(obj, function (item, index) {
-		return item;
-	});
-	assert.deepEqual(arr, output, "$.extend object");
-});
+QUnit.module("Core");
 
 QUnit.test("$.fn.init", function (assert) {
 	var main = document.getElementsByClassName("main")[0],
@@ -68,12 +24,23 @@ QUnit.test("$.fn.init", function (assert) {
 	assert.deepEqual($('<h1></h1>').get(0), newh1, "Can create HTML objects");
 	assert.equal($(html).get(0).outerHTML, html, "Can create HTML nodes");
 });
+QUnit.module("Core");
 
-QUnit.test("$.fn.get", function (assert) {
-	var main = document.getElementsByClassName("main")[0],
-		h1 = document.getElementsByClassName("heading")[0];
-	assert.deepEqual($(".main, .heading").get(), [main, h1]);
-	assert.deepEqual($(".main, .heading").get(0), main);
+QUnit.test("$.each", function (assert) {
+	var arr = ["foo", "bar"],
+		output = [],
+		obj = {foo: "foo", bar: "bar"};
+		
+	$.each(arr, function (i, item) {
+		output.push(item);
+	});
+	assert.deepEqual(arr, output, "$.each array");
+	
+	output = {};
+	$.each(obj, function (item, index) {
+		output[index] = item;
+	});
+	assert.deepEqual(obj, output, "$.extend object");
 });
 
 QUnit.test("$.fn.each", function (assert) {
@@ -85,18 +52,33 @@ QUnit.test("$.fn.each", function (assert) {
 	});
 	assert.deepEqual(output, ["div", "h1"]);
 });
+QUnit.module("Core");
 
-/*QUnit.test("$.fn.init Ready Function", function (assert) {
-	var ready1 = false,
-		ready2 = false;
-	$(function () {
-		ready1 = true;
+QUnit.test("$.extend", function (assert) {
+	assert.deepEqual($.extend({foo: "foo"}, {bar: "bar"}), {foo: "foo", bar: "bar"}, "$.extend simple");
+	assert.deepEqual($.extend({foo: "foo", bar: "foo"}, {bar: "bar"}), {foo: "foo", bar: "bar"}, "$.extend overwrite");
+});
+QUnit.module("Core");
+
+QUnit.test("$.fn.get", function (assert) {
+	var main = document.getElementsByClassName("main")[0],
+		h1 = document.getElementsByClassName("heading")[0];
+	assert.deepEqual($(".main, .heading").get(), [main, h1]);
+	assert.deepEqual($(".main, .heading").get(0), main);
+});
+QUnit.module("Core");
+
+QUnit.test("$.map", function (assert) {
+	var arr = ["foo", "bar"],
+		output = [],
+		obj = {foo: "foo", bar: "bar"};
+	output = $.map(arr, function (item) {
+		return item;
 	});
-	$(function () {
-		ready2 = true;
+	assert.deepEqual(arr, output, "$.map array");
+	
+	output = $.map(obj, function (item, index) {
+		return item;
 	});
-	window.onload = function () {
-		assert.ok(ready1, "Ready Callback 1 Fired");
-		assert.ok(ready2, "Ready Callback 1 Fired");
-	};
-});*/
+	assert.deepEqual(arr, output, "$.extend object");
+});
