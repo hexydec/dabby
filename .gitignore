@@ -1,3 +1,5 @@
 node_modules
 nbproject
 dist
+/tests/test.js
+/tests/internals.js

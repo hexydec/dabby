@@ -1,4 +1,4 @@
-$.fn.empty = function (html) {
+$.fn.empty = function () {
 	var i = this.length;
 	while (i--) {
 		this[i].innerHTML = "";
