@@ -56,7 +56,7 @@ $.fn = $.prototype = {
 			} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
 				nodes.push(doc.createElement(match[1]));
 				if (context instanceof Array) {
-					return utils.setCss($(nodes), context);
+					utils.setCss($(nodes), context);
 				}
 
 			// create document fragment

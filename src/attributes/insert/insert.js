@@ -7,7 +7,7 @@ $.each({
 	$.fn[name] = function (html) {
 		for (var i = 0; i < this.length; i += 1) {
 			if (typeof html === "string") {
-				this[i].insertAdjacentHtml(pos, html);
+				this[i].insertAdjacentHTML(pos, html);
 			} else {
 				$(html).each(function () {
 					this[i].insertAdjacentElement(pos, this);
