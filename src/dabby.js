@@ -61,12 +61,14 @@ $.fn = $.prototype = {
 
 			// create document fragment
 			} else {
-				frag = (context || doc).createRange().createContextualFragment(selector);
+				frag = document.createElement("template");
 				frag.innerHTML = selector;
-				keys = Object.keys(frag.children);
+
+				//frag = (context || doc).createRange().createContextualFragment(selector);
+				keys = Object.keys(frag.content.children);
 				i = keys.length;
 				while (i--) {
-					nodes[i] = frag.children[keys[i]];
+					nodes[i] = frag.content.children[keys[i]];
 				}
 			}
 		}

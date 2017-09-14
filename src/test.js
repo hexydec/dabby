@@ -22,5 +22,6 @@ QUnit.test("$.fn.init", function (assert) {
 	assert.deepEqual($('<h1/>').get(0), newh1, "Can create HTML objects");
 	assert.deepEqual($('<h1 />').get(0), newh1, "Can create HTML objects");
 	assert.deepEqual($('<h1></h1>').get(0), newh1, "Can create HTML objects");
+	//console.log($(html));
 	assert.equal($(html).get(0).outerHTML, html, "Can create HTML nodes");
 });
