@@ -1,3 +1,0 @@
-$.fn.prependTo = function (html) {
-
-};

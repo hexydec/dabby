@@ -5,13 +5,15 @@ $.each({
 	after: "afterEnd"
 }, function (name, pos) {
 	$.fn[name] = function (html) {
-		for (var i = 0; i < this.length; i += 1) {
-			if (typeof html === "string") {
-				this[i].insertAdjacentHTML(pos, html);
-			} else {
-				$(html).each(function () {
-					this[i].insertAdjacentElement(pos, this);
-				});
+		var i = this.length,
+			pre = ["before", "prepend"].indexOf(name),
+			insert = $(html),
+			len = insert.length,
+			n = 0;
+
+		while (i--) {
+			while (pre ? len-- : n++ < len) {
+				this[i].insertAdjacentElement(pos, insert.get(pre ? len : n));
 			}
 		}
 		return this;
