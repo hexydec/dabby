@@ -16,9 +16,7 @@ $.fn = $.prototype = {
 	init: function (selector, context) {
 		var nodes = [],
 			i,
-			match,
-			frag,
-			keys;
+			match;
 
 		// if no selector, return empty colletion
 		if (!selector) {
@@ -56,20 +54,12 @@ $.fn = $.prototype = {
 			} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
 				nodes.push(doc.createElement(match[1]));
 				if (context instanceof Array) {
-					utils.setCss($(nodes), context);
+					utils.setCss($(nodes), context); // UNTESTED
 				}
 
 			// create document fragment
 			} else {
-				frag = document.createElement("template");
-				frag.innerHTML = selector;
-
-				//frag = (context || doc).createRange().createContextualFragment(selector);
-				keys = Object.keys(frag.content.children);
-				i = keys.length;
-				while (i--) {
-					nodes[i] = frag.content.children[keys[i]];
-				}
+				nodes = (context || doc).createRange().createContextualFragment(selector).childNodes;
 			}
 		}
 
