@@ -1,32 +1,40 @@
 $.fn.attr = function (prop, value) {
-	if (prop) {
 
-		// set
-		if (value || value === "") {
-			var i = this.length;
-			while (i--) {
-				if (prop === "style") {
-					this[i].style.cssText = value;
-				} else if (prop === "class") {
-					this[i].className = value;
-				} else if (value === "") {
-					this[i].removeAttribute(prop);
-				} else {
-					this[i].setAttribute(prop, value);
-				}
-			}
-			return this;
-		}
+	// set array of style properties
+	if (prop === "style" && value instanceof Object) {
+		setCss(this, value);
 
-		// get
-		if (this[0]) {
-			if (prop === "style") {
-				return this[0].style.cssText;
+	// set other properties
+	} else if (value || value === "") {
+		var i = this.length,
+			events = typeof getEvents === "function" ? getEvents() : [];
+
+		while (i--) {
+			if (events.indexOf(prop) > -1) {
+				this[i].addEventListener(prop, value, false);
+			} else if (prop === "style") {
+				this[i].style.cssText = value;
+			} else if (prop === "class") {
+				this[i].className = value;
+			} else if (prop === "text") {
+				this[i].textContent = value;
+			} else if (value === "") {
+				this[i].removeAttribute(prop);
+			} else {
+				this[i].setAttribute(prop, value);
 			}
-			if (prop === "class") {
-				return this[0].className;
-			}
-			return this[0].getAttribute(prop);
 		}
+		return this;
+	}
+
+	// retrieve properties
+	if (this[0]) {
+		if (prop === "style") {
+			return this[0].style.cssText;
+		}
+		if (prop === "class") {
+			return this[0].className;
+		}
+		return this[0].getAttribute(prop);
 	}
 };
