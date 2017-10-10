@@ -1,3 +1,3 @@
-$.fn.offsetParent = function (coords) {
+$.fn.offsetParent = function () {
 	return $(this[0] ? this[0].offsetParent : null);
 };
