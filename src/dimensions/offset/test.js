@@ -9,4 +9,7 @@ QUnit.test("$.fn.offset", function (assert) {
 
 	assert.deepEqual(obj.offset(coords), obj, "Returns self on set");
 	assert.deepEqual(obj.offset(), coords, "Can set and retrieve coordinates");
+
+	// reset
+	test.innerHTML = "";
 });
