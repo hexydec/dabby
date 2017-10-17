@@ -6,7 +6,7 @@
 		var i = this.length, n = cls.length;
 		while (i--) {
 			while (n--) {
-				this[i].classList[name](cls[n]);
+				this[i].classList[name](getVal(this[i], cls[n], n));
 			}
 		}
 		return this;
