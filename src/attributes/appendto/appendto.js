@@ -1,3 +1,0 @@
-$.fn.appendTo = function (html) {
-
-};

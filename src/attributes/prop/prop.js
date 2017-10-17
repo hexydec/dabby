@@ -2,13 +2,13 @@ $.fn.prop = function (prop, value) {
 	prop = prop.toLowerCase();
 
 	// set
-	if (value || value === "") {
+	if (value !== undefined) {
 		var i = this.length;
 		while (i--) {
 			this[i][prop] = value;
 		}
 		return this;
 	} else if (this[0]) {
-		return this[prop];
+		return this[0][prop];
 	}
 };
