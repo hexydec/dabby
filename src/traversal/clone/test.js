@@ -1,6 +1,6 @@
-QUnit.module("Attributes");
+QUnit.module("Traversal");
 
-QUnit.test("$.clone", function (assert) {
+QUnit.test("$.fn.clone", function (assert) {
 	var clone = $(".test").clone(), main = document.getElementsByClassName("test")[0];
 
 	// set and get class

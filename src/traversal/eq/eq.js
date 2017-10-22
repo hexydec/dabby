@@ -1,3 +1,4 @@
 $.fn.eq = function (i) {
-	return $(this[i >= 0 ? i : i + this.length]);
+	var key = i < 0 ? i + this.length : i;
+	return $(this[key] || undefined);
 };

@@ -2,10 +2,13 @@
 
 	function getAdditionalLength(obj, wh, props) {
 		var i = props.length,
-			value = 0;
+			value = 0,
+			style = getComputedStyle(obj),
+			suffix;
 		while (i--) {
-			value += parseFloat(obj.style[props[i] + (wh === "width" ? "Left" : "Top")]) || 0;
-			value += parseFloat(obj.style[props[i] + (wh === "width" ? "Right" : "Bottom")]) || 0;
+			suffix = props[i] === "border" ? "-width" : "";
+			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-left" : "-top") + suffix)) || 0;
+			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
 		}
 		return value;
 	}

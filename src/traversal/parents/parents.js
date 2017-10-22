@@ -1,16 +1,23 @@
-$.fn.parents = function (selector) {
-	var nodes = [],
-		i = this.length,
-		node;
+["", "s"].forEach(function (suffix) {
+	$.fn["parent" + suffix] = function (selector) {
+		var nodes = [],
+			i = this.length,
+			node,
+			parent;
 
-	while (i--) {
-		node = this[i];
-		while (node.parentNode) {
-			if (!selector || node.parentNode.matches(selector)) {
-				nodes.push(node.parentNode);
+		while (i--) {
+			node = this[i];
+			while (node.parentNode) {
+				parent = node.parentNode;
+				if (!selector || filterNodes.call(parent, selector) > 0) {
+					nodes.push(parent);
+				}
+				if (!suffix) {
+					break;
+				}
+				node = parent;
 			}
-			node = node.parentNode;
 		}
+		return $(nodes);
 	}
-	return $(nodes);
-};
+});

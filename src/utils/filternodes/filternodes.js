@@ -13,7 +13,9 @@ function filterNodes(filter, not) {
 
 	// nodes
 	} else {
-		if (![].isArray(filter)) {
+		if (filter instanceof dabby) {
+			filter = filter.get();
+		} else if (!Array.isArray(filter)) {
 			filter = [filter];
 		}
 		len = filter.length;
@@ -27,5 +29,5 @@ function filterNodes(filter, not) {
 			return false;
 		};
 	}
-	return $([].filter(not ? function (item) {return !func(item);} : func));
+	return [].slice.call(this).filter(not ? function (item) {return !func(item);} : func);
 }

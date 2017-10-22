@@ -1,16 +1,13 @@
 $.fn.children = function (selector) {
 	var nodes = [],
-		children,
+		slice = nodes.slice,
 		i = this.length;
 
 	while (i--) {
-		children = this[i].children;
-		if (selector) {
-			children = [].filter.call(children, function (node) {
-				return node.matches(selector);
-			});
-		}
-		nodes.concat(children);
+		nodes = nodes.concat(slice.call(this[i].children));
+	}
+	if (selector) {
+		nodes = filterNodes.call(nodes, selector);
 	}
 	return $(nodes);
 };

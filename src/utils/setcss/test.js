@@ -10,7 +10,7 @@ QUnit.test("setCss", function (assert) {
 			"border-left-style": "solid",
 			"border-left-width": "1px"
 		};;
-	
+
 	rmain.style.cssText = "";
 	assert.deepEqual(setCss(main, "border-left-color", "red"), main, "Returns Dabby object when CSS is set");
 	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property");

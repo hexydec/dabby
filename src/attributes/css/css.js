@@ -2,14 +2,14 @@ $.fn.css = function (props, value) {
 
 	// retrieve value from first property
 	if (value === undefined) {
-		var name = props,
-			i,
-			css,
-			output = {},
-			ret = false;
-		
+
 		if (this[0]) {
-			css = getComputedStyle(this[0], "");
+			var name = props,
+				i,
+				style = getComputedStyle(this[0], ""),
+				output = {},
+				ret = false;
+
 			if (typeof name === "string") {
 				props = [name];
 				ret = true;
@@ -17,7 +17,7 @@ $.fn.css = function (props, value) {
 			i = props.length;
 			while (i--) {
 				props[i] = dasherise(props[i]);
-				output[props[i]] = css.getPropertyValue(props[i]);
+				output[props[i]] = style.getPropertyValue(props[i]);
 				if (ret) {
 					return output[props[i]];
 				}

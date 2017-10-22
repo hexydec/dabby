@@ -1,5 +1,5 @@
 $.fn.has = function (selector) {
 	return $([].filter.call(this, function (node) {
-		return node.querySelectorAll(selector).length > 0;
+		return $(selector, node).length > 0;
 	}));
 };

@@ -1,4 +1,4 @@
-QUnit.module("Attributes");
+QUnit.module("Dimensions");
 
 QUnit.test("$.fn.width/$.fn.height", function (assert) {
 	var test = document.getElementsByClassName("test")[0],
