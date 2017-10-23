@@ -27,7 +27,7 @@
 		if (val !== undefined && valtype !== "boolean") {
 			i = this.length;
 			while (i--) {
-				value = getVal(this[i], val, i);
+				value = getVal(val, this[i], i);
 				if (io) {
 					props = ["padding"];
 					if (io === "outer") {
@@ -35,7 +35,7 @@
 					}
 					value -= getAdditionalLength(this[i], wh, props);
 				}
-				this[i].style[wh] = getVal(this[i], value, i, true);
+				this[i].style[wh] = getVal(value, this[i], i, true);
 			}
 			return this;
 

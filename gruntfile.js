@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 		concat: {
 			main: {
 				options: {
-					banner: "/*! <%= pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today('yyyy-mm-dd') %> */\n(function () {\n\"use strict\";\n",
+					banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */\n(function () {\n\"use strict\";\n",
 					footer: "}());",
 					sourceMap: true,
 					sourceMapStyle: "link"
@@ -29,7 +29,7 @@ module.exports = function (grunt) {
 		},
 		uglify: {
 			options: {
-				banner: "/* Dabby.js " + grunt.file.readJSON('package.json').version + " by Will Earp */\n"
+				banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */"
 			},
 			my_target: {
 				files: {

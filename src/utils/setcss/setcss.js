@@ -24,7 +24,7 @@ function setCss(dabby, props, value) {
 			remove = props[keys[k]] === "";
 			dabby[i].style[(remove ? "remove" : "set") + "Property"](
 				dasherise(keys[k]),
-				remove ? undefined : getVal(dabby[i], props[keys[k]], k)
+				remove ? undefined : getVal(props[keys[k]], dabby[i], k)
 			);
 		}
 	}

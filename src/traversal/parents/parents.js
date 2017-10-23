@@ -2,21 +2,20 @@
 	$.fn["parent" + suffix] = function (selector) {
 		var nodes = [],
 			i = this.length,
-			node,
 			parent;
 
 		while (i--) {
-			node = this[i];
-			while (node.parentNode) {
-				parent = node.parentNode;
-				if (!selector || filterNodes.call(parent, selector) > 0) {
-					nodes.push(parent);
-				}
+			parent = this[i].parentNode;
+			while (parent) {
+				nodes.push(parent);
 				if (!suffix) {
 					break;
 				}
-				node = parent;
+				parent = parent.parentNode;
 			}
+		}
+		if (selector) {
+			nodes = filterNodes.call(nodes, selector);
 		}
 		return $(nodes);
 	}

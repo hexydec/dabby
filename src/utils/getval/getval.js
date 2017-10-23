@@ -1,4 +1,4 @@
-function getVal(obj, val, i, css) {
+function getVal(val, obj, i, css) {
 
 	// retrieve as function
 	if (typeof(val) === "function") {
