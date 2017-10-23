@@ -1,5 +1,17 @@
 QUnit.module("Core");
 
+// add mouseevent support
+(function () {
+	var MouseEvent = function (eventType, params) {
+		params = params || { bubbles: false, cancelable: false };
+	    var mouseEvent = document.createEvent('MouseEvent');
+	    mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	    return mouseEvent;
+	}
+	MouseEvent.prototype = Event.prototype;
+	window.MouseEvent = MouseEvent;
+}());
+
 QUnit.test("$.fn.init", function (assert) {
 	var main = document.getElementsByClassName("main")[0],
 		h1 = document.getElementsByTagName("h1")[0],
@@ -37,7 +49,7 @@ QUnit.test("$.fn.init", function (assert) {
 	assert.ok(objNode.style.backgroundColor === "red", "Can create HTML objects with style attributes");
 
 	objNode.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: true}));
-	assert.ok(triggered, "Can create HTML objects and attached events");;
+	assert.ok(triggered, "Can create HTML objects and attached events");
 
 	assert.equal($(html).get(0).outerHTML, html, "Can create HTML nodes");
 });

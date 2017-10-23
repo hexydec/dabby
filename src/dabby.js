@@ -17,7 +17,8 @@ $.fn = $.prototype = {
 		var nodes = [],
 			i,
 			match,
-			obj;
+			obj,
+			temp;
 
 		// if no selector, return empty colletion
 		if (!selector) {
@@ -63,7 +64,10 @@ $.fn = $.prototype = {
 
 			// create document fragment
 			} else {
-				nodes = (context || doc).createRange().createContextualFragment(selector).childNodes;
+				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
+				temp = (context || doc).createElement("template");
+    			temp.innerHTML = selector;
+    			nodes = temp.content ? temp.content.childNodes : temp.childNodes;
 			}
 		}
 
