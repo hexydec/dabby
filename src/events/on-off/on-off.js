@@ -1,6 +1,7 @@
 // add and remove event handlers
 $.each({
 	on: "addEventListener",
+	one: "addEventListener",
 	off: "removeEventListener"
 }, function (name, func) {
 	$.fn[name] = function (events, selector, callback) {
@@ -24,7 +25,7 @@ $.each({
 		// attach event
 		while (i--) {
 			while (e--) {
-				this[i][func](events[e], fn, false);
+				this[i][func](events[e], fn, name === "one" ? {once: true} : {});
 			}
 		}
 		return this;
