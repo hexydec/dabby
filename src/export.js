@@ -1,5 +1,5 @@
 if (typeof define === "function" && define.amd) {
-	define("jquery", [], function() {
+	define("dabby", [], function() {
 		return dabby;
 	});
 } else if (!window.$) {

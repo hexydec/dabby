@@ -15,7 +15,7 @@ function filterNodes(filter, not) {
 	} else {
 		if (filter instanceof dabby) {
 			filter = filter.get();
-		} else if (!Array.isArray(filter)) {
+		} else if (!$.isArray(filter)) {
 			filter = [filter];
 		}
 		len = filter.length;

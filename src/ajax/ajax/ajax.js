@@ -7,11 +7,6 @@ $.ajax = function (url, settings) {
 		settings = {url: url};
 	}
 
-	// add cache buster
-	if (!settings.cache) {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
-	}
-
 	// settings is success function
 	if (settings.constructor === Function) {
 		settings = {success: settings};
@@ -20,22 +15,40 @@ $.ajax = function (url, settings) {
 	// set default settings
 	settings = $.extend({
 		method: "GET",
-		cache: true
+		cache: true,
+		data: null,
+		async: true,
+		headers: {
+			"X-Requested-With": "XMLHttpRequest",
+			"Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
+		},
+		context: null,
+		statusCode: {}
 	}, settings);
+
+	// add cache buster
+	if (!settings.cache) {
+		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
+	}
 
 	// fetch script
 	if (settings.dataType === "script" || settings.url.lastIndexOf(".js") === settings.url.length - 3) {
-		var script = document.createElement("script");
+		var script = document.createElement("script"),
+			events = {
+				load: "success",
+				error: "error"
+			};
 
-		// add success handler
-		if (settings.success) {
-			script.addEventListener("load", settings.success);
-		}
-
-		// add error handler
-		if (settings.error) {
-			script.addEventListener("error", settings.error);
-		}
+		$.each(events, function (key, value) {
+			script.addEventListener(key, function () {
+				if (settings[value]) {
+					settings[value].apply(settings.context, arguments);
+				}
+				if (settings.complete) {
+					settings.complete.apply(settings.context, arguments);
+				}
+			});
+		});
 
 		script.src = settings.url;
 		document.head.appendChild(script);
@@ -43,33 +56,42 @@ $.ajax = function (url, settings) {
 	// make xhr request
 	} else {
 		var xhr = new XMLHttpRequest();
-		xhr.open(settings.method, settings.url, true);
-		xhr.onreadystatechange = function () {
-			var response = JSON.parse(xhr.responseText) || xhr.responseText;
-
-			// success
-			if (this.readyState === 4 && this.status === 200) {
-				if (settings.success) {
-					settings.success(response, this.status, this);
-				}
-
-			// error
-			} else if (settings.error) {
-				settings.error(response, this.status, this);
-			}
-
-			// complete
-			if (settings.complete) {
-				settings.complete(response, this.status, this);
-			}
-		};
+		xhr.open(settings.method, settings.url, settings.async);
 
 		// headers
-		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-		if (["POST", "PUT"].indexOf(settings.method) > -1) {
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-		}
-		xhr.send();
+		$.each(settings.headers, function (key, value) {
+			xhr.setRequestHeader(key, value);
+		});
+
+		// callbacks
+		xhr.onreadystatechange = function () {
+			if (this.readyState === 4) {
+				var response = JSON.parse(xhr.responseText) || xhr.responseText,
+					callbacks = [],
+					type = this.status === 200 ? "success" : "error";
+
+				// statusCode
+				if (settings.statusCode[xhr.status]) {
+					callbacks.push(settings.statusCode[xhr.status]);
+				}
+
+				// sucess/error callback
+				if (settings[type]) {
+					callbacks.push(settings[type]);
+				}
+
+				// complete callback
+				if (settings.complete) {
+					callbacks.push(settings.complete);
+				}
+
+				// run callbacks
+				callbacks.forEach(function (callback) {
+					callback.call(settings.context, response, xhr.status, xhr);
+				});
+			}
+		};
+		xhr.send(settings.data instanceof Object ? JSON.stringify(settings.data) : settings.data);
 		return xhr;
 	}
 };

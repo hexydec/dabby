@@ -48,7 +48,7 @@
 				return this[0].documentElement["scroll" + whu];
 
 			// element
-			} else if (this[0] !== this[0].window) {
+			} else if (!$.isWindow(this[0])) {
 				param = io === "outer" ? "offset" : "client";
 				value = this[0][param + whu];
 

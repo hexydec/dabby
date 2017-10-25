@@ -3,7 +3,7 @@ $.extend = function (obj) {
 		i = 1,
 		keys,
 		k,
-		len = arguments.length;
+		len = arrs.length;
 	for (; i < len; i += 1) {
 		keys = Object.keys(arrs[i]);
 		k = keys.length;

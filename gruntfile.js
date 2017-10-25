@@ -29,9 +29,20 @@ module.exports = function (grunt) {
 		},
 		uglify: {
 			options: {
-				banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */"
+				banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */",
+				report: "gzip"
 			},
-			my_target: {
+			beautified: {
+				options: {
+					beautify: true,
+					compress: false,
+					mangle: false
+				},
+				files: {
+					"dist/dabby.js": "dist/dabby.js"
+				}
+			},
+			minified: {
 				files: {
 					"dist/dabby.min.js": "dist/dabby.js"
 				}

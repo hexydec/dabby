@@ -29,7 +29,7 @@ $.fn = $.prototype = {
 			return selector;
 
 		// array of nodes
-		} else if (Array.isArray(selector)) {
+		} else if ($.isArray(selector)) {
 			nodes = [].filter.call(selector, function (item) {
 				return item !== null;
 			});
