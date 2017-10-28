@@ -1,10 +1,9 @@
-$.fn.get = function (url, data, complete, type) {
-	// needs work fo sho
-	
-	return $.ajax({
+$.get = function (url, data, success, type) {
+	var isFunc = typeof(data) === "function";
+	return $.ajax(typeof(url) === "object" ? url : {
 		url: url,
-		data: data,
-		complete: complete,
-		type: type
+		data: isFunc ? {} : data,
+		success: isFunc ? data : success,
+		dataType: isFunc ? success : type
 	});
 };

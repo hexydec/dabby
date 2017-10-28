@@ -1,10 +1,11 @@
-$.fn.post = function (url, data, complete, type) {
-	// needs work fo sho
-
-	return $.ajax({
-		url: url,
-		data: data,
-		complete: complete,
-		type: type
-	});
+$.get = function (url, data, success, type) {
+	var isFunc = typeof(data) === "function",
+		settings = typeof(url) === "object" ? url : {
+			url: url,
+			data: isFunc ? {} : data,
+			success: isFunc ? data : success,
+			dataType: isFunc ? success : type
+		};
+	settings.type = "POST";
+	return $.ajax(settings);
 };
