@@ -5,6 +5,7 @@
 			value = 0,
 			style = getComputedStyle(obj),
 			suffix;
+
 		while (i--) {
 			suffix = props[i] === "border" ? "-width" : "";
 			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-left" : "-top") + suffix)) || 0;
