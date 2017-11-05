@@ -19,3 +19,9 @@ $.each({
 		return this;
 	};
 });
+
+["Before", "After"].forEach(function (func) {
+	$.fn["insert" + func] = function (target) {
+		return $(target)[func.toLowerCase()](this);
+	};
+});
