@@ -28,10 +28,9 @@
 			// find the original function
 			if (name === "off") {
 				if (node.events) {
-					node.events.forEach(function (evt, i) {
-						var index;
-						while (e--) {
-							index = evt.events.indexOf(events[e]);
+					while (e--) {
+						node.events.forEach(function (evt, i) {
+							var index = evt.events.indexOf(events[e]);
 							if (index > -1 && evt.callback === callback) {
 								node.removeEventListener(events[e], evt.func);
 								node.events[i].events.splice(index, 1);
@@ -39,8 +38,8 @@
 									node.events.splice(i, 1);
 								}
 							}
-						}
-					});
+						});
+					}
 				}
 
 			// record the original function
