@@ -1,5 +1,5 @@
 $.get = function (url, data, success, type) {
-	var isFunc = typeof(data) === "function",
+	var isFunc = $.isFunction(data),
 		settings = typeof(url) === "object" ? url : {
 			url: url,
 			data: isFunc ? {} : data,

@@ -1,10 +1,12 @@
-$.fn.trigger = function (event) {
-	var obj = document.createEvent("Event"),
+$.fn.trigger = function (name, data) {
+	var evt = new Event(name),
 		i = this.length;
 
-	obj.initEvent(event, true, true);
+	if (data) {
+		evt.args = data;
+	}
 	while (i--) {
-		this[i].dispatchEvent(obj);
+		this[i].dispatchEvent(evt);
 	}
 	return this;
 };

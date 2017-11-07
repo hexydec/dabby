@@ -1,7 +1,7 @@
 function getVal(val, obj, i, css) {
 
 	// retrieve as function
-	if (typeof(val) === "function") {
+	if ($.isFunction(val)) {
 		val = val.call(obj, i);
 	}
 

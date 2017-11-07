@@ -1,31 +1,68 @@
 // add and remove event handlers
-$.each({
-	on: "addEventListener",
-	one: "addEventListener",
-	off: "removeEventListener"
-}, function (name, func) {
-	$.fn[name] = function (events, selector, callback) {
+["on", "one", "off"].forEach(function (name) {
+	$.fn[name] = function (events, selector, data, callback) {
+		var i = this.length,
+			e,
+			fn,
+			node;
+
 		events = events.split(" ");
 
 		// sort out args
-		if (selector.constructor === Function) {
+		if ($.isFunction(selector)) {
 			callback = selector;
 			selector = null;
+		} else if ($.isFunction(data)) {
+			callback = data;
+			data = null;
 		}
-
-		// define length constants
-		var i = this.length,
-			e = events.length,
-			fn = function (e) { // delegate function
-				if (!selector || $(selector).is(e.target)) {
-					callback.apply(selector ? e.target : this, e);
-				}
-			};
 
 		// attach event
 		while (i--) {
-			while (e--) {
-				this[i][func](events[e], fn, name === "one" ? {once: true} : {});
+			node = this[i];
+			e = events.length;
+			if (!node.events) {
+				node.events = [];
+			}
+
+			// find the original function
+			if (name === "off") {
+				if (node.events) {
+					node.events.forEach(function (evt, i) {
+						var index;
+						while (e--) {
+							index = evt.events.indexOf(events[e]);
+							if (index > -1 && evt.callback === callback) {
+								node.removeEventListener(events[e], evt.func);
+								node.events[i].events.splice(index, 1);
+								if (node.events[i].events.length === 0) {
+									node.events.splice(i, 1);
+								}
+							}
+						}
+					});
+				}
+
+			// record the original function
+			} else {
+				fn = function (evt) { // delegate function
+					if (!selector || $(selector).is(evt.target)) {
+						if (data) { // set data to event object
+							evt.data = data;
+						}
+						callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]);
+					}
+				};
+				node.events.push({
+					events: events,
+					callback: callback,
+					func: fn
+				});
+
+				// trigger
+				while (e--) {
+					node.addEventListener(events[e], fn, name === "one" ? {once: true} : false);
+				}
 			}
 		}
 		return this;

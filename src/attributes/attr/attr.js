@@ -7,7 +7,7 @@ $.fn.attr = function (prop, value) {
 	// set other properties
 	} else if (value || value === "") {
 		var i = this.length,
-			events = typeof getEvents === "function" ? getEvents() : [];
+			events = $.isFunction(getEvents) ? getEvents() : [];
 
 		while (i--) {
 			if (events.indexOf(prop) > -1) {
