@@ -5,7 +5,7 @@ var doc = document,
 
 function dabby(selector, context) {
 	return new dabby.fn.init(selector, context);
-};
+}
 
 $ = dabby;
 

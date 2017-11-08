@@ -1,11 +1,11 @@
 $.fn.index = function (selector) {
 	var index = -1,
+		i = this.length,
 		elem = this[0],
-		node,
-		i;
+		node;
+
 	if (selector) {
 		node = $(selector).get(0);
-		i = this.length;
 		while (i--) {
 			if (this[i].isSameNode(node)) {
 				return i;

@@ -10,13 +10,19 @@ module.exports = function (grunt) {
 		concat: {
 			main: {
 				options: {
-					banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */\n(function () {\n\"use strict\";\n",
-					footer: "}());",
+					banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */\n\n",
+					footer: "return dabby;}));",
 					sourceMap: true,
-					sourceMapStyle: "link"
+					sourceMapStyle: "inline",
+					process: function(src, filepath) {
+						if (filepath !== "src/export.js") {
+							src = "\t" + src.replace(/\n/g, "\n\t");
+						}
+						return src;
+					}
 				},
 				files: {
-					"dist/dabby.js": ["src/utils/**/*.js", "src/dabby.js", "src/core/**/*.js", "src/**/*.js", "src/export.js", "!src/**/test.js"]
+					"dist/dabby.js": ["src/export.js", "src/utils/**/*.js", "src/dabby.js", "src/core/**/*.js", "src/*/**/*.js", "!src/**/test.js"]
 					//'documentation.md': ['src/readme.md', 'src/plugins/**/readme.md']
 				}
 			},
@@ -31,16 +37,6 @@ module.exports = function (grunt) {
 			options: {
 				banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */",
 				report: "gzip"
-			},
-			beautified: {
-				options: {
-					beautify: true,
-					compress: false,
-					mangle: false
-				},
-				files: {
-					"dist/dabby.js": "dist/dabby.js"
-				}
 			},
 			minified: {
 				files: {

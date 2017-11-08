@@ -4,6 +4,9 @@ function filterNodes(filter, not) {
 	// selector
 	if (typeof filter === "string") {
 		func = function (node) {
+			if (node.nodeType === Node.DOCUMENT_NODE) {
+				node = node.documentElement;
+			}
 			return node.matches(filter);
 		};
 

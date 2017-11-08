@@ -11,7 +11,7 @@ $.fn.attr = function (prop, value) {
 
 		while (i--) {
 			if (events.indexOf(prop) > -1) {
-				this[i].addEventListener(prop, value, false);
+				$(this[i]).on(prop, value);
 			} else if (prop === "style") {
 				this[i].style.cssText = value;
 			} else if (prop === "class") {

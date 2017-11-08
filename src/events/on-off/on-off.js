@@ -49,7 +49,10 @@
 						if (data) { // set data to event object
 							evt.data = data;
 						}
-						callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]);
+						if (callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]) === false) {
+							evt.preventDefault();
+							evt.stopPropagation();
+						}
 					}
 				};
 				node.events.push({

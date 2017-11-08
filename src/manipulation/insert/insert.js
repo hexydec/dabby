@@ -5,15 +5,16 @@ $.each({
 	after: "afterEnd"
 }, function (name, pos) {
 	$.fn[name] = function (html) {
-		var i = this.length,
-			pre = ["before", "prepend"].indexOf(name),
-			insert = $(html),
-			len = insert.length,
-			n = 0;
+		var i,
+			pre = ["before", "prepend"].indexOf(name) > -1,
+			insert = $(html), // parse html into nodes
+			backwards = insert.length,
+			forwards = -1;
 
-		while (i--) {
-			while (pre ? len-- : n++ < len) {
-				this[i].insertAdjacentElement(pos, insert.get(pre ? len : n));
+		while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
+			i = this.length;
+			while (i--) {
+				this[i].insertAdjacentElement(pos, insert.get(pre ? backwards : forwards));
 			}
 		}
 		return this;

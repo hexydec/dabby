@@ -13,7 +13,7 @@ $.fn.val = function (value) {
 
 	// get value
 	if (value === undefined) {
-		if (this[0].multiple) {
+		if (this[0] && this[0].multiple) {
 			var values = [];
 			$(this[0])
 				.find("option")
@@ -23,7 +23,7 @@ $.fn.val = function (value) {
 					}
 				});
 			return values;
-		} else {
+		} else if (this[0]) {
 			return this[0].value;
 		}
 
