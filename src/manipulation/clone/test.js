@@ -1,4 +1,4 @@
-QUnit.module("Traversal");
+QUnit.module("Manipulation");
 
 QUnit.test("$.fn.clone", function (assert) {
 	var clone = $(".test").clone(), main = document.getElementsByClassName("test")[0];

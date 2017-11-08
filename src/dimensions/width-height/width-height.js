@@ -45,7 +45,7 @@
 			whu = wh === "width" ? "Width" : "Height";
 
 			// document
-			if (this[0].nodeType === Node.ELEMENT_NODE) {
+			if (this[0].nodeType === Node.DOCUMENT_NODE) {
 				return this[0].documentElement["scroll" + whu];
 
 			// element

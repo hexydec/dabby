@@ -1,5 +1,5 @@
 $.fn.trigger = function (name, data) {
-	var evt = new Event(name),
+	var evt = new CustomEvent(name),
 		i = this.length;
 
 	if (data) {

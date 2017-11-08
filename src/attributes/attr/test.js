@@ -4,7 +4,8 @@ QUnit.test("$.fn.attr", function (assert) {
 	var test = document.getElementsByClassName("test")[0];
 	test.innerHTML = '<div class="testtemp"></div>';
 	var main = $(".testtemp"),
-		rmain = document.getElementsByClassName("testtemp")[0];
+		rmain = document.getElementsByClassName("testtemp")[0],
+		style = "padding-top: 10px;";
 
 	// set and get class
 	assert.deepEqual(main.attr("class", "testtemp testclass"), main, "Returns itself when setting class");
@@ -14,9 +15,9 @@ QUnit.test("$.fn.attr", function (assert) {
 	assert.equal(main.attr("class"), "testtemp", "Can remove class");
 
 	// set and get style
-	assert.deepEqual(main.attr("style", "border:1px solid red"), main, "Returns itself when setting style");
-	assert.equal(rmain.style.cssText, "border: 1px solid red;", "Can set style");
-	assert.equal(main.attr("style"), "border: 1px solid red;", "Can retrieve style");
+	assert.deepEqual(main.attr("style", style), main, "Returns itself when setting style");
+	assert.equal(rmain.style.cssText, style, "Can set style");
+	assert.equal(main.attr("style"), style, "Can retrieve style");
 
 	// set and get attribute
 	assert.deepEqual(main.attr("itemprop", "articleBody"), main, "Returns itself when setting property");

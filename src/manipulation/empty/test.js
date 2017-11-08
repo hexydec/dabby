@@ -1,4 +1,4 @@
-QUnit.module("Attributes");
+QUnit.module("Manipulation");
 
 QUnit.test("$.fn.empty", function (assert) {
 	var test = document.getElementsByClassName("test")[0];

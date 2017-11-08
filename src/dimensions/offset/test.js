@@ -8,7 +8,10 @@ QUnit.test("$.fn.offset", function (assert) {
 	obj = $(".testtemp");
 
 	assert.deepEqual(obj.offset(coords), obj, "Returns self on set");
-	assert.deepEqual(obj.offset(), coords, "Can set and retrieve coordinates");
+	var offset = obj.offset();
+	offset.top = parseFloat(offset.top.toFixed(1)); // IE has rounding errors
+	offset.left = parseFloat(offset.left.toFixed(1));
+	assert.deepEqual(offset, coords, "Can set and retrieve coordinates");
 
 	// reset
 	test.innerHTML = "";

@@ -10,7 +10,7 @@ QUnit.test("$.fn.on/$.fn.off", function (assert) {
 			triggered++;
 		},
 		name = "test.trigger",
-		evt = new Event(name),
+		evt = new CustomEvent(name),
 		i = 0,
 		body = $("body");
 
