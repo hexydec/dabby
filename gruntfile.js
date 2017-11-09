@@ -4,6 +4,16 @@
  * and open the template in the editor.
  */
 module.exports = function (grunt) {
+
+	// build files using include or exclude arguments
+	var files = ["src/export.js", "src/utils/**/*.js", "src/dabby.js"];
+	if (grunt.option("include")) {
+		files.push("src/*/**/{"+grunt.option("include")+"}.js");
+	} else {
+		files.push("src/*/**/"+(grunt.option("exclude") ? "!(" + grunt.option("exclude").replace(",", "|") + ")" : "*")+".js");
+	}
+	files.push("!src/**/test.js");
+
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
@@ -22,7 +32,7 @@ module.exports = function (grunt) {
 					}
 				},
 				files: {
-					"dist/dabby.js": ["src/export.js", "src/utils/**/*.js", "src/dabby.js", "src/core/**/*.js", "src/*/**/*.js", "!src/**/test.js"]
+					"dist/dabby.js": files
 					//'documentation.md': ['src/readme.md', 'src/plugins/**/readme.md']
 				}
 			},
