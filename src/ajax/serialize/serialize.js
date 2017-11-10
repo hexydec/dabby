@@ -7,5 +7,5 @@ $.fn.serialize = function () {
 	obj.each(function () {
 		params[this.getAttribute("name")] = $(this).val();
 	});
-	return $.params(params);
+	return $.param(params);
 };
