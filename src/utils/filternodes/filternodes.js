@@ -1,5 +1,5 @@
 function filterNodes(filter, not) {
-	var func, len;
+	var func, len, nodes = [].slice.call(this);
 
 	// selector
 	if (typeof filter === "string") {
@@ -32,5 +32,5 @@ function filterNodes(filter, not) {
 			return false;
 		};
 	}
-	return [].slice.call(this).filter(not ? function (item) {return !func(item);} : func);
+	return nodes.filter(not ? function (item) {return !func.call(this, item);} : func, nodes);
 }
