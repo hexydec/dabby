@@ -6,13 +6,20 @@
 module.exports = function (grunt) {
 
 	// build files using include or exclude arguments
-	var files = ["src/export.js", "src/utils/**/*.js", "src/dabby.js"];
+	var files = ["src/export.js", "src/utils/**/*.js", "src/dabby.js"],
+		outdir = grunt.option("outdir") || "dist",
+		outfile = {},
+		outfilemin = {};
+
 	if (grunt.option("include")) {
 		files.push("src/*/**/{"+grunt.option("include")+"}.js");
 	} else {
 		files.push("src/*/**/"+(grunt.option("exclude") ? "!(" + grunt.option("exclude").replace(",", "|") + ")" : "*")+".js");
 	}
 	files.push("!src/**/test.js");
+
+	outfile[outdir + "/dabby.js"] = files;
+	outfilemin[outdir + "/dabby.min.js"] = outdir + "/dabby.js"
 
 	// Project configuration.
 	grunt.initConfig({
@@ -23,7 +30,7 @@ module.exports = function (grunt) {
 					banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */\n\n",
 					footer: "return dabby;}));",
 					sourceMap: true,
-					sourceMapStyle: "inline",
+					sourceMapStyle: "link",
 					process: function(src, filepath) {
 						if (filepath !== "src/export.js") {
 							src = "\t" + src.replace(/\n/g, "\n\t");
@@ -31,10 +38,7 @@ module.exports = function (grunt) {
 						return src;
 					}
 				},
-				files: {
-					"dist/dabby.js": files
-					//'documentation.md': ['src/readme.md', 'src/plugins/**/readme.md']
-				}
+				files: outfile
 			},
 			test: {
 				files: {
@@ -49,9 +53,7 @@ module.exports = function (grunt) {
 				report: "gzip"
 			},
 			minified: {
-				files: {
-					"dist/dabby.min.js": "dist/dabby.js"
-				}
+				files: outfilemin
 			}
 		},
 		watch: {

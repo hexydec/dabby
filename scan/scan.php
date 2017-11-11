@@ -53,24 +53,88 @@ function getModules() {
 	return $modules;
 }
 
-if (!empty($_POST['code'])) {
-	$modules = getModules();
-	if (preg_match_all('/('.implode('|', array_map('preg_quote', array_keys($modules))).')\(/', $_POST['code'], $match)) {
-		var_dump($match);
+function getDependencies($code) {
+	if (($modules = getModules()) !== false) {
+		$pattern = '/('.implode('|', array_map('preg_quote', array_keys($modules))).')\(/';
+		if (preg_match_all($pattern, $code, $match)) {
+			return array_unique($match[1]);
+		}
+	}
+	return false;
+}
+
+$output = Array();
+if (!empty($_POST['code']) && !empty($_POST['outdir'])) {
+	if (($dependencies = getDependencies($_POST['code'])) !== false) {
+		$cmd = 'grunt --include='.implode(',', $dependencies).' --outdir='.escapeshellarg($_POST['outdir']);
+		if (exec($cmd, $output, $return)) {
+			$output = array_filter($output);
+			$_POST = Array();
+		}
 	}
 }
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Dabby.js Include Scanner</title>
+		<title>Dabby.js Custom Build Scanner</title>
+		<style>
+		body {
+			font-family: Segoe UI, Verdana, Arial, Helvetica, sans-serif;
+		}
+		.scan__msg {
+			padding: 10px;
+			background: green;
+			color: #FFF;
+		}
+		.scan__control {
+			padding: 3px 0;
+		}
+		.scan__code {
+			width: 100%;
+			height: 60vh;
+			box-sizing: border-box;
+			line-height: 1.4em;
+			padding: 10px;
+			border: 1px solid #666;
+			margin: 10px 0;
+		}
+		.scan__dir {
+			width: 50%;
+			padding: 5px;
+			border: 1px solid #666;
+		}
+		.scan__submit {
+			width: 60%;
+			display: block;
+			margin: 0 auto;
+			padding: 10px;
+			background: green;
+			color: #FFF;
+			border: 0;
+			border: 0;
+			box-shadow: 0 0 5px #CCC;
+		}
+		</style>
 	</head>
 	<body>
-		<h1>Dabby.js Include Scanner</h1>
+		<h1>Dabby.js Custom Build Scanner</h1>
+		<?php if ($output) { ?>
+			<div class="scan__msg"><?= implode('<br />', array_map('htmlspecialchars', $output)); ?></div>
+		<?php } ?>
 		<form src="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" accept-charset="<?= htmlspecialchars(mb_internal_encoding()) ?>" method="post">
-			<label for="code">Javascript</label>
-			<textarea id="code" name="code"><?= isset($_POST['code']) ? htmlspecialchars($_POST['code']) : ''; ?></textarea>
-			<input type="submit" value="Scan" />
+			<div class="scan__control">
+				<label for="code">Paste Javascript with no Dabby or jQuery here:</label>
+				<textarea id="code" name="code" class="scan__code"><?= isset($_POST['code']) ? htmlspecialchars($_POST['code']) : ''; ?></textarea>
+			</div>
+			<div class="scan__control">
+				<label for="outdir">Output Folder:</label>
+				<input type="text" class="scan__dir" name="outdir" value="<?= isset($_POST['outdir']) ? htmlspecialchars($_POST['outdir']) : 'dist/custom'; ?>"
+				Dabby.js />
+			</div>
+			<div class="scan__control">
+				<input type="submit" id="outdir" value="Scan" class="scan__submit" />
+			</div>
 		</form>
 	</body>
 </html>
