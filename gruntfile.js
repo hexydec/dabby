@@ -29,8 +29,8 @@ module.exports = function (grunt) {
 				options: {
 					banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */\n\n",
 					footer: "return dabby;}));",
-					sourceMap: true,
-					sourceMapStyle: "link",
+					//sourceMap: true,
+					//sourceMapStyle: "link",
 					process: function(src, filepath) {
 						if (filepath !== "src/export.js") {
 							src = "\t" + src.replace(/\n/g, "\n\t");
