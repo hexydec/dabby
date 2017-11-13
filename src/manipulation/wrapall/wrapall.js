@@ -1,13 +1,10 @@
 $.fn.wrapAll = function (html) {
 	if (this[0]) {
-		if ($.isFunction(html)) {
-			html = html.call(this[0]);
-		}
 
 		// set variables
 		var len = this.length,
 			i = 0,
-			node = $(html).get(0).cloneNode(true);
+			node = $(getVal(html, this[0])).get(0).cloneNode(true);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);

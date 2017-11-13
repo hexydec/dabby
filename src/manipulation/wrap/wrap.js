@@ -1,8 +1,7 @@
 $.fn.wrap = function (html) {
-	var i = this.length,
-		isFunc = $.isFunction(html);
+	var i = this.length;
 	while (i--) {
-		$(this[i]).wrapAll(isFunc ? html.call(this[0], i) : html);
+		$(this[i]).wrapAll(getVal(html, this[i], i));
 	}
 	return this;
 }

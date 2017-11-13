@@ -1,9 +1,14 @@
 ["add", "remove", "toggle"].forEach(function (name) {
 	$.fn[name + "Class"] = function (cls) {
+
+		// split class
 		if (typeof cls === "string") {
 			cls = cls.split(" ").reverse();
 		}
-		var i = this.length, n;
+
+		// manage classes on nodes
+		var i = this.length,
+			n;
 		while (i--) {
 			n = cls.length;
 			while (n--) {
