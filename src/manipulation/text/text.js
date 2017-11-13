@@ -1,8 +1,9 @@
 $.fn.text = function (text) {
 	var len = this.length,
 		output = [],
-		get = text === undefined;
-	for (; i < len; i += 1) {
+		get = text === undefined,
+		i = 0;
+	for (; i < len; i++) {
 		if (get) {
 			output.push(this[i].textContent);
 		} else {

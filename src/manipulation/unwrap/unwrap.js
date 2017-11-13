@@ -2,9 +2,9 @@ $.fn.unwrap = function (selector) {
 	return this.parent(selector).not("body").each(function () {
 		var item = this,
 			parent = item.parentNode;
-		[].slice.call(this.childNodes, function (node) {
+		[].slice.call(item.childNodes).forEach(function (node) {
 			parent.insertBefore(node, item);
 		});
-		parent.remove();
+		return $(parent.removeChild(item));
 	});
 };
