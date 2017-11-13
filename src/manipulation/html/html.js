@@ -4,7 +4,7 @@ $.fn.html = function (html) {
 	if (html) {
 		var i = this.length;
 		while (i--) {
-			this[i].innerHTML = html;
+			this[i].innerHTML = getVal(html, this[i], i);
 		}
 		return this;
 
