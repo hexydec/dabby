@@ -1,6 +1,6 @@
 QUnit.module("Manipulation");
 
-QUnit.test("$.fn.insert", function (assert) {
+QUnit.test("$.fn.prepend", function (assert) {
 	var test = document.getElementsByClassName("test")[0];
 	test.innerHTML = '<div class="testtemp"></div>';
 	var main = $(".testtemp"),

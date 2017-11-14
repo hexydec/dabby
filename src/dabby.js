@@ -21,53 +21,53 @@ $.fn = $.prototype = {
 			temp;
 
 		// if no selector, return empty colletion
-		if (!selector) {
-			return this;
+		if (selector) {
 
-		// $ collection
-		} else if (selector instanceof dabby) {
-			return selector;
+			// $ collection
+			if (selector instanceof dabby) {
+				return selector;
 
-		// array of nodes
-		} else if ($.isArray(selector)) {
-			nodes = [].filter.call(selector, function (item) {
-				return item !== null;
-			});
+			// array of nodes
+			} else if ($.isArray(selector)) {
+				nodes = [].filter.call(selector, function (item) {
+					return item !== null;
+				});
 
-		// single node
-		} else if (selector.nodeType) {
-			nodes = [selector];
+			// single node
+			} else if (selector.nodeType) {
+				nodes = [selector];
 
-		// ready function
-		} else if (selector.constructor === Function) {
-			if (domready) {
-				selector();
-			} else {
-				ready.push(selector);
-			}
-
-		// CSS selector
-		} else if (typeof selector === "string") {
-			if (selector[0] !== "<") {
-				context = $(context).get(0) || this.root;
-				nodes = context.querySelectorAll(selector);
-
-			// match single selector
-			} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
-				nodes.push(doc.createElement(match[1]));
-				if (context instanceof Object) {
-					obj = $(nodes);
-					$.each(context, function (prop, value) {
-						obj.attr(prop, value);
-					});
+			// ready function
+			} else if (selector.constructor === Function) {
+				if (domready) {
+					selector();
+				} else {
+					ready.push(selector);
 				}
 
-			// create document fragment
-			} else {
-				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-				temp = (context || doc).createElement("template");
-    			temp.innerHTML = selector;
-    			nodes = temp.content ? temp.content.childNodes : temp.childNodes;
+			// CSS selector
+			} else if (typeof selector === "string") {
+				if (selector[0] !== "<") {
+					context = $(context).get(0) || this.root;
+					nodes = context.querySelectorAll(selector);
+
+				// match single selector
+				} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
+					nodes.push(doc.createElement(match[1]));
+					if (context instanceof Object) {
+						obj = $(nodes);
+						$.each(context, function (prop, value) {
+							obj.attr(prop, value);
+						});
+					}
+
+				// create document fragment
+				} else {
+					//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
+					temp = (context || doc).createElement("template");
+	    			temp.innerHTML = selector;
+	    			nodes = temp.content ? temp.content.childNodes : temp.childNodes;
+				}
 			}
 		}
 

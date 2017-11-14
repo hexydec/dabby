@@ -1,6 +1,6 @@
 QUnit.module("Manipulation");
 
-QUnit.test("$.fn.wrap", function (assert) {
+QUnit.test("$.fn.wrapAll", function (assert) {
 	var test = document.getElementsByClassName("test")[0],
 		html = '<div class="testtemp"><p>Line 1</p><p>Line 2</p><p>Line 3</p></div>';
 
