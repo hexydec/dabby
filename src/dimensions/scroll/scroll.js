@@ -1,5 +1,4 @@
-["Left", "Top"].forEach(function (item) {
-	item = "scroll" + item;
+["scrollLeft", "scrollTop"].forEach(function (item) {
 	$.fn[item] = function (pos) {
 		if (pos !== undefined) {
 			var i = this.length;
