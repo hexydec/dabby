@@ -2,6 +2,8 @@
 
 A lightweight modular jQuery clone library built for modern browsers.
 
+**This project is pre-beta, make sure to test your integration with this code thoroughly before deploying**
+
 ## jQuery is awesome, why do I need this?
 
 jQuery is a great library, the API is simple yet expressive, it was most definitely ahead of it's time. But things have moved on a bit since its creation, browsers stick to the standards more closely, and indeed have replicated much of jQuery's functionality to the point where it is actually overkill for most projects that use it.
@@ -31,7 +33,7 @@ The final thing to note is that currently the full dabby.js library weighs in at
 ## Differences between dabby.js and jQuery:
 
 - No fx library, if you want effects, use CSS and class toggles
-- ‎Extra CSS selectors like :first are not supported, and dabby doesn't have a selector engine plugin architecture, it supports what the browser's document.querySelectorAll() supports
+- ‎Extra CSS selectors like :first are not supported, and dabby doesn't have a selector engine plugin architecture, it supports what the browser's `document.querySelectorAll()` supports
 - ‎Doesn't support the deferred object
 - ‎Events return the native browser event, not a super or custom object like jQuery
 - ‎Ajax support is much more basic, dabby doesn't support global callbacks or promises, and only offers a subset of the configuration options
