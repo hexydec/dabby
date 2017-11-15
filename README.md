@@ -43,11 +43,28 @@ The final thing to note is that currently the full dabby.js library weighs in at
 
 ## I'm sold, how do I get started?
 
-First thing to do it to swap jQuery out for dabby.js. It does support AMD modules, so if your project does too, have a fiddle with your build to achieve this.
+Makes sure the following software is installed:
+
+- Git
+- [http://nodejs.org/](NodeJS)
+- [http://gruntjs.com/](GruntJS)
+
+Then clone the repository, and build it:
+
+`$ git clone git://github.com/hexydec/dabby
+$ cd dabby
+$ npm install
+$ grunt`
+
+Then swap jQuery out for dabby.js. It does support AMD modules, so if your project does too, have a fiddle with your build to achieve this.
 
 Next you should probably audit and refactor your code to update anything that dabby will definitely not support, like custom pseudo selectors. Ajax calls will probably need checking over too.
 
 Then run it in the browser, or through your test suite to highlight any other issues.
+
+## Custom Builds
+
+Dabby comes with a PHP script to generate a custom build for you from your code. Point your web browser to `[Your local web address]/dabby/scan/scan.php` and paste your code (Without dabby) into the code box, and click generate. Your custom build by default will be found in `/dabby/dist/custom/dabby.js`
 
 ## Troubleshooting
 

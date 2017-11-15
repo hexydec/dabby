@@ -3,6 +3,8 @@
 		define(function() {
 			return factory(global);
 		});
+	} else if (typeof exports !== "undefined") {
+		module.exports = factory(global);
 	} else if (!global.$) {
 		global.$ = factory(global);
 	}
