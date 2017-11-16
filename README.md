@@ -2,7 +2,7 @@
 
 A lightweight modular jQuery clone library built for modern browsers.
 
-<div style="padding:10px;background-color:red;color:#FFF;font-weight:bold;">This project is pre-beta, make sure to test your integration with this code thoroughly before deploying</div>
+**This project is pre-beta, make sure to test your integration with this code thoroughly before deploying**
 
 ## jQuery is awesome, why do I need this?
 
