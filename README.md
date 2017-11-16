@@ -56,7 +56,8 @@ Makes sure the following software is installed:
 
 Clone the repository, and build it:
 
-```$ git clone git://github.com/hexydec/dabby
+```
+$ git clone git://github.com/hexydec/dabby
 $ cd dabby
 $ npm install
 $ grunt
