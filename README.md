@@ -4,8 +4,8 @@ A lightweight modular jQuery clone library built for modern browsers.
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Pre--Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-13.8kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-4.72kb-brightgreen.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-13.9kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-4.78kb-brightgreen.svg)
 
 **This project is pre-beta, make sure to test your integration with this code thoroughly before deploying**
 
