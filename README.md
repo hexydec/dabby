@@ -2,6 +2,11 @@
 
 A lightweight modular jQuery clone library built for modern browsers.
 
+![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
+![Project Status](https://img.shields.io/badge/Project%20Status-Pre--Beta-yellow.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-13.9kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-4.78kb-brightgreen.svg)
+
 **This project is pre-beta, make sure to test your integration with this code thoroughly before deploying**
 
 ## jQuery is awesome, why do I need this?
@@ -46,15 +51,17 @@ The final thing to note is that currently the full dabby.js library weighs in at
 Makes sure the following software is installed:
 
 - Git
-- [http://nodejs.org/](NodeJS)
-- [http://gruntjs.com/](GruntJS)
+- [NodeJS](http://nodejs.org/)
+- [GruntJS](http://gruntjs.com/)
 
-Then clone the repository, and build it:
+Clone the repository, and build it:
 
-`$ git clone git://github.com/hexydec/dabby`
-`$ cd dabby`
-`$ npm install`
-`$ grunt`
+```
+$ git clone https://github.com/hexydec/dabby
+$ cd dabby
+$ npm install
+$ grunt
+```
 
 Then swap jQuery out for dabby.js. It does support AMD modules, so if your project does too, have a fiddle with your build to achieve this.
 
@@ -76,7 +83,7 @@ Dabby comes with a PHP script to generate a custom build for you from your code.
 
 You can always swap dabby.js out for jQuery to see if the issue is with your code or dabby.js. It is a very young library which hadn't yet had much testing, so expect bugs.
 
-If the issue still persists, you can create an issue for out in the tracker.
+If the issue still persists, you can create an issue for it in the tracker.
 
 ## Contributing
 
