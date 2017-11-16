@@ -58,9 +58,15 @@ Then clone the repository, and build it:
 
 Then swap jQuery out for dabby.js. It does support AMD modules, so if your project does too, have a fiddle with your build to achieve this.
 
-Next you should probably audit and refactor your code to update anything that dabby will definitely not support, like custom pseudo selectors. Ajax calls will probably need checking over too.
+Next you should probably audit and refactor your code to update anything that Dabby will definitely not support, like custom pseudo selectors. Ajax calls will probably need checking over too.
 
 Then run it in the browser, or through your test suite to highlight any other issues.
+
+## Dabby.js API
+
+Dabby.js is billed as a jQuery clone library, and as such tries to implement as much of the jQuery API as is feasible without getting away from being fast, small, and letting the browser do most of the work.
+
+[See the API documentation here](src/documentation.md).
 
 ## Custom Builds
 
