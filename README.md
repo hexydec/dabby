@@ -54,7 +54,8 @@ Then clone the repository, and build it:
 ```$ git clone git://github.com/hexydec/dabby
 $ cd dabby
 $ npm install
-$ grunt```
+$ grunt
+```
 
 Then swap jQuery out for dabby.js. It does support AMD modules, so if your project does too, have a fiddle with your build to achieve this.
 
