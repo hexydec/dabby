@@ -46,10 +46,10 @@ The final thing to note is that currently the full dabby.js library weighs in at
 Makes sure the following software is installed:
 
 - Git
-- [http://nodejs.org/](NodeJS)
-- [http://gruntjs.com/](GruntJS)
+- [NodeJS](http://nodejs.org/)
+- [GruntJS](http://gruntjs.com/)
 
-Then clone the repository, and build it:
+Clone the repository, and build it:
 
 ```$ git clone git://github.com/hexydec/dabby
 $ cd dabby
@@ -71,7 +71,7 @@ Dabby comes with a PHP script to generate a custom build for you from your code.
 
 You can always swap dabby.js out for jQuery to see if the issue is with your code or dabby.js. It is a very young library which hadn't yet had much testing, so expect bugs.
 
-If the issue still persists, you can create an issue for out in the tracker.
+If the issue still persists, you can create an issue for it in the tracker.
 
 ## Contributing
 
