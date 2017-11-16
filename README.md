@@ -88,3 +88,5 @@ If the issue still persists, you can create an issue for it in the tracker.
 ## Contributing
 
 If you find an issue with dabby.js, please create an issue in the tracker, fork the code, fix the issue, then create a pull request, and I will evaluate your submission.
+
+Also look at the [To Do list](todo.md)
