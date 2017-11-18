@@ -12,7 +12,6 @@ The library supports the following methods:
 | $.isFunction()		| Determine whether the input is an function				|
 | $.isWindow()			| Determine whether the input node/object is the window		|
 | $.map()				| Map a callback function onto each item in an array/object	|
-| $.param()				| Render a query string from an array						|
 
 
 ### Ajax
@@ -24,6 +23,7 @@ The library supports the following methods:
 | $.load()				| Make an AJAX request to insert HTML it into the DOM		|
 | $.post()				| Shorthand to make AJAX requests using the POST method		|
 | $.fn.serialize()		| Serialize the value of form elements into a query string	|
+| $.param()				| Render a query string from an array						|
 
 ### Attributes
 | Method				| Description												|

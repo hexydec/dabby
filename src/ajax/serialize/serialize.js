@@ -5,7 +5,9 @@ $.fn.serialize = function () {
 
 	// process values
 	obj.each(function () {
-		params[this.getAttribute("name")] = $(this).val();
+		if (!this.disabled) {
+			params[this.getAttribute("name")] = $(this).val();
+		}
 	});
 	return $.param(params);
 };

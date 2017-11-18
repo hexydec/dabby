@@ -2,7 +2,7 @@
 
 This project is currently pretty close to a feature complete, stable beta release, this is a list of what needs doing to get it there:
 
-- [ ] Implement JSON-P requests in $.ajax()
+- [x] Implement JSON-P requests in $.ajax()
 - [ ] Implement $.fn.replaceAll() and $.fn.replaceWith()
 - [ ] Implement $.fn.serializeArray() (Is this needed??)
 - [ ] Implement $.fn.wrapInner()
