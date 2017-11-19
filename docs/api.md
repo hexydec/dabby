@@ -5,7 +5,7 @@ The library supports the following methods:
 ### Core
 | Method				| Description												|
 |-----------------------|-----------------------------------------------------------|
-| $()					| Create a Dabby collection from nodes, selectors, or HTML	|
+| [$()](../src/readme.md)	| Create a Dabby collection from nodes, selectors, or HTML	|
 | $.each()				| Apply a callback function to an array or object			|
 | $.fn.each()			| Apply a callback function to a dabby object				|
 | $.isArray()			| Determine whether the input is an array					|

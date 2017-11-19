@@ -17,7 +17,7 @@ Wouldn't it be good to have a simpler jQuery like library that is modular?
 
 Dabby.js is designed to be a simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (~5kb minified and Gzipped), it also comes with a code scanner to render custom builds.
 
-[Find out more about the project here.](documentation/about.md)
+[Find out more about the project here.](docs/about.md)
 
 ## I'm sold, how do I get started?
 
@@ -46,7 +46,7 @@ Then run it in the browser, or through your test suite to highlight any other is
 
 Dabby.js is billed as a jQuery clone library, and as such tries to implement as much of the jQuery API as is feasible without getting away from being fast, small, and letting the browser do most of the work.
 
-[See the API documentation here](documentation/api.md).
+[See the API documentation here](docs/api.md).
 
 ## Custom Builds
 
@@ -62,4 +62,4 @@ If the issue still persists, you can create an issue for it in the tracker.
 
 If you find an issue with dabby.js, please create an issue in the tracker, fork the code, fix the issue, then create a pull request, and I will evaluate your submission.
 
-Also look at the [To Do list](documentation/todo.md) and the [coding style guide](documentation/codingstyle.md).
+Also look at the [To Do list](docs/todo.md) and the [coding style guide](docs/codestyle.md).
