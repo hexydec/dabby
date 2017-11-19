@@ -71,3 +71,8 @@ $(function () {alert("Loaded");}); // fired when docment is loaded
 ## Return value
 
 An instance of the Dabby.js object so it can be chained to other methods.
+
+## Differences to jQuery
+
+Only supports selector's the browser supports, so for example `$("a:first");` will not work.
+Parses HTML using the browsers innerHTML property, no other processing is performed.
