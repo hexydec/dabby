@@ -1,4 +1,4 @@
-QUnit.module("Core");
+QUnit.module("Utils");
 
 QUnit.test("$.extend", function (assert) {
 	assert.deepEqual($.extend({foo: "foo"}, {bar: "bar"}), {foo: "foo", bar: "bar"}, "$.extend simple");

@@ -1,4 +1,4 @@
-QUnit.module("Core");
+QUnit.module("Utils");
 
 QUnit.test("$.isFunction", function (assert) {
 	[function () {}, $.isFunction, window, document, document.getElementsByClassName("test")[0], "hi", 5, 3.14, {}].forEach(function (func, i) {

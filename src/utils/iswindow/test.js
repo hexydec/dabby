@@ -1,4 +1,4 @@
-QUnit.module("Core");
+QUnit.module("Utils");
 
 QUnit.test("$.isWindow", function (assert) {
 	var items = [window, document, document.getElementsByClassName("test")[0]];

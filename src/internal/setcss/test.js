@@ -1,4 +1,4 @@
-QUnit.module("Utils");
+QUnit.module("Internal");
 
 QUnit.test("setCss", function (assert) {
 	var main = $(".main"),

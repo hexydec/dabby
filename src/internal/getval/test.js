@@ -1,4 +1,4 @@
-QUnit.module("Utils");
+QUnit.module("Internal");
 
 QUnit.test("getVal", function (assert) {
 	var obj = $(".test").get(0);

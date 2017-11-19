@@ -1,4 +1,4 @@
-QUnit.module("Utils");
+QUnit.module("Internal");
 
 QUnit.test("dasherise", function (assert) {
 	assert.equal(dasherise("thisIsATest"), "this-is-a-test", "Can dasherise a camel-cased sentence");

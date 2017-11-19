@@ -1,4 +1,4 @@
-QUnit.module("Core");
+QUnit.module("Utils");
 
 QUnit.test("$.isArray", function (assert) {
 	var arr = [],
