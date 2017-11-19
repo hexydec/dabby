@@ -17,8 +17,7 @@ $.fn = $.prototype = {
 		var nodes = [],
 			i,
 			match,
-			obj,
-			temp;
+			obj;
 
 		// if no selector, return empty colletion
 		if (selector) {
@@ -48,25 +47,27 @@ $.fn = $.prototype = {
 			// CSS selector
 			} else if (typeof selector === "string") {
 				if (selector[0] !== "<") {
-					context = $(context).get(0) || this.root;
+					context = $(context).get(0) || doc;
 					nodes = context.querySelectorAll(selector);
 
 				// match single selector
 				} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
-					nodes.push(doc.createElement(match[1]));
 					if (context instanceof Object) {
+						nodes.push(doc.createElement(match[1]));
 						obj = $(nodes);
 						$.each(context, function (prop, value) {
 							obj.attr(prop, value);
 						});
+					} else {
+						nodes.push((context || doc).createElement(match[1]));
 					}
 
 				// create document fragment
 				} else {
 					//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-					temp = (context || doc).createElement("template");
-	    			temp.innerHTML = selector;
-	    			nodes = temp.content ? temp.content.childNodes : temp.childNodes;
+					obj = (context || doc).createElement("template");
+	    			obj.innerHTML = selector;
+	    			nodes = obj.content ? obj.content.childNodes : obj.childNodes;
 				}
 			}
 		}

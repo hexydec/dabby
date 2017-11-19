@@ -5,7 +5,7 @@ A lightweight modular jQuery clone library built for modern browsers.
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Pre--Beta-yellow.svg)
 ![Size Minified](https://img.shields.io/badge/Size%20(Minified)-14.4kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-4.98kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-4.97kb-brightgreen.svg)
 
 **This project is pre-beta, make sure to test your integration with this code thoroughly before deploying**
 
@@ -15,7 +15,7 @@ jQuery is a great library, the API is simple yet expressive, but with advancemen
 
 Wouldn't it be good to have a simpler jQuery like library that is modular?
 
-Dabby.js is designed to be a simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (~5kb minified and Gzipped), it also comes with a code scanner to render custom builds.
+Dabby.js is designed to be as simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (~5kb minified and Gzipped), it also comes with a code scanner to render custom builds.
 
 [Find out more about the project here.](docs/about.md)
 
@@ -50,7 +50,7 @@ Dabby.js is billed as a jQuery clone library, and as such tries to implement as 
 
 ## Custom Builds
 
-Dabby comes with a PHP script to generate a custom build for you from your code. Point your web browser to `[Your local web address]/dabby/scan/scan.php` and paste your code (Without dabby) into the code box, and click generate. Your custom build by default will be found in `/dabby/dist/custom/dabby.js`
+Dabby comes with a PHP script to generate a custom build for you from your code. Point your web browser to `[Your local web address]/dabby/scan/scan.php` and paste your code (Without dabby) into the code box, and click generate. Your custom build by default will be found in `/dabby/dist/custom/dabby.js`.
 
 ## Troubleshooting
 
