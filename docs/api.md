@@ -6,13 +6,9 @@ The library supports the following methods:
 | Method				| Description												|
 |-----------------------|-----------------------------------------------------------|
 | [$()](../src/readme.md)	| Create a Dabby collection from nodes, selectors, or HTML	|
-| $.each()				| Apply a callback function to an array or object			|
-| $.fn.each()			| Apply a callback function to a dabby object				|
-| $.isArray()			| Determine whether the input is an array					|
-| $.isFunction()		| Determine whether the input is an function				|
-| $.isWindow()			| Determine whether the input node/object is the window		|
-| $.map()				| Map a callback function onto each item in an array/object	|
-
+| $.fn.each()			| Apply a callback function to a Dabby object				|
+| $.fn.get()			| Retrieve one or all native nodes from a Dabby object		|
+| $.fn.map()			| Map a callback function onto each item in a Dabby object	|
 
 ### Ajax
 | Method				| Description												|
@@ -129,3 +125,12 @@ The library supports the following methods:
 | $.fn.parents()		| Get all ancestors of the items in a collection			|
 | $.fn.parentsUntil()	| Get all ancestors until a node/selector is found			|
 | $.fn.siblings()		| Get all siblings of the nodes in a collection				|
+
+### Utils
+| Method				| Description												|
+|-----------------------|-----------------------------------------------------------|
+| $.each()				| Apply a callback function to an array or object			|
+| $.isArray()			| Determine whether the input is an array					|
+| $.isFunction()		| Determine whether the input is an function				|
+| $.isWindow()			| Determine whether the input node/object is the window		|
+| $.map()				| Map a callback function onto each item in an array/object	|

@@ -1,4 +1,4 @@
-QUnit.module("Core");
+QUnit.module("Utils");
 
 QUnit.test("$.fn.each", function (assert) {
 	var main = document.getElementsByClassName("main")[0],

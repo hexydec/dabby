@@ -11,7 +11,7 @@ function filterNodes(filter, not) {
 		};
 
 	// function
-	} else if (filter.constructor === Function) {
+	} else if ($.isFunction(filter)) {
 		func = filter;
 
 	// nodes

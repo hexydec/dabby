@@ -37,7 +37,7 @@ $.fn = $.prototype = {
 				nodes = [selector];
 
 			// ready function
-			} else if (selector.constructor === Function) {
+			} else if ($.isFunction(selector)) {
 				if (domready) {
 					selector();
 				} else {

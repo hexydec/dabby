@@ -6,7 +6,7 @@
 module.exports = function (grunt) {
 
 	// build files using include or exclude arguments
-	var files = ["src/export.js", "src/utils/**/*.js", "src/dabby.js"],
+	var files = ["src/export.js", "src/internal/**/*.js", "src/dabby.js", "src/utils/each/each.js"],
 		outdir = grunt.option("outdir") || "dist",
 		outfile = {},
 		outfilemin = {};
@@ -43,7 +43,7 @@ module.exports = function (grunt) {
 			test: {
 				files: {
 					"tests/test.js": ["src/test.js", "src/**/test.js"],
-					"tests/internals.js": ["src/utils/**/*.js", "!src/**/test.js"]
+					"tests/internals.js": ["src/internal/**/*.js", "!src/**/test.js"]
 				}
 			}
 		},

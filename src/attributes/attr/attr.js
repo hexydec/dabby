@@ -7,10 +7,10 @@ $.fn.attr = function (prop, value) {
 	// set other properties
 	} else if (value || value === "") {
 		var i = this.length,
-			events = $.isFunction(getEvents) ? getEvents() : [];
+			event = getEvents().indexOf(prop) > -1;
 
 		while (i--) {
-			if (events.indexOf(prop) > -1) {
+			if (event) {
 				$(this[i]).on(prop, value);
 			} else if (prop === "style") {
 				this[i].style.cssText = value;
@@ -25,10 +25,9 @@ $.fn.attr = function (prop, value) {
 			}
 		}
 		return this;
-	}
 
 	// retrieve properties
-	if (this[0]) {
+	} else if (this[0]) {
 		if (prop === "style") {
 			return this[0].style.cssText;
 		}

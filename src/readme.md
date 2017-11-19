@@ -28,7 +28,7 @@ $("ul", body); // select nodes inside a specified context
 $(document.getElementById("node")); // input native node
 $(document.getElementsByClassName("className")); // input native node or nodes
 
-var dabby = $(".className"); // create a dabby object
+var dabby = $(".className"); // create a Dabby object
 $(dabby); // can be recycled later
 
 $(); // create an empty object
@@ -65,7 +65,7 @@ $(callback)
 Attach a callback function to the DOMContentLoaded event. Called immediately if event has already been fired.
 
 ```javascript
-$(function () {alert("Loaded");}); // fired when docment is loaded
+$(function () {alert("Loaded");}); // fired when document is loaded
 ```
 
 ## Return value
@@ -74,5 +74,5 @@ An instance of the Dabby.js object so it can be chained to other methods.
 
 ## Differences to jQuery
 
-Only supports selector's the browser supports, so for example `$("a:first");` will not work.
-Parses HTML using the browsers innerHTML property, no other processing is performed.
+- Only supports selectors the browser supports, so for example `$("a:first");` will not work.
+- Parses HTML using the browsers innerHTML property, no other processing is performed.

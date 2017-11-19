@@ -10,20 +10,18 @@ $.fn.offset = function (coords) {
 		while (i--) {
 
 			// if coords is callback, generate value
-			if (coords.constructor === Function) {
-				coords = coords(i, pos);
-			}
+			rect = this[i].getBoundingClientRect();
+			coords = getVal(coords, i, rect);
 
 			if (coords.top !== undefined && coords.left !== undefined) {
 
 				// set position relative if static
-				pos = this[i].style.position;
-				if (!pos || pos === "static") {
+				pos = this[i].style.position || "static";
+				if (pos === "static") {
 					this[i].style.position = "relative";
 				}
 
 				// set offset
-				rect = this[i].getBoundingClientRect();
 				this[i].style.top = (parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top)) + "px";
 				this[i].style.left = (parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left)) + "px";
 			}
@@ -35,8 +33,8 @@ $.fn.offset = function (coords) {
 		pos = this[0].style.position;
 		rect = this[0].getBoundingClientRect();
 		return {
-			top: rect.top -  (pos === "fixed" ? 0 : doc.scrollTop),
-			left: rect.left -  (pos === "fixed" ? 0 : doc.scrollLeft)
+			top: rect.top - (pos === "fixed" ? 0 : doc.scrollTop),
+			left: rect.left - (pos === "fixed" ? 0 : doc.scrollLeft)
 		};
 	}
 };

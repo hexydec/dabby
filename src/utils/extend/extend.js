@@ -4,7 +4,8 @@ $.extend = function (obj) {
 		keys,
 		k,
 		len = arrs.length;
-	for (; i < len; i += 1) {
+
+	for (; i < len; i++) {
 		keys = Object.keys(arrs[i]);
 		k = keys.length;
 		while (k--) {

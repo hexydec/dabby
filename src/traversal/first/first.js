@@ -1,3 +1,3 @@
 $.fn.first = function () {
-	return this.eq(0);
+	return $(this[0]);
 };

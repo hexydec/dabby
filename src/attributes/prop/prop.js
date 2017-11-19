@@ -8,6 +8,8 @@ $.fn.prop = function (prop, value) {
 			this[i][prop] = value;
 		}
 		return this;
+
+	// get
 	} else if (this[0]) {
 		return this[0][prop];
 	}

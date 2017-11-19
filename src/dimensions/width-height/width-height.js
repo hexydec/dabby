@@ -36,7 +36,10 @@
 					}
 					value -= getAdditionalLength(this[i], wh, props);
 				}
-				this[i].style[wh] = getVal(value, this[i], i, true);
+				if (!isNaN(val)) {
+					value += "px";
+				}
+				this[i].style[wh] = value;
 			}
 			return this;
 

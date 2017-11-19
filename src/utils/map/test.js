@@ -1,4 +1,4 @@
-QUnit.module("Core");
+QUnit.module("Utils");
 
 QUnit.test("$.map", function (assert) {
 	var arr = ["foo", "bar"],
@@ -8,9 +8,9 @@ QUnit.test("$.map", function (assert) {
 		return item;
 	});
 	assert.deepEqual(arr, output, "$.map array");
-	
+
 	output = $.map(obj, function (item, index) {
 		return item;
 	});
-	assert.deepEqual(arr, output, "$.extend object");
+	assert.deepEqual(arr, output, "$.map object");
 });

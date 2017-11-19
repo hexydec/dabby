@@ -1,7 +1,7 @@
 $.fn.html = function (html) {
 
 	// set
-	if (html) {
+	if (html !== undefined) {
 		var i = this.length;
 		while (i--) {
 			this[i].innerHTML = getVal(html, this[i], i);

@@ -11,24 +11,8 @@ $.fn.val = function (value) {
 		return value;
 	}
 
-	// get value
-	if (value === undefined) {
-		if (this[0] && this[0].multiple) {
-			var values = [];
-			$(this[0])
-				.find("option")
-				.each(function () {
-					if (this.selected) {
-						values.push(getValue(this.value));
-					}
-				});
-			return values;
-		} else if (this[0]) {
-			return this[0].value;
-		}
-
 	// set value
-	} else {
+	if (value !== undefined) {
 		var i = this.length;
 		while (i--) {
 			if (this[i].multiple) {
@@ -44,5 +28,20 @@ $.fn.val = function (value) {
 			}
 		}
 		return this;
+
+	// get multiple values
+	} else if (this[0] && this[0].multiple) {
+		var values = [];
+		$("option", this[0])
+			.each(function () {
+				if (this.selected) {
+					values.push(getValue(this.value));
+				}
+			});
+		return values;
+
+	// get single value
+	} else if (this[0]) {
+		return this[0].value;
 	}
 };

@@ -11,6 +11,7 @@ $.fn.data = function (name, data) {
 		temp[name] = data;
 		data = temp;
 	}
+	name = camelise(name);
 
 	// set value
 	if (data !== undefined) {
@@ -23,14 +24,11 @@ $.fn.data = function (name, data) {
 		return self;
 
 	// get value
-	} else {
-		name = camelise(name);
-		if (self[0] && self[0].dataset[name]) {
-			try {
-				return JSON.parse(self[0].dataset[name]);
-			} catch (e) {
-				return self[0].dataset[name];
-			}
+	} else if (self[0] && self[0].dataset[name]) {
+		try {
+			return JSON.parse(self[0].dataset[name]);
+		} catch (e) {
+			return self[0].dataset[name];
 		}
 	}
 };

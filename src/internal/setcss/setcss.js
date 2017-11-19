@@ -22,7 +22,7 @@ function setCss(dabby, props, value) {
 		i = dabby.length;
 		while (i--) {
 			remove = props[keys[k]] === "";
-			dabby[i].style[(remove ? "remove" : "set") + "Property"](
+			dabby[i].style[remove ? "removeProperty" : "setProperty"](
 				dasherise(keys[k]),
 				remove ? undefined : getVal(props[keys[k]], dabby[i], k)
 			);

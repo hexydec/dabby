@@ -6,6 +6,8 @@ $.fn.children = function (selector) {
 	while (i--) {
 		nodes = nodes.concat(slice.call(this[i].children));
 	}
+
+	// filter nodes by selector
 	if (selector) {
 		nodes = filterNodes.call(nodes, selector);
 	}
