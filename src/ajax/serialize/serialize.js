@@ -1,12 +1,14 @@
 $.fn.serialize = function () {
 	var params = {},
-		selector = "input[name][type!=file][type!=submit],textarea[name],select[name]",
-		obj = this.is(selector) ? this : $(selector, this);
+		selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
+		obj = this.is(selector) ? this.filter(selector) : $(selector, this),
+		value;
 
 	// process values
 	obj.each(function () {
-		if (!this.disabled) {
-			params[this.getAttribute("name")] = $(this).val();
+		value = $(this).val();
+		if (!this.disabled && value !== undefined) {
+			params[this.getAttribute("name")] = value;
 		}
 	});
 	return $.param(params);

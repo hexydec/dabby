@@ -40,8 +40,17 @@ $.fn.val = function (value) {
 			});
 		return values;
 
+	// get radio box value
+	} else if (this[0].type === "radio") {
+		var i = this.length;
+		while (i--) {
+			if (this[i].name === this[0].name && this[i].checked) {
+				return this[i].value;
+			}
+		}
+
 	// get single value
-	} else if (this[0]) {
+	} else if (this[0] && (["checkbox", "radio"].indexOf(this[0].type) === -1 || this[0].checked)) {
 		return this[0].value;
 	}
 };

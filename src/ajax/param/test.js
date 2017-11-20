@@ -1,4 +1,4 @@
-QUnit.module("Core");
+QUnit.module("Ajax");
 
 QUnit.test("$.param", function (assert) {
 	var params = {
