@@ -2,11 +2,7 @@ $.fn.val = function (value) {
 
 	function getValue(value) {
 		if (!isNaN(value)) {
-			if (value % 1 === 0) {
-				return parseInt(value);
-			} else {
-				return parseFloat(value);
-			}
+			value = value % 1 === 0 ? parseInt(value) : parseFloat(value);
 		}
 		return value;
 	}
@@ -16,13 +12,13 @@ $.fn.val = function (value) {
 		var i = this.length;
 		while (i--) {
 			if (this[i].multiple) {
-				$(this[i])
-					.find("option")
-					.each(function () {
-						var val = value instanceof Array ? value : [value];
-						val = $.map(val, function (item) {return getValue(item);});
-						this.selected = val.indexOf(getValue(this.value)) > -1;
-					});
+				var val = $.map(
+					$.isArray(value) ? value : [value],
+					function (item) {return getValue(item);}
+				);
+				$("option", this[i]).each(function () {
+					this.selected = val.indexOf(getValue(this.value)) > -1;
+				});
 			} else {
 				this[i].value = getValue(value);
 			}
@@ -30,27 +26,23 @@ $.fn.val = function (value) {
 		return this;
 
 	// get multiple values
-	} else if (this[0] && this[0].multiple) {
-		var values = [];
-		$("option", this[0])
-			.each(function () {
+	} else if (this[0]) {
+		if (this[0].multiple) {
+			var values = [];
+			$("option", this[0]).each(function () {
 				if (this.selected) {
 					values.push(getValue(this.value));
 				}
 			});
-		return values;
+			return values;
 
-	// get radio box value
-	} else if (this[0].type === "radio") {
-		var i = this.length;
-		while (i--) {
-			if (this[i].name === this[0].name && this[i].checked) {
-				return this[i].value;
-			}
+		// get radio box value
+		} else if (this[0].type === "radio") {
+			return getValue(this.filter("[name='" + this[0].name + "']:checked").get(0).value || undefined);
+
+		// get single value
+		} else if (this[0].type !== "checkbox" || this[0].checked) {
+			return getValue(this[0].value);
 		}
-
-	// get single value
-	} else if (this[0] && (["checkbox", "radio"].indexOf(this[0].type) === -1 || this[0].checked)) {
-		return this[0].value;
 	}
 };
