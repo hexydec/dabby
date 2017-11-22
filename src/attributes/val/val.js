@@ -1,7 +1,7 @@
 $.fn.val = function (value) {
 
 	function getValue(value) {
-		if (!isNaN(value)) {
+		if (value && !isNaN(value)) {
 			value = value % 1 === 0 ? parseInt(value) : parseFloat(value);
 		}
 		return value;
@@ -9,10 +9,11 @@ $.fn.val = function (value) {
 
 	// set value
 	if (value !== undefined) {
-		var i = this.length;
+		var i = this.length,
+			val;
 		while (i--) {
 			if (this[i].multiple) {
-				var val = $.map(
+				val = $.map(
 					$.isArray(value) ? value : [value],
 					function (item) {return getValue(item);}
 				);
@@ -38,7 +39,8 @@ $.fn.val = function (value) {
 
 		// get radio box value
 		} else if (this[0].type === "radio") {
-			return getValue(this.filter("[name='" + this[0].name + "']:checked").get(0).value || undefined);
+			var obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
+			return getValue(obj ? obj.value : undefined);
 
 		// get single value
 		} else if (this[0].type !== "checkbox" || this[0].checked) {
