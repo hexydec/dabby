@@ -23,7 +23,7 @@ $.ajax = function (url, settings) {
 		crossDomain: false,
 		scriptCharset: null,
 		jsonp: "callback",
-		jsonpCallback: "dabby".time(),
+		jsonpCallback: "dabby" + Date.now(),
 		headers: {
 			"X-Requested-With": "XMLHttpRequest",
 			"Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
