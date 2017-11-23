@@ -105,9 +105,18 @@ $.ajax = function (url, settings) {
 		// callbacks
 		xhr.onreadystatechange = function () {
 			if (this.readyState === 4) {
-				var response = JSON.parse(xhr.responseText) || xhr.responseText,
+				var response = xhr.responseText,
 					callbacks = [],
 					type = this.status === 200 ? "success" : "error";
+
+				// parse JSON
+				if (["json", null].indexOf(settings.dataType) > -1) {
+					try {
+						response = JSON.parse(response);
+					} catch (e) {
+						// do nothing
+					}
+				}
 
 				// statusCode
 				if (settings.statusCode[xhr.status]) {
