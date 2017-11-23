@@ -18,7 +18,7 @@
 		var valtype = typeof(val),
 			wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height", // width or height
 			io = dim.indexOf("inner") > -1 ? "inner" : (dim.indexOf("outer") > -1 ? "outer" : ""), // inner outer or neither
-			i,
+			i = this.length,
 			value,
 			whu,
 			props,
@@ -26,7 +26,6 @@
 
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
-			i = this.length;
 			while (i--) {
 				value = getVal(val, this[i], i);
 				if (io) {

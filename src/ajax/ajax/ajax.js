@@ -4,7 +4,10 @@ $.ajax = function (url, settings) {
 	if (typeof url === "object") {
 		settings = url;
 	} else {
-		settings = {url: url};
+		if (typeof settings !== "object") {
+			settings = {};
+		}
+		settings.url = url;
 	}
 
 	// settings is success function
@@ -35,10 +38,8 @@ $.ajax = function (url, settings) {
 	}, settings);
 
 	// determine datatype
-	if (!settings.dataType) {
-		if (settings.url.substr(-3) === ".js") {
-			settings.dataType = "script";
-		}
+	if (!settings.dataType && settings.url.substr(-3) === ".js") {
+		settings.dataType = "script";
 	}
 
 	var sync = ["script", "jsonp"].indexOf(settings.dataType) > -1;
@@ -59,22 +60,20 @@ $.ajax = function (url, settings) {
 			events = {
 				load: "success",
 				error: "error"
-			},
-			callback;
+			};
 
 		// add callback parameter
 		if (settings.dataType === "jsonp") {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + jsonpCallback;
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
 		}
 
 		// setup event callbacks
 		$.each(events, function (key, value) {
 			script.addEventListener(key, function () {
-				var response = callback ? callback() : "";
+				var response = settings.dataType === "jsonp" && window[settings.jsonpCallback] ? window[settings.jsonpCallback] : null;
 				[value, "complete"].forEach(function (name) {
 					if (settings[name]) {
-						var func = $.isArray(settings[name]) ? settings[name] : [settings[name]];
-						func.call(settings.context, response, 200);
+						settings[name].call(settings.context, response, value === "success" ? 200 : 400);
 					}
 				});
 			});
