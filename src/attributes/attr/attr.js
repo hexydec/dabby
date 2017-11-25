@@ -7,7 +7,7 @@ $.fn.attr = function (prop, value) {
 	// set other properties
 	} else if (value || value === "") {
 		var i = this.length,
-			event = getEvents().indexOf(prop) > -1;
+			event = getEvents().indexOf(prop) !== -1;
 
 		while (i--) {
 			if (event) {

@@ -6,7 +6,7 @@ $.each({
 }, function (name, pos) {
 	$.fn[name] = function (html) {
 		var i = this.length,
-			pre = ["before", "prepend"].indexOf(name) > -1,
+			pre = ["before", "prepend"].indexOf(name) !== -1,
 			backwards, // for counting down
 			forwards = -1, // for counting up
 			elems = $(),

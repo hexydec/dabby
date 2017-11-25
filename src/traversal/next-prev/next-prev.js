@@ -1,8 +1,8 @@
 ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
 	$.fn[func] = function (selector, filter) {
-		var next = func.indexOf("next") > -1,
-			all = func.indexOf("All") > -1,
-			until = func.indexOf("Until") > -1,
+		var next = func.indexOf("next") !== -1,
+			all = func.indexOf("All") !== -1,
+			until = func.indexOf("Until") !== -1,
 			method = next ? "nextElementSibling" : "previousElementSibling",
 			nodes = [],
 			i = this.length,

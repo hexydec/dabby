@@ -54,7 +54,7 @@
 				while (e--) {
 					node.events.forEach(function (evt, i) {
 						var index = evt.events.indexOf(events[e]);
-						if (index > -1 && evt.callback === callback) {
+						if (index !== -1 && evt.callback === callback) {
 							node.removeEventListener(events[e], evt.func);
 							node.events[i].events.splice(index, 1);
 							if (!node.events[i].events.length) {

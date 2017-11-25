@@ -3,8 +3,8 @@
 		var nodes = [],
 			i = this.length,
 			parent,
-			all = func.indexOf("s") > -1,
-			until = func.indexOf("U") > -1;
+			all = func.indexOf("s") !== -1,
+			until = func.indexOf("U") !== -1;
 
 		while (i--) {
 			parent = this[i].parentNode;

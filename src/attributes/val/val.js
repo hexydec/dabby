@@ -18,7 +18,7 @@ $.fn.val = function (value) {
 					function (item) {return getValue(item);}
 				);
 				$("option", this[i]).each(function () {
-					this.selected = val.indexOf(getValue(this.value)) > -1;
+					this.selected = val.indexOf(getValue(this.value)) !== -1;
 				});
 			} else {
 				this[i].value = getValue(value);
