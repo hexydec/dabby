@@ -69,7 +69,7 @@ $.fn = $.prototype = {
 
 		// build nodes
 		self.length = 0;
-		nodes.forEach(function (node) {
+		[].slice.call(nodes).forEach(function (node) {
 			if ([1, 9, 11].indexOf(node.nodeType) !== -1) { // only element, document and documentFragment
 				self[self.length++] = node;
 			}
