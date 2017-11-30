@@ -57,9 +57,13 @@ module.exports = function (grunt) {
 			}
 		},
 		watch: {
-			js: {
-				files: ["src/**/*.js", "gruntfile.js", "package.json"],
-				tasks: ["concat", "uglify"]
+			main: {
+				files: ["src/**/*.js", "!src/**/test.js", "gruntfile.js", "package.json"],
+				tasks: ["concat:main", "uglify"]
+			},
+			test: {
+				files: ["gruntfile.js", "package.json", "src/test.js", "src/**/test.js"],
+				tasks: ["concat:test"]
 			}
 		}
 	});

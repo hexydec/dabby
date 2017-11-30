@@ -12,12 +12,9 @@ $.fn = $.prototype = {
 	constructor: dabby,
 	init: function (selector, context) {
 		var nodes = [],
-			i,
 			match,
 			obj,
-			getContext = function (context) {
-				return context ? $(context).get(0) || doc : doc;
-			};
+			self = this;
 
 		// if no selector, return empty colletion
 		if (selector) {
@@ -38,48 +35,45 @@ $.fn = $.prototype = {
 					ready.push(selector);
 				}
 
-			// array of nodes
+			// array|NodeList|HTMLCollection of nodes
 			} else if (typeof selector !== "string") {
-				nodes = [].filter.call(selector, function (item) { // may be NodeList Collection
-					return item !== null;
-				});
+				nodes = selector;
 
 			// CSS selector
-			} else if (selector[0] !== "<") {
-				nodes = getContext(context).querySelectorAll(selector);
+			} else if (selector.indexOf("<") === -1) {
+				context = context || doc;
+				$(context).each(function () {
+					nodes = nodes.concat([].slice.call(this.querySelectorAll(selector)));
+				});
 
-			// match single selector
+			// create a single node and attach properties
 			} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
+				nodes.push(doc.createElement(match[1]));
 
 				// context is CSS attributes
 				if (context instanceof Object) {
-					nodes.push(doc.createElement(match[1]));
 					obj = $(nodes);
 					$.each(context, function (prop, value) {
 						obj.attr(prop, value);
 					});
-
-				// context is node
-				} else {
-					nodes.push(getContext(context).createElement(match[1]));
 				}
 
-			// create document fragment
+			// parse HTML into nodes
 			} else {
 				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-				obj = getContext(context).createElement("template");
+				obj = doc.createElement("template");
     			obj.innerHTML = selector;
     			nodes = obj.content ? obj.content.childNodes : obj.childNodes;
 			}
 		}
 
 		// build nodes
-		//this.selector = selector || "";
-		//this.context = context;
-		this.length = i = nodes.length;
-		while (i--) {
-			this[i] = nodes[i];
-		}
+		self.length = 0;
+		nodes.forEach(function (node) {
+			if ([1, 9, 11].indexOf(node.nodeType) !== -1) { // only element, document and documentFragment
+				self[self.length++] = node;
+			}
+		});
 		return this;
 	}
 };

@@ -1,3 +1,3 @@
 $.isFunction = function (func) {
-	return func.constructor === Function;
+	return func && func.constructor === Function;
 };
