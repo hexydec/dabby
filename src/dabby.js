@@ -3,7 +3,6 @@ function dabby(selector, context) {
 }
 
 var doc = document,
-	ready = [],
 	domready = false,
 	$ = dabby;
 
@@ -32,7 +31,10 @@ $.fn = $.prototype = {
 				if (domready) {
 					selector.call(doc);
 				} else {
-					ready.push(selector);
+					doc.addEventListener("DOMContentLoaded", function () {
+						selector.call(doc);
+						domready = true;
+					}, {once: true});
 				}
 
 			// array|NodeList|HTMLCollection of nodes
@@ -80,10 +82,3 @@ $.fn = $.prototype = {
 
 // alias functions
 $.fn.init.prototype = $.fn;
-
-// bind ready functions
-doc.addEventListener("DOMContentLoaded", function () {
-	for (var i = 0; i < ready.length; i++) {
-		ready[i].call(doc);
-	}
-}, false);
