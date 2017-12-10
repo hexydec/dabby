@@ -1,29 +1,16 @@
-function filterNodes(filter, not) {
-	var func, len, nodes = [].slice.call(this);
-
-	// selector
-	if (typeof filter === "string") {
-		func = function (node) {
-			if (node.nodeType === Node.DOCUMENT_NODE) {
-				node = node.documentElement;
-			}
-			return node.matches(filter);
-		};
+function filterNodes(dabby, filter, not) {
+	let func,
+		nodes = Array.from(dabby);
 
 	// function
-	} else if ($.isFunction(filter)) {
+	if ($.isFunction(filter)) {
 		func = filter;
 
 	// nodes
 	} else {
-		if (filter instanceof dabby) {
-			filter = filter.get();
-		} else if (!$.isArray(filter)) {
-			filter = [filter];
-		}
-		len = filter.length;
-		func = function (node) {
-			var i = len;
+		filter = $(filter).get();
+		func = node => {
+			let i = filter.length;
 			while (i--) {
 				if (node.isSameNode(filter[i])) {
 					return true;

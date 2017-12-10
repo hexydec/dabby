@@ -9,16 +9,16 @@ $.fn.val = function (value) {
 
 	// set value
 	if (value !== undefined) {
-		var i = this.length,
+		let i = this.length,
 			val;
 		while (i--) {
 			if (this[i].multiple) {
 				val = $.map(
 					$.isArray(value) ? value : [value],
-					function (item) {return getValue(item);}
+					item => getValue(item)
 				);
 				$("option", this[i]).each(function () {
-					this.selected = val.indexOf(getValue(this.value)) !== -1;
+					this.selected = val.includes(getValue(this.value));
 				});
 			} else {
 				this[i].value = getValue(value);
@@ -29,7 +29,7 @@ $.fn.val = function (value) {
 	// get multiple values
 	} else if (this[0]) {
 		if (this[0].multiple) {
-			var values = [];
+			let values = [];
 			$("option", this[0]).each(function () {
 				if (this.selected) {
 					values.push(getValue(this.value));
@@ -39,7 +39,7 @@ $.fn.val = function (value) {
 
 		// get radio box value
 		} else if (this[0].type === "radio") {
-			var obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
+			let obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
 			return getValue(obj ? obj.value : undefined);
 
 		// get single value

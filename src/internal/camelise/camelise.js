@@ -1,5 +1,3 @@
 function camelise(prop) {
-	return prop.replace(/-([a-z])/gi, function (text, letter) {
-		return letter.toUpperCase();
-	});
+	return prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
 }

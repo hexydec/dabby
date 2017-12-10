@@ -1,12 +1,13 @@
 $.map = function (obj, callback) {
-	var arr = [],
-		keys = Object.keys(obj),
-		len = keys.length,
+	const keys = Object.keys(obj),
+		len = keys.length;
+	let arr = [],
 		i = 0,
 		result;
 
 	for (; i < len; i++) {
-		if ((result = callback(obj[keys[i]], keys[i])) !== null) {
+		result = callback.call(window, obj[keys[i]], keys[i])
+		if (![null, undefined].includes(result)) {
 			arr.push(result);
 		}
 	}

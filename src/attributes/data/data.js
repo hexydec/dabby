@@ -1,8 +1,6 @@
 $.fn.data = function (name, data) {
 	var temp = {},
-		len,
-		i,
-		self = this;
+		i = this.length;
 
 	// convert data to object
 	if (typeof name === "object") {
@@ -15,20 +13,19 @@ $.fn.data = function (name, data) {
 
 	// set value
 	if (data !== undefined) {
-		i = self.length;
 		while (i--) {
-			$.each(data, function (key, value) {
-				self[i].dataset[camelise(key)] = typeof value === "object" ? JSON.stringify(value) : value;
+			$.each(data, (key, value) => {
+				this[i].dataset[camelise(key)] = typeof value === "object" ? JSON.stringify(value) : value;
 			});
 		}
-		return self;
+		return this;
 
 	// get value
-	} else if (self[0] && self[0].dataset[name]) {
+	} else if (this[0] && this[0].dataset[name]) {
 		try {
-			return JSON.parse(self[0].dataset[name]);
+			return JSON.parse(this[0].dataset[name]);
 		} catch (e) {
-			return self[0].dataset[name];
+			return this[0].dataset[name];
 		}
 	}
 };

@@ -1,4 +1,4 @@
 $.fn.each = function (callback) {
-	$.each([].slice.call(this), callback);
+	$.each(Array.from(this), callback);
 	return this;
 };

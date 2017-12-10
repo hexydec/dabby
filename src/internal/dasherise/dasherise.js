@@ -1,5 +1,3 @@
 function dasherise(prop) {
-	return prop.replace(/[A-Z]/g, function (letter) {
-		return "-" + letter.toLowerCase();
-	});
+	return prop.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase());
 }

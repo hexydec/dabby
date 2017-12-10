@@ -1,7 +1,7 @@
 function setCss(dabby, props, value) {
 
 	// set vars
-	var name = props,
+	let name = props,
 		i,
 		keys,
 		k,

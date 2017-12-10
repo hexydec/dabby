@@ -3,14 +3,14 @@ $.each({
 	prepend: "afterBegin",
 	append: "beforeEnd",
 	after: "afterEnd"
-}, function (name, pos) {
+}, (name, pos) => {
 	$.fn[name] = function (html) {
-		var i = this.length,
-			pre = ["before", "prepend"].indexOf(name) !== -1,
+		const pre = ["before", "prepend"].includes(name),
+			isFunc = $.isFunction(html);
+		let i = this.length,
+			elems = $(),
 			backwards, // for counting down
 			forwards = -1, // for counting up
-			elems = $(),
-			isFunc = $.isFunction(html),
 			obj;
 
 		if (!isFunc) {

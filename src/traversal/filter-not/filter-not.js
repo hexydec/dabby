@@ -1,5 +1,5 @@
-["filter", "not"].forEach(function (name) {
+["filter", "not"].forEach(name => {
 	$.fn[name] = function (selector) {
-		return $(filterNodes.call(this, selector, name === "not"));
+		return $(filterNodes(this, selector, name === "not"));
 	};
 });

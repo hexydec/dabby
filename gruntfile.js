@@ -4,12 +4,18 @@
  * and open the template in the editor.
  */
 module.exports = function (grunt) {
+	require("load-grunt-tasks")(grunt);
 
 	// build files using include or exclude arguments
 	var files = ["src/export.js", "src/internal/**/*.js", "src/dabby.js", "src/utils/each/each.js"],
 		outdir = grunt.option("outdir") || "dist",
-		outfile = {},
-		outfilemin = {};
+		outfile = outdir + "/dabby.js",
+		concat = {},
+		outfilemin = {},
+		outfilemines5 = {},
+		outfilees5 = {
+			"tests/internals.es5.js": "tests/internals.js"
+		};
 
 	if (grunt.option("include")) {
 		files.push("src/*/**/{"+grunt.option("include")+"}.js");
@@ -17,9 +23,15 @@ module.exports = function (grunt) {
 		files.push("src/*/**/"+(grunt.option("exclude") ? "!(" + grunt.option("exclude").replace(",", "|") + ")" : "*")+".js");
 	}
 	files.push("!src/**/test.js");
+	files.push("!src/polyfill/*.js");
 
-	outfile[outdir + "/dabby.js"] = files;
-	outfilemin[outdir + "/dabby.min.js"] = outdir + "/dabby.js"
+	outfilemin[outdir + "/dabby.min.js"] = outfile;
+	concat[outfile] = Object.assign([], files);
+	files.pop();
+	files.unshift("src/polyfill/*.js");
+	concat[outdir + "/dabby.es5.js"] = files;
+	outfilees5[outdir + "/dabby.es5.js"] = outdir + "/dabby.es5.js";
+	outfilemines5[outdir + "/dabby.es5.min.js"] = outdir + "/dabby.es5.js";
 
 	// Project configuration.
 	grunt.initConfig({
@@ -38,7 +50,7 @@ module.exports = function (grunt) {
 						return src;
 					}
 				},
-				files: outfile
+				files: concat
 			},
 			test: {
 				files: {
@@ -47,28 +59,47 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		babel: {
+			es6: {
+				files: outfilemin,
+				options: {
+					sourceMap: false,
+					presets: ["minify"]
+				}
+			},
+			es5: {
+				files: outfilees5,
+				options: {
+					presets: [
+						["env", {
+							"targets": {
+								"browsers": ["last 2 versions", "IE >= 11"]
+							},
+							"useBuiltIns": true
+						}]
+					]
+				}
+			}
+		},
 		uglify: {
 			options: {
-				banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp */",
+				banner: "/*! <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> by Will Earp *\/",
 				report: "gzip"
 			},
 			minified: {
-				files: outfilemin
+				files: outfilemines5
 			}
 		},
 		watch: {
 			main: {
 				files: ["src/**/*.js", "!src/**/test.js", "gruntfile.js", "package.json"],
-				tasks: ["concat:main", "uglify"]
+				tasks: ["concat:main", "babel", "uglify"]
 			},
 			test: {
-				files: ["gruntfile.js", "package.json", "src/test.js", "src/**/test.js"],
+				files: ["gruntfile.js", "package.json", "src/test.js", "src/**/test.js", "src/internal/**/*.js"],
 				tasks: ["concat:test"]
 			}
 		}
 	});
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks("grunt-contrib-watch");
-	grunt.registerTask("default", ["concat", "uglify"]);
+	grunt.registerTask("default", ["concat", "babel", "uglify"]);
 };

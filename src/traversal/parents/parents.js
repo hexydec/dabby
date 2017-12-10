@@ -1,10 +1,10 @@
-["parent", "parents", "parentsUntil"].forEach(function (func) {
+["parent", "parents", "parentsUntil"].forEach(func => {
 	$.fn[func] = function (selector, filter) {
-		var nodes = [],
+		const all = func.includes("s"),
+			until = func.includes("U");
+		let nodes = [],
 			i = this.length,
-			parent,
-			all = func.indexOf("s") !== -1,
-			until = func.indexOf("U") !== -1;
+			parent;
 
 		while (i--) {
 			parent = this[i].parentNode;
@@ -18,7 +18,7 @@
 			}
 		}
 		if (selector) {
-			nodes = filterNodes.call(nodes, selector);
+			nodes = filterNodes(nodes, selector);
 		}
 		return $(nodes);
 	}

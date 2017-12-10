@@ -1,5 +1,5 @@
 $.fn.index = function (selector) {
-	var index = -1,
+	let index = -1,
 		i = this.length,
 		elem = this[0],
 		node;

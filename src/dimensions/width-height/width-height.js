@@ -1,9 +1,9 @@
-["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(function (dim) {
+["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
 
 	function getAdditionalLength(obj, wh, props) {
+		const style = getComputedStyle(obj);
 		var i = props.length,
 			value = 0,
-			style = getComputedStyle(obj),
 			suffix;
 
 		while (i--) {
@@ -15,10 +15,10 @@
 	}
 
 	$.fn[dim] = function (val) {
-		var valtype = typeof(val),
-			wh = dim.toLowerCase().indexOf("width") !== -1 ? "width" : "height", // width or height
-			io = dim.indexOf("inner") !== -1 ? "inner" : (dim.indexOf("outer") !== -1 ? "outer" : ""), // inner outer or neither
-			i = this.length,
+		const valtype = typeof(val),
+			wh = dim.toLowerCase().includes("width") ? "width" : "height", // width or height
+			io = dim.includes("inner") ? "inner" : (dim.includes("outer") ? "outer" : ""); // inner outer or neither
+		let i = this.length,
 			value,
 			whu,
 			props,

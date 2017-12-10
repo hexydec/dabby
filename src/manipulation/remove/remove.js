@@ -1,6 +1,6 @@
-["remove", "detach"].forEach(function (func) {
+["remove", "detach"].forEach(func => {
 	$.fn[func] = function (selector) {
-		var i = this.length,
+		let i = this.length,
 			nodes = [],
 			obj = [];
 

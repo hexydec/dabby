@@ -1,5 +1,5 @@
 $.fn.clone = function () {
-	var nodes = [],
+	let nodes = [],
 		i = this.length;
 
 	while (i--) {

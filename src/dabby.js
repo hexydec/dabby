@@ -1,22 +1,15 @@
-function dabby(selector, context) {
-	return new dabby.fn.init(selector, context);
-}
-
-var doc = document,
-	domready = false,
-	$ = dabby;
-
-// basic functionality
-$.fn = $.prototype = {
-	constructor: dabby,
-	init: function (selector, context) {
+let domready = false,
+	dabby = function (selector, context) {
 		var nodes = [],
 			match,
-			obj,
-			self = this;
+			obj;
+
+		// enables new object to be created through $()
+		if (!(this instanceof dabby)) {
+			return new dabby(selector, context);
 
 		// if no selector, return empty colletion
-		if (selector) {
+		} else if (selector) {
 
 			// $ collection
 			if (selector instanceof dabby) {
@@ -29,10 +22,10 @@ $.fn = $.prototype = {
 			// ready function
 			} else if ($.isFunction(selector)) {
 				if (domready) {
-					selector.call(doc);
+					selector.call(document);
 				} else {
-					doc.addEventListener("DOMContentLoaded", function () {
-						selector.call(doc);
+					doc.addEventListener("DOMContentLoaded", () => {
+						selector.call(document);
 						domready = true;
 					}, {once: true});
 				}
@@ -42,20 +35,20 @@ $.fn = $.prototype = {
 				nodes = selector;
 
 			// CSS selector
-			} else if (selector.indexOf("<") === -1) {
-				context = context || doc;
+			} else if (!selector.includes("<")) {
+				context = context || document;
 				$(context).each(function () {
-					nodes = nodes.concat([].slice.call(this.querySelectorAll(selector)));
+					nodes = nodes.concat(Array.from(this.querySelectorAll(selector)));
 				});
 
 			// create a single node and attach properties
 			} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
-				nodes.push(doc.createElement(match[1]));
+				nodes.push(document.createElement(match[1]));
 
 				// context is CSS attributes
 				if (context instanceof Object) {
 					obj = $(nodes);
-					$.each(context, function (prop, value) {
+					$.each(context, (prop, value) => {
 						obj.attr(prop, value);
 					});
 				}
@@ -63,22 +56,22 @@ $.fn = $.prototype = {
 			// parse HTML into nodes
 			} else {
 				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-				obj = doc.createElement("template");
-    			obj.innerHTML = selector;
-    			nodes = obj.content ? obj.content.childNodes : obj.childNodes;
+				obj = document.createElement("template");
+				obj.innerHTML = selector;
+				nodes = obj.content ? obj.content.childNodes : obj.childNodes;
 			}
 		}
 
 		// build nodes
-		self.length = 0;
-		[].slice.call(nodes).forEach(function (node) {
-			if ([1, 9, 11].indexOf(node.nodeType) !== -1) { // only element, document and documentFragment
-				self[self.length++] = node;
+		this.length = 0;
+		nodes.forEach(node => {
+			if ([1, 9, 11].includes(node.nodeType)) { // only element, document and documentFragment
+				this[this.length++] = node;
 			}
 		});
 		return this;
-	}
-};
+	},
+	$ = dabby; // alias in this scope
 
 // alias functions
-$.fn.init.prototype = $.fn;
+dabby.fn = dabby.prototype;

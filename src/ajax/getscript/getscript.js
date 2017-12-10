@@ -1,4 +1,4 @@
-$.getScript = function (url, success) {
+$.getScript = (url, success) => {
 	return $.ajax({
 		url: url,
 		dataType: "script",

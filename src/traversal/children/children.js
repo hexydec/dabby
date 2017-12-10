@@ -1,15 +1,14 @@
 $.fn.children = function (selector) {
-	var nodes = [],
-		slice = nodes.slice,
+	let nodes = [],
 		i = this.length;
 
 	while (i--) {
-		nodes = nodes.concat(slice.call(this[i].children));
+		nodes = nodes.concat(Array.from(this[i].children));
 	}
 
 	// filter nodes by selector
 	if (selector) {
-		nodes = filterNodes.call(nodes, selector);
+		nodes = filterNodes(nodes, selector);
 	}
 	return $(nodes);
 };

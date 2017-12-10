@@ -3,7 +3,7 @@ $.fn.unwrap = function (selector) {
 		var item = this,
 			parent = item.parentNode;
 
-		$(item.childNodes).each(function (i, node) {
+		$(item.childNodes).each((i, node) => {
 			parent.insertBefore(node, item);
 		});
 		return $(parent.removeChild(item));

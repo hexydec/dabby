@@ -3,3 +3,4 @@ nbproject
 dist
 /tests/test.js
 /tests/internals.js
+/tests/internals.es5.js

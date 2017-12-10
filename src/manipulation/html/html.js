@@ -2,7 +2,7 @@ $.fn.html = function (html) {
 
 	// set
 	if (html !== undefined) {
-		var i = this.length;
+		let i = this.length;
 		while (i--) {
 			this[i].innerHTML = getVal(html, this[i], i);
 		}

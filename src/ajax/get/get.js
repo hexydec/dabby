@@ -1,5 +1,5 @@
-$.get = function (url, data, success, type) {
-	var isFunc = data && $.isFunction(data);
+$.get = (url, data, success, type) => {
+	const isFunc = data && $.isFunction(data);
 	return $.ajax(typeof(url) === "object" ? url : {
 		url: url,
 		data: isFunc ? {} : data,

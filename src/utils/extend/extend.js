@@ -1,9 +1,8 @@
-$.extend = function (obj) {
-	var arrs = arguments,
-		i = 1,
+$.extend = function (obj, ...arrs) {
+	const len = arrs.length;
+	let i = 0,
 		keys,
-		k,
-		len = arrs.length;
+		k;
 
 	for (; i < len; i++) {
 		keys = Object.keys(arrs[i]);

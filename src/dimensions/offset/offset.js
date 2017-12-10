@@ -1,6 +1,6 @@
 $.fn.offset = function (coords) {
-	var rect,
-		doc = document.documentElement,
+	const doc = document.documentElement;
+	let rect,
 		i = this.length,
 		pos,
 		parent;

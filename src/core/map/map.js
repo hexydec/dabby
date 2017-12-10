@@ -1,6 +1,6 @@
 $.fn.map = function (callback) {
-	var nodes = [],
-		len = this.length,
+	const len = this.length;
+	let nodes = [],
 		i = 0;
 
 	for (; i < len; i++) {

@@ -1,7 +1,7 @@
 // add and remove event handlers
-["on", "one", "off"].forEach(function (name) {
+["on", "one", "off"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
-		var i = this.length,
+		let i = this.length,
 			e,
 			fn,
 			node;
@@ -52,7 +52,7 @@
 			// find the original function
 			} else if (node.events) {
 				while (e--) {
-					node.events.forEach(function (evt, i) {
+					node.events.forEach((evt, i) => {
 						var index = evt.events.indexOf(events[e]);
 						if (index !== -1 && evt.callback === callback) {
 							node.removeEventListener(events[e], evt.func);

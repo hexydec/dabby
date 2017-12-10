@@ -1,8 +1,10 @@
-["addClass", "removeClass", "toggleClass"].forEach(function (name) {
+["addClass", "removeClass", "toggleClass"].forEach(name => {
 	$.fn[name] = function (cls) {
 
 		// remove "Class" from name for classList method
-		var func = name.substr(0, name.length - 5);
+		let func = name.substr(0, name.length - 5),
+			i = this.length,
+			n;
 
 		// split class
 		if (typeof cls === "string") {
@@ -10,9 +12,6 @@
 		}
 
 		// manage classes on nodes
-		var i = this.length,
-			n;
-
 		while (i--) {
 			n = cls.length;
 			while (n--) {

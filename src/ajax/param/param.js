@@ -1,8 +1,8 @@
-$.param = function (obj) {
-	var params = [],
-		add = function (key, value, params) {
+$.param = obj => {
+	let params = [],
+		add = (key, value, params) => {
 			if ($.isArray(value) || typeof value === "object") {
-				$.each(value, function (i, val) {
+				$.each(value, (i, val) => {
 					params = add(key + "[" + i + "]", val, params);
 				});
 			} else {

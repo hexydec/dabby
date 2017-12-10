@@ -1,10 +1,8 @@
 $.fn.load = function (url, data, success) {
-	var self = this,
-		parts;
-	if (self[0]) {
+	if (this[0]) {
 
 		// get selector from URL
-		parts = url.split(" ", 2);
+		const [uri, selector] = url.split(" ", 2);
 
 		// check for data
 		if ($.isFunction(data)) {
@@ -13,18 +11,18 @@ $.fn.load = function (url, data, success) {
 		}
 
 		// make AJAX request
-		$.ajax(parts[0], {
+		$.ajax(uri, {
 			data: data,
 			type: data instanceof Object ? "POST" : "GET",
-			success: function (response, status, xhr) {
+			success: (response, status, xhr) => {
 
 				// if a selector is specified, find it in the returned document
-				var html = "",
-					i = self.length;
+				let html = "",
+					i = this.length;
 
 				// refine by selector if supplied
-				if (parts[1]) {
-					$(response).filter(parts[1]).each(function () {
+				if (selector) {
+					$(response).filter(selector).each(function () {
 						html += this.innerHTML;
 					});
 				} else {
@@ -33,7 +31,7 @@ $.fn.load = function (url, data, success) {
 
 				// set HTML to nodes in collection
 				while (i--) {
-					self[i].innerHTML = response;
+					this[i].innerHTML = response;
 				}
 
 				// fire success callback on nodes
@@ -43,5 +41,5 @@ $.fn.load = function (url, data, success) {
 			}
 		})
 	}
-	return self;
+	return this;
 };
