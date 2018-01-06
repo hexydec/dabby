@@ -1,10 +1,10 @@
 $.fn.map = function (callback) {
 	const len = this.length;
-	let nodes = [],
+	let values = [],
 		i = 0;
 
 	for (; i < len; i++) {
-		nodes.push(callback.call(this[0], i, this[0]));
+		values.push(callback.call(this[i], i, this[i]));
 	}
-	return $(nodes);
+	return values;
 };
