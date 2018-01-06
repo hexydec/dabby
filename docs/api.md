@@ -8,7 +8,7 @@ The library supports the following methods:
 | [$()](../src/readme.md)	| Create a Dabby collection from nodes, selectors, or HTML	|
 | $.fn.each()			| Apply a callback function to a Dabby object				|
 | $.fn.get()			| Retrieve one or all native nodes from a Dabby object		|
-| $.fn.map()			| Map a callback function onto each item in a Dabby object	|
+| [$.fn.map()](../src/core/map/readme.md)			| Map a callback function onto each item in a Dabby object	|
 
 ### Ajax
 | Method				| Description												|
