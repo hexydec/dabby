@@ -1,4 +1,4 @@
-# $().map()
+# .map()
 
 Run a callback function on each node in a Dabby collection, and return an array.
 

@@ -1,14 +1,16 @@
 # Dabby.js Documentation
 
+> This Documentation is still under development, and so whilst some methods have more detailed documentation, the rest currently only have the description below.
+
 The library supports the following methods:
 
 ### Core
-| Method				| Description												|
-|-----------------------|-----------------------------------------------------------|
-| [$()](../src/readme.md)	| Create a Dabby collection from nodes, selectors, or HTML	|
-| $.fn.each()			| Apply a callback function to a Dabby object				|
-| $.fn.get()			| Retrieve one or all native nodes from a Dabby object		|
-| [$.fn.map()](../src/core/map/readme.md)			| Map a callback function onto each item in a Dabby object	|
+| Method									| Description												|
+|-------------------------------------------|-----------------------------------------------------------|
+| [$()](../src/readme.md)					| Create a Dabby collection from nodes, selectors, or HTML	|
+| [$.fn.each()](../src/core/each/readme.md)	| Apply a callback function to a Dabby object				|
+| [$.fn.get()](../src/core/get/readme.md)	| Retrieve one or all native nodes from a Dabby object		|
+| [$.fn.map()](../src/core/map/readme.md)	| Map a callback function onto each item in a Dabby object	|
 
 ### Ajax
 | Method				| Description												|
