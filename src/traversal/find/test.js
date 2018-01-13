@@ -7,5 +7,5 @@ QUnit.test("$.fn.find", function (assert) {
 	obj = $(".testtemp");
 
 	assert.deepEqual(obj.find(".findme").get(), $(".testtemp .findme").get());
-	assert.deepEqual(obj.find(obj.get(0).getElementsByClassName("class1")), $(".testtemp .class1").get());
+	assert.deepEqual(obj.find(obj.get(0).getElementsByClassName("class1")).get(), $(".testtemp .class1").get());
 });

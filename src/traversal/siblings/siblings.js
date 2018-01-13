@@ -1,13 +1,13 @@
 $.fn.siblings = function (selector) {
 	var i = this.length,
-		nodes = [],
-		node;
+		nodes = [];
 
 	while (i--) {
-		node = this[i];
-		nodes = nodes.concat(Array.from(node.parentNode.children).filter(function (child) {
-			return !child.isSameNode(node);
-		}));
+		this[i].parentNode.children.forEach(child => {
+			if (!child.isSameNode(this[i])) {
+				nodes.push(child);
+			}
+		});
 	}
 	return $(selector ? filterNodes(nodes, selector) : nodes);
 };

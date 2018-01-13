@@ -12,7 +12,8 @@ $.fn.index = function (selector) {
 			}
 		}
 	} else if (elem && elem.parentNode) {
-		while (elem = elem.nextSibling) {
+		index = 0;
+		while (elem = elem.previousSibling) {
 			index++;
 		}
 	}
