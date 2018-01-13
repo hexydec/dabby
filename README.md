@@ -3,11 +3,11 @@
 A lightweight modular jQuery clone library built for modern browsers.
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
-![Project Status](https://img.shields.io/badge/Project%20Status-Pre--Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-14.5kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-5.14kb-brightgreen.svg)
+![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-13.4kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-4.95kb-brightgreen.svg)
 
-**This project is pre-beta, make sure to test your integration with this code thoroughly before deploying**
+**This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
 
 ## jQuery is awesome, why do I need this?
 
@@ -41,6 +41,13 @@ Then swap jQuery out for dabby.js. It does support AMD modules and CommonJS, so 
 Next you should probably audit and refactor your code to update anything that Dabby will definitely not support, like custom pseudo selectors. Ajax calls will probably need checking over too.
 
 Then run it in the browser, or through your test suite to highlight any other issues.
+
+Dabby.js compiles to both ES6 and ES5 bundles, to support all browsers, include Dabby.js like this:
+
+```html
+<script src="dist/dabby.js" type="module"></script>
+<script src="dist/dabby.es5.js" nomodule></script>
+```
 
 ## Dabby.js API
 
