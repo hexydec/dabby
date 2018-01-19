@@ -88,7 +88,7 @@ $.ajax = function (url, settings) {
 
 		// add authoisation header
 		if (settings.username) {
-			settings.headers.authorization = btoa(settings.username + ":" + settings.password);
+			settings.headers.Authorization = btoa(settings.username + ":" + settings.password);
 		}
 
 		// headers

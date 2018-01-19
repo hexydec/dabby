@@ -4,8 +4,6 @@ Create a Dabby.js object, containing nodes, selected with document nodes, CSS se
 
 ## Usage
 
-### $(selector)
-
 ```javascript
 $(selector [, context])
 $(element)
@@ -14,6 +12,8 @@ $(object)
 $()
 ```
 When created with a CSS selector, DOM element, array of DOM elements, or Dabby object, selects the requested nodes and stores them internally ready for manipulation.
+
+### $(selector)
 
 ```javascript
 $("#id"); // select a node with the specified ID

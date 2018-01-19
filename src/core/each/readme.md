@@ -10,6 +10,14 @@ $(selector).each(callback);
 
 The `this` variable will be set to the node of each item in the collection.
 
+The callback uses the following pattern:
+
+```javascript
+function (index, element) {
+	// your code here, this is the same as element
+}
+```
+
 By returning `false` from a callback function, execution of subsequent callbacks in the current process will be halted.
 
 ## Example
