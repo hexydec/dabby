@@ -16,39 +16,39 @@ The library supports the following methods:
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | [$.ajax()](../src/ajax/ajax/readme.md)	| Make AJAX requests										|
-| $.get()									| Shorthand to make AJAX requests using the GET method		|
+| [$.get()](../src/ajax/get/readme.md)		| Shorthand to make AJAX requests using the GET method		|
+| [$.post()](../src/ajax/post/readme.md)	| Shorthand to make AJAX requests using the POST method		|
 | $.getScript()								| Shorthand to insert a script into the DOM					|
-| $.load()									| Make an AJAX request to insert HTML it into the DOM		|
-| $.post()									| Shorthand to make AJAX requests using the POST method		|
-| .serialize()								| Serialize the value of form elements into a query string	|
 | $.param()									| Render a query string from an array						|
+| .load()									| Make an AJAX request to insert HTML it into the DOM		|
+| .serialize()								| Serialize the value of form elements into a query string	|
 
 ### Attributes
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | .attr()									| Get/set HTML attributes									|
-| .addClass()								| Add a class to an HTML element							|
-| .removeClass()							| Remove a class from an HTML element						|
-| .toggleClass()							| Toggle a class on and off									|
 | .css()									| Get/set CSS attributes									|
 | .data()									| Get/set data attributes									|
-| .hasClass()								| See whether an HTML element has the requested class		|
 | .prop()									| Get/set HTML properties									|
 | .val()									| Get/set form control values								|
+| .addClass()								| Add a class to an HTML element							|
+| .hasClass()								| See whether an HTML element has the requested class		|
+| .removeClass()							| Remove a class from an HTML element						|
+| .toggleClass()							| Toggle a class on and off									|
 
 ### Dimensions
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | .offset()									| Get/set the top and left position							|
 | .offsetParent()							| Get the offset parent of the first node					|
-| .scrollLeft()								| Get/set the scrollLeft attribute							|
-| .scrollTop()								| Get/set the scrollTop attribute							|
 | .width()									| Get/set the width of a set of elements					|
 | .height()									| Get/set the height of a set of elements					|
 | .innerWidth()								| Get/set the width of a set of elements including padding	|
 | .innerHeight()							| Get/set the height of a set of elements including padding	|
 | .outerWidth()								| Get/set the width of elements including padding/margin	|
 | .outerHeight()							| Get/set the height of elements including padding/margin	|
+| .scrollLeft()								| Get/set the scrollLeft attribute							|
+| .scrollTop()								| Get/set the scrollTop attribute							|
 
 ### Events
 | Method									| Description												|

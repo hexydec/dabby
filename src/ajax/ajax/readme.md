@@ -21,9 +21,9 @@ The `settings` object can accept the following parameters:
 | method	| string	| The method to send the request with ("GET" or "POST")	| GET 		|
 | cache		| bool		| Denotes whether to cache allow the request to be cached. | false	|
 | success	| callback	| A callback function fired on completion of a successful request |	|
-| error		| callback	| A callback function fired when a request fails		||
+| error		| callback	| A callback function fired when a request fails		|			|
 | complete	| callback	| A callback function fired after a request has completed, regardless of whether it ||
-| data		|object/string | Parameters to send to with the requests				|		|
+| data		|object/string | Parameters to send to with the requests			|			|
 | dataType	| string	| Specify the type of request ("json", "jsonp" or "script"), if not set the type will be automatically determined ||
 | processData | bool	| Denotes whether to compile the data from the `data` parameter into a query string. If set to false, the data is passed to the request unprocessed | true		|
 | async		| bool		| Denotes whether to send the request asynchronously	| true		|
@@ -53,6 +53,10 @@ function (response, status, xhr) {
 
 `xhr` The XMLHttpRequest object used in the AJAX request. For synchronous requests this will be empty.
 
+## Return value
+
+For asynchronous requests, the generated XMLHttpRequest object will be returned. Synchronous requests will return `undefined`.
+
 ## Example
 
 The following example makes an AJAX request and outputs the response:
@@ -67,10 +71,6 @@ $.ajax("https://www.theregister.co.uk/headlines.atom", {
 	}
 });
 ```
-## Return value
-
-For asynchronous requests, the generated XMLHttpRequest object will be returned. Synchronous requests will return `null`.
-
 ## Differences to jQuery
 
 In jQuery, the `xhr` parameter of any callback functions are returned as an enhanced XMLHttpRequest called the `jqXHR` object, whereas in Dabby.js, the orignal XMLHttpRequest object is returned.
