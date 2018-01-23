@@ -23,7 +23,7 @@ QUnit.test("$.fn.attr", function (assert) {
 	assert.deepEqual(main.attr("itemprop", "articleBody"), main, "Returns itself when setting property");
 	assert.equal(rmain.getAttribute("itemprop"), "articleBody", "Can set property");
 	assert.equal(main.attr("itemprop"), "articleBody", "Can retrieve property");
-	main.attr("itemprop", "");
+	main.attr("itemprop", null);
 	assert.equal(main.attr("itemprop"), undefined, "Can remove property");
 
 	// reset

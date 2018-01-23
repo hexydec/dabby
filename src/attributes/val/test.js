@@ -3,6 +3,7 @@ QUnit.module("Attributes");
 QUnit.test("$.fn.val", function (assert) {
 	var obj = $("<input>", {type: "text", value: "test"}),
 		multi = document.createElement("select"),
+		text = $("<textarea>", {text: "test"}), // write test for this
 		i = 0,
 		opt;
 
@@ -20,4 +21,7 @@ QUnit.test("$.fn.val", function (assert) {
 	obj = $(multi).val([1,3,5]);
 
 	assert.deepEqual(obj.val(), [1,3,5], "Can set and read multiple values");
+
+	text.val("new value");
+	assert.equal(text.val(), "new value", "Can set and read value from textarea");
 });

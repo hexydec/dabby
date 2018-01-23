@@ -1,28 +1,36 @@
 $.fn.attr = function (prop, value) {
+	let isArr = $.isArray(prop),
+		i,
+		events,
+		arr = {};
 
-	// set array of style properties
-	if (prop === "style" && value instanceof Object) {
-		setCss(this, value);
+	// set properties
+	if (isArr || value || value === null) {
+		i = this.length,
+		events = getEvents();
 
-	// set other properties
-	} else if (value || value === "") {
-		var i = this.length,
-			event = getEvents().includes(prop);
+		// normalise to array
+		if (!isArr) {
+			arr[prop] = value;
+			prop = arr;
+		}
 
 		while (i--) {
-			if (event) {
-				$(this[i]).on(prop, value);
-			} else if (prop === "style") {
-				this[i].style.cssText = value;
-			} else if (prop === "class") {
-				this[i].className = value;
-			} else if (prop === "text") {
-				this[i].textContent = value;
-			} else if (value === "") {
-				this[i].removeAttribute(prop);
-			} else {
-				this[i].setAttribute(prop, value);
-			}
+			$.each(prop, (key, val) => {
+				if (events.includes(key)) {
+					$(this[i]).on(key, val);
+				} else if (key === "style") {
+					this[i].style.cssText = val;
+				} else if (key === "class") {
+					this[i].className = val;
+				} else if (key === "text") {
+					this[i].textContent = val;
+				} else if (value === null) {
+					this[i].removeAttribute(key);
+				} else {
+					this[i].setAttribute(key, val);
+				}
+			});
 		}
 		return this;
 

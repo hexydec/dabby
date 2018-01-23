@@ -30,7 +30,7 @@ The following example puts the innerText of each DIV into an array:
 <div class="map">Third</div>
 ```
 ```javascript
-var text = [];
+let text = [];
 $(".map").each(function () {
 	text.push(this.innerText);
 });

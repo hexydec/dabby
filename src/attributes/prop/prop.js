@@ -1,9 +1,9 @@
 $.fn.prop = function (prop, value) {
-	prop = prop.toLowerCase();
+	prop = getProp(prop);
 
 	// set
 	if (value !== undefined) {
-		var i = this.length;
+		let i = this.length;
 		while (i--) {
 			this[i][prop] = value;
 		}

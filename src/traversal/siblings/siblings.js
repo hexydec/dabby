@@ -1,5 +1,5 @@
 $.fn.siblings = function (selector) {
-	var i = this.length,
+	let i = this.length,
 		nodes = [];
 
 	while (i--) {

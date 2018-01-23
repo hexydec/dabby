@@ -2,7 +2,7 @@
 
 	function getAdditionalLength(obj, wh, props) {
 		const style = getComputedStyle(obj);
-		var i = props.length,
+		let i = props.length,
 			value = 0,
 			suffix;
 

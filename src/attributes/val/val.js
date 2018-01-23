@@ -26,8 +26,10 @@ $.fn.val = function (value) {
 		}
 		return this;
 
-	// get multiple values
+	// read value from first node
 	} else if (this[0]) {
+
+		// get multiple values
 		if (this[0].multiple) {
 			let values = [];
 			$("option", this[0]).each(function () {

@@ -1,6 +1,6 @@
 let domready = false,
 	dabby = function (selector, context) {
-		var nodes = [],
+		let nodes = [],
 			match,
 			obj;
 
@@ -22,10 +22,10 @@ let domready = false,
 			// ready function
 			} else if ($.isFunction(selector)) {
 				if (domready) {
-					selector.call(document);
+					selector.call(document, $);
 				} else {
 					doc.addEventListener("DOMContentLoaded", () => {
-						selector.call(document);
+						selector.call(document, $);
 						domready = true;
 					}, {once: true});
 				}

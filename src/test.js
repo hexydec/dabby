@@ -20,7 +20,7 @@ QUnit.test("$.fn.init", function (assert) {
 		newh1 = document.createElement("h1"),
 		triggered = false,
 		obj = $("<h1>", {
-			style: {backgroundColor: "red"},
+			style: "background-color:red",
 			text: "test",
 			click: function () {
 				triggered = true;

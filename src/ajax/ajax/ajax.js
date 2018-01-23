@@ -37,7 +37,8 @@ $.ajax = function (url, settings) {
 		settings.dataType = "script";
 	}
 
-	var sync = ["script", "jsonp"].includes(settings.dataType);
+	let sync = ["script", "jsonp"].includes(settings.dataType),
+		script, xhr;
 
 	// add cache buster
 	if (settings.cache || (settings.cache === null && sync)) {
@@ -51,7 +52,7 @@ $.ajax = function (url, settings) {
 
 	// fetch script
 	if (sync || settings.crossDomain) {
-		var script = document.createElement("script");
+		script = document.createElement("script");
 		if (settings.scriptCharset) {
 			script.charset = settings.scriptCharset;
 		}
@@ -83,7 +84,7 @@ $.ajax = function (url, settings) {
 	} else {
 
 		// create XHR object
-		var xhr = new XMLHttpRequest();
+		xhr = new XMLHttpRequest();
 		xhr.open(settings.method, settings.url, settings.async);
 
 		// add authoisation header
@@ -99,9 +100,9 @@ $.ajax = function (url, settings) {
 		// callbacks
 		xhr.onreadystatechange = function () {
 			if (this.readyState === 4) {
-				var response = xhr.responseText,
-					callbacks = [],
-					type = this.status === 200 ? "success" : "error";
+				const type = this.status === 200 ? "success" : "error";
+				let response = xhr.responseText,
+					callbacks = [];
 
 				// parse JSON
 				if (["json", null].includes(settings.dataType)) {

@@ -1,6 +1,6 @@
 $.fn.unwrap = function (selector) {
 	return this.parent(selector).not("body").each(function () {
-		var item = this,
+		const item = this,
 			parent = item.parentNode;
 
 		$(item.childNodes).each((i, node) => {

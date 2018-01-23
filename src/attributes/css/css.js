@@ -3,10 +3,10 @@ $.fn.css = function (props, value) {
 	// set the values
 	if (value !== undefined) {
 		return setCss(this, props, value);
-	
+
 	// retrieve value from first property
 	} else if (this[0]) {
-		var name = props,
+		let name = props,
 			i,
 			style = getComputedStyle(this[0], ""),
 			output = {},

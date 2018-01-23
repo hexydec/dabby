@@ -1,5 +1,5 @@
 $.fn.data = function (name, data) {
-	var temp = {},
+	let temp = {},
 		i = this.length;
 
 	// convert data to object

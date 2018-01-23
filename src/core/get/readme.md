@@ -19,8 +19,8 @@ The following example puts the innerText of each DIV into an array:
 <div class="map">Third</div>
 ```
 ```javascript
-var node = $(".map").get(1).innerText; // Second
-var nodes = $(".map").get(); // an array containing all the divs
+let node = $(".map").get(1).innerText; // Second
+let nodes = $(".map").get(); // an array containing all the divs
 ```
 ## Return value
 
