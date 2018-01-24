@@ -32,6 +32,6 @@ QUnit.test("$.serialize", function (assert) {
 			'<option value="select3" selected="selected">Option 3</option>' +
 		'</select>' +
 	'</form>';
-
-	assert.equal($(".testtemp").serialize(), "input=input&number=&email=email&datetime=1999-12-31%2023%3A59%3A59&checkbox-checked=checked&in%5B%5D=input3&radio=radio2&select=select2&multiselect%5B0%5D=select2&multiselect%5B1%5D=select3", "Can serialize a form");
+	var date = test.querySelector("input[name=datetime]").value;
+	assert.equal($(".testtemp").serialize(), "input=input&number=&email=email&datetime="+encodeURIComponent(date)+"&checkbox-checked=checked&in%5B%5D=input3&radio=radio2&select=select2&multiselect%5B0%5D=select2&multiselect%5B1%5D=select3", "Can serialize a form");
 });
