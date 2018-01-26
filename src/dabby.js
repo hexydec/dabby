@@ -24,7 +24,7 @@ let domready = false,
 				if (domready) {
 					selector.call(document, $);
 				} else {
-					doc.addEventListener("DOMContentLoaded", () => {
+					document.addEventListener("DOMContentLoaded", () => {
 						selector.call(document, $);
 						domready = true;
 					}, {once: true});
