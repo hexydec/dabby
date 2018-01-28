@@ -76,3 +76,5 @@ $.ajax("https://www.theregister.co.uk/headlines.atom", {
 In jQuery, the `xhr` parameter of any callback functions are returned as an enhanced XMLHttpRequest called the `jqXHR` object, whereas in Dabby.js, the orignal XMLHttpRequest object is returned.
 
 Dabby.js doesn't support as many `settings` as jQuery.
+
+Dabby doesn't return a deferred object like jQuery does, so you cannot chain any deferred methods to this method.
