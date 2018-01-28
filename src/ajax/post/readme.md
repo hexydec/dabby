@@ -1,4 +1,4 @@
-# .post()
+# $.post()
 
 Shorthand to make AJAX requests using the POST method.
 
@@ -31,4 +31,4 @@ $.post(
 ```
 ## Differences to jQuery
 
-None.
+Dabby doesn't return a deferred object like jQuery does, so you cannot chain any deferred methods to this method.

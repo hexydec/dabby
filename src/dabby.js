@@ -64,7 +64,7 @@ let domready = false,
 
 		// build nodes
 		this.length = 0;
-		nodes.forEach(node => {
+		Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
 			if ([1, 9, 11].includes(node.nodeType)) { // only element, document and documentFragment
 				this[this.length++] = node;
 			}

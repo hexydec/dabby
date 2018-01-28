@@ -1,0 +1,1548 @@
+'use strict';
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*! Dabby.js v1.0.0 - 2018-01-28 by Will Earp */
+
+if (!Array.from) {
+	Array.from = function () {
+		var toStr = Object.prototype.toString;
+		var isCallable = function isCallable(fn) {
+			return typeof fn === 'function' || toStr.call(fn) === '[object Function]';
+		};
+		var toInteger = function toInteger(value) {
+			var number = Number(value);
+			if (isNaN(number)) {
+				return 0;
+			}
+			if (number === 0 || !isFinite(number)) {
+				return number;
+			}
+			return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
+		};
+		var maxSafeInteger = Math.pow(2, 53) - 1;
+		var toLength = function toLength(value) {
+			var len = toInteger(value);
+			return Math.min(Math.max(len, 0), maxSafeInteger);
+		};
+
+		// The length property of the from method is 1.
+		return function from(arrayLike /*, mapFn, thisArg */) {
+			// 1. Let C be the this value.
+			var C = this;
+
+			// 2. Let items be ToObject(arrayLike).
+			var items = Object(arrayLike);
+
+			// 3. ReturnIfAbrupt(items).
+			if (arrayLike == null) {
+				throw new TypeError('Array.from requires an array-like object - not null or undefined');
+			}
+
+			// 4. If mapfn is undefined, then let mapping be false.
+			var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
+			var T;
+			if (typeof mapFn !== 'undefined') {
+				// 5. else
+				// 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
+				if (!isCallable(mapFn)) {
+					throw new TypeError('Array.from: when provided, the second argument must be a function');
+				}
+
+				// 5. b. If thisArg was supplied, let T be thisArg; else let T be undefined.
+				if (arguments.length > 2) {
+					T = arguments[2];
+				}
+			}
+
+			// 10. Let lenValue be Get(items, "length").
+			// 11. Let len be ToLength(lenValue).
+			var len = toLength(items.length);
+
+			// 13. If IsConstructor(C) is true, then
+			// 13. a. Let A be the result of calling the [[Construct]] internal method
+			// of C with an argument list containing the single item len.
+			// 14. a. Else, Let A be ArrayCreate(len).
+			var A = isCallable(C) ? Object(new C(len)) : new Array(len);
+
+			// 16. Let k be 0.
+			var k = 0;
+			// 17. Repeat, while k < len… (also steps a - h)
+			var kValue;
+			while (k < len) {
+				kValue = items[k];
+				if (mapFn) {
+					A[k] = typeof T === 'undefined' ? mapFn(kValue, k) : mapFn.call(T, kValue, k);
+				} else {
+					A[k] = kValue;
+				}
+				k += 1;
+			}
+			// 18. Let putStatus be Put(A, "length", len, true).
+			A.length = len;
+			// 20. Return A.
+			return A;
+		};
+	}();
+}
+
+if (!Array.prototype.includes) {
+	Object.defineProperty(Array.prototype, "includes", {
+		value: function value(searchElement, fromIndex) {
+
+			if (this == null) {
+				throw new TypeError("\"this\" is null or not defined");
+			}
+
+			// 1. Let O be ? ToObject(this value).
+			var o = Object(this);
+
+			// 2. Let len be ? ToLength(? Get(O, "length")).
+			var len = o.length >>> 0;
+
+			// 3. If len is 0, return false.
+			if (len === 0) {
+				return false;
+			}
+
+			// 4. Let n be ? ToInteger(fromIndex).
+			//    (If fromIndex is undefined, this step produces the value 0.)
+			var n = fromIndex | 0;
+
+			// 5. If n ≥ 0, then
+			//  a. Let k be n.
+			// 6. Else n < 0,
+			//  a. Let k be len + n.
+			//  b. If k < 0, let k be 0.
+			var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+			function sameValueZero(x, y) {
+				return x === y || typeof x === "number" && typeof y === "number" && isNaN(x) && isNaN(y);
+			}
+
+			// 7. Repeat, while k < len
+			while (k < len) {
+				// a. Let elementK be the result of ? Get(O, ! ToString(k)).
+				// b. If SameValueZero(searchElement, elementK) is true, return true.
+				if (sameValueZero(o[k], searchElement)) {
+					return true;
+				}
+				// c. Increase k by 1.
+				k++;
+			}
+
+			// 8. Return false
+			return false;
+		}
+	});
+}
+
+// CustomEvent is not supported in IE11
+if (typeof window.CustomEvent !== "function") {
+	var _CustomEvent = function _CustomEvent(event, params) {
+		params = params || { bubbles: false, cancelable: false, detail: undefined };
+		var evt = document.createEvent("CustomEvent");
+		evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+		return evt;
+	};
+
+	_CustomEvent.prototype = window.Event.prototype;
+	window.CustomEvent = _CustomEvent;
+}
+
+// support Element.matches() in IE and older Webkit
+if (!Element.prototype.matches) {
+	Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+}
+
+if (!NodeList.prototype.forEach) {
+	NodeList.prototype.forEach = function (callback, thisArg) {
+		thisArg = thisArg || window;
+		for (var i = 0; i < this.length; i++) {
+			callback.call(thisArg, this[i], i, this);
+		}
+	};
+}
+
+if (!String.prototype.includes) {
+	String.prototype.includes = function (search, start) {
+		"use strict";
+
+		if (typeof start !== "number") {
+			start = 0;
+		}
+
+		if (start + search.length > this.length) {
+			return false;
+		} else {
+			return this.indexOf(search, start) !== -1;
+		}
+	};
+}
+
+(function (global, factory) {
+	if (typeof define === "function" && define.amd) {
+		define(function () {
+			return factory(global);
+		});
+	} else if (typeof exports !== "undefined") {
+		module.exports = factory(global);
+	} else if (!global.$) {
+		global.$ = factory(global);
+	}
+})(undefined || window, function (window) {
+	"use strict";
+
+	function camelise(prop) {
+		return prop.replace(/-([a-z])/gi, function (text, letter) {
+			return letter.toUpperCase();
+		});
+	}
+
+	function dasherise(prop) {
+		return prop.replace(/[A-Z]/g, function (letter) {
+			return "-" + letter.toLowerCase();
+		});
+	}
+
+	function filterNodes(dabby, filter, not) {
+		var func = void 0,
+		    nodes = Array.from(dabby);
+
+		// function
+		if ($.isFunction(filter)) {
+			func = filter;
+
+			// nodes
+		} else {
+			filter = $(filter).get();
+			func = function func(node) {
+				var i = filter.length;
+				while (i--) {
+					if (node.isSameNode(filter[i])) {
+						return true;
+					}
+				}
+				return false;
+			};
+		}
+		return nodes.filter(not ? function (item) {
+			return !func.call(this, item);
+		} : func, nodes);
+	}
+
+	function getEvents() {
+		return ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
+	}
+
+	function getProp(prop) {
+		var properties = {
+			"for": "htmlFor",
+			"class": "className",
+			"tabindex": "tabIndex",
+			"readonly": "readOnly",
+			"maxlength": "maxLength",
+			"cellspacing": "cellSpacing",
+			"cellpadding": "cellPadding",
+			"rowspan": "rowSpan",
+			"colspan": "colSpan",
+			"usemap": "useMap",
+			"frameborder": "frameBorder",
+			"contenteditable": "contentEditable"
+		};
+		prop = prop.toLowerCase();
+		return properties[prop] || prop;
+	}
+
+	function getVal(val, obj, i) {
+
+		// retrieve as function
+		if ($.isFunction(val)) {
+			val = val.apply(obj, Array.from(arguments).slice(2)); // pass extra arguments on
+		}
+		return val;
+	}
+
+	function setCss(dabby, props, value) {
+
+		// set vars
+		var name = props,
+		    i = void 0,
+		    keys = void 0,
+		    k = void 0,
+		    remove = void 0;
+
+		// normalise props
+		if (typeof props === "string") {
+			props = {};
+			props[name] = value;
+		}
+
+		// cache properties for loop
+		keys = Object.keys(props);
+		k = keys.length;
+
+		// set properties
+		while (k--) {
+			i = dabby.length;
+			while (i--) {
+				remove = props[keys[k]] === "";
+				dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), remove ? undefined : getVal(props[keys[k]], dabby[i], k));
+			}
+		}
+		return dabby;
+	}
+
+	var domready = false,
+	    dabby = function dabby(selector, context) {
+		var _this = this;
+
+		var nodes = [],
+		    match = void 0,
+		    obj = void 0;
+
+		// enables new object to be created through $()
+		if (!(this instanceof dabby)) {
+			return new dabby(selector, context);
+
+			// if no selector, return empty colletion
+		} else if (selector) {
+
+			// $ collection
+			if (selector instanceof dabby) {
+				return selector;
+
+				// single node
+			} else if (selector.nodeType) {
+				nodes = [selector];
+
+				// ready function
+			} else if ($.isFunction(selector)) {
+				if (domready) {
+					selector.call(document, $);
+				} else {
+					document.addEventListener("DOMContentLoaded", function () {
+						selector.call(document, $);
+						domready = true;
+					}, { once: true });
+				}
+
+				// array|NodeList|HTMLCollection of nodes
+			} else if (typeof selector !== "string") {
+				nodes = selector;
+
+				// CSS selector
+			} else if (!selector.includes("<")) {
+				context = context || document;
+				$(context).each(function () {
+					nodes = nodes.concat(Array.from(this.querySelectorAll(selector)));
+				});
+
+				// create a single node and attach properties
+			} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
+				nodes.push(document.createElement(match[1]));
+
+				// context is CSS attributes
+				if (context instanceof Object) {
+					obj = $(nodes);
+					$.each(context, function (prop, value) {
+						obj.attr(prop, value);
+					});
+				}
+
+				// parse HTML into nodes
+			} else {
+				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
+				obj = document.createElement("template");
+				obj.innerHTML = selector;
+				nodes = obj.content ? obj.content.childNodes : obj.childNodes;
+			}
+		}
+
+		// build nodes
+		this.length = 0;
+		Array.from(nodes).forEach(function (node) {
+			// HTMLCollection objects don't support forEach
+			if ([1, 9, 11].includes(node.nodeType)) {
+				// only element, document and documentFragment
+				_this[_this.length++] = node;
+			}
+		});
+		return this;
+	},
+	    $ = dabby; // alias in this scope
+
+	// alias functions
+	dabby.fn = dabby.prototype;
+
+	$.each = function (obj, callback) {
+		var keys = Object.keys(obj),
+		    len = keys.length;
+
+		for (var i = 0; i < len; i++) {
+			if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
+				break; // stop if callback returns false
+			}
+		}
+		return obj;
+	};
+
+	$.ajax = function (url, settings) {
+
+		// normalise args
+		if ((typeof url === 'undefined' ? 'undefined' : _typeof(url)) === "object") {
+			settings = url;
+		} else {
+			if ((typeof settings === 'undefined' ? 'undefined' : _typeof(settings)) !== "object") {
+				settings = {};
+			}
+			settings.url = url;
+		}
+
+		// set default settings
+		settings = $.extend({
+			method: "GET",
+			cache: null, // start will null so we can see if explicitly set
+			data: null,
+			dataType: null, // only changes behavior with json, jsonp, script
+			processData: true,
+			async: true,
+			crossDomain: false,
+			scriptCharset: null,
+			jsonp: "callback",
+			jsonpCallback: "dabby" + Date.now(),
+			headers: {
+				"X-Requested-With": "XMLHttpRequest",
+				"Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
+			},
+			context: null,
+			statusCode: {},
+			username: null,
+			password: null
+		}, settings);
+
+		// determine datatype
+		if (!settings.dataType && settings.url.substr(-3) === ".js") {
+			settings.dataType = "script";
+		}
+
+		var sync = ["script", "jsonp"].includes(settings.dataType),
+		    script = void 0,
+		    xhr = void 0;
+
+		// add cache buster
+		if (settings.cache || settings.cache === null && sync) {
+			settings.url += (settings.url.includes("?") ? "&" : "?") + "_=" + +new Date();
+		}
+
+		// add data to query string
+		if (settings.data && settings.processData) {
+			settings.url += (settings.url.includes("?") ? "&" : "?") + $.param(settings.data);
+		}
+
+		// fetch script
+		if (sync || settings.crossDomain) {
+			script = document.createElement("script");
+			if (settings.scriptCharset) {
+				script.charset = settings.scriptCharset;
+			}
+
+			// add callback parameter
+			if (settings.dataType === "jsonp") {
+				settings.url += (settings.url.includes("?") ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
+			}
+
+			// setup event callbacks
+			$.each({
+				load: "success",
+				error: "error"
+			}, function (key, value) {
+				script.addEventListener(key, function () {
+					var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
+					[value, "complete"].forEach(function (name) {
+						if (settings[name]) {
+							settings[name].call(settings.context, response, value === "success" ? 200 : 400);
+						}
+					});
+				});
+			});
+
+			script.src = settings.url;
+			document.head.appendChild(script);
+
+			// make xhr request
+		} else {
+
+			// create XHR object
+			xhr = new XMLHttpRequest();
+			xhr.open(settings.method, settings.url, settings.async);
+
+			// add authoisation header
+			if (settings.username) {
+				settings.headers.Authorization = btoa(settings.username + ":" + settings.password);
+			}
+
+			// headers
+			$.each(settings.headers, function (key, value) {
+				xhr.setRequestHeader(key, value);
+			});
+
+			// callbacks
+			xhr.onreadystatechange = function () {
+				if (this.readyState === 4) {
+					var type = this.status === 200 ? "success" : "error";
+					var response = xhr.responseText,
+					    callbacks = [];
+
+					// parse JSON
+					if (["json", null].includes(settings.dataType)) {
+						try {
+							response = JSON.parse(response);
+						} catch (e) {
+							// do nothing
+						}
+					}
+
+					// run callbacks
+					[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(function (callback) {
+						if (callback) {
+							callback.call(settings.context, response, xhr.status, xhr);
+						}
+					});
+				}
+			};
+			xhr.send(settings.processData ? undefined : settings.data);
+			return xhr;
+		}
+	};
+
+	$.get = function (url, data, success, type) {
+		var isFunc = data && $.isFunction(data);
+		return $.ajax((typeof url === 'undefined' ? 'undefined' : _typeof(url)) === "object" ? url : {
+			url: url,
+			data: isFunc ? {} : data,
+			success: isFunc ? data : success,
+			dataType: isFunc ? success : type
+		});
+	};
+
+	$.getScript = function (url, success) {
+		return $.ajax({
+			url: url,
+			dataType: "script",
+			success: success
+		});
+	};
+
+	$.fn.load = function (url, data, _success) {
+		var _this2 = this;
+
+		if (this[0]) {
+
+			// get selector from URL
+			var _url$split = url.split(" ", 2),
+			    _url$split2 = _slicedToArray(_url$split, 2),
+			    uri = _url$split2[0],
+			    selector = _url$split2[1];
+
+			// check for data
+
+
+			if ($.isFunction(data)) {
+				_success = data;
+				data = undefined;
+			}
+
+			// make AJAX request
+			$.ajax(uri, {
+				data: data,
+				type: data instanceof Object ? "POST" : "GET",
+				success: function success(response, status, xhr) {
+
+					// if a selector is specified, find it in the returned document
+					var html = "",
+					    i = _this2.length;
+
+					// refine by selector if supplied
+					if (selector) {
+						$(response).filter(selector).each(function () {
+							html += this.innerHTML;
+						});
+					} else {
+						html = response;
+					}
+
+					// set HTML to nodes in collection
+					while (i--) {
+						_this2[i].innerHTML = response;
+					}
+
+					// fire success callback on nodes
+					if (_success) {
+						_success(response, status, xhr);
+					}
+				}
+			});
+		}
+		return this;
+	};
+
+	$.param = function (obj) {
+		var params = [],
+		    add = function add(key, value, params) {
+			if ($.isArray(value) || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object") {
+				$.each(value, function (i, val) {
+					params = add(key + "[" + i + "]", val, params);
+				});
+			} else {
+				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
+			}
+			return params;
+		};
+
+		// process values
+		$.each(obj, function (i) {
+			params = add(i, this, params);
+		});
+		return params.join("&");
+	};
+
+	$.get = function (url, data, success, type) {
+		var isFunc = $.isFunction(data);
+		var settings = (typeof url === 'undefined' ? 'undefined' : _typeof(url)) === "object" ? url : {
+			url: url,
+			data: isFunc ? {} : data,
+			success: isFunc ? data : success,
+			dataType: isFunc ? success : type
+		};
+		settings.type = "POST";
+		return $.ajax(settings);
+	};
+
+	$.fn.serialize = function () {
+		var selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
+		    obj = this.is(selector) ? this.filter(selector) : $(selector, this);
+
+		var params = {};
+
+		// process values
+		obj.each(function () {
+			var value = $(this).val();
+			if (!this.disabled && value !== undefined) {
+				params[this.getAttribute("name")] = value;
+			}
+		});
+		return $.param(params);
+	};
+
+	$.fn.attr = function (prop, value) {
+		var _this3 = this;
+
+		var isArr = $.isArray(prop),
+		    i = void 0,
+		    events = void 0,
+		    arr = {};
+
+		// set properties
+		if (isArr || value || value === null) {
+			i = this.length, events = getEvents();
+
+			// normalise to array
+			if (!isArr) {
+				arr[prop] = value;
+				prop = arr;
+			}
+
+			while (i--) {
+				$.each(prop, function (key, val) {
+					if (events.includes(key)) {
+						$(_this3[i]).on(key, val);
+					} else if (key === "style") {
+						_this3[i].style.cssText = val;
+					} else if (key === "class") {
+						_this3[i].className = val;
+					} else if (key === "text") {
+						_this3[i].textContent = val;
+					} else if (value === null) {
+						_this3[i].removeAttribute(key);
+					} else {
+						_this3[i].setAttribute(key, val);
+					}
+				});
+			}
+			return this;
+
+			// retrieve properties
+		} else if (this[0]) {
+			if (prop === "style") {
+				return this[0].style.cssText;
+			}
+			if (prop === "class") {
+				return this[0].className;
+			}
+			return this[0].getAttribute(prop);
+		}
+	};
+
+	["addClass", "removeClass", "toggleClass"].forEach(function (name) {
+		$.fn[name] = function (cls) {
+
+			// remove "Class" from name for classList method
+			var func = name.substr(0, name.length - 5),
+			    i = this.length,
+			    n = void 0;
+
+			// split class
+			if (typeof cls === "string") {
+				cls = cls.split(" ").reverse(); // reverse as we add them backwards
+			}
+
+			// manage classes on nodes
+			while (i--) {
+				n = cls.length;
+				while (n--) {
+					this[i].classList[func](getVal(cls[n], this[i], n));
+				}
+			}
+			return this;
+		};
+	});
+
+	$.fn.css = function (props, value) {
+
+		// set the values
+		if (value !== undefined) {
+			return setCss(this, props, value);
+
+			// retrieve value from first property
+		} else if (this[0]) {
+			var name = props,
+			    i = void 0,
+			    style = getComputedStyle(this[0], ""),
+			    output = {},
+			    ret = false;
+
+			if (typeof name === "string") {
+				props = [name];
+				ret = true;
+			}
+			i = props.length;
+			while (i--) {
+				props[i] = dasherise(props[i]);
+				output[props[i]] = style.getPropertyValue(props[i]);
+				if (ret) {
+					return output[props[i]];
+				}
+			}
+			return output;
+		}
+	};
+
+	$.fn.data = function (name, data) {
+		var _this4 = this;
+
+		var temp = {},
+		    i = this.length;
+
+		// convert data to object
+		if ((typeof name === 'undefined' ? 'undefined' : _typeof(name)) === "object") {
+			data = name;
+		} else if (data !== undefined) {
+			temp[name] = data;
+			data = temp;
+		}
+		name = camelise(name);
+
+		// set value
+		if (data !== undefined) {
+			while (i--) {
+				$.each(data, function (key, value) {
+					_this4[i].dataset[camelise(key)] = (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object" ? JSON.stringify(value) : value;
+				});
+			}
+			return this;
+
+			// get value
+		} else if (this[0] && this[0].dataset[name]) {
+			try {
+				return JSON.parse(this[0].dataset[name]);
+			} catch (e) {
+				return this[0].dataset[name];
+			}
+		}
+	};
+
+	$.fn.hasClass = function (cls) {
+		var i = this.length;
+		while (i--) {
+			if (this[i].classList.contains(cls)) {
+				return true;
+			}
+		}
+		return false;
+	};
+
+	$.fn.prop = function (prop, value) {
+		prop = getProp(prop);
+
+		// set
+		if (value !== undefined) {
+			var i = this.length;
+			while (i--) {
+				this[i][prop] = value;
+			}
+			return this;
+
+			// get
+		} else if (this[0]) {
+			return this[0][prop];
+		}
+	};
+
+	$.fn.removeProp = function (prop) {
+		var i = this.length;
+		prop = getProp(prop);
+
+		while (i--) {
+			delete this[i][prop];
+		}
+		return this;
+	};
+
+	$.fn.val = function (value) {
+		var _this5 = this;
+
+		function getValue(value) {
+			if (value && !isNaN(value)) {
+				value = value % 1 === 0 ? parseInt(value) : parseFloat(value);
+			}
+			return value;
+		}
+
+		// set value
+		if (value !== undefined) {
+			var _ret = function () {
+				var i = _this5.length,
+				    val = void 0;
+				while (i--) {
+					if (_this5[i].multiple) {
+						val = $.map($.isArray(value) ? value : [value], function (item) {
+							return getValue(item);
+						});
+						$("option", _this5[i]).each(function () {
+							this.selected = val.includes(getValue(this.value));
+						});
+					} else {
+						_this5[i].value = getValue(value);
+					}
+				}
+				return {
+					v: _this5
+				};
+
+				// read value from first node
+			}();
+
+			if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+		} else if (this[0]) {
+
+			// get multiple values
+			if (this[0].multiple) {
+				var values = [];
+				$("option", this[0]).each(function () {
+					if (this.selected) {
+						values.push(getValue(this.value));
+					}
+				});
+				return values;
+
+				// get radio box value
+			} else if (this[0].type === "radio") {
+				var obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
+				return getValue(obj ? obj.value : undefined);
+
+				// get single value
+			} else if (this[0].type !== "checkbox" || this[0].checked) {
+				return getValue(this[0].value);
+			}
+		}
+	};
+
+	$.fn.each = function (callback) {
+		$.each(Array.from(this), callback);
+		return this;
+	};
+
+	$.fn.get = function (i) {
+		return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
+	};
+
+	$.fn.map = function (callback) {
+		var len = this.length;
+		var values = [],
+		    i = 0;
+
+		for (; i < len; i++) {
+			values.push(callback.call(this[i], i, this[i]));
+		}
+		return values;
+	};
+
+	$.fn.offset = function (coords) {
+		var doc = document.documentElement;
+		var rect = void 0,
+		    i = this.length,
+		    pos = void 0,
+		    parent = void 0;
+
+		// set
+		if (coords) {
+			while (i--) {
+
+				// if coords is callback, generate value
+				rect = this[i].getBoundingClientRect();
+				coords = getVal(coords, i, rect);
+
+				if (coords.top !== undefined && coords.left !== undefined) {
+
+					// set position relative if static
+					pos = this[i].style.position || "static";
+					if (pos === "static") {
+						this[i].style.position = "relative";
+					}
+
+					// set offset
+					this[i].style.top = parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top) + "px";
+					this[i].style.left = parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left) + "px";
+				}
+			}
+			return this;
+
+			// get
+		} else if (this[0]) {
+			pos = this[0].style.position;
+			rect = this[0].getBoundingClientRect();
+			return {
+				top: rect.top - (pos === "fixed" ? 0 : doc.scrollTop),
+				left: rect.left - (pos === "fixed" ? 0 : doc.scrollLeft)
+			};
+		}
+	};
+
+	$.fn.offsetParent = function () {
+		return $(this[0] ? this[0].offsetParent : null);
+	};
+
+	["scrollLeft", "scrollTop"].forEach(function (item) {
+		$.fn[item] = function (pos) {
+
+			// set
+			if (pos !== undefined) {
+				var i = this.length;
+				while (i--) {
+					this[i][item] = pos;
+				};
+				return this;
+
+				// get
+			} else if (this[0]) {
+				return this[0][item];
+			}
+		};
+	});
+
+	["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(function (dim) {
+
+		function getAdditionalLength(obj, wh, props) {
+			var style = getComputedStyle(obj);
+			var i = props.length,
+			    value = 0,
+			    suffix = void 0;
+
+			while (i--) {
+				suffix = props[i] === "border" ? "-width" : "";
+				value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-left" : "-top") + suffix)) || 0;
+				value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
+			}
+			return value;
+		}
+
+		$.fn[dim] = function (val) {
+			var valtype = typeof val === 'undefined' ? 'undefined' : _typeof(val),
+			    wh = dim.toLowerCase().includes("width") ? "width" : "height",
+			    // width or height
+			io = dim.includes("inner") ? "inner" : dim.includes("outer") ? "outer" : ""; // inner outer or neither
+			var i = this.length,
+			    value = void 0,
+			    whu = void 0,
+			    props = void 0,
+			    param = void 0;
+
+			// set value
+			if (val !== undefined && valtype !== "boolean") {
+				while (i--) {
+					value = getVal(val, this[i], i);
+					if (io) {
+						props = ["padding"];
+						if (io === "outer") {
+							props.push("border");
+						}
+						value -= getAdditionalLength(this[i], wh, props);
+					}
+					if (!isNaN(val)) {
+						value += "px";
+					}
+					this[i].style[wh] = value;
+				}
+				return this;
+
+				// get value
+			} else if (this[0]) {
+				whu = wh === "width" ? "Width" : "Height";
+
+				// document
+				if (this[0].nodeType === Node.DOCUMENT_NODE) {
+					return this[0].documentElement["scroll" + whu];
+
+					// element
+				} else if (!$.isWindow(this[0])) {
+					param = io === "outer" ? "offset" : "client";
+					value = this[0][param + whu];
+
+					// add padding on, or if outer and margins requested, add margins on
+					if (io === "" || io === "outer" && val === true) {
+						value -= getAdditionalLength(this[0], wh, [io === "" ? "padding" : "margin"]);
+					}
+					return value;
+
+					// window
+				} else if (io === "inner") {
+					return this[0].document.documentElement["client" + whu];
+				} else {
+					return this[0]["inner" + whu];
+				}
+			}
+		};
+	});
+
+	getEvents().forEach(function (event) {
+		$.fn[event] = function (callback) {
+			return callback ? this.on(event, callback) : this.trigger(event);
+		};
+	});
+
+	// add and remove event handlers
+	["on", "one", "off"].forEach(function (name) {
+		$.fn[name] = function (events, selector, data, callback) {
+			var i = this.length,
+			    e = void 0,
+			    fn = void 0,
+			    node = void 0;
+
+			events = events.split(" ");
+
+			// sort out args
+			if ($.isFunction(selector)) {
+				callback = selector;
+				selector = null;
+			} else if ($.isFunction(data)) {
+				callback = data;
+				data = null;
+			}
+
+			// attach event
+			while (i--) {
+				node = this[i];
+				e = events.length;
+				if (!node.events) {
+					node.events = [];
+				}
+
+				// record the original function
+				if (name !== "off") {
+					fn = function fn(evt) {
+						// delegate function
+						if (!selector || $(selector).is(evt.target)) {
+							if (data) {
+								// set data to event object
+								evt.data = data;
+							}
+							if (callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]) === false) {
+								evt.preventDefault();
+								evt.stopPropagation();
+							}
+						}
+					};
+					node.events.push({
+						events: events,
+						callback: callback,
+						func: fn
+					});
+
+					// trigger
+					while (e--) {
+						node.addEventListener(events[e], fn, name === "one" ? { once: true } : false);
+					}
+
+					// find the original function
+				} else if (node.events) {
+					while (e--) {
+						node.events.forEach(function (evt, i) {
+							var index = evt.events.indexOf(events[e]);
+							if (index !== -1 && evt.callback === callback) {
+								node.removeEventListener(events[e], evt.func);
+								node.events[i].events.splice(index, 1);
+								if (!node.events[i].events.length) {
+									node.events.splice(i, 1);
+								}
+							}
+						});
+					}
+				}
+			}
+			return this;
+		};
+	});
+
+	$.fn.trigger = function (name, data) {
+		var evt = new CustomEvent(name),
+		    i = this.length;
+
+		// copy extra data to event object
+		if (data) {
+			evt.args = data;
+		}
+		while (i--) {
+			this[i].dispatchEvent(evt);
+		}
+		return this;
+	};
+
+	$.fn.clone = function () {
+		var nodes = [],
+		    i = this.length;
+
+		while (i--) {
+			nodes[i] = this[i].cloneNode(true);
+		}
+		return $(nodes);
+	};
+
+	$.fn.empty = function () {
+		var i = this.length;
+		while (i--) {
+			this[i].innerHTML = "";
+		}
+		return this;
+	};
+
+	$.fn.html = function (html) {
+
+		// set
+		if (html !== undefined) {
+			var i = this.length;
+			while (i--) {
+				this[i].innerHTML = getVal(html, this[i], i);
+			}
+			return this;
+
+			// get
+		} else if (this[0]) {
+			return this[0].innerHTML;
+		}
+	};
+
+	$.each({
+		before: "beforeBegin",
+		prepend: "afterBegin",
+		append: "beforeEnd",
+		after: "afterEnd"
+	}, function (name, pos) {
+		$.fn[name] = function (html) {
+			var pre = ["before", "prepend"].includes(name),
+			    isFunc = $.isFunction(html);
+			var i = this.length,
+			    elems = $(),
+			    backwards = void 0,
+			    // for counting down
+			forwards = -1,
+			    // for counting up
+			obj = void 0;
+
+			if (!isFunc) {
+				$.each(arguments, function (i, arg) {
+					elems.add(arg);
+				});
+			}
+
+			while (i--) {
+				if (isFunc) {
+					elems = $(getVal(html, this[i], i));
+				}
+				backwards = elems.length;
+				while (pre ? backwards-- : ++forwards < backwards) {
+					// insert forwards or backwards?
+					obj = elems.get(pre ? backwards : forwards);
+
+					// clone if i !== 0
+					if (i) {
+						obj = obj.cloneNode(true);
+					}
+					this[i].insertAdjacentElement(pos, obj);
+				}
+			}
+			return this;
+		};
+	});
+
+	$.each({
+		insertBefore: "before",
+		prependTo: "prepend",
+		appendTo: "append",
+		insertAfter: "after"
+	}, function (name, func) {
+		$.fn[name] = function (selector) {
+			var i = this.length,
+			    obj = $(selector);
+
+			while (i--) {
+				obj[func](this[i]);
+			}
+			return this;
+		};
+	});
+
+	["remove", "detach"].forEach(function (func) {
+		$.fn[func] = function (selector) {
+			var i = this.length,
+			    nodes = [],
+			    obj = [];
+
+			// turn selector into dabby object
+			if (selector) {
+				selector = $(selector);
+			}
+
+			// detach selected nodes
+			while (i--) {
+				if (!selector || selector.is(this[i])) {
+					nodes.push(this[i].parentNode.removeChild(this[i]));
+				} else {
+					obj.push(this[i]);
+				}
+			}
+
+			// create a new dabby object to return
+			return $(func === "detach" ? nodes : obj);
+		};
+	});
+
+	// needs more understanding of how this is supposed to work!!!
+
+	/*["replaceWith", "replaceAll"].forEach(function (name) {
+ 	$.fn[name] = function (html) {
+ 		const all = name === "replaceAll",
+ 			isFunc = $.isFunction(html)
+ 		let i = this.length,
+ 			nodes = [],
+ 			replace = [],
+ 			n,
+ 			parent;
+ 
+ 		if (!isFunc) {
+ 			html = $(html);
+ 		}
+ 		while (i--) {
+ 
+ 			replace = isFunc ? getVal(html, i, this[i]) : html;
+ 			n = replace.length;
+ 			parent = this[i].parentNode;
+ 			while (n--) {
+ 				if (n) {
+ 					this[i].insertAdjacentElement("beforebegin", replace.get(n));
+ 				} else {
+ 					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
+ 				}
+ 			}
+ 		}
+ 		return all ? this : nodes;
+ 	};
+ });*/
+
+	$.fn.slice = function (start, end) {
+		return $(this.get().slice(start, end));
+	};
+
+	$.fn.text = function (text) {
+		var get = text === undefined;
+		var len = this.length,
+		    output = [],
+		    i = 0;
+		for (; i < len; i++) {
+			if (get) {
+				output.push(this[i].textContent);
+			} else {
+				this[i].textContent = getVal(text, this[i], i);
+			}
+		}
+		return get ? output.join(" ") : this;
+	};
+
+	$.fn.unwrap = function (selector) {
+		return this.parent(selector).not("body").each(function () {
+			var item = this,
+			    parent = item.parentNode;
+
+			$(item.childNodes).each(function (i, node) {
+				parent.insertBefore(node, item);
+			});
+			return $(parent.removeChild(item));
+		});
+	};
+
+	$.fn.wrap = function (html) {
+		var i = this.length;
+
+		while (i--) {
+			$(this[i]).wrapAll(getVal(html, this[i], i));
+		}
+		return this;
+	};
+
+	$.fn.wrapAll = function (html) {
+		if (this[0]) {
+
+			// set variables
+			var len = this.length,
+			    i = 0,
+			    node = $(getVal(html, this[0])).get(0).cloneNode(true);
+
+			// insert clone into parent
+			this[0].parentNode.insertBefore(node, null);
+
+			// find innermost child of node
+			while (node.firstElementChild) {
+				node = node.firstElementChild;
+			}
+
+			// attach nodes to the new node
+			for (; i < len; i++) {
+				node.appendChild(this[i]);
+			}
+		}
+		return this;
+	};
+
+	$.fn.add = function (nodes) {
+		nodes = $(nodes);
+		var len = this.length,
+		    i = nodes.length;
+
+		this.length += i;
+		while (i--) {
+			this[i + len] = nodes[i];
+		}
+		return this;
+	};
+
+	$.fn.children = function (selector) {
+		var nodes = [],
+		    i = this.length;
+
+		while (i--) {
+			nodes = nodes.concat(Array.from(this[i].children));
+		}
+
+		// filter nodes by selector
+		if (selector) {
+			nodes = filterNodes(nodes, selector);
+		}
+		return $(nodes);
+	};
+
+	$.fn.eq = function (i) {
+		var key = i < 0 ? i + this.length : i;
+		return $(this[key] || null);
+	};
+
+	["filter", "not"].forEach(function (name) {
+		$.fn[name] = function (selector) {
+			return $(filterNodes(this, selector, name === "not"));
+		};
+	});
+
+	$.fn.find = function (selector) {
+		return $(selector, this);
+	};
+
+	$.fn.first = function () {
+		return $(this[0]);
+	};
+
+	$.fn.has = function (selector) {
+		return $([].filter.call(this, function (node) {
+			return $(selector, node).length !== 0;
+		}));
+	};
+
+	$.fn.index = function (selector) {
+		var index = -1,
+		    i = this.length,
+		    elem = this[0],
+		    node = void 0;
+
+		if (selector) {
+			node = $(selector).get(0);
+			while (i--) {
+				if (this[i].isSameNode(node)) {
+					return i;
+				}
+			}
+		} else if (elem && elem.parentNode) {
+			index = 0;
+			while (elem = elem.previousSibling) {
+				index++;
+			}
+		}
+		return index;
+	};
+
+	$.fn.is = function (selector) {
+		return filterNodes(this, selector).length !== 0;
+	};
+
+	$.fn.last = function () {
+		return this.eq(-1);
+	};
+
+	["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
+		$.fn[func] = function (selector, filter) {
+			var next = func.includes("next"),
+			    all = func.includes("All"),
+			    until = func.includes("Until"),
+			    method = next ? "nextElementSibling" : "previousElementSibling";
+			var nodes = [],
+			    i = this.length,
+			    sibling = void 0;
+
+			// look through each node and get siblings
+			while (i--) {
+				sibling = this[i][method];
+				while (sibling) {
+					nodes.push(sibling);
+					if (all || until && filterNodes(sibling, selector).length) {
+						break;
+					} else {
+						sibling = sibling[method];
+					}
+				}
+			}
+
+			// swap args for *Until methods
+			if (until) {
+				selector = filter;
+			}
+
+			// filter siblings by selector
+			if (selector) {
+				nodes = filterNodes(nodes, selector);
+			}
+
+			// return new collection
+			return $(nodes);
+		};
+	});
+
+	["parent", "parents", "parentsUntil"].forEach(function (func) {
+		$.fn[func] = function (selector, filter) {
+			var all = func.includes("s"),
+			    until = func.includes("U");
+			var nodes = [],
+			    i = this.length,
+			    parent = void 0;
+
+			while (i--) {
+				parent = this[i].parentNode;
+				while (parent) {
+					nodes.push(parent);
+					if (!all || until && filterNodes(parent, selector)) {
+						break;
+					} else {
+						parent = parent.parentNode;
+					}
+				}
+			}
+			if (selector) {
+				nodes = filterNodes(nodes, selector);
+			}
+			return $(nodes);
+		};
+	});
+
+	$.fn.siblings = function (selector) {
+		var _this6 = this;
+
+		var i = this.length,
+		    nodes = [];
+
+		while (i--) {
+			this[i].parentNode.childNodes.forEach(function (child) {
+				if (!child.isSameNode(_this6[i])) {
+					nodes.push(child);
+				}
+			});
+		}
+		return $(selector ? filterNodes(nodes, selector) : nodes);
+	};
+
+	$.extend = function (obj) {
+		for (var _len = arguments.length, arrs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+			arrs[_key - 1] = arguments[_key];
+		}
+
+		var len = arrs.length;
+		var i = 0,
+		    keys = void 0,
+		    k = void 0;
+
+		for (; i < len; i++) {
+			keys = Object.keys(arrs[i]);
+			k = keys.length;
+			while (k--) {
+				obj[keys[k]] = arrs[i][keys[k]];
+			}
+		}
+		return obj;
+	};
+
+	$.isArray = function (arr) {
+		return Array.isArray(arr);
+	};
+
+	$.isFunction = function (func) {
+		return func && func.constructor === Function;
+	};
+
+	$.isWindow = function (obj) {
+		return obj !== null && obj === obj.window;
+	};
+
+	$.map = function (obj, callback) {
+		var keys = Object.keys(obj),
+		    len = keys.length;
+		var arr = [],
+		    i = 0,
+		    result = void 0;
+
+		for (; i < len; i++) {
+			result = callback.call(window, obj[keys[i]], keys[i]);
+			if (![null, undefined].includes(result)) {
+				arr.push(result);
+			}
+		}
+		return arr;
+	};
+	return dabby;
+});

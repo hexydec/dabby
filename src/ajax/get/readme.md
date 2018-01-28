@@ -1,4 +1,4 @@
-# .get()
+# $.get()
 
 Shorthand to make AJAX requests using the GET method.
 
@@ -31,4 +31,4 @@ $.get(
 ```
 ## Differences to jQuery
 
-None.
+Dabby doesn't return a deferred object like jQuery does, so you cannot chain any deferred methods to this method.
