@@ -1,8 +1,8 @@
 QUnit.module("Ajax");
 
 QUnit.test("$.ajax", function (assert) {
-	assert.expect(15);
-	var done = assert.async(8);
+	assert.expect(17);
+	var done = assert.async(9);
 	$.ajax("../tests/assets/sample.html", {success: function (response, status) {
 		assert.equal(status, 200, "Can make an AJAX request");
 		assert.ok(response.indexOf("Sample HTML File") !== -1, "AJAX request returned correct file");
@@ -40,6 +40,12 @@ QUnit.test("$.ajax", function (assert) {
 
 	// syncronous
 	$.ajax("../tests/assets/sample.js", {success: function (response, status) {
+		assert.equal(status, 200, "Can include a javascript file");
+		assert.ok(dabbyScriptSuccess, "Javascript file included successfully");
+		done();
+	}});
+
+	$.ajax("../tests/assets/sample.js?v=1.0.0", {success: function (response, status) {
 		assert.equal(status, 200, "Can include a javascript file");
 		assert.ok(dabbyScriptSuccess, "Javascript file included successfully");
 		done();

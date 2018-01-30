@@ -5,7 +5,7 @@ A lightweight modular jQuery clone/alternative library built for modern browsers
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
 ![Size Minified](https://img.shields.io/badge/Size%20(Minified)-14.0kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-5.16kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-5.17kb-brightgreen.svg)
 
 **This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
 
@@ -21,7 +21,9 @@ Dabby.js is a jQuery alternative designed to be as simple and streamlined as pos
 
 ## I'm sold, how do I get started?
 
-Makes sure the following software is installed:
+Want to get started quickly? [Download the ES5 bundle here](https://raw.githubusercontent.com/hexydec/dabby/master/dist/dabby.es5.min.js). There is also an [ES6 Bundle](https://raw.githubusercontent.com/hexydec/dabby/master/dist/dabby.min.js).
+
+Want build the bundle yourself? Make sure the following software is installed:
 
 - Git
 - [NodeJS](http://nodejs.org/)
@@ -45,8 +47,8 @@ Then run it in the browser, or through your test suite to highlight any other is
 Dabby.js compiles to both ES6 and ES5 bundles, to support all browsers, include Dabby.js like this:
 
 ```html
-<script src="dist/dabby.js" type="module"></script>
 <script src="dist/dabby.es5.js" nomodule></script>
+<script src="dist/dabby.js" type="module"></script>
 ```
 
 ## Browser Support

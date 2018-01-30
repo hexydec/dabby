@@ -1,4 +1,4 @@
-/*! Dabby.js v1.0.0 - 2018-01-28 by Will Earp */
+/*! Dabby.js v1.0.0 - 2018-01-30 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -235,7 +235,7 @@
 		}, settings);
 	
 		// determine datatype
-		if (!settings.dataType && settings.url.substr(-3) === ".js") {
+		if (!settings.dataType && /\.js($|\?)/.test(settings.url)) {
 			settings.dataType = "script";
 		}
 	

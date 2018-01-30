@@ -1,6 +1,5 @@
 if (!String.prototype.includes) {
 	String.prototype.includes = function(search, start) {
-		"use strict";
 		if (typeof start !== "number") {
 			start = 0;
 		}

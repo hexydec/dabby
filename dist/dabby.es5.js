@@ -1,93 +1,20 @@
-'use strict';
+"use strict";
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v1.0.0 - 2018-01-28 by Will Earp */
+/*! Dabby.js v1.0.0 - 2018-01-30 by Will Earp */
 
 if (!Array.from) {
-	Array.from = function () {
-		var toStr = Object.prototype.toString;
-		var isCallable = function isCallable(fn) {
-			return typeof fn === 'function' || toStr.call(fn) === '[object Function]';
-		};
-		var toInteger = function toInteger(value) {
-			var number = Number(value);
-			if (isNaN(number)) {
-				return 0;
-			}
-			if (number === 0 || !isFinite(number)) {
-				return number;
-			}
-			return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
-		};
-		var maxSafeInteger = Math.pow(2, 53) - 1;
-		var toLength = function toLength(value) {
-			var len = toInteger(value);
-			return Math.min(Math.max(len, 0), maxSafeInteger);
-		};
-
-		// The length property of the from method is 1.
-		return function from(arrayLike /*, mapFn, thisArg */) {
-			// 1. Let C be the this value.
-			var C = this;
-
-			// 2. Let items be ToObject(arrayLike).
-			var items = Object(arrayLike);
-
-			// 3. ReturnIfAbrupt(items).
-			if (arrayLike == null) {
-				throw new TypeError('Array.from requires an array-like object - not null or undefined');
-			}
-
-			// 4. If mapfn is undefined, then let mapping be false.
-			var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
-			var T;
-			if (typeof mapFn !== 'undefined') {
-				// 5. else
-				// 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
-				if (!isCallable(mapFn)) {
-					throw new TypeError('Array.from: when provided, the second argument must be a function');
-				}
-
-				// 5. b. If thisArg was supplied, let T be thisArg; else let T be undefined.
-				if (arguments.length > 2) {
-					T = arguments[2];
-				}
-			}
-
-			// 10. Let lenValue be Get(items, "length").
-			// 11. Let len be ToLength(lenValue).
-			var len = toLength(items.length);
-
-			// 13. If IsConstructor(C) is true, then
-			// 13. a. Let A be the result of calling the [[Construct]] internal method
-			// of C with an argument list containing the single item len.
-			// 14. a. Else, Let A be ArrayCreate(len).
-			var A = isCallable(C) ? Object(new C(len)) : new Array(len);
-
-			// 16. Let k be 0.
-			var k = 0;
-			// 17. Repeat, while k < len… (also steps a - h)
-			var kValue;
-			while (k < len) {
-				kValue = items[k];
-				if (mapFn) {
-					A[k] = typeof T === 'undefined' ? mapFn(kValue, k) : mapFn.call(T, kValue, k);
-				} else {
-					A[k] = kValue;
-				}
-				k += 1;
-			}
-			// 18. Let putStatus be Put(A, "length", len, true).
-			A.length = len;
-			// 20. Return A.
-			return A;
-		};
-	}();
+	Array.from = function (arrayLike, mapFn, thisArg) {
+		var arr = [].slice.call(arrayLike);
+		if (typeof mapFn === "function") {
+			arr = arr.map(mapFn, thisArg);
+		}
+		return arr;
+	};
 }
-
 if (!Array.prototype.includes) {
 	Object.defineProperty(Array.prototype, "includes", {
 		value: function value(searchElement, fromIndex) {
@@ -168,8 +95,6 @@ if (!NodeList.prototype.forEach) {
 
 if (!String.prototype.includes) {
 	String.prototype.includes = function (search, start) {
-		"use strict";
-
 		if (typeof start !== "number") {
 			start = 0;
 		}
@@ -392,10 +317,10 @@ if (!String.prototype.includes) {
 	$.ajax = function (url, settings) {
 
 		// normalise args
-		if ((typeof url === 'undefined' ? 'undefined' : _typeof(url)) === "object") {
+		if ((typeof url === "undefined" ? "undefined" : _typeof(url)) === "object") {
 			settings = url;
 		} else {
-			if ((typeof settings === 'undefined' ? 'undefined' : _typeof(settings)) !== "object") {
+			if ((typeof settings === "undefined" ? "undefined" : _typeof(settings)) !== "object") {
 				settings = {};
 			}
 			settings.url = url;
@@ -424,7 +349,7 @@ if (!String.prototype.includes) {
 		}, settings);
 
 		// determine datatype
-		if (!settings.dataType && settings.url.substr(-3) === ".js") {
+		if (!settings.dataType && /\.js($|\?)/.test(settings.url)) {
 			settings.dataType = "script";
 		}
 
@@ -520,7 +445,7 @@ if (!String.prototype.includes) {
 
 	$.get = function (url, data, success, type) {
 		var isFunc = data && $.isFunction(data);
-		return $.ajax((typeof url === 'undefined' ? 'undefined' : _typeof(url)) === "object" ? url : {
+		return $.ajax((typeof url === "undefined" ? "undefined" : _typeof(url)) === "object" ? url : {
 			url: url,
 			data: isFunc ? {} : data,
 			success: isFunc ? data : success,
@@ -592,7 +517,7 @@ if (!String.prototype.includes) {
 	$.param = function (obj) {
 		var params = [],
 		    add = function add(key, value, params) {
-			if ($.isArray(value) || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object") {
+			if ($.isArray(value) || (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object") {
 				$.each(value, function (i, val) {
 					params = add(key + "[" + i + "]", val, params);
 				});
@@ -611,7 +536,7 @@ if (!String.prototype.includes) {
 
 	$.get = function (url, data, success, type) {
 		var isFunc = $.isFunction(data);
-		var settings = (typeof url === 'undefined' ? 'undefined' : _typeof(url)) === "object" ? url : {
+		var settings = (typeof url === "undefined" ? "undefined" : _typeof(url)) === "object" ? url : {
 			url: url,
 			data: isFunc ? {} : data,
 			success: isFunc ? data : success,
@@ -747,7 +672,7 @@ if (!String.prototype.includes) {
 		    i = this.length;
 
 		// convert data to object
-		if ((typeof name === 'undefined' ? 'undefined' : _typeof(name)) === "object") {
+		if ((typeof name === "undefined" ? "undefined" : _typeof(name)) === "object") {
 			data = name;
 		} else if (data !== undefined) {
 			temp[name] = data;
@@ -759,7 +684,7 @@ if (!String.prototype.includes) {
 		if (data !== undefined) {
 			while (i--) {
 				$.each(data, function (key, value) {
-					_this4[i].dataset[camelise(key)] = (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object" ? JSON.stringify(value) : value;
+					_this4[i].dataset[camelise(key)] = (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" ? JSON.stringify(value) : value;
 				});
 			}
 			return this;
@@ -845,7 +770,7 @@ if (!String.prototype.includes) {
 				// read value from first node
 			}();
 
-			if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+			if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
 		} else if (this[0]) {
 
 			// get multiple values
@@ -970,7 +895,7 @@ if (!String.prototype.includes) {
 		}
 
 		$.fn[dim] = function (val) {
-			var valtype = typeof val === 'undefined' ? 'undefined' : _typeof(val),
+			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
 			    wh = dim.toLowerCase().includes("width") ? "width" : "height",
 			    // width or height
 			io = dim.includes("inner") ? "inner" : dim.includes("outer") ? "outer" : ""; // inner outer or neither

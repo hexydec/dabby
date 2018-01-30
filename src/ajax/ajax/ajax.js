@@ -33,7 +33,7 @@ $.ajax = function (url, settings) {
 	}, settings);
 
 	// determine datatype
-	if (!settings.dataType && settings.url.substr(-3) === ".js") {
+	if (!settings.dataType && /\.js($|\?)/.test(settings.url)) {
 		settings.dataType = "script";
 	}
 
