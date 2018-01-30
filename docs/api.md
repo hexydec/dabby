@@ -5,6 +5,7 @@
 The library supports the following methods:
 
 ### Core
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | [$()](../src/readme.md)					| Create a Dabby collection from nodes, selectors, or HTML	|
@@ -13,6 +14,7 @@ The library supports the following methods:
 | [.map()](../src/core/map/readme.md)		| Map a callback function onto each item in a Dabby object	|
 
 ### Ajax
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | [$.ajax()](../src/ajax/ajax/readme.md)	| Make AJAX requests										|
@@ -24,6 +26,7 @@ The library supports the following methods:
 | .serialize()								| Serialize the value of form elements into a query string	|
 
 ### Attributes
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | .attr()									| Get/set HTML attributes									|
@@ -37,6 +40,7 @@ The library supports the following methods:
 | .toggleClass()							| Toggle a class on and off									|
 
 ### Dimensions
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | .offset()									| Get/set the top and left position							|
@@ -51,6 +55,7 @@ The library supports the following methods:
 | .scrollTop()								| Get/set the scrollTop attribute							|
 
 ### Events
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | .on()										| Attach a callback to an event on elements or their parents|
@@ -83,6 +88,7 @@ The library supports the following methods:
 | .submit()									| Trigger the submit event on the supplied nodes			|
 
 ### Manipulation
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | .clone()									| Clone a collection										|
@@ -105,6 +111,7 @@ The library supports the following methods:
 | .wrapAll()								| Wrap all nodes in a collection with the supplied node(s)	|
 
 ### Traversal
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | .add()									| Add nodes to a collection									|
@@ -129,6 +136,7 @@ The library supports the following methods:
 | .siblings()								| Get all siblings of the nodes in a collection				|
 
 ### Utilities
+
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | $.each()									| Apply a callback function to an array or object			|
