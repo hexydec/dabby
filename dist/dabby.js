@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.0 - 2018-01-30 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-03 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -46,7 +46,7 @@
 	}
 	
 	function getEvents() {
-		return ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
+		return ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
 	}
 	
 	function getProp(prop) {
@@ -505,7 +505,7 @@
 			while (i--) {
 				n = cls.length;
 				while (n--) {
-					this[i].classList[func](getVal(cls[n], this[i], n));
+					this[i].classList[func](getVal(cls[n], this[i], n, this[i].className));
 				}
 			}
 			return this;
@@ -821,8 +821,8 @@
 	});
 	
 	getEvents().forEach(function (event) {
-		$.fn[event] = function (callback) {
-			return callback ? this.on(event, callback) : this.trigger(event);
+		$.fn[event] = function (data, callback) {
+			return data ? this.on(event, data, callback) : this.trigger(event);
 		};
 	});
 	
@@ -960,7 +960,7 @@
 				forwards = -1, // for counting up
 				obj;
 	
-			if (!isFunc) {
+			if (!isFunc) { // multiple arguments containing nodes?
 				$.each(arguments, function (i, arg) {
 					elems.add(arg);
 				});
@@ -968,7 +968,7 @@
 	
 			while (i--) {
 				if (isFunc) {
-					elems = $(getVal(html, this[i], i));
+					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
 				backwards = elems.length;
 				while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
@@ -1123,8 +1123,8 @@
 		return this;
 	}
 	
-	$.fn.add = function (nodes) {
-		nodes = $(nodes);
+	$.fn.add = function (nodes, context) {
+		nodes = $(nodes, context);
 		let len = this.length,
 			i = nodes.length;
 	
@@ -1146,6 +1146,27 @@
 		// filter nodes by selector
 		if (selector) {
 			nodes = filterNodes(nodes, selector);
+		}
+		return $(nodes);
+	};
+	
+	$.fn.closest = function (selector) {
+		let i = this.length,
+			nodes = [],
+			parents,
+			node;
+	
+		while (i--) {
+			parents = [];
+			node = this[i];
+			while (node) {
+				parents.push(node);
+				node = node.parentNode;
+			}
+			parents = filterNodes(parents, selector);
+			if (parents[0]) {
+				nodes.push(parents[0]);
+			}
 		}
 		return $(nodes);
 	};

@@ -13,7 +13,7 @@ $.each({
 			forwards = -1, // for counting up
 			obj;
 
-		if (!isFunc) {
+		if (!isFunc) { // multiple arguments containing nodes?
 			$.each(arguments, function (i, arg) {
 				elems.add(arg);
 			});
@@ -21,7 +21,7 @@ $.each({
 
 		while (i--) {
 			if (isFunc) {
-				elems = $(getVal(html, this[i], i));
+				elems = $(getVal(html, this[i], i, this[i].innerHTML));
 			}
 			backwards = elems.length;
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?

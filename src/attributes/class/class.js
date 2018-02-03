@@ -15,7 +15,7 @@
 		while (i--) {
 			n = cls.length;
 			while (n--) {
-				this[i].classList[func](getVal(cls[n], this[i], n));
+				this[i].classList[func](getVal(cls[n], this[i], n, this[i].className));
 			}
 		}
 		return this;

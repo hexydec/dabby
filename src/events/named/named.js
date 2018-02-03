@@ -1,5 +1,5 @@
 getEvents().forEach(function (event) {
-	$.fn[event] = function (callback) {
-		return callback ? this.on(event, callback) : this.trigger(event);
+	$.fn[event] = function (data, callback) {
+		return data ? this.on(event, data, callback) : this.trigger(event);
 	};
 });

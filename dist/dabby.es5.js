@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.0 - 2018-01-30 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-03 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -159,7 +159,7 @@ if (!String.prototype.includes) {
 	}
 
 	function getEvents() {
-		return ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
+		return ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
 	}
 
 	function getProp(prop) {
@@ -628,7 +628,7 @@ if (!String.prototype.includes) {
 			while (i--) {
 				n = cls.length;
 				while (n--) {
-					this[i].classList[func](getVal(cls[n], this[i], n));
+					this[i].classList[func](getVal(cls[n], this[i], n, this[i].className));
 				}
 			}
 			return this;
@@ -953,8 +953,8 @@ if (!String.prototype.includes) {
 	});
 
 	getEvents().forEach(function (event) {
-		$.fn[event] = function (callback) {
-			return callback ? this.on(event, callback) : this.trigger(event);
+		$.fn[event] = function (data, callback) {
+			return data ? this.on(event, data, callback) : this.trigger(event);
 		};
 	});
 
@@ -1097,6 +1097,7 @@ if (!String.prototype.includes) {
 			obj = void 0;
 
 			if (!isFunc) {
+				// multiple arguments containing nodes?
 				$.each(arguments, function (i, arg) {
 					elems.add(arg);
 				});
@@ -1104,7 +1105,7 @@ if (!String.prototype.includes) {
 
 			while (i--) {
 				if (isFunc) {
-					elems = $(getVal(html, this[i], i));
+					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
 				backwards = elems.length;
 				while (pre ? backwards-- : ++forwards < backwards) {
@@ -1260,8 +1261,8 @@ if (!String.prototype.includes) {
 		return this;
 	};
 
-	$.fn.add = function (nodes) {
-		nodes = $(nodes);
+	$.fn.add = function (nodes, context) {
+		nodes = $(nodes, context);
 		var len = this.length,
 		    i = nodes.length;
 
@@ -1283,6 +1284,27 @@ if (!String.prototype.includes) {
 		// filter nodes by selector
 		if (selector) {
 			nodes = filterNodes(nodes, selector);
+		}
+		return $(nodes);
+	};
+
+	$.fn.closest = function (selector) {
+		var i = this.length,
+		    nodes = [],
+		    parents = void 0,
+		    node = void 0;
+
+		while (i--) {
+			parents = [];
+			node = this[i];
+			while (node) {
+				parents.push(node);
+				node = node.parentNode;
+			}
+			parents = filterNodes(parents, selector);
+			if (parents[0]) {
+				nodes.push(parents[0]);
+			}
 		}
 		return $(nodes);
 	};

@@ -1,5 +1,5 @@
-$.fn.add = function (nodes) {
-	nodes = $(nodes);
+$.fn.add = function (nodes, context) {
+	nodes = $(nodes, context);
 	let len = this.length,
 		i = nodes.length;
 
