@@ -23,4 +23,9 @@ QUnit.test("setCss", function (assert) {
 	rmain.style.cssText = "";
 	setCss(main, propsCC);
 	assert.deepEqual(main.css(Object.keys(props)), output, "Can set multiple camelCase CSS properties");
+	setCss(main, "borderLeftColor", function (index, current) {
+		assert.equal(current, "red", "Callback function receives current value");
+		return "green";
+	});
+	assert.equal(rmain.style.borderLeftColor, "green", "Can set CSS property through a callback function");
 });

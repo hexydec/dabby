@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.0 - 2018-02-03 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-04 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -103,7 +103,7 @@
 				remove = props[keys[k]] === "";
 				dabby[i].style[remove ? "removeProperty" : "setProperty"](
 					dasherise(keys[k]),
-					remove ? undefined : getVal(props[keys[k]], dabby[i], k)
+					remove ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]])
 				);
 			}
 		}

@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.0 - 2018-02-03 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-04 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -214,7 +214,7 @@ if (!String.prototype.includes) {
 			i = dabby.length;
 			while (i--) {
 				remove = props[keys[k]] === "";
-				dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), remove ? undefined : getVal(props[keys[k]], dabby[i], k));
+				dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), remove ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]));
 			}
 		}
 		return dabby;
