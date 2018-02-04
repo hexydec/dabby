@@ -1,6 +1,12 @@
-function filterNodes(dabby, filter, not) {
+function filterNodes(dabby, filter, context, not) {
 	let func,
 		nodes = Array.from(dabby);
+
+	// sort out args
+	if (typeof context === "boolean") {
+		not = context;
+		context = null;
+	}
 
 	// function
 	if ($.isFunction(filter)) {
@@ -8,7 +14,7 @@ function filterNodes(dabby, filter, not) {
 
 	// nodes
 	} else {
-		filter = $(filter).get();
+		filter = $(filter, context).get();
 		func = node => {
 			let i = filter.length;
 			while (i--) {

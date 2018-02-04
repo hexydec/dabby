@@ -37,8 +37,8 @@ let domready = false,
 			// CSS selector
 			} else if (!selector.includes("<")) {
 				context = context || document;
-				$(context).each(function () {
-					nodes = nodes.concat(Array.from(this.querySelectorAll(selector)));
+				$(context).each((i, obj) => {
+					nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
 				});
 
 			// create a single node and attach properties

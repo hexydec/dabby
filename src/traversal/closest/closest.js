@@ -1,4 +1,4 @@
-$.fn.closest = function (selector) {
+$.fn.closest = function (selector, context) {
 	let i = this.length,
 		nodes = [],
 		parents,
@@ -11,7 +11,7 @@ $.fn.closest = function (selector) {
 			parents.push(node);
 			node = node.parentNode;
 		}
-		parents = filterNodes(parents, selector);
+		parents = filterNodes(parents, selector, context);
 		if (parents[0]) {
 			nodes.push(parents[0]);
 		}

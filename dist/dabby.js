@@ -21,9 +21,15 @@
 		return prop.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase());
 	}
 	
-	function filterNodes(dabby, filter, not) {
+	function filterNodes(dabby, filter, context, not) {
 		let func,
 			nodes = Array.from(dabby);
+	
+		// sort out args
+		if (typeof context === "boolean") {
+			not = context;
+			context = null;
+		}
 	
 		// function
 		if ($.isFunction(filter)) {
@@ -31,7 +37,7 @@
 	
 		// nodes
 		} else {
-			filter = $(filter).get();
+			filter = $(filter, context).get();
 			func = node => {
 				let i = filter.length;
 				while (i--) {
@@ -149,8 +155,8 @@
 				// CSS selector
 				} else if (!selector.includes("<")) {
 					context = context || document;
-					$(context).each(function () {
-						nodes = nodes.concat(Array.from(this.querySelectorAll(selector)));
+					$(context).each((i, obj) => {
+						nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
 					});
 	
 				// create a single node and attach properties
@@ -1150,7 +1156,7 @@
 		return $(nodes);
 	};
 	
-	$.fn.closest = function (selector) {
+	$.fn.closest = function (selector, context) {
 		let i = this.length,
 			nodes = [],
 			parents,
@@ -1163,7 +1169,7 @@
 				parents.push(node);
 				node = node.parentNode;
 			}
-			parents = filterNodes(parents, selector);
+			parents = filterNodes(parents, selector, context);
 			if (parents[0]) {
 				nodes.push(parents[0]);
 			}
