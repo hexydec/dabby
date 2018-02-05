@@ -1,8 +1,8 @@
-/*! Dabby.js v0.9.0 - 2018-02-04 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-05 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
-		define(function() {
+		define(() => {
 			return factory(global);
 		});
 	} else if (typeof exports !== "undefined") {
@@ -274,10 +274,10 @@
 			$.each({
 				load: "success",
 				error: "error"
-			}, function (key, value) {
-				script.addEventListener(key, function () {
-					var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
-					[value, "complete"].forEach(function (name) {
+			}, (key, value) => {
+				script.addEventListener(key, () => {
+					let response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
+					[value, "complete"].forEach(name => {
 						if (settings[name]) {
 							settings[name].call(settings.context, response, value === "success" ? 200 : 400);
 						}
@@ -301,7 +301,7 @@
 			}
 	
 			// headers
-			$.each(settings.headers, function (key, value) {
+			$.each(settings.headers, (key, value) => {
 				xhr.setRequestHeader(key, value);
 			});
 	
@@ -322,7 +322,7 @@
 					}
 	
 					// run callbacks
-					[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(function (callback) {
+					[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(callback => {
 						if (callback) {
 							callback.call(settings.context, response, xhr.status, xhr);
 						}
@@ -412,8 +412,8 @@
 			};
 	
 		// process values
-		$.each(obj, function (i) {
-			params = add(i, this, params);
+		$.each(obj, (key, item) => {
+			params = add(key, item, params);
 		});
 		return params.join("&");
 	};
@@ -826,7 +826,7 @@
 		};
 	});
 	
-	getEvents().forEach(function (event) {
+	getEvents().forEach(event => {
 		$.fn[event] = function (data, callback) {
 			return data ? this.on(event, data, callback) : this.trigger(event);
 		};
@@ -967,7 +967,7 @@
 				obj;
 	
 			if (!isFunc) { // multiple arguments containing nodes?
-				$.each(arguments, function (i, arg) {
+				$.each(arguments, (i, arg) => {
 					elems.add(arg);
 				});
 			}
@@ -1032,38 +1032,6 @@
 			return $(func === "detach" ? nodes : obj);
 		};
 	});
-	
-	// needs more understanding of how this is supposed to work!!!
-	
-	/*["replaceWith", "replaceAll"].forEach(function (name) {
-		$.fn[name] = function (html) {
-			const all = name === "replaceAll",
-				isFunc = $.isFunction(html)
-			let i = this.length,
-				nodes = [],
-				replace = [],
-				n,
-				parent;
-	
-			if (!isFunc) {
-				html = $(html);
-			}
-			while (i--) {
-	
-				replace = isFunc ? getVal(html, i, this[i]) : html;
-				n = replace.length;
-				parent = this[i].parentNode;
-				while (n--) {
-					if (n) {
-						this[i].insertAdjacentElement("beforebegin", replace.get(n));
-					} else {
-						nodes[i] = parent.replaceChild(replace.get(n), this[i]);
-					}
-				}
-			}
-			return all ? this : nodes;
-		};
-	});*/
 	
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));
@@ -1197,8 +1165,8 @@
 	};
 	
 	$.fn.has = function (selector) {
-		return $([].filter.call(this, function (node) {
-			return $(selector, node).length !== 0;
+		return $(this.get().filter(node => {
+			return $(selector, node).length > 0;
 		}));
 	};
 	

@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.0 - 2018-02-04 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-05 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -15,6 +15,7 @@ if (!Array.from) {
 		return arr;
 	};
 }
+
 if (!Array.prototype.includes) {
 	Object.defineProperty(Array.prototype, "includes", {
 		value: function value(searchElement, fromIndex) {
@@ -534,8 +535,8 @@ if (!String.prototype.includes) {
 		};
 
 		// process values
-		$.each(obj, function (i) {
-			params = add(i, this, params);
+		$.each(obj, function (key, item) {
+			params = add(key, item, params);
 		});
 		return params.join("&");
 	};
@@ -1171,38 +1172,6 @@ if (!String.prototype.includes) {
 		};
 	});
 
-	// needs more understanding of how this is supposed to work!!!
-
-	/*["replaceWith", "replaceAll"].forEach(function (name) {
- 	$.fn[name] = function (html) {
- 		const all = name === "replaceAll",
- 			isFunc = $.isFunction(html)
- 		let i = this.length,
- 			nodes = [],
- 			replace = [],
- 			n,
- 			parent;
- 
- 		if (!isFunc) {
- 			html = $(html);
- 		}
- 		while (i--) {
- 
- 			replace = isFunc ? getVal(html, i, this[i]) : html;
- 			n = replace.length;
- 			parent = this[i].parentNode;
- 			while (n--) {
- 				if (n) {
- 					this[i].insertAdjacentElement("beforebegin", replace.get(n));
- 				} else {
- 					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
- 				}
- 			}
- 		}
- 		return all ? this : nodes;
- 	};
- });*/
-
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));
 	};
@@ -1335,8 +1304,8 @@ if (!String.prototype.includes) {
 	};
 
 	$.fn.has = function (selector) {
-		return $([].filter.call(this, function (node) {
-			return $(selector, node).length !== 0;
+		return $(this.get().filter(function (node) {
+			return $(selector, node).length > 0;
 		}));
 	};
 

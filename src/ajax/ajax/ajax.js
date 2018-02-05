@@ -66,10 +66,10 @@ $.ajax = function (url, settings) {
 		$.each({
 			load: "success",
 			error: "error"
-		}, function (key, value) {
-			script.addEventListener(key, function () {
-				var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
-				[value, "complete"].forEach(function (name) {
+		}, (key, value) => {
+			script.addEventListener(key, () => {
+				let response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
+				[value, "complete"].forEach(name => {
 					if (settings[name]) {
 						settings[name].call(settings.context, response, value === "success" ? 200 : 400);
 					}
@@ -93,7 +93,7 @@ $.ajax = function (url, settings) {
 		}
 
 		// headers
-		$.each(settings.headers, function (key, value) {
+		$.each(settings.headers, (key, value) => {
 			xhr.setRequestHeader(key, value);
 		});
 
@@ -114,7 +114,7 @@ $.ajax = function (url, settings) {
 				}
 
 				// run callbacks
-				[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(function (callback) {
+				[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(callback => {
 					if (callback) {
 						callback.call(settings.context, response, xhr.status, xhr);
 					}
