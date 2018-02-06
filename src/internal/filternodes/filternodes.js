@@ -14,7 +14,7 @@ function filterNodes(dabby, filter, context, not) {
 
 	// nodes
 	} else {
-		filter = $(filter, context).get();
+		filter = Array.from($(filter, context));
 		func = node => {
 			let i = filter.length;
 			while (i--) {

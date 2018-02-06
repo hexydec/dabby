@@ -3,7 +3,7 @@ $.fn.siblings = function (selector) {
 		nodes = [];
 
 	while (i--) {
-		this[i].parentNode.childNodes.forEach(child => {
+		Array.from(this[i].parentNode.children).forEach(child => {
 			if (!child.isSameNode(this[i])) {
 				nodes.push(child);
 			}

@@ -5,19 +5,35 @@
 		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" />
+		<style>
+			body {
+				font-family: Segoe UI, Verdana, Arial, Helvetica, sans-serif;
+			}
+			.main {
+				max-width: 960px;
+				margin: 0 auto;
+			}
+			.heading {
+				font-weight: normal;
+			}
+			.logo {
+				vertical-align: top;
+				margin-right: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main">
+			<h1 class="heading"><img src="../tests/dabby.js.svg" alt="Dabby.js" width="190" class="logo" />Test Suite</h1>
+			<div class="test"></div>
+			<div id="qunit"></div>
+			<div id="qunit-fixture"></div>
+		</div>
 		<script src="../node_modules/qunitjs/qunit/qunit.js"></script>
 		<script src="../dist/dabby.es5.js" nomodule></script>
 		<script src="../dist/dabby.js" type="module"></script>
 		<!--<script src="internals.js" type="module"></script>-->
 		<script src="internals.es5.js"></script>
 		<script src="test.js"></script>
-	</head>
-	<body>
-		<div class="main">
-			<h1 class="heading">Dabby.js Test Suite</h1>
-		</div>
-		<div class="test"></div>
-		<div id="qunit"></div>
-		<div id="qunit-fixture"></div>
 	</body>
 </html>

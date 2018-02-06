@@ -58,7 +58,7 @@ let domready = false,
 				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
 				obj = document.createElement("template");
 				obj.innerHTML = selector;
-				nodes = obj.content ? obj.content.childNodes : obj.childNodes;
+				nodes = obj.content ? obj.content.children : obj.children;
 			}
 		}
 

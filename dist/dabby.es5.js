@@ -149,7 +149,7 @@ if (!String.prototype.includes) {
 
 			// nodes
 		} else {
-			filter = $(filter, context).get();
+			filter = Array.from($(filter, context));
 			func = function func(node) {
 				var i = filter.length;
 				while (i--) {
@@ -289,7 +289,7 @@ if (!String.prototype.includes) {
 				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
 				obj = document.createElement("template");
 				obj.innerHTML = selector;
-				nodes = obj.content ? obj.content.childNodes : obj.childNodes;
+				nodes = obj.content ? obj.content.children : obj.children;
 			}
 		}
 
@@ -1228,7 +1228,7 @@ if (!String.prototype.includes) {
 			var item = this,
 			    parent = item.parentNode;
 
-			$(item.childNodes).each(function (i, node) {
+			$(item.children).each(function (i, node) {
 				parent.insertBefore(node, item);
 			});
 			return $(parent.removeChild(item));
@@ -1442,7 +1442,7 @@ if (!String.prototype.includes) {
 		    nodes = [];
 
 		while (i--) {
-			this[i].parentNode.childNodes.forEach(function (child) {
+			Array.from(this[i].parentNode.children).forEach(function (child) {
 				if (!child.isSameNode(_this6[i])) {
 					nodes.push(child);
 				}

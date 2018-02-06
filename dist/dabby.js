@@ -37,7 +37,7 @@
 	
 		// nodes
 		} else {
-			filter = $(filter, context).get();
+			filter = Array.from($(filter, context));
 			func = node => {
 				let i = filter.length;
 				while (i--) {
@@ -176,7 +176,7 @@
 					//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
 					obj = document.createElement("template");
 					obj.innerHTML = selector;
-					nodes = obj.content ? obj.content.childNodes : obj.childNodes;
+					nodes = obj.content ? obj.content.children : obj.children;
 				}
 			}
 	
@@ -1089,7 +1089,7 @@
 			const item = this,
 				parent = item.parentNode;
 	
-			$(item.childNodes).each((i, node) => {
+			$(item.children).each((i, node) => {
 				parent.insertBefore(node, item);
 			});
 			return $(parent.removeChild(item));
@@ -1301,7 +1301,7 @@
 			nodes = [];
 	
 		while (i--) {
-			this[i].parentNode.childNodes.forEach(child => {
+			Array.from(this[i].parentNode.children).forEach(child => {
 				if (!child.isSameNode(this[i])) {
 					nodes.push(child);
 				}

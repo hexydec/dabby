@@ -82,6 +82,13 @@ if (!empty($_POST['code']) && !empty($_POST['outdir'])) {
 		body {
 			font-family: Segoe UI, Verdana, Arial, Helvetica, sans-serif;
 		}
+		.scan__heading {
+			font-weight: normal;
+		}
+		.scan__logo {
+			vertical-align: top;
+			margin-right: 20px;
+		}
 		.scan__msg {
 			padding: 10px;
 			background: green;
@@ -118,7 +125,7 @@ if (!empty($_POST['code']) && !empty($_POST['outdir'])) {
 		</style>
 	</head>
 	<body>
-		<h1>Dabby.js Custom Build Scanner</h1>
+		<h1 class="scan__heading"><img src="../tests/dabby.js.svg" alt="Dabby.js" width="190" class="scan__logo" />Custom Build Scanner</h1>
 		<?php if ($output) { ?>
 			<div class="scan__msg"><?= implode('<br />', array_map('htmlspecialchars', $output)); ?></div>
 		<?php } ?>
