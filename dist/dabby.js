@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.0 - 2018-02-05 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-06 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -866,7 +866,7 @@
 							if (data) { // set data to event object
 								evt.data = data;
 							}
-							if (callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]) === false) {
+							if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
 								evt.preventDefault();
 								evt.stopPropagation();
 							}

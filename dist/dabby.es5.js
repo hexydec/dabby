@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.0 - 2018-02-05 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-06 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -1001,7 +1001,7 @@ if (!String.prototype.includes) {
 								// set data to event object
 								evt.data = data;
 							}
-							if (callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]) === false) {
+							if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
 								evt.preventDefault();
 								evt.stopPropagation();
 							}

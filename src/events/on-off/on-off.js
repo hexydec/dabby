@@ -32,7 +32,7 @@
 						if (data) { // set data to event object
 							evt.data = data;
 						}
-						if (callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]) === false) {
+						if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
 							evt.preventDefault();
 							evt.stopPropagation();
 						}
