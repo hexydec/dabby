@@ -67,8 +67,8 @@ $.ajax = function (url, settings) {
 			load: "success",
 			error: "error"
 		}, (key, value) => {
-			script.addEventListener(key, function () {
-				var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
+			script.addEventListener(key, () => {
+				let response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
 				[value, "complete"].forEach(name => {
 					if (settings[name]) {
 						settings[name].call(settings.context, response, value === "success" ? 200 : 400);
@@ -114,7 +114,7 @@ $.ajax = function (url, settings) {
 				}
 
 				// run callbacks
-				[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(function (callback) {
+				[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(callback => {
 					if (callback) {
 						callback.call(settings.context, response, xhr.status, xhr);
 					}

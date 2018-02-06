@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.0 - 2018-02-04 by Will Earp */
+/*! Dabby.js v0.9.0 - 2018-02-06 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -15,6 +15,7 @@ if (!Array.from) {
 		return arr;
 	};
 }
+
 if (!Array.prototype.includes) {
 	Object.defineProperty(Array.prototype, "includes", {
 		value: function value(searchElement, fromIndex) {
@@ -534,8 +535,8 @@ if (!String.prototype.includes) {
 		};
 
 		// process values
-		$.each(obj, function (i) {
-			params = add(i, this, params);
+		$.each(obj, function (key, item) {
+			params = add(key, item, params);
 		});
 		return params.join("&");
 	};
@@ -1000,7 +1001,7 @@ if (!String.prototype.includes) {
 								// set data to event object
 								evt.data = data;
 							}
-							if (callback.apply(selector ? evt.target : this, evt.args ? $.extend([evt], evt.args) : [evt]) === false) {
+							if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
 								evt.preventDefault();
 								evt.stopPropagation();
 							}
@@ -1335,8 +1336,8 @@ if (!String.prototype.includes) {
 	};
 
 	$.fn.has = function (selector) {
-		return $([].filter.call(this, function (node) {
-			return $(selector, node).length !== 0;
+		return $(this.get().filter(function (node) {
+			return $(selector, node).length > 0;
 		}));
 	};
 

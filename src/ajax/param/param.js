@@ -12,8 +12,8 @@ $.param = obj => {
 		};
 
 	// process values
-	$.each(obj, function (i) {
-		params = add(i, this, params);
+	$.each(obj, (key, item) => {
+		params = add(key, item, params);
 	});
 	return params.join("&");
 };

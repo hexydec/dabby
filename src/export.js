@@ -1,6 +1,6 @@
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
-		define(function() {
+		define(() => {
 			return factory(global);
 		});
 	} else if (typeof exports !== "undefined") {

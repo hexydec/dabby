@@ -14,7 +14,7 @@ $.each({
 			obj;
 
 		if (!isFunc) { // multiple arguments containing nodes?
-			$.each(arguments, function (i, arg) {
+			$.each(arguments, (i, arg) => {
 				elems.add(arg);
 			});
 		}
