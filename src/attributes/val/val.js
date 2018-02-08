@@ -2,7 +2,7 @@ $.fn.val = function (value) {
 
 	function getValue(value) {
 		if (value && !isNaN(value)) {
-			value = value % 1 === 0 ? parseInt(value) : parseFloat(value);
+			value = value % 1 ? parseFloat(value) : parseInt(value);
 		}
 		return value;
 	}
