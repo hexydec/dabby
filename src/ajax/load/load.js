@@ -23,7 +23,7 @@ $.fn.load = function (url, data, success) {
 				// refine by selector if supplied
 				if (selector) {
 					$(response).filter(selector).each(function () {
-						html += this.innerHTML;
+						html += this.outerHTML;
 					});
 				} else {
 					html = response;
@@ -31,12 +31,12 @@ $.fn.load = function (url, data, success) {
 
 				// set HTML to nodes in collection
 				while (i--) {
-					this[i].innerHTML = response;
-				}
+					this[i].innerHTML = html;
 
-				// fire success callback on nodes
-				if (success) {
-					success(response, status, xhr);
+					// fire success callback on nodes
+					if (success) {
+						success.call(this[i], response, status, xhr);
+					}
 				}
 			}
 		})

@@ -13,7 +13,7 @@
 			sibling = this[i][method];
 			while (sibling) {
 				nodes.push(sibling);
-				if (all || (until && filterNodes(sibling, selector).length)) {
+				if (all || (until && filterNodes(sibling, selector))) {
 					break;
 				} else {
 					sibling = sibling[method];

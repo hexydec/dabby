@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.0 - 2018-02-06 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-08 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -37,11 +37,19 @@
 	
 		// nodes
 		} else {
-			filter = Array.from($(filter, context));
+	
+			// normalise filters
+			if (typeof(filter) === "string") {
+				filter = [filter];
+			} else {
+				filter = Array.from($(filter, context));
+			}
+	
+			// filter function
 			func = node => {
 				let i = filter.length;
 				while (i--) {
-					if (node.isSameNode(filter[i])) {
+					if (node[typeof(filter[i]) === "string" ? "matches" : "isSameNode"](filter[i])) {
 						return true;
 					}
 				}
@@ -377,7 +385,7 @@
 					// refine by selector if supplied
 					if (selector) {
 						$(response).filter(selector).each(function () {
-							html += this.innerHTML;
+							html += this.outerHTML;
 						});
 					} else {
 						html = response;
@@ -385,12 +393,12 @@
 	
 					// set HTML to nodes in collection
 					while (i--) {
-						this[i].innerHTML = response;
-					}
+						this[i].innerHTML = html;
 	
-					// fire success callback on nodes
-					if (success) {
-						success(response, status, xhr);
+						// fire success callback on nodes
+						if (success) {
+							success.call(this[i], response, status, xhr);
+						}
 					}
 				}
 			})
@@ -621,7 +629,7 @@
 	
 		function getValue(value) {
 			if (value && !isNaN(value)) {
-				value = value % 1 === 0 ? parseInt(value) : parseFloat(value);
+				value = value % 1 ? parseFloat(value) : parseInt(value);
 			}
 			return value;
 		}
@@ -1198,7 +1206,7 @@
 	
 	$.fn.has = function (selector) {
 		return $(this.get().filter(node => {
-			return $(selector, node).length > 0;
+			return !!$(selector, node).length;
 		}));
 	};
 	
@@ -1225,7 +1233,7 @@
 	};
 	
 	$.fn.is = function (selector) {
-		return filterNodes(this, selector).length !== 0;
+		return !!filterNodes(this, selector).length;
 	};
 	
 	$.fn.last = function () {
@@ -1247,7 +1255,7 @@
 				sibling = this[i][method];
 				while (sibling) {
 					nodes.push(sibling);
-					if (all || (until && filterNodes(sibling, selector).length)) {
+					if (all || (until && filterNodes(sibling, selector))) {
 						break;
 					} else {
 						sibling = sibling[method];

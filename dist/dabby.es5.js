@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.0 - 2018-02-06 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-08 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -149,11 +149,19 @@ if (!String.prototype.includes) {
 
 			// nodes
 		} else {
-			filter = Array.from($(filter, context));
+
+			// normalise filters
+			if (typeof filter === "string") {
+				filter = [filter];
+			} else {
+				filter = Array.from($(filter, context));
+			}
+
+			// filter function
 			func = function func(node) {
 				var i = filter.length;
 				while (i--) {
-					if (node.isSameNode(filter[i])) {
+					if (node[typeof filter[i] === "string" ? "matches" : "isSameNode"](filter[i])) {
 						return true;
 					}
 				}
@@ -500,7 +508,7 @@ if (!String.prototype.includes) {
 					// refine by selector if supplied
 					if (selector) {
 						$(response).filter(selector).each(function () {
-							html += this.innerHTML;
+							html += this.outerHTML;
 						});
 					} else {
 						html = response;
@@ -508,12 +516,12 @@ if (!String.prototype.includes) {
 
 					// set HTML to nodes in collection
 					while (i--) {
-						_this2[i].innerHTML = response;
-					}
+						_this2[i].innerHTML = html;
 
-					// fire success callback on nodes
-					if (_success) {
-						_success(response, status, xhr);
+						// fire success callback on nodes
+						if (_success) {
+							_success.call(_this2[i], response, status, xhr);
+						}
 					}
 				}
 			});
@@ -748,7 +756,7 @@ if (!String.prototype.includes) {
 
 		function getValue(value) {
 			if (value && !isNaN(value)) {
-				value = value % 1 === 0 ? parseInt(value) : parseFloat(value);
+				value = value % 1 ? parseFloat(value) : parseInt(value);
 			}
 			return value;
 		}
@@ -1337,7 +1345,7 @@ if (!String.prototype.includes) {
 
 	$.fn.has = function (selector) {
 		return $(this.get().filter(function (node) {
-			return $(selector, node).length > 0;
+			return !!$(selector, node).length;
 		}));
 	};
 
@@ -1364,7 +1372,7 @@ if (!String.prototype.includes) {
 	};
 
 	$.fn.is = function (selector) {
-		return filterNodes(this, selector).length !== 0;
+		return !!filterNodes(this, selector).length;
 	};
 
 	$.fn.last = function () {
@@ -1386,7 +1394,7 @@ if (!String.prototype.includes) {
 				sibling = this[i][method];
 				while (sibling) {
 					nodes.push(sibling);
-					if (all || until && filterNodes(sibling, selector).length) {
+					if (all || until && filterNodes(sibling, selector)) {
 						break;
 					} else {
 						sibling = sibling[method];

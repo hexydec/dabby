@@ -1,3 +1,3 @@
 $.fn.is = function (selector) {
-	return filterNodes(this, selector).length !== 0;
+	return !!filterNodes(this, selector).length;
 };

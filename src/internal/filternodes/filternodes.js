@@ -14,11 +14,19 @@ function filterNodes(dabby, filter, context, not) {
 
 	// nodes
 	} else {
-		filter = Array.from($(filter, context));
+
+		// normalise filters
+		if (typeof(filter) === "string") {
+			filter = [filter];
+		} else {
+			filter = Array.from($(filter, context));
+		}
+
+		// filter function
 		func = node => {
 			let i = filter.length;
 			while (i--) {
-				if (node.isSameNode(filter[i])) {
+				if (node[typeof(filter[i]) === "string" ? "matches" : "isSameNode"](filter[i])) {
 					return true;
 				}
 			}

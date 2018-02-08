@@ -21,8 +21,8 @@ The library supports the following methods:
 | [$.get()](../src/ajax/get/readme.md)		| Shorthand to make AJAX requests using the GET method		|
 | [$.post()](../src/ajax/post/readme.md)	| Shorthand to make AJAX requests using the POST method		|
 | [$.getScript()](../src/ajax/getscript/readme.md) | Shorthand to insert a script into the DOM			|
-| $.param()									| Render a query string from an array						|
-| .load()									| Make an AJAX request to insert HTML it into the DOM		|
+| [$.param()](../src/ajax/param/readme.md)	| Render a query string from an object						|
+| [.load()](../src/ajax/load/readme.md)		| Make an AJAX request to insert HTML it into the DOM		|
 | .serialize()								| Serialize the value of form elements into a query string	|
 
 ### Attributes
