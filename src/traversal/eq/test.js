@@ -13,8 +13,8 @@ QUnit.test("$.fn.eq", function (assert) {
 	assert.equal(obj.eq(-1).get(0).innerHTML, "test 3", "Can select negative index");
 	assert.equal(obj.eq(-2).get(0).innerHTML, "test 2", "Can select negative index");
 	assert.equal(obj.eq(-3).get(0).innerHTML, "test", "Can select negative index");
-	assert.deepEqual(obj.eq(4), $(), "Returns empty Dabby object when selected out of range");
-	assert.deepEqual(obj.eq(-4), $(), "Returns empty Dabby object when selected out of range");
+	assert.deepEqual(obj.eq(4).get(), $().get(), "Returns empty object when selected out of range");
+	assert.deepEqual(obj.eq(-4).get(), $().get(), "Returns empty object when selected out of range");
 
 	test.innerHTML = "";
 });

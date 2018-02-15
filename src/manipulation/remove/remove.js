@@ -4,21 +4,14 @@
 			nodes = [],
 			obj = [];
 
-		// turn selector into dabby object
-		if (selector) {
-			selector = $(selector);
-		}
-
 		// detach selected nodes
 		while (i--) {
-			if (!selector || selector.is(this[i])) {
+			if (!selector || filterNodes(this[i], selector).length) {
 				nodes.push(this[i].parentNode.removeChild(this[i]));
-			} else {
-				obj.push(this[i]);
 			}
 		}
 
 		// create a new dabby object to return
-		return $(func === "detach" ? nodes : obj);
+		return func === "detach" ? $(nodes) : this;
 	};
 });

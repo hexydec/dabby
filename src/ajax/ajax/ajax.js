@@ -69,9 +69,9 @@ $.ajax = function (url, settings) {
 		}, (key, value) => {
 			script.addEventListener(key, () => {
 				let response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
-				[value, "complete"].forEach(name => {
-					if (settings[name]) {
-						settings[name].call(settings.context, response, value === "success" ? 200 : 400);
+				[settings[value], settings.complete].forEach(callback => {
+					if (callback) {
+						callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
 					}
 				});
 			});
@@ -82,6 +82,26 @@ $.ajax = function (url, settings) {
 
 	// make xhr request
 	} else {
+		const callback = (xhr, status) => {
+			let response = xhr.responseText,
+				callbacks = [];
+
+			// parse JSON
+			if (["json", null].includes(settings.dataType)) {
+				try {
+					response = JSON.parse(response);
+				} catch (e) {
+					// do nothing
+				}
+			}
+
+			// run callbacks
+			[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(callback => {
+				if (callback) {
+					callback.apply(settings.context, callback === settings.complete ? [xhr, status] : [response, status, xhr]);
+				}
+			});
+		};
 
 		// create XHR object
 		xhr = new XMLHttpRequest();
@@ -98,28 +118,19 @@ $.ajax = function (url, settings) {
 		});
 
 		// callbacks
-		xhr.onreadystatechange = function () {
-			if (this.readyState === 4) {
-				const type = this.status === 200 ? "success" : "error";
-				let response = xhr.responseText,
-					callbacks = [];
-
-				// parse JSON
-				if (["json", null].includes(settings.dataType)) {
-					try {
-						response = JSON.parse(response);
-					} catch (e) {
-						// do nothing
-					}
-				}
-
-				// run callbacks
-				[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(callback => {
-					if (callback) {
-						callback.call(settings.context, response, xhr.status, xhr);
-					}
-				});
-			}
+		xhr.onload = () => {
+			const types = {
+				200: "success",
+				204: "nocontent",
+				304: "notmodified"
+			};
+			callback(xhr, types[xhr.status] || "error");
+		};
+		xhr.ontimeout = () => {
+			callback(xhr, "timeout");
+		};
+		xhr.onabort = () => {
+			callback(xhr, "abort");
 		};
 		xhr.send(settings.processData ? undefined : settings.data);
 		return xhr;

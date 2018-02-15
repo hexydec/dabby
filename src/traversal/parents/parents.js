@@ -10,7 +10,7 @@
 			parent = this[i].parentNode;
 			while (parent) {
 				nodes.push(parent);
-				if (!all || (until && filterNodes(parent, selector))) {
+				if (!all || (until && filterNodes(parent, selector).length)) {
 					break;
 				} else {
 					parent = parent.parentNode;

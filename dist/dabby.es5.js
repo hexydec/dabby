@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.1 - 2018-02-08 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-15 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -135,7 +135,7 @@ if (!String.prototype.includes) {
 
 	function filterNodes(dabby, filter, context, not) {
 		var func = void 0,
-		    nodes = Array.from(dabby);
+		    nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
 
 		// sort out args
 		if (typeof context === "boolean") {
@@ -158,7 +158,7 @@ if (!String.prototype.includes) {
 			}
 
 			// filter function
-			func = function func(node) {
+			func = function func(n, node) {
 				var i = filter.length;
 				while (i--) {
 					if (node[typeof filter[i] === "string" ? "matches" : "isSameNode"](filter[i])) {
@@ -168,9 +168,9 @@ if (!String.prototype.includes) {
 				return false;
 			};
 		}
-		return nodes.filter(not ? function (item) {
-			return !func.call(this, item);
-		} : func, nodes);
+		return nodes.filter(function (item, i) {
+			return func.call(item, i, item) !== Boolean(not);
+		}, nodes);
 	}
 
 	function getEvents() {
@@ -401,9 +401,9 @@ if (!String.prototype.includes) {
 			}, function (key, value) {
 				script.addEventListener(key, function () {
 					var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
-					[value, "complete"].forEach(function (name) {
-						if (settings[name]) {
-							settings[name].call(settings.context, response, value === "success" ? 200 : 400);
+					[settings[value], settings.complete].forEach(function (callback) {
+						if (callback) {
+							callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
 						}
 					});
 				});
@@ -414,6 +414,26 @@ if (!String.prototype.includes) {
 
 			// make xhr request
 		} else {
+			var callback = function callback(xhr, status) {
+				var response = xhr.responseText,
+				    callbacks = [];
+
+				// parse JSON
+				if (["json", null].includes(settings.dataType)) {
+					try {
+						response = JSON.parse(response);
+					} catch (e) {
+						// do nothing
+					}
+				}
+
+				// run callbacks
+				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(function (callback) {
+					if (callback) {
+						callback.apply(settings.context, callback === settings.complete ? [xhr, status] : [response, status, xhr]);
+					}
+				});
+			};
 
 			// create XHR object
 			xhr = new XMLHttpRequest();
@@ -430,28 +450,19 @@ if (!String.prototype.includes) {
 			});
 
 			// callbacks
-			xhr.onreadystatechange = function () {
-				if (this.readyState === 4) {
-					var type = this.status === 200 ? "success" : "error";
-					var response = xhr.responseText,
-					    callbacks = [];
-
-					// parse JSON
-					if (["json", null].includes(settings.dataType)) {
-						try {
-							response = JSON.parse(response);
-						} catch (e) {
-							// do nothing
-						}
-					}
-
-					// run callbacks
-					[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(function (callback) {
-						if (callback) {
-							callback.call(settings.context, response, xhr.status, xhr);
-						}
-					});
-				}
+			xhr.onload = function () {
+				var types = {
+					200: "success",
+					204: "nocontent",
+					304: "notmodified"
+				};
+				callback(xhr, types[xhr.status] || "error");
+			};
+			xhr.ontimeout = function () {
+				callback(xhr, "timeout");
+			};
+			xhr.onabort = function () {
+				callback(xhr, "abort");
 			};
 			xhr.send(settings.processData ? undefined : settings.data);
 			return xhr;
@@ -532,9 +543,10 @@ if (!String.prototype.includes) {
 	$.param = function (obj) {
 		var params = [],
 		    add = function add(key, value, params) {
-			if ($.isArray(value) || (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object") {
+			var isArr = $.isArray(value);
+			if (isArr || (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object") {
 				$.each(value, function (i, val) {
-					params = add(key + "[" + i + "]", val, params);
+					params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
 				});
 			} else {
 				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
@@ -563,7 +575,26 @@ if (!String.prototype.includes) {
 
 	$.fn.serialize = function () {
 		var selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
-		    obj = this.is(selector) ? this.filter(selector) : $(selector, this);
+		    obj = this.is(selector) ? this.filter(selector) : $(selector, this),
+		    add = function add(name, value, params) {
+			var match = void 0;
+
+			if ((match = name.match(/([^\[]*)\[([^\]]*)\](.*)/)) !== null) {
+				name = match[1];
+				var arr = add(match[2] + match[3], value, params[name] || {});
+				value = arr;
+			}
+
+			if (name !== "") {
+				params[name] = value;
+			} else {
+				if (!$.isArray(params)) {
+					params = [];
+				}
+				params = params.concat($.isArray(value) ? value : [value]);
+			}
+			return params;
+		};
 
 		var params = {};
 
@@ -571,7 +602,7 @@ if (!String.prototype.includes) {
 		obj.each(function () {
 			var value = $(this).val();
 			if (!this.disabled && value !== undefined) {
-				params[this.getAttribute("name")] = value;
+				params = add(this.getAttribute("name"), value, params);
 			}
 		});
 		return $.param(params);
@@ -670,8 +701,7 @@ if (!String.prototype.includes) {
 			}
 			i = props.length;
 			while (i--) {
-				props[i] = dasherise(props[i]);
-				output[props[i]] = style.getPropertyValue(props[i]);
+				output[props[i]] = style.getPropertyValue(dasherise(props[i]));
 				if (ret) {
 					return output[props[i]];
 				}
@@ -754,13 +784,6 @@ if (!String.prototype.includes) {
 	$.fn.val = function (value) {
 		var _this5 = this;
 
-		function getValue(value) {
-			if (value && !isNaN(value)) {
-				value = value % 1 ? parseFloat(value) : parseInt(value);
-			}
-			return value;
-		}
-
 		// set value
 		if (value !== undefined) {
 			var _ret = function () {
@@ -769,13 +792,13 @@ if (!String.prototype.includes) {
 				while (i--) {
 					if (_this5[i].multiple) {
 						val = $.map($.isArray(value) ? value : [value], function (item) {
-							return getValue(item);
+							return String(item);
 						});
 						$("option", _this5[i]).each(function () {
-							this.selected = val.includes(getValue(this.value));
+							this.selected = val.includes(String(this.value));
 						});
 					} else {
-						_this5[i].value = getValue(value);
+						_this5[i].value = String(value);
 					}
 				}
 				return {
@@ -793,7 +816,7 @@ if (!String.prototype.includes) {
 				var values = [];
 				$("option", this[0]).each(function () {
 					if (this.selected) {
-						values.push(getValue(this.value));
+						values.push(String(this.value));
 					}
 				});
 				return values;
@@ -801,11 +824,11 @@ if (!String.prototype.includes) {
 				// get radio box value
 			} else if (this[0].type === "radio") {
 				var obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
-				return getValue(obj ? obj.value : undefined);
+				return obj ? String(obj.value) : undefined;
 
 				// get single value
 			} else if (this[0].type !== "checkbox" || this[0].checked) {
-				return getValue(this[0].value);
+				return String(this[0].value);
 			}
 		}
 	};
@@ -1161,22 +1184,15 @@ if (!String.prototype.includes) {
 			    nodes = [],
 			    obj = [];
 
-			// turn selector into dabby object
-			if (selector) {
-				selector = $(selector);
-			}
-
 			// detach selected nodes
 			while (i--) {
-				if (!selector || selector.is(this[i])) {
+				if (!selector || filterNodes(this[i], selector).length) {
 					nodes.push(this[i].parentNode.removeChild(this[i]));
-				} else {
-					obj.push(this[i]);
 				}
 			}
 
 			// create a new dabby object to return
-			return $(func === "detach" ? nodes : obj);
+			return func === "detach" ? $(nodes) : this;
 		};
 	});
 
@@ -1232,15 +1248,16 @@ if (!String.prototype.includes) {
 	};
 
 	$.fn.unwrap = function (selector) {
-		return this.parent(selector).not("body").each(function () {
+		this.parent(selector).not("body").each(function () {
 			var item = this,
 			    parent = item.parentNode;
 
 			$(item.children).each(function (i, node) {
 				parent.insertBefore(node, item);
 			});
-			return $(parent.removeChild(item));
+			parent.removeChild(item);
 		});
+		return this;
 	};
 
 	$.fn.wrap = function (html) {
@@ -1394,7 +1411,7 @@ if (!String.prototype.includes) {
 				sibling = this[i][method];
 				while (sibling) {
 					nodes.push(sibling);
-					if (all || until && filterNodes(sibling, selector)) {
+					if (all || until && filterNodes(sibling, selector).length) {
 						break;
 					} else {
 						sibling = sibling[method];
@@ -1429,7 +1446,7 @@ if (!String.prototype.includes) {
 				parent = this[i].parentNode;
 				while (parent) {
 					nodes.push(parent);
-					if (!all || until && filterNodes(parent, selector)) {
+					if (!all || until && filterNodes(parent, selector).length) {
 						break;
 					} else {
 						parent = parent.parentNode;

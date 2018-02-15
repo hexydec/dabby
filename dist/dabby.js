@@ -1,10 +1,8 @@
-/*! Dabby.js v0.9.1 - 2018-02-08 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-15 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
-		define(() => {
-			return factory(global);
-		});
+		define(() => factory(global));
 	} else if (typeof exports !== "undefined") {
 		module.exports = factory(global);
 	} else if (!global.$) {
@@ -23,7 +21,7 @@
 	
 	function filterNodes(dabby, filter, context, not) {
 		let func,
-			nodes = Array.from(dabby);
+			nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
 	
 		// sort out args
 		if (typeof context === "boolean") {
@@ -46,7 +44,7 @@
 			}
 	
 			// filter function
-			func = node => {
+			func = (n, node) => {
 				let i = filter.length;
 				while (i--) {
 					if (node[typeof(filter[i]) === "string" ? "matches" : "isSameNode"](filter[i])) {
@@ -56,7 +54,7 @@
 				return false;
 			};
 		}
-		return nodes.filter(not ? function (item) {return !func.call(this, item);} : func, nodes);
+		return nodes.filter((item, i) => func.call(item, i, item) !== Boolean(not), nodes);
 	}
 	
 	function getEvents() {
@@ -285,9 +283,9 @@
 			}, (key, value) => {
 				script.addEventListener(key, () => {
 					let response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
-					[value, "complete"].forEach(name => {
-						if (settings[name]) {
-							settings[name].call(settings.context, response, value === "success" ? 200 : 400);
+					[settings[value], settings.complete].forEach(callback => {
+						if (callback) {
+							callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
 						}
 					});
 				});
@@ -298,6 +296,26 @@
 	
 		// make xhr request
 		} else {
+			const callback = (xhr, status) => {
+				let response = xhr.responseText,
+					callbacks = [];
+	
+				// parse JSON
+				if (["json", null].includes(settings.dataType)) {
+					try {
+						response = JSON.parse(response);
+					} catch (e) {
+						// do nothing
+					}
+				}
+	
+				// run callbacks
+				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(callback => {
+					if (callback) {
+						callback.apply(settings.context, callback === settings.complete ? [xhr, status] : [response, status, xhr]);
+					}
+				});
+			};
 	
 			// create XHR object
 			xhr = new XMLHttpRequest();
@@ -314,28 +332,19 @@
 			});
 	
 			// callbacks
-			xhr.onreadystatechange = function () {
-				if (this.readyState === 4) {
-					const type = this.status === 200 ? "success" : "error";
-					let response = xhr.responseText,
-						callbacks = [];
-	
-					// parse JSON
-					if (["json", null].includes(settings.dataType)) {
-						try {
-							response = JSON.parse(response);
-						} catch (e) {
-							// do nothing
-						}
-					}
-	
-					// run callbacks
-					[settings.statusCode[xhr.status], settings[type], settings.complete].forEach(callback => {
-						if (callback) {
-							callback.call(settings.context, response, xhr.status, xhr);
-						}
-					});
-				}
+			xhr.onload = () => {
+				const types = {
+					200: "success",
+					204: "nocontent",
+					304: "notmodified"
+				};
+				callback(xhr, types[xhr.status] || "error");
+			};
+			xhr.ontimeout = () => {
+				callback(xhr, "timeout");
+			};
+			xhr.onabort = () => {
+				callback(xhr, "abort");
 			};
 			xhr.send(settings.processData ? undefined : settings.data);
 			return xhr;
@@ -352,13 +361,11 @@
 		});
 	};
 	
-	$.getScript = (url, success) => {
-		return $.ajax({
-			url: url,
-			dataType: "script",
-			success: success
-		});
-	};
+	$.getScript = (url, success) => $.ajax({
+		url: url,
+		dataType: "script",
+		success: success
+	});
 	
 	$.fn.load = function (url, data, success) {
 		if (this[0]) {
@@ -409,9 +416,10 @@
 	$.param = obj => {
 		let params = [],
 			add = (key, value, params) => {
-				if ($.isArray(value) || typeof value === "object") {
+				let isArr = $.isArray(value);
+				if (isArr || typeof value === "object") {
 					$.each(value, (i, val) => {
-						params = add(key + "[" + i + "]", val, params);
+						params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
 					});
 				} else {
 					params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
@@ -440,15 +448,34 @@
 	
 	$.fn.serialize = function () {
 		const selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
-			obj = this.is(selector) ? this.filter(selector) : $(selector, this);
+			obj = this.is(selector) ? this.filter(selector) : $(selector, this),
+			add = (name, value, params) => {
+				let match;
 	
+				if ((match = name.match(/([^\[]*)\[([^\]]*)\](.*)/)) !== null) {
+					name = match[1];
+					let arr = add(match[2] + match[3], value, params[name] || {});
+					value = arr;
+				}
+	
+				if (name !== "") {
+					params[name] = value;
+				} else {
+					if (!$.isArray(params)) {
+						params = [];
+					}
+					params = params.concat($.isArray(value) ? value : [value]);
+				}
+				return params;
+			};
+			
 		let params = {};
 	
 		// process values
 		obj.each(function () {
 			const value = $(this).val();
 			if (!this.disabled && value !== undefined) {
-				params[this.getAttribute("name")] = value;
+				params = add(this.getAttribute("name"), value, params);
 			}
 		});
 		return $.param(params);
@@ -546,8 +573,7 @@
 			}
 			i = props.length;
 			while (i--) {
-				props[i] = dasherise(props[i]);
-				output[props[i]] = style.getPropertyValue(props[i]);
+				output[props[i]] = style.getPropertyValue(dasherise(props[i]));
 				if (ret) {
 					return output[props[i]];
 				}
@@ -627,13 +653,6 @@
 	
 	$.fn.val = function (value) {
 	
-		function getValue(value) {
-			if (value && !isNaN(value)) {
-				value = value % 1 ? parseFloat(value) : parseInt(value);
-			}
-			return value;
-		}
-	
 		// set value
 		if (value !== undefined) {
 			let i = this.length,
@@ -642,13 +661,13 @@
 				if (this[i].multiple) {
 					val = $.map(
 						$.isArray(value) ? value : [value],
-						item => getValue(item)
+						item => String(item)
 					);
 					$("option", this[i]).each(function () {
-						this.selected = val.includes(getValue(this.value));
+						this.selected = val.includes(String(this.value));
 					});
 				} else {
-					this[i].value = getValue(value);
+					this[i].value = String(value);
 				}
 			}
 			return this;
@@ -661,7 +680,7 @@
 				let values = [];
 				$("option", this[0]).each(function () {
 					if (this.selected) {
-						values.push(getValue(this.value));
+						values.push(String(this.value));
 					}
 				});
 				return values;
@@ -669,11 +688,11 @@
 			// get radio box value
 			} else if (this[0].type === "radio") {
 				let obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
-				return getValue(obj ? obj.value : undefined);
+				return obj ? String(obj.value) : undefined;
 	
 			// get single value
 			} else if (this[0].type !== "checkbox" || this[0].checked) {
-				return getValue(this[0].value);
+				return String(this[0].value);
 			}
 		}
 	};
@@ -1022,22 +1041,15 @@
 				nodes = [],
 				obj = [];
 	
-			// turn selector into dabby object
-			if (selector) {
-				selector = $(selector);
-			}
-	
 			// detach selected nodes
 			while (i--) {
-				if (!selector || selector.is(this[i])) {
+				if (!selector || filterNodes(this[i], selector).length) {
 					nodes.push(this[i].parentNode.removeChild(this[i]));
-				} else {
-					obj.push(this[i]);
 				}
 			}
 	
 			// create a new dabby object to return
-			return $(func === "detach" ? nodes : obj);
+			return func === "detach" ? $(nodes) : this;
 		};
 	});
 	
@@ -1093,15 +1105,16 @@
 	};
 	
 	$.fn.unwrap = function (selector) {
-		return this.parent(selector).not("body").each(function () {
+		this.parent(selector).not("body").each(function () {
 			const item = this,
 				parent = item.parentNode;
 	
 			$(item.children).each((i, node) => {
 				parent.insertBefore(node, item);
 			});
-			return $(parent.removeChild(item));
+			parent.removeChild(item);
 		});
+		return this;
 	};
 	
 	$.fn.wrap = function (html) {
@@ -1205,9 +1218,7 @@
 	};
 	
 	$.fn.has = function (selector) {
-		return $(this.get().filter(node => {
-			return !!$(selector, node).length;
-		}));
+		return $(this.get().filter(node => !!$(selector, node).length));
 	};
 	
 	$.fn.index = function (selector) {
@@ -1255,7 +1266,7 @@
 				sibling = this[i][method];
 				while (sibling) {
 					nodes.push(sibling);
-					if (all || (until && filterNodes(sibling, selector))) {
+					if (all || (until && filterNodes(sibling, selector).length)) {
 						break;
 					} else {
 						sibling = sibling[method];
@@ -1290,7 +1301,7 @@
 				parent = this[i].parentNode;
 				while (parent) {
 					nodes.push(parent);
-					if (!all || (until && filterNodes(parent, selector))) {
+					if (!all || (until && filterNodes(parent, selector).length)) {
 						break;
 					} else {
 						parent = parent.parentNode;

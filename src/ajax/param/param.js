@@ -1,9 +1,10 @@
 $.param = obj => {
 	let params = [],
 		add = (key, value, params) => {
-			if ($.isArray(value) || typeof value === "object") {
+			let isArr = $.isArray(value);
+			if (isArr || typeof value === "object") {
 				$.each(value, (i, val) => {
-					params = add(key + "[" + i + "]", val, params);
+					params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
 				});
 			} else {
 				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));

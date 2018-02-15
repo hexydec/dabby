@@ -10,6 +10,11 @@ QUnit.test("$.fn.css", function (assert) {
 			"border-left-color": "rgb(255, 0, 0)",
 			"border-left-style": "solid",
 			"border-left-width": "1px"
+		},
+		outputCC = {
+			"borderLeftColor": "rgb(255, 0, 0)",
+			"borderLeftStyle": "solid",
+			"borderLeftWidth": "1px"
 		};
 
 	// retrieve CSS properties
@@ -18,7 +23,7 @@ QUnit.test("$.fn.css", function (assert) {
 	assert.deepEqual(main.css(props), output, "Can retrieve multiple CSS properties");
 
 	props = ["borderLeftColor", "borderLeftStyle", "borderLeftWidth"];
-	assert.deepEqual(main.css(props), output, "Can retrieve multiple CSS properties with camelCase");
+	assert.deepEqual(main.css(props), outputCC, "Can retrieve multiple CSS properties with camelCase");
 
 	// set css properties
 	rmain.style.cssText = '';

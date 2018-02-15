@@ -11,6 +11,6 @@ QUnit.test("$.param", function (assert) {
 		fb: ["foo", "bar", "foobar"],
 		enc: "this is=a&test"
 	},
-		output = "foo=bar&bar=foo&foobar%5Bfoo%5D=bar&foobar%5Bbar%5D=foo&fb%5B0%5D=foo&fb%5B1%5D=bar&fb%5B2%5D=foobar&enc=this%20is%3Da%26test";
+		output = "foo=bar&bar=foo&foobar%5Bfoo%5D=bar&foobar%5Bbar%5D=foo&fb%5B%5D=foo&fb%5B%5D=bar&fb%5B%5D=foobar&enc=this%20is%3Da%26test";
 	assert.equal($.param(params), output, "Can encode an array to a query string");
 });

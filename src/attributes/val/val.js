@@ -1,12 +1,5 @@
 $.fn.val = function (value) {
 
-	function getValue(value) {
-		if (value && !isNaN(value)) {
-			value = value % 1 ? parseFloat(value) : parseInt(value);
-		}
-		return value;
-	}
-
 	// set value
 	if (value !== undefined) {
 		let i = this.length,
@@ -15,13 +8,13 @@ $.fn.val = function (value) {
 			if (this[i].multiple) {
 				val = $.map(
 					$.isArray(value) ? value : [value],
-					item => getValue(item)
+					item => String(item)
 				);
 				$("option", this[i]).each(function () {
-					this.selected = val.includes(getValue(this.value));
+					this.selected = val.includes(String(this.value));
 				});
 			} else {
-				this[i].value = getValue(value);
+				this[i].value = String(value);
 			}
 		}
 		return this;
@@ -34,7 +27,7 @@ $.fn.val = function (value) {
 			let values = [];
 			$("option", this[0]).each(function () {
 				if (this.selected) {
-					values.push(getValue(this.value));
+					values.push(String(this.value));
 				}
 			});
 			return values;
@@ -42,11 +35,11 @@ $.fn.val = function (value) {
 		// get radio box value
 		} else if (this[0].type === "radio") {
 			let obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
-			return getValue(obj ? obj.value : undefined);
+			return obj ? String(obj.value) : undefined;
 
 		// get single value
 		} else if (this[0].type !== "checkbox" || this[0].checked) {
-			return getValue(this[0].value);
+			return String(this[0].value);
 		}
 	}
 };

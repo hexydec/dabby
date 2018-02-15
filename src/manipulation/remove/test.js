@@ -4,9 +4,9 @@ QUnit.test("$.fn.remove", function (assert) {
 	var test = document.getElementsByClassName("test")[0];
 	test.innerHTML = '<div class="testtemp"><div></div></div><div class="testtemp2"></div>';
 	var obj = $(".testtemp, .testtemp2"),
-		robj = document.getElementsByClassName("testtemp")[0];
+		robj = Array.from(document.querySelectorAll(".testtemp, .testtemp2"));
 
-	assert.deepEqual(obj.remove(".testtemp2").get(), [robj], "Returns reduced set when removed");
+	assert.deepEqual(obj.remove(".testtemp2").get(), robj, "Returns reduced set when removed");
 	assert.ok(document.getElementsByClassName("testtemp2").length === 0, "Removed item from DOM");
 });
 

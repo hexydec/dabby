@@ -7,7 +7,7 @@ QUnit.test("$.fn.insertTo", function (assert) {
 		rmain = document.getElementsByClassName("testtemp")[0],
 		test;
 
-	assert.deepEqual(main.prependTo(".testtemp"), main, "Returns itself when inserted");
+	assert.deepEqual(main.prependTo(".testtemp").get(), main.get(), "Returns itself when inserted");
 	assert.equal($(".testtemp").html(), "<div>Test</div>", "Can insert html");
 
 	// reset

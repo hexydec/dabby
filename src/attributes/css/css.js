@@ -18,8 +18,7 @@ $.fn.css = function (props, value) {
 		}
 		i = props.length;
 		while (i--) {
-			props[i] = dasherise(props[i]);
-			output[props[i]] = style.getPropertyValue(props[i]);
+			output[props[i]] = style.getPropertyValue(dasherise(props[i]));
 			if (ret) {
 				return output[props[i]];
 			}

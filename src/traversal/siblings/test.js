@@ -8,8 +8,9 @@ QUnit.test("$.fn.siblings", function (assert) {
 
 	assert.deepEqual(obj.siblings().get(), $(".testtemp, .testtemp3").get(), "Can get an elements siblings");
 	assert.deepEqual(obj.siblings(".testtemp3").get(), $(".testtemp3").get(), "Can get an elements siblings filtered by a selector");
-	assert.deepEqual(obj.siblings($(".testtemp3")).get(), $(".testtemp3").get(), "Can get an elements siblings filtered by a dabby object");
-	assert.deepEqual(obj.siblings($(".testtemp3").get()).get(), $(".testtemp3").get(), "Can get an elements siblings filtered by a node collection");
-
+	if (typeof Dabby !== "undefined") { // jquery doesn't support refining by object
+		assert.deepEqual(obj.siblings($(".testtemp3")).get(), $(".testtemp3").get(), "Can get an elements siblings filtered by a dabby object");
+		assert.deepEqual(obj.siblings($(".testtemp3").get()).get(), $(".testtemp3").get(), "Can get an elements siblings filtered by a node collection");
+	}
 	test.innerHTML = "";
 });

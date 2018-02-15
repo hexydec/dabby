@@ -20,7 +20,7 @@ QUnit.test("$.fn.val", function (assert) {
 	}
 	obj = $(multi).val([1,3,5]);
 
-	assert.deepEqual(obj.val(), [1,3,5], "Can set and read multiple values");
+	assert.deepEqual(obj.val(), ["1","3","5"], "Can set and read multiple values");
 
 	text.val("new value");
 	assert.equal(text.val(), "new value", "Can set and read value from textarea");

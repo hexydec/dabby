@@ -1,6 +1,6 @@
 function filterNodes(dabby, filter, context, not) {
 	let func,
-		nodes = Array.from(dabby);
+		nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
 
 	// sort out args
 	if (typeof context === "boolean") {
@@ -23,7 +23,7 @@ function filterNodes(dabby, filter, context, not) {
 		}
 
 		// filter function
-		func = node => {
+		func = (n, node) => {
 			let i = filter.length;
 			while (i--) {
 				if (node[typeof(filter[i]) === "string" ? "matches" : "isSameNode"](filter[i])) {
@@ -33,5 +33,5 @@ function filterNodes(dabby, filter, context, not) {
 			return false;
 		};
 	}
-	return nodes.filter(not ? function (item) {return !func.call(this, item);} : func, nodes);
+	return nodes.filter((item, i) => func.call(item, i, item) !== Boolean(not), nodes);
 }

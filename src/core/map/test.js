@@ -6,5 +6,5 @@ QUnit.test("$.fn.map", function (assert) {
 	var output = $(".testtemp").map(function () {
 		return this.innerText;
 	});
-	assert.deepEqual(output, ["first", "second"]);
+	assert.deepEqual(Array.from(output), ["first", "second"]);
 });

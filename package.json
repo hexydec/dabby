@@ -12,6 +12,7 @@
   "contributors": [],
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "benchmark": "^2.1.4",
     "grunt": "*",
     "grunt-contrib-concat": "*",
     "grunt-contrib-watch": "*"

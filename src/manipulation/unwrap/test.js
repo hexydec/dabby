@@ -6,6 +6,6 @@ QUnit.test("$.fn.unwrap", function (assert) {
 	var obj = $(".testtemp2"),
 		parent = $(".testtemp");
 
-	assert.deepEqual(obj.unwrap().get(), parent.get(), "Returns self on unwrap");
+	assert.deepEqual(obj.unwrap().get(), obj.get(), "Returns self on unwrap");
 	assert.deepEqual($(".test > div").get(), $(".testtemp2, .testtemp3").get(), "Can unwrap node");
 });

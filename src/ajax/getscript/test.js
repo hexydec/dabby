@@ -7,7 +7,7 @@ QUnit.test("$.getScript", function (assert) {
 	//basic request
 	window.dabbyScriptSuccess = false;
 	$.getScript("../tests/assets/sample.js", function (response, status) {
-		assert.equal(status, 200, "Can include a script");
+		assert.equal(status, "success", "Can include a script");
 		assert.ok(window.dabbyScriptSuccess, "Script included correctly");
 		done();
 	});
