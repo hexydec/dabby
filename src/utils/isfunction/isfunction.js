@@ -1,3 +1,1 @@
-$.isFunction = function (func) {
-	return func && func.constructor === Function;
-};
+$.isFunction = func => func && func.constructor === Function;

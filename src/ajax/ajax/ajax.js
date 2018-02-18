@@ -1,4 +1,4 @@
-$.ajax = function (url, settings) {
+$.ajax = (url, settings) => {
 
 	// normalise args
 	if (typeof url === "object") {

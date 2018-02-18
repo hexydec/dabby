@@ -22,8 +22,8 @@ $.fn.load = function (url, data, success) {
 
 				// refine by selector if supplied
 				if (selector) {
-					$(response).filter(selector).each(function () {
-						html += this.outerHTML;
+					$(response).filter(selector).each((key, obj) => {
+						html += obj.outerHTML;
 					});
 				} else {
 					html = response;

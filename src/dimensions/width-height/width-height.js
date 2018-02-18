@@ -1,6 +1,6 @@
 ["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
 
-	function getAdditionalLength(obj, wh, props) {
+	const getAdditionalLength = (obj, wh, props) => {
 		const style = getComputedStyle(obj);
 		let i = props.length,
 			value = 0,
@@ -12,7 +12,7 @@
 			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
 		}
 		return value;
-	}
+	};
 
 	$.fn[dim] = function (val) {
 		const valtype = typeof(val),

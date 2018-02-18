@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.1 - 2018-02-17 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-18 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -200,7 +200,7 @@
 	// alias functions
 	dabby.fn = dabby.prototype;
 	
-	$.each = function (obj, callback) {
+	$.each = (obj, callback) => {
 		const keys = Object.keys(obj),
 			len = keys.length;
 	
@@ -212,7 +212,7 @@
 		return obj;
 	};
 	
-	$.ajax = function (url, settings) {
+	$.ajax = (url, settings) => {
 	
 		// normalise args
 		if (typeof url === "object") {
@@ -391,8 +391,8 @@
 	
 					// refine by selector if supplied
 					if (selector) {
-						$(response).filter(selector).each(function () {
-							html += this.outerHTML;
+						$(response).filter(selector).each((key, obj) => {
+							html += obj.outerHTML;
 						});
 					} else {
 						html = response;
@@ -468,14 +468,14 @@
 				}
 				return params;
 			};
-			
+	
 		let params = {};
 	
 		// process values
-		obj.each(function () {
-			const value = $(this).val();
-			if (!this.disabled && value !== undefined) {
-				params = add(this.getAttribute("name"), value, params);
+		obj.each((key, obj) => {
+			const value = $(obj).val();
+			if (!obj.disabled && value !== undefined) {
+				params = add(obj.getAttribute("name"), value, params);
 			}
 		});
 		return $.param(params);
@@ -592,7 +592,6 @@
 			temp[name] = data;
 			data = temp;
 		}
-		name = name ? camelise(name) : name;
 	
 		// set value
 		if (data !== undefined) {
@@ -681,8 +680,8 @@
 						$.isArray(value) ? value : [value],
 						item => String(item)
 					);
-					$("option", this[i]).each(function () {
-						this.selected = val.includes(String(this.value));
+					$("option", this[i]).each((key, obj) => {
+						obj.selected = val.includes(String(obj.value));
 					});
 				} else {
 					this[i].value = String(value);
@@ -696,9 +695,9 @@
 			// get multiple values
 			if (this[0].multiple) {
 				let values = [];
-				$("option", this[0]).each(function () {
-					if (this.selected) {
-						values.push(String(this.value));
+				$("option", this[0]).each((key, obj) => {
+					if (obj.selected) {
+						values.push(String(obj.value));
 					}
 				});
 				return values;
@@ -800,7 +799,7 @@
 	
 	["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
 	
-		function getAdditionalLength(obj, wh, props) {
+		const getAdditionalLength = (obj, wh, props) => {
 			const style = getComputedStyle(obj);
 			let i = props.length,
 				value = 0,
@@ -812,7 +811,7 @@
 				value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
 			}
 			return value;
-		}
+		};
 	
 		$.fn[dim] = function (val) {
 			const valtype = typeof(val),
@@ -1123,14 +1122,13 @@
 	};
 	
 	$.fn.unwrap = function (selector) {
-		this.parent(selector).not("body").each(function () {
-			const item = this,
-				parent = item.parentNode;
+		this.parent(selector).not("body").each((key, obj) => {
+			const parent = obj.parentNode;
 	
-			$(item.children).each((i, node) => {
-				parent.insertBefore(node, item);
+			$(obj.children).each((i, node) => {
+				parent.insertBefore(node, obj);
 			});
-			parent.removeChild(item);
+			parent.removeChild(obj);
 		});
 		return this;
 	};
@@ -1358,7 +1356,7 @@
 		return $(selector ? filterNodes(nodes, selector) : nodes);
 	};
 	
-	$.extend = function (obj, ...arrs) {
+	$.extend = (obj, ...arrs) => {
 		const len = arrs.length;
 		let i = 0,
 			keys,
@@ -1374,19 +1372,13 @@
 		return obj;
 	};
 	
-	$.isArray = function (arr) {
-		return Array.isArray(arr);
-	};
+	$.isArray = arr => Array.isArray(arr);
 	
-	$.isFunction = function (func) {
-		return func && func.constructor === Function;
-	};
+	$.isFunction = func => func && func.constructor === Function;
 	
-	$.isWindow = function (obj) {
-		return obj !== null && obj === obj.window;
-	};
+	$.isWindow = obj => obj !== null && obj === obj.window;
 	
-	$.map = function (obj, callback) {
+	$.map = (obj, callback) => {
 		const keys = Object.keys(obj),
 			len = keys.length;
 		let arr = [],

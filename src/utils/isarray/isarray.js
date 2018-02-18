@@ -1,3 +1,1 @@
-$.isArray = function (arr) {
-	return Array.isArray(arr);
-};
+$.isArray = arr => Array.isArray(arr);

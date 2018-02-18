@@ -1,4 +1,4 @@
-$.map = function (obj, callback) {
+$.map = (obj, callback) => {
 	const keys = Object.keys(obj),
 		len = keys.length;
 	let arr = [],

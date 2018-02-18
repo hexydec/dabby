@@ -1,3 +1,1 @@
-$.isWindow = function (obj) {
-	return obj !== null && obj === obj.window;
-};
+$.isWindow = obj => obj !== null && obj === obj.window;

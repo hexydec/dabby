@@ -1,4 +1,4 @@
-$.extend = function (obj, ...arrs) {
+$.extend = (obj, ...arrs) => {
 	const len = arrs.length;
 	let i = 0,
 		keys,

@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.1 - 2018-02-17 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-18 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -518,8 +518,8 @@ if (!String.prototype.includes) {
 
 					// refine by selector if supplied
 					if (selector) {
-						$(response).filter(selector).each(function () {
-							html += this.outerHTML;
+						$(response).filter(selector).each(function (key, obj) {
+							html += obj.outerHTML;
 						});
 					} else {
 						html = response;
@@ -599,10 +599,10 @@ if (!String.prototype.includes) {
 		var params = {};
 
 		// process values
-		obj.each(function () {
-			var value = $(this).val();
-			if (!this.disabled && value !== undefined) {
-				params = add(this.getAttribute("name"), value, params);
+		obj.each(function (key, obj) {
+			var value = $(obj).val();
+			if (!obj.disabled && value !== undefined) {
+				params = add(obj.getAttribute("name"), value, params);
 			}
 		});
 		return $.param(params);
@@ -721,7 +721,6 @@ if (!String.prototype.includes) {
 			temp[name] = data;
 			data = temp;
 		}
-		name = name ? camelise(name) : name;
 
 		// set value
 		if (data !== undefined) {
@@ -817,8 +816,8 @@ if (!String.prototype.includes) {
 						val = $.map($.isArray(value) ? value : [value], function (item) {
 							return String(item);
 						});
-						$("option", _this5[i]).each(function () {
-							this.selected = val.includes(String(this.value));
+						$("option", _this5[i]).each(function (key, obj) {
+							obj.selected = val.includes(String(obj.value));
 						});
 					} else {
 						_this5[i].value = String(value);
@@ -837,9 +836,9 @@ if (!String.prototype.includes) {
 			// get multiple values
 			if (this[0].multiple) {
 				var values = [];
-				$("option", this[0]).each(function () {
-					if (this.selected) {
-						values.push(String(this.value));
+				$("option", this[0]).each(function (key, obj) {
+					if (obj.selected) {
+						values.push(String(obj.value));
 					}
 				});
 				return values;
@@ -941,7 +940,7 @@ if (!String.prototype.includes) {
 
 	["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(function (dim) {
 
-		function getAdditionalLength(obj, wh, props) {
+		var getAdditionalLength = function getAdditionalLength(obj, wh, props) {
 			var style = getComputedStyle(obj);
 			var i = props.length,
 			    value = 0,
@@ -953,7 +952,7 @@ if (!String.prototype.includes) {
 				value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
 			}
 			return value;
-		}
+		};
 
 		$.fn[dim] = function (val) {
 			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
@@ -1271,14 +1270,13 @@ if (!String.prototype.includes) {
 	};
 
 	$.fn.unwrap = function (selector) {
-		this.parent(selector).not("body").each(function () {
-			var item = this,
-			    parent = item.parentNode;
+		this.parent(selector).not("body").each(function (key, obj) {
+			var parent = obj.parentNode;
 
-			$(item.children).each(function (i, node) {
-				parent.insertBefore(node, item);
+			$(obj.children).each(function (i, node) {
+				parent.insertBefore(node, obj);
 			});
-			parent.removeChild(item);
+			parent.removeChild(obj);
 		});
 		return this;
 	};

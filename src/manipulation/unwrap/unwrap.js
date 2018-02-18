@@ -1,12 +1,11 @@
 $.fn.unwrap = function (selector) {
-	this.parent(selector).not("body").each(function () {
-		const item = this,
-			parent = item.parentNode;
+	this.parent(selector).not("body").each((key, obj) => {
+		const parent = obj.parentNode;
 
-		$(item.children).each((i, node) => {
-			parent.insertBefore(node, item);
+		$(obj.children).each((i, node) => {
+			parent.insertBefore(node, obj);
 		});
-		parent.removeChild(item);
+		parent.removeChild(obj);
 	});
 	return this;
 };

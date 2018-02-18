@@ -1,4 +1,4 @@
-$.each = function (obj, callback) {
+$.each = (obj, callback) => {
 	const keys = Object.keys(obj),
 		len = keys.length;
 

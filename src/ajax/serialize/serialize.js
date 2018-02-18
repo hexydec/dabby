@@ -20,14 +20,14 @@ $.fn.serialize = function () {
 			}
 			return params;
 		};
-		
+
 	let params = {};
 
 	// process values
-	obj.each(function () {
-		const value = $(this).val();
-		if (!this.disabled && value !== undefined) {
-			params = add(this.getAttribute("name"), value, params);
+	obj.each((key, obj) => {
+		const value = $(obj).val();
+		if (!obj.disabled && value !== undefined) {
+			params = add(obj.getAttribute("name"), value, params);
 		}
 	});
 	return $.param(params);

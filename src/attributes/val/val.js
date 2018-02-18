@@ -10,8 +10,8 @@ $.fn.val = function (value) {
 					$.isArray(value) ? value : [value],
 					item => String(item)
 				);
-				$("option", this[i]).each(function () {
-					this.selected = val.includes(String(this.value));
+				$("option", this[i]).each((key, obj) => {
+					obj.selected = val.includes(String(obj.value));
 				});
 			} else {
 				this[i].value = String(value);
@@ -25,9 +25,9 @@ $.fn.val = function (value) {
 		// get multiple values
 		if (this[0].multiple) {
 			let values = [];
-			$("option", this[0]).each(function () {
-				if (this.selected) {
-					values.push(String(this.value));
+			$("option", this[0]).each((key, obj) => {
+				if (obj.selected) {
+					values.push(String(obj.value));
 				}
 			});
 			return values;
