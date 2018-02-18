@@ -11,7 +11,7 @@ QUnit.test("$.fn.parent/$.fn.parents", function (assert) {
 	assert.deepEqual(obj.parent(".testtemp2").get(), $(".testtemp2").get(), "Can select parent with selector");
 	assert.deepEqual(obj.parent(".testtemp").get(), [], "Doesn't select parent when selector doesn't match");
 
-	while (parent.parentNode) {
+	while (parent.parentNode && parent.parentNode.nodeType === Node.ELEMENT_NODE) {
 		parents.push(parent.parentNode);
 		parent = parent.parentNode;
 	}

@@ -8,7 +8,7 @@
 
 		while (i--) {
 			parent = this[i].parentNode;
-			while (parent) {
+			while (parent && parent.nodeType === Node.ELEMENT_NODE) {
 				nodes.push(parent);
 				if (!all || (until && filterNodes(parent, selector).length)) {
 					break;

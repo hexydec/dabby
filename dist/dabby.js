@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.1 - 2018-02-15 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-17 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -583,20 +583,20 @@
 	};
 	
 	$.fn.data = function (name, data) {
-		let temp = {},
-			i = this.length;
 	
 		// convert data to object
 		if (typeof name === "object") {
 			data = name;
 		} else if (data !== undefined) {
+			let temp = {};
 			temp[name] = data;
 			data = temp;
 		}
-		name = camelise(name);
+		name = name ? camelise(name) : name;
 	
 		// set value
 		if (data !== undefined) {
+			let i = this.length;
 			while (i--) {
 				$.each(data, (key, value) => {
 					this[i].dataset[camelise(key)] = typeof value === "object" ? JSON.stringify(value) : value;
@@ -605,11 +605,29 @@
 			return this;
 	
 		// get value
-		} else if (this[0] && this[0].dataset[name]) {
-			try {
-				return JSON.parse(this[0].dataset[name]);
-			} catch (e) {
-				return this[0].dataset[name];
+		} else if (this[0] && this[0].dataset) {
+			let parse = value => {
+				try {
+					return JSON.parse(value);
+				} catch (e) {
+					return value;
+				}
+			}
+	
+			// all properties
+			if (name === undefined) {
+				let arr = {};
+				$.each(this[0].dataset, (key, value) => {
+					arr[key] = parse(value);
+				});
+				return arr;
+	
+			// retrieve specific property
+			} else {
+				name = camelise(name);
+				if (this[0].dataset.hasOwnProperty(name)) {
+					return parse(this[0].dataset[name]);
+				}
 			}
 		}
 	};
@@ -687,7 +705,7 @@
 	
 			// get radio box value
 			} else if (this[0].type === "radio") {
-				let obj = this.filter("[name='" + this[0].name + "']:checked").get(0);
+				let obj = this.filter("[name='" + this[0].name + "']:checked")[0];
 				return obj ? String(obj.value) : undefined;
 	
 			// get single value
@@ -1005,7 +1023,7 @@
 				}
 				backwards = elems.length;
 				while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-					obj = elems.get(pre ? backwards : forwards);
+					obj = elems[pre ? backwards : forwards];
 	
 					// clone if i !== 0
 					if (i) {
@@ -1132,7 +1150,7 @@
 			// set variables
 			let len = this.length,
 				i = 0,
-				node = $(getVal(html, this[0])).get(0).cloneNode(true);
+				node = $(getVal(html, this[0]))[0].cloneNode(true);
 	
 			// insert clone into parent
 			this[0].parentNode.insertBefore(node, null);
@@ -1222,22 +1240,33 @@
 	};
 	
 	$.fn.index = function (selector) {
-		let index = -1,
-			i = this.length,
-			elem = this[0],
-			node;
+		let index = -1;
 	
-		if (selector) {
-			node = $(selector).get(0);
+		if (this[0]) {
+			let nodes,
+				subject = this[0],
+				type = typeof selector,
+				i;
+	
+			// if no selector, match against first elements siblings
+			if (type === "undefined") {
+				nodes = this[0].parentNode.children;
+	
+			// if selector is string, match first node in current collection against resulting collection
+			} else if (type === "string") {
+				nodes = $(selector);
+	
+			// if element or collection match the element or first node against current collection
+			} else {
+				nodes = this;
+				subject = $(selector)[0];
+			}
+	
+			i = nodes.length;
 			while (i--) {
-				if (this[i].isSameNode(node)) {
+				if (nodes[i].isSameNode(subject)) {
 					return i;
 				}
-			}
-		} else if (elem && elem.parentNode) {
-			index = 0;
-			while (elem = elem.previousSibling) {
-				index++;
 			}
 		}
 		return index;
@@ -1299,7 +1328,7 @@
 	
 			while (i--) {
 				parent = this[i].parentNode;
-				while (parent) {
+				while (parent && parent.nodeType === Node.ELEMENT_NODE) {
 					nodes.push(parent);
 					if (!all || (until && filterNodes(parent, selector).length)) {
 						break;

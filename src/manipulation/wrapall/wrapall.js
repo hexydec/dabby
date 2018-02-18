@@ -4,7 +4,7 @@ $.fn.wrapAll = function (html) {
 		// set variables
 		let len = this.length,
 			i = 0,
-			node = $(getVal(html, this[0])).get(0).cloneNode(true);
+			node = $(getVal(html, this[0]))[0].cloneNode(true);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);

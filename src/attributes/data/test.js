@@ -1,22 +1,24 @@
-QUnit.module("Attributes");
-
-QUnit.test("$.fn.data", function (assert) {
+QUnit.module("Attributes", function (hooks) {
 	var test = document.getElementsByClassName("test")[0];
-	test.innerHTML = '<div class="testtemp"></div>';
-	var main = $(".testtemp"),
-		rmain = document.getElementsByClassName("testtemp")[0],
-		json = {foo: "bar", foo2: "bar2"};
 
-	// set data
-	assert.deepEqual(main.data("var", "value"), main, "Returns itself when setting data");
-	assert.equal(rmain.dataset.var, "value", "Can set data");
-	main.data("json", json);
-	assert.deepEqual(JSON.parse(rmain.dataset.json), json, "Can set data as an plain object");
+	hooks.before(function () {
+		test.innerHTML = '<div class="testtemp"></div>';
+	});
 
-	//get data
-	assert.equal(main.data("var"), "value", "Can get data");
-	assert.deepEqual(main.data("json"), json, "Can get data as an object");
+	QUnit.test("$.fn.data", function (assert) {
+		var main = $(".testtemp"),
+			rmain = document.getElementsByClassName("testtemp")[0],
+			json = {foo: "bar", foo2: "bar2"};
 
-	// reset
-	test.innerHTML = "";
+		// set data
+		assert.deepEqual(main.data("var", "value"), main, "Returns itself when setting data");
+		assert.equal(main.data("var"), "value", "Can set data");
+		main.data("json", json);
+		assert.deepEqual(main.data("json"), json, "Can set and get data as a plain object");
+		assert.deepEqual(main.data(), {var: "value", json: json}, "Can retrieve all data from node");
+	});
+
+	hooks.after(function () {
+		test.innerHTML = "";
+	});
 });

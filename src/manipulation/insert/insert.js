@@ -25,7 +25,7 @@ $.each({
 			}
 			backwards = elems.length;
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				obj = elems.get(pre ? backwards : forwards);
+				obj = elems[pre ? backwards : forwards];
 
 				// clone if i !== 0
 				if (i) {

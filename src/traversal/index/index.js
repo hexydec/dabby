@@ -1,20 +1,31 @@
 $.fn.index = function (selector) {
-	let index = -1,
-		i = this.length,
-		elem = this[0],
-		node;
+	let index = -1;
 
-	if (selector) {
-		node = $(selector).get(0);
+	if (this[0]) {
+		let nodes,
+			subject = this[0],
+			type = typeof selector,
+			i;
+
+		// if no selector, match against first elements siblings
+		if (type === "undefined") {
+			nodes = this[0].parentNode.children;
+
+		// if selector is string, match first node in current collection against resulting collection
+		} else if (type === "string") {
+			nodes = $(selector);
+
+		// if element or collection match the element or first node against current collection
+		} else {
+			nodes = this;
+			subject = $(selector)[0];
+		}
+
+		i = nodes.length;
 		while (i--) {
-			if (this[i].isSameNode(node)) {
+			if (nodes[i].isSameNode(subject)) {
 				return i;
 			}
-		}
-	} else if (elem && elem.parentNode) {
-		index = 0;
-		while (elem = elem.previousSibling) {
-			index++;
 		}
 	}
 	return index;
