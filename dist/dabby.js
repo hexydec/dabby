@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.1 - 2018-02-18 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-19 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
