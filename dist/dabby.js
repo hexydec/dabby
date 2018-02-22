@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.1 - 2018-02-18 by Will Earp */
+/*! Dabby.js v0.9.1 - 2018-02-22 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -140,7 +140,7 @@
 					return selector;
 	
 				// single node
-				} else if (selector.nodeType) {
+				} else if (selector.nodeType || $.isWindow(selector)) {
 					nodes = [selector];
 	
 				// ready function
@@ -189,7 +189,7 @@
 			// build nodes
 			this.length = 0;
 			Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-				if ([1, 9, 11].includes(node.nodeType)) { // only element, document and documentFragment
+				if ([1, 9, 11].includes(node.nodeType) || $.isWindow(node)) { // only element, document, documentFragment and window
 					this[this.length++] = node;
 				}
 			});
@@ -1069,38 +1069,6 @@
 			return func === "detach" ? $(nodes) : this;
 		};
 	});
-	
-	// needs more understanding of how this is supposed to work!!!
-	
-	/*["replaceWith", "replaceAll"].forEach(function (name) {
-		$.fn[name] = function (html) {
-			const all = name === "replaceAll",
-				isFunc = $.isFunction(html)
-			let i = this.length,
-				nodes = [],
-				replace = [],
-				n,
-				parent;
-	
-			if (!isFunc) {
-				html = $(html);
-			}
-			while (i--) {
-	
-				replace = isFunc ? getVal(html, i, this[i]) : html;
-				n = replace.length;
-				parent = this[i].parentNode;
-				while (n--) {
-					if (n) {
-						this[i].insertAdjacentElement("beforebegin", replace.get(n));
-					} else {
-						nodes[i] = parent.replaceChild(replace.get(n), this[i]);
-					}
-				}
-			}
-			return all ? this : nodes;
-		};
-	});*/
 	
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));

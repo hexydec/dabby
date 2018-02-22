@@ -16,7 +16,7 @@ let domready = false,
 				return selector;
 
 			// single node
-			} else if (selector.nodeType) {
+			} else if (selector.nodeType || $.isWindow(selector)) {
 				nodes = [selector];
 
 			// ready function
@@ -65,7 +65,7 @@ let domready = false,
 		// build nodes
 		this.length = 0;
 		Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-			if ([1, 9, 11].includes(node.nodeType)) { // only element, document and documentFragment
+			if ([1, 9, 11].includes(node.nodeType) || $.isWindow(node)) { // only element, document, documentFragment and window
 				this[this.length++] = node;
 			}
 		});
