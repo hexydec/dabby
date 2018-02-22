@@ -46,7 +46,7 @@
 
 				// trigger
 				while (e--) {
-					node.addEventListener(events[e], fn, name === "one" ? {once: true} : false);
+					node.addEventListener(events[e], fn, {once: name === "one"});
 				}
 
 			// find the original function
