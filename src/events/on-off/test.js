@@ -41,7 +41,7 @@ QUnit.module("Events", function (hooks) {
 		assert.equal(triggered, 2, "Events are set on the correct object");
 
 		// test removing event
-		assert.equal(obj.off(name, ".testtemp", func), obj, "Returns self on remove event");
+		assert.equal(body.off(name, ".testtemp", func), body, "Returns self on remove event");
 		obj.trigger(name);
 		assert.equal(triggered, 2, "Events are removed from the correct object");
 	});

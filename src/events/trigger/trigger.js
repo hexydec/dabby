@@ -1,6 +1,6 @@
 $.fn.trigger = function (name, data) {
-	let evt = new CustomEvent(name, {bubbles: true, cancelable: true}),
-		i = this.length;
+	const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
+	let i = this.length;
 
 	// copy extra data to event object
 	if (data) {

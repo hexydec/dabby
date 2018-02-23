@@ -2,9 +2,17 @@
 ["on", "one", "off"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
 		let i = this.length,
-			e,
-			fn,
-			node;
+			fn= function (evt) { // delegate function
+				if (!selector || $(selector).is(evt.target)) {
+					if (data) { // set data to event object
+						evt.data = data;
+					}
+					if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
+						evt.preventDefault();
+						evt.stopPropagation();
+					}
+				}
+			};
 
 		events = events.split(" ");
 
@@ -19,28 +27,18 @@
 
 		// attach event
 		while (i--) {
-			node = this[i];
-			e = events.length;
-			if (!node.events) {
-				node.events = [];
-			}
+			let node = this[i],
+				e = events.length;
 
 			// record the original function
 			if (name !== "off") {
-				fn = function (evt) { // delegate function
-					if (!selector || $(selector).is(evt.target)) {
-						if (data) { // set data to event object
-							evt.data = data;
-						}
-						if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
-							evt.preventDefault();
-							evt.stopPropagation();
-						}
-					}
-				};
+				if (!node.events) {
+					node.events = [];
+				}
 				node.events.push({
 					events: events,
 					callback: callback,
+					selector: selector,
 					func: fn
 				});
 
@@ -50,11 +48,11 @@
 				}
 
 			// find the original function
-			} else if (node.events) {
+			} else if (node.events.length) {
 				while (e--) {
 					node.events.forEach((evt, i) => {
 						const index = evt.events.indexOf(events[e]);
-						if (index !== -1 && evt.callback === callback) {
+						if (index !== -1 && evt.callback === callback && evt.selector === selector) {
 							node.removeEventListener(events[e], evt.func);
 							node.events[i].events.splice(index, 1);
 							if (!node.events[i].events.length) {

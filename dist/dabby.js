@@ -1,4 +1,4 @@
-/*! Dabby.js v0.9.1 - 2018-02-19 by Will Earp */
+/*! dabbyjs v0.9.1 - 2018-02-23 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -140,7 +140,7 @@
 					return selector;
 	
 				// single node
-				} else if (selector.nodeType) {
+				} else if (selector.nodeType || $.isWindow(selector)) {
 					nodes = [selector];
 	
 				// ready function
@@ -189,7 +189,7 @@
 			// build nodes
 			this.length = 0;
 			Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-				if ([1, 9, 11].includes(node.nodeType)) { // only element, document and documentFragment
+				if ([1, 9, 11].includes(node.nodeType) || $.isWindow(node)) { // only element, document, documentFragment and window
 					this[this.length++] = node;
 				}
 			});
@@ -880,9 +880,17 @@
 	["on", "one", "off"].forEach(name => {
 		$.fn[name] = function (events, selector, data, callback) {
 			let i = this.length,
-				e,
-				fn,
-				node;
+				fn= function (evt) { // delegate function
+					if (!selector || $(selector).is(evt.target)) {
+						if (data) { // set data to event object
+							evt.data = data;
+						}
+						if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
+							evt.preventDefault();
+							evt.stopPropagation();
+						}
+					}
+				};
 	
 			events = events.split(" ");
 	
@@ -897,42 +905,32 @@
 	
 			// attach event
 			while (i--) {
-				node = this[i];
-				e = events.length;
-				if (!node.events) {
-					node.events = [];
-				}
+				let node = this[i],
+					e = events.length;
 	
 				// record the original function
 				if (name !== "off") {
-					fn = function (evt) { // delegate function
-						if (!selector || $(selector).is(evt.target)) {
-							if (data) { // set data to event object
-								evt.data = data;
-							}
-							if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
-								evt.preventDefault();
-								evt.stopPropagation();
-							}
-						}
-					};
+					if (!node.events) {
+						node.events = [];
+					}
 					node.events.push({
 						events: events,
 						callback: callback,
+						selector: selector,
 						func: fn
 					});
 	
 					// trigger
 					while (e--) {
-						node.addEventListener(events[e], fn, name === "one" ? {once: true} : false);
+						node.addEventListener(events[e], fn, {once: name === "one"});
 					}
 	
 				// find the original function
-				} else if (node.events) {
+				} else if (node.events.length) {
 					while (e--) {
 						node.events.forEach((evt, i) => {
 							const index = evt.events.indexOf(events[e]);
-							if (index !== -1 && evt.callback === callback) {
+							if (index !== -1 && evt.callback === callback && evt.selector === selector) {
 								node.removeEventListener(events[e], evt.func);
 								node.events[i].events.splice(index, 1);
 								if (!node.events[i].events.length) {
@@ -948,8 +946,8 @@
 	});
 	
 	$.fn.trigger = function (name, data) {
-		let evt = new CustomEvent(name),
-			i = this.length;
+		const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
+		let i = this.length;
 	
 		// copy extra data to event object
 		if (data) {

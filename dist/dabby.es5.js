@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! Dabby.js v0.9.1 - 2018-02-19 by Will Earp */
+/*! dabbyjs v0.9.1 - 2018-02-23 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -255,7 +255,7 @@ if (!String.prototype.includes) {
 				return selector;
 
 				// single node
-			} else if (selector.nodeType) {
+			} else if (selector.nodeType || $.isWindow(selector)) {
 				nodes = [selector];
 
 				// ready function
@@ -305,8 +305,8 @@ if (!String.prototype.includes) {
 		this.length = 0;
 		Array.from(nodes).forEach(function (node) {
 			// HTMLCollection objects don't support forEach
-			if ([1, 9, 11].includes(node.nodeType)) {
-				// only element, document and documentFragment
+			if ([1, 9, 11].includes(node.nodeType) || $.isWindow(node)) {
+				// only element, document, documentFragment and window
 				_this[_this.length++] = node;
 			}
 		});
@@ -1021,10 +1021,22 @@ if (!String.prototype.includes) {
 	// add and remove event handlers
 	["on", "one", "off"].forEach(function (name) {
 		$.fn[name] = function (events, selector, data, callback) {
+			var _this6 = this;
+
 			var i = this.length,
-			    e = void 0,
-			    fn = void 0,
-			    node = void 0;
+			    fn = function fn(evt) {
+				// delegate function
+				if (!selector || $(selector).is(evt.target)) {
+					if (data) {
+						// set data to event object
+						evt.data = data;
+					}
+					if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
+						evt.preventDefault();
+						evt.stopPropagation();
+					}
+				}
+			};
 
 			events = events.split(" ");
 
@@ -1038,45 +1050,34 @@ if (!String.prototype.includes) {
 			}
 
 			// attach event
-			while (i--) {
-				node = this[i];
-				e = events.length;
-				if (!node.events) {
-					node.events = [];
-				}
+
+			var _loop = function _loop() {
+				var node = _this6[i],
+				    e = events.length;
 
 				// record the original function
 				if (name !== "off") {
-					fn = function fn(evt) {
-						// delegate function
-						if (!selector || $(selector).is(evt.target)) {
-							if (data) {
-								// set data to event object
-								evt.data = data;
-							}
-							if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
-								evt.preventDefault();
-								evt.stopPropagation();
-							}
-						}
-					};
+					if (!node.events) {
+						node.events = [];
+					}
 					node.events.push({
 						events: events,
 						callback: callback,
+						selector: selector,
 						func: fn
 					});
 
 					// trigger
 					while (e--) {
-						node.addEventListener(events[e], fn, name === "one" ? { once: true } : false);
+						node.addEventListener(events[e], fn, { once: name === "one" });
 					}
 
 					// find the original function
-				} else if (node.events) {
+				} else if (node.events.length) {
 					while (e--) {
 						node.events.forEach(function (evt, i) {
 							var index = evt.events.indexOf(events[e]);
-							if (index !== -1 && evt.callback === callback) {
+							if (index !== -1 && evt.callback === callback && evt.selector === selector) {
 								node.removeEventListener(events[e], evt.func);
 								node.events[i].events.splice(index, 1);
 								if (!node.events[i].events.length) {
@@ -1086,14 +1087,18 @@ if (!String.prototype.includes) {
 						});
 					}
 				}
+			};
+
+			while (i--) {
+				_loop();
 			}
 			return this;
 		};
 	});
 
 	$.fn.trigger = function (name, data) {
-		var evt = new CustomEvent(name),
-		    i = this.length;
+		var evt = new CustomEvent(name, { bubbles: true, cancelable: true });
+		var i = this.length;
 
 		// copy extra data to event object
 		if (data) {
@@ -1296,19 +1301,19 @@ if (!String.prototype.includes) {
 			// set variables
 			var len = this.length,
 			    i = 0,
-			    node = $(getVal(html, this[0]))[0].cloneNode(true);
+			    _node = $(getVal(html, this[0]))[0].cloneNode(true);
 
 			// insert clone into parent
-			this[0].parentNode.insertBefore(node, null);
+			this[0].parentNode.insertBefore(_node, null);
 
 			// find innermost child of node
-			while (node.firstElementChild) {
-				node = node.firstElementChild;
+			while (_node.firstElementChild) {
+				_node = _node.firstElementChild;
 			}
 
 			// attach nodes to the new node
 			for (; i < len; i++) {
-				node.appendChild(this[i]);
+				_node.appendChild(this[i]);
 			}
 		}
 		return this;
@@ -1493,14 +1498,14 @@ if (!String.prototype.includes) {
 	});
 
 	$.fn.siblings = function (selector) {
-		var _this6 = this;
+		var _this7 = this;
 
 		var i = this.length,
 		    nodes = [];
 
 		while (i--) {
 			Array.from(this[i].parentNode.children).forEach(function (child) {
-				if (!child.isSameNode(_this6[i])) {
+				if (!child.isSameNode(_this7[i])) {
 					nodes.push(child);
 				}
 			});
