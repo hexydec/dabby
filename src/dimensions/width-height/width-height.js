@@ -16,8 +16,8 @@
 
 	$.fn[dim] = function (val) {
 		const valtype = typeof(val),
-			wh = dim.toLowerCase().includes("width") ? "width" : "height", // width or height
-			io = dim.includes("inner") ? "inner" : (dim.includes("outer") ? "outer" : ""); // inner outer or neither
+			wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height", // width or height
+			io = dim.indexOf("inner") > -1 ? "inner" : (dim.indexOf("outer") > -1 ? "outer" : ""); // inner outer or neither
 		let i = this.length,
 			value,
 			whu,

@@ -53,7 +53,7 @@
 					node.events.forEach((evt, i) => {
 						const index = evt.events.indexOf(events[e]);
 						if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-							node.removeEventListener(events[e], evt.func);
+							node.removeEventListener(events[e], evt.func, {}); // must pass same arguments
 							node.events[i].events.splice(index, 1);
 							if (!node.events[i].events.length) {
 								node.events.splice(i, 1);

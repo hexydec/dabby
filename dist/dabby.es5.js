@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! dabbyjs v0.9.1 - 2018-02-23 by Will Earp */
+/*! dabbyjs v0.9.1 - 2018-02-24 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -14,57 +14,6 @@ if (!Array.from) {
 		}
 		return arr;
 	};
-}
-
-if (!Array.prototype.includes) {
-	Object.defineProperty(Array.prototype, "includes", {
-		value: function value(searchElement, fromIndex) {
-
-			if (this == null) {
-				throw new TypeError("\"this\" is null or not defined");
-			}
-
-			// 1. Let O be ? ToObject(this value).
-			var o = Object(this);
-
-			// 2. Let len be ? ToLength(? Get(O, "length")).
-			var len = o.length >>> 0;
-
-			// 3. If len is 0, return false.
-			if (len === 0) {
-				return false;
-			}
-
-			// 4. Let n be ? ToInteger(fromIndex).
-			//    (If fromIndex is undefined, this step produces the value 0.)
-			var n = fromIndex | 0;
-
-			// 5. If n ≥ 0, then
-			//  a. Let k be n.
-			// 6. Else n < 0,
-			//  a. Let k be len + n.
-			//  b. If k < 0, let k be 0.
-			var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
-
-			function sameValueZero(x, y) {
-				return x === y || typeof x === "number" && typeof y === "number" && isNaN(x) && isNaN(y);
-			}
-
-			// 7. Repeat, while k < len
-			while (k < len) {
-				// a. Let elementK be the result of ? Get(O, ! ToString(k)).
-				// b. If SameValueZero(searchElement, elementK) is true, return true.
-				if (sameValueZero(o[k], searchElement)) {
-					return true;
-				}
-				// c. Increase k by 1.
-				k++;
-			}
-
-			// 8. Return false
-			return false;
-		}
-	});
 }
 
 // CustomEvent is not supported in IE11
@@ -82,7 +31,7 @@ if (typeof window.CustomEvent !== "function") {
 
 // support Element.matches() in IE and older Webkit
 if (!Element.prototype.matches) {
-	Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+	Element.prototype.matches = Element.prototype.msMatchesSelector;
 }
 
 if (!NodeList.prototype.forEach) {
@@ -90,20 +39,6 @@ if (!NodeList.prototype.forEach) {
 		thisArg = thisArg || window;
 		for (var i = 0; i < this.length; i++) {
 			callback.call(thisArg, this[i], i, this);
-		}
-	};
-}
-
-if (!String.prototype.includes) {
-	String.prototype.includes = function (search, start) {
-		if (typeof start !== "number") {
-			start = 0;
-		}
-
-		if (start + search.length > this.length) {
-			return false;
-		} else {
-			return this.indexOf(search, start) !== -1;
 		}
 	};
 }
@@ -274,7 +209,7 @@ if (!String.prototype.includes) {
 				nodes = selector;
 
 				// CSS selector
-			} else if (!selector.includes("<")) {
+			} else if (selector.indexOf("<") === -1) {
 				context = context || document;
 				$(context).each(function (i, obj) {
 					nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
@@ -305,7 +240,7 @@ if (!String.prototype.includes) {
 		this.length = 0;
 		Array.from(nodes).forEach(function (node) {
 			// HTMLCollection objects don't support forEach
-			if ([1, 9, 11].includes(node.nodeType) || $.isWindow(node)) {
+			if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) {
 				// only element, document, documentFragment and window
 				_this[_this.length++] = node;
 			}
@@ -368,18 +303,18 @@ if (!String.prototype.includes) {
 			settings.dataType = "script";
 		}
 
-		var sync = ["script", "jsonp"].includes(settings.dataType),
+		var sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
 		    script = void 0,
 		    xhr = void 0;
 
 		// add cache buster
 		if (settings.cache || settings.cache === null && sync) {
-			settings.url += (settings.url.includes("?") ? "&" : "?") + "_=" + +new Date();
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + +new Date();
 		}
 
 		// add data to query string
 		if (settings.data && settings.processData) {
-			settings.url += (settings.url.includes("?") ? "&" : "?") + $.param(settings.data);
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + $.param(settings.data);
 		}
 
 		// fetch script
@@ -391,7 +326,7 @@ if (!String.prototype.includes) {
 
 			// add callback parameter
 			if (settings.dataType === "jsonp") {
-				settings.url += (settings.url.includes("?") ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
+				settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
 			}
 
 			// setup event callbacks
@@ -419,7 +354,7 @@ if (!String.prototype.includes) {
 				    callbacks = [];
 
 				// parse JSON
-				if (["json", null].includes(settings.dataType)) {
+				if (["json", null].indexOf(settings.dataType) > -1) {
 					try {
 						response = JSON.parse(response);
 					} catch (e) {
@@ -628,7 +563,7 @@ if (!String.prototype.includes) {
 
 			while (i--) {
 				$.each(prop, function (key, val) {
-					if (events.includes(key)) {
+					if (events.indexOf(key) > -1) {
 						$(_this3[i]).on(key, val);
 					} else if (key === "style") {
 						_this3[i].style.cssText = val;
@@ -817,7 +752,7 @@ if (!String.prototype.includes) {
 							return String(item);
 						});
 						$("option", _this5[i]).each(function (key, obj) {
-							obj.selected = val.includes(String(obj.value));
+							obj.selected = val.indexOf(String(obj.value)) > -1;
 						});
 					} else {
 						_this5[i].value = String(value);
@@ -956,9 +891,9 @@ if (!String.prototype.includes) {
 
 		$.fn[dim] = function (val) {
 			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
-			    wh = dim.toLowerCase().includes("width") ? "width" : "height",
+			    wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
 			    // width or height
-			io = dim.includes("inner") ? "inner" : dim.includes("outer") ? "outer" : ""; // inner outer or neither
+			io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
 			var i = this.length,
 			    value = void 0,
 			    whu = void 0,
@@ -1078,7 +1013,7 @@ if (!String.prototype.includes) {
 						node.events.forEach(function (evt, i) {
 							var index = evt.events.indexOf(events[e]);
 							if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-								node.removeEventListener(events[e], evt.func);
+								node.removeEventListener(events[e], evt.func, {}); // must pass same arguments
 								node.events[i].events.splice(index, 1);
 								if (!node.events[i].events.length) {
 									node.events.splice(i, 1);
@@ -1151,7 +1086,7 @@ if (!String.prototype.includes) {
 		after: "afterEnd"
 	}, function (name, pos) {
 		$.fn[name] = function (html) {
-			var pre = ["before", "prepend"].includes(name),
+			var pre = ["before", "prepend"].indexOf(name) > -1,
 			    isFunc = $.isFunction(html);
 			var i = this.length,
 			    elems = $(),
@@ -1435,9 +1370,9 @@ if (!String.prototype.includes) {
 
 	["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
 		$.fn[func] = function (selector, filter) {
-			var next = func.includes("next"),
-			    all = func.includes("All"),
-			    until = func.includes("Until"),
+			var next = func.indexOf("next") > -1,
+			    all = func.indexOf("All") > -1,
+			    until = func.indexOf("Until") > -1,
 			    method = next ? "nextElementSibling" : "previousElementSibling";
 			var nodes = [],
 			    i = this.length,
@@ -1473,8 +1408,8 @@ if (!String.prototype.includes) {
 
 	["parent", "parents", "parentsUntil"].forEach(function (func) {
 		$.fn[func] = function (selector, filter) {
-			var all = func.includes("s"),
-			    until = func.includes("U");
+			var all = func.indexOf("s") > -1,
+			    until = func.indexOf("U") > -1;
 			var nodes = [],
 			    i = this.length,
 			    parent = void 0;
@@ -1554,7 +1489,7 @@ if (!String.prototype.includes) {
 
 		for (; i < len; i++) {
 			result = callback.call(window, obj[keys[i]], keys[i]);
-			if (![null, undefined].includes(result)) {
+			if (![null, undefined].indexOf(result) > -1) {
 				arr.push(result);
 			}
 		}

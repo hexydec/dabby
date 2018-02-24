@@ -37,17 +37,17 @@ $.ajax = (url, settings) => {
 		settings.dataType = "script";
 	}
 
-	let sync = ["script", "jsonp"].includes(settings.dataType),
+	let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
 		script, xhr;
 
 	// add cache buster
 	if (settings.cache || (settings.cache === null && sync)) {
-		settings.url += (settings.url.includes("?") ? "&" : "?") + "_=" + (+new Date());
+		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
 	}
 
 	// add data to query string
 	if (settings.data && settings.processData) {
-		settings.url += (settings.url.includes("?") ? "&" : "?") + $.param(settings.data);
+		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + $.param(settings.data);
 	}
 
 	// fetch script
@@ -59,7 +59,7 @@ $.ajax = (url, settings) => {
 
 		// add callback parameter
 		if (settings.dataType === "jsonp") {
-			settings.url += (settings.url.includes("?") ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
 		}
 
 		// setup event callbacks
@@ -87,7 +87,7 @@ $.ajax = (url, settings) => {
 				callbacks = [];
 
 			// parse JSON
-			if (["json", null].includes(settings.dataType)) {
+			if (["json", null].indexOf(settings.dataType) > -1) {
 				try {
 					response = JSON.parse(response);
 				} catch (e) {

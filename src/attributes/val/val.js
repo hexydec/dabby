@@ -11,7 +11,7 @@ $.fn.val = function (value) {
 					item => String(item)
 				);
 				$("option", this[i]).each((key, obj) => {
-					obj.selected = val.includes(String(obj.value));
+					obj.selected = val.indexOf(String(obj.value)) > -1;
 				});
 			} else {
 				this[i].value = String(value);

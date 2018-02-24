@@ -1,4 +1,4 @@
-/*! dabbyjs v0.9.1 - 2018-02-23 by Will Earp */
+/*! dabbyjs v0.9.1 - 2018-02-24 by Will Earp */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -159,7 +159,7 @@
 					nodes = selector;
 	
 				// CSS selector
-				} else if (!selector.includes("<")) {
+				} else if (selector.indexOf("<") === -1) {
 					context = context || document;
 					$(context).each((i, obj) => {
 						nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
@@ -189,7 +189,7 @@
 			// build nodes
 			this.length = 0;
 			Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-				if ([1, 9, 11].includes(node.nodeType) || $.isWindow(node)) { // only element, document, documentFragment and window
+				if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) { // only element, document, documentFragment and window
 					this[this.length++] = node;
 				}
 			});
@@ -251,17 +251,17 @@
 			settings.dataType = "script";
 		}
 	
-		let sync = ["script", "jsonp"].includes(settings.dataType),
+		let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
 			script, xhr;
 	
 		// add cache buster
 		if (settings.cache || (settings.cache === null && sync)) {
-			settings.url += (settings.url.includes("?") ? "&" : "?") + "_=" + (+new Date());
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
 		}
 	
 		// add data to query string
 		if (settings.data && settings.processData) {
-			settings.url += (settings.url.includes("?") ? "&" : "?") + $.param(settings.data);
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + $.param(settings.data);
 		}
 	
 		// fetch script
@@ -273,7 +273,7 @@
 	
 			// add callback parameter
 			if (settings.dataType === "jsonp") {
-				settings.url += (settings.url.includes("?") ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
+				settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
 			}
 	
 			// setup event callbacks
@@ -301,7 +301,7 @@
 					callbacks = [];
 	
 				// parse JSON
-				if (["json", null].includes(settings.dataType)) {
+				if (["json", null].indexOf(settings.dataType) > -1) {
 					try {
 						response = JSON.parse(response);
 					} catch (e) {
@@ -500,7 +500,7 @@
 	
 			while (i--) {
 				$.each(prop, (key, val) => {
-					if (events.includes(key)) {
+					if (events.indexOf(key) > -1) {
 						$(this[i]).on(key, val);
 					} else if (key === "style") {
 						this[i].style.cssText = val;
@@ -681,7 +681,7 @@
 						item => String(item)
 					);
 					$("option", this[i]).each((key, obj) => {
-						obj.selected = val.includes(String(obj.value));
+						obj.selected = val.indexOf(String(obj.value)) > -1;
 					});
 				} else {
 					this[i].value = String(value);
@@ -815,8 +815,8 @@
 	
 		$.fn[dim] = function (val) {
 			const valtype = typeof(val),
-				wh = dim.toLowerCase().includes("width") ? "width" : "height", // width or height
-				io = dim.includes("inner") ? "inner" : (dim.includes("outer") ? "outer" : ""); // inner outer or neither
+				wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height", // width or height
+				io = dim.indexOf("inner") > -1 ? "inner" : (dim.indexOf("outer") > -1 ? "outer" : ""); // inner outer or neither
 			let i = this.length,
 				value,
 				whu,
@@ -931,7 +931,7 @@
 						node.events.forEach((evt, i) => {
 							const index = evt.events.indexOf(events[e]);
 							if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-								node.removeEventListener(events[e], evt.func);
+								node.removeEventListener(events[e], evt.func, {}); // must pass same arguments
 								node.events[i].events.splice(index, 1);
 								if (!node.events[i].events.length) {
 									node.events.splice(i, 1);
@@ -1000,7 +1000,7 @@
 		after: "afterEnd"
 	}, (name, pos) => {
 		$.fn[name] = function (html) {
-			const pre = ["before", "prepend"].includes(name),
+			const pre = ["before", "prepend"].indexOf(name) > -1,
 				isFunc = $.isFunction(html);
 			let i = this.length,
 				elems = $(),
@@ -1278,9 +1278,9 @@
 	
 	["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(func => {
 		$.fn[func] = function (selector, filter) {
-			const next = func.includes("next"),
-				all = func.includes("All"),
-				until = func.includes("Until"),
+			const next = func.indexOf("next") > -1,
+				all = func.indexOf("All") > -1,
+				until = func.indexOf("Until") > -1,
 				method = next ? "nextElementSibling" : "previousElementSibling";
 			let nodes = [],
 				i = this.length,
@@ -1316,8 +1316,8 @@
 	
 	["parent", "parents", "parentsUntil"].forEach(func => {
 		$.fn[func] = function (selector, filter) {
-			const all = func.includes("s"),
-				until = func.includes("U");
+			const all = func.indexOf("s") > -1,
+				until = func.indexOf("U") > -1;
 			let nodes = [],
 				i = this.length,
 				parent;
@@ -1385,7 +1385,7 @@
 	
 		for (; i < len; i++) {
 			result = callback.call(window, obj[keys[i]], keys[i])
-			if (![null, undefined].includes(result)) {
+			if (![null, undefined].indexOf(result) > -1) {
 				arr.push(result);
 			}
 		}

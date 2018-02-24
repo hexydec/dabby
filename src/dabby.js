@@ -35,7 +35,7 @@ let domready = false,
 				nodes = selector;
 
 			// CSS selector
-			} else if (!selector.includes("<")) {
+			} else if (selector.indexOf("<") === -1) {
 				context = context || document;
 				$(context).each((i, obj) => {
 					nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
@@ -65,7 +65,7 @@ let domready = false,
 		// build nodes
 		this.length = 0;
 		Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-			if ([1, 9, 11].includes(node.nodeType) || $.isWindow(node)) { // only element, document, documentFragment and window
+			if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) { // only element, document, documentFragment and window
 				this[this.length++] = node;
 			}
 		});

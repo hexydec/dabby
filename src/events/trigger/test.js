@@ -1,18 +1,28 @@
-QUnit.module("Events");
-
-QUnit.test("$.fn.trigger", function (assert) {
+QUnit.module("Events", function (hooks) {
 	var test = document.getElementsByClassName("test")[0];
-	test.innerHTML = '<div class="testtemp"><div>1</div><div>2</div><div>3</div></div>';
 
-	var divs = test.getElementsByTagName("div"),
-		count = 0,
-		dabbyDivs = $(".testtemp div");
-
-	[].slice.call(divs).forEach(function (div) {
-		div.onclick = function () {count++;};
+	hooks.before(function () {
+		test.innerHTML = '<div class="testtemp"><div>1</div><div>2</div><div>3</div></div>';
 	});
 
-	// test
-	assert.equal(dabbyDivs.trigger("click"), dabbyDivs, "Returns self on trigger");
-	assert.equal(count, 3, "Can trigger events");
+	QUnit.test("$.fn.trigger", function (assert) {
+		var divs = test.getElementsByTagName("div"),
+			count = 0,
+			dabbyDivs = $(".testtemp div");
+
+		[].slice.call(divs).forEach(function (div) {
+			div.onclick = function (e) {
+				count++;
+				e.stopPropagation();
+			};
+		});
+
+		// test
+		assert.equal(dabbyDivs.trigger("click"), dabbyDivs, "Returns self on trigger");
+		assert.equal(count, 3, "Can trigger events");
+	});
+
+	hooks.after(function () {
+		test.innerHTML = "";
+	});
 });

@@ -5,7 +5,7 @@ $.each({
 	after: "afterEnd"
 }, (name, pos) => {
 	$.fn[name] = function (html) {
-		const pre = ["before", "prepend"].includes(name),
+		const pre = ["before", "prepend"].indexOf(name) > -1,
 			isFunc = $.isFunction(html);
 		let i = this.length,
 			elems = $(),

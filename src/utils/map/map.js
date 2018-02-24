@@ -7,7 +7,7 @@ $.map = (obj, callback) => {
 
 	for (; i < len; i++) {
 		result = callback.call(window, obj[keys[i]], keys[i])
-		if (![null, undefined].includes(result)) {
+		if (![null, undefined].indexOf(result) > -1) {
 			arr.push(result);
 		}
 	}

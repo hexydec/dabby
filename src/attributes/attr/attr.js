@@ -17,7 +17,7 @@ $.fn.attr = function (prop, value) {
 
 		while (i--) {
 			$.each(prop, (key, val) => {
-				if (events.includes(key)) {
+				if (events.indexOf(key) > -1) {
 					$(this[i]).on(key, val);
 				} else if (key === "style") {
 					this[i].style.cssText = val;
