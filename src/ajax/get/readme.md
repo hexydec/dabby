@@ -5,8 +5,8 @@ Shorthand to make AJAX requests using the GET method.
 ## Usage
 
 ```javascript
-$.get(url[, data, success, type]);
-$.get(url, success[, type]);
+$.get(url[, data, success, type]); // => xhr
+$.get(url, success[, type]); // => xhr
 ```
 
 See [$.ajax()](../ajax/readme.md) for a description of the input parameters.

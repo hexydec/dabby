@@ -5,7 +5,7 @@ Shorthand method to include a script into the DOM.
 ## Usage
 
 ```javascript
-$.getScript(url[, success]);
+$.getScript(url[, success]); // => void
 ```
 
 See [$.ajax()](../ajax/readme.md) for a description of the input parameters.

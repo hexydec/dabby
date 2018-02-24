@@ -5,9 +5,9 @@ Make an AJAX request and insert the resulting HTML it into the DOM
 ## Usage
 
 ```javascript
-$(selector).load(url[, success]);
-$(selector).load(url[, data, success]);
-$(selector).load(url fragment[, data, success]);
+$(selector).load(url[, success]) // => dabby
+$(selector).load(url[, data, success]) // => dabby
+$(selector).load(url fragment[, data, success]) // => dabby
 ```
 
 ### url

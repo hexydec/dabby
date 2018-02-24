@@ -5,7 +5,7 @@ Render a query string from an object.
 ## Usage
 
 ```javascript
-$.param(object);
+$.param(object) // => String
 ```
 
 ### object

@@ -5,8 +5,8 @@ Shorthand to make AJAX requests using the POST method.
 ## Usage
 
 ```javascript
-$.post(url[, data, success, type]);
-$.post(url, success[, type]);
+$.post(url[, data, success, type]) // => xhr
+$.post(url, success[, type]) // => xhr
 ```
 
 See [$.ajax()](../ajax/readme.md) for a description of the input parameters.

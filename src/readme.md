@@ -5,11 +5,11 @@ Create a Dabby.js object, containing nodes, selected with document nodes, CSS se
 ## Usage
 
 ```javascript
-$(selector [, context])
-$(element)
-$(elementArray)
-$(object)
-$()
+$(selector [, context]) // => dabby
+$(element) // => dabby
+$(elementArray) // => dabby
+$(object) // => dabby
+$() // => dabby
 ```
 When created with a CSS selector, DOM element, array of DOM elements, or Dabby object, selects the requested nodes and stores them internally ready for manipulation.
 

@@ -5,8 +5,8 @@ Make Asynchronous HTTP (AJAX) requests.
 ## Usage
 
 ```javascript
-$.ajax(url, [settings]);
-$.ajax(settings);
+$.ajax(url, [settings]); // => xhr
+$.ajax(settings); // => xhr
 ```
 
 To make an AJAX request, the URL can be passed as the first parameter, or as the `url` parameter in the `settings` object.

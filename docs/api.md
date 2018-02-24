@@ -23,13 +23,13 @@ The library supports the following methods:
 | [$.getScript()](../src/ajax/getscript/readme.md) | Shorthand to insert a script into the DOM			|
 | [$.param()](../src/ajax/param/readme.md)	| Render a query string from an object						|
 | [.load()](../src/ajax/load/readme.md)		| Make an AJAX request to insert HTML it into the DOM		|
-| .serialize()								| Serialize the value of form elements into a query string	|
+| [.serialize()](../src/ajax/serialize/readme.md)	| Serialize the value of form elements into a query string	|
 
 ### Attributes
 
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
-| .attr()									| Get/set HTML attributes									|
+| [.attr()](../src/attributes/attr/readme.md)	| Get/set HTML attributes								|
 | .css()									| Get/set CSS attributes									|
 | .data()									| Get/set data attributes									|
 | .prop()									| Get/set HTML properties									|
