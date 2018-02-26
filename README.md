@@ -1,6 +1,6 @@
-# Dabby.js: Lightweight jQuery clone
+# Dabby.js: Lightweight Modular jQuery clone
 
-A lightweight modular jQuery clone/alternative library built for modern browsers.
+A lightweight modular jQuery clone/alternative library built for modern browsers in ES6.
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)

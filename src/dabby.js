@@ -1,5 +1,5 @@
-let domready = false,
-	dabby = function (selector, context) {
+let domready = false;
+const dabby = function (selector, context) {
 		let nodes = [],
 			match,
 			obj;
