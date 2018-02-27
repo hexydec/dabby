@@ -8,10 +8,7 @@ $.each({
 		const pre = ["before", "prepend"].indexOf(name) > -1,
 			isFunc = $.isFunction(html);
 		let i = this.length,
-			elems = $(),
-			backwards, // for counting down
-			forwards = -1, // for counting up
-			obj;
+			elems = $();
 
 		if (!isFunc) { // multiple arguments containing nodes?
 			$.each(arguments, (i, arg) => {
@@ -23,9 +20,10 @@ $.each({
 			if (isFunc) {
 				elems = $(getVal(html, this[i], i, this[i].innerHTML));
 			}
-			backwards = elems.length;
+			let backwards = elems.length, // for counting down
+				forwards = -1; // for counting up
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				obj = elems[pre ? backwards : forwards];
+				let obj = elems[pre ? backwards : forwards];
 
 				// clone if i !== 0
 				if (i) {

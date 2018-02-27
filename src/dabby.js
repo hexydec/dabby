@@ -20,11 +20,10 @@ const dabby = function (selector, context) {
 
 			// ready function
 			} else if ($.isFunction(selector)) {
-				const fn = () => {selector.call(document, $);};
 				if (document.readyState !== "loading") {
-					fn();
+					selector.call(document, $);
 				} else {
-					document.addEventListener("DOMContentLoaded", fn, {once: true});
+					document.addEventListener("DOMContentLoaded", () => {selector.call(document, $);}, {once: true});
 				}
 
 			// array|NodeList|HTMLCollection of nodes

@@ -144,11 +144,10 @@
 	
 				// ready function
 				} else if ($.isFunction(selector)) {
-					const fn = () => {selector.call(document, $);};
 					if (document.readyState !== "loading") {
-						fn();
+						selector.call(document, $);
 					} else {
-						document.addEventListener("DOMContentLoaded", fn, {once: true});
+						document.addEventListener("DOMContentLoaded", () => {selector.call(document, $);}, {once: true});
 					}
 	
 				// array|NodeList|HTMLCollection of nodes
@@ -1000,10 +999,7 @@
 			const pre = ["before", "prepend"].indexOf(name) > -1,
 				isFunc = $.isFunction(html);
 			let i = this.length,
-				elems = $(),
-				backwards, // for counting down
-				forwards = -1, // for counting up
-				obj;
+				elems = $();
 	
 			if (!isFunc) { // multiple arguments containing nodes?
 				$.each(arguments, (i, arg) => {
@@ -1015,9 +1011,10 @@
 				if (isFunc) {
 					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
-				backwards = elems.length;
+				let backwards = elems.length, // for counting down
+					forwards = -1; // for counting up
 				while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-					obj = elems[pre ? backwards : forwards];
+					let obj = elems[pre ? backwards : forwards];
 	
 					// clone if i !== 0
 					if (i) {

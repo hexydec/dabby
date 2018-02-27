@@ -194,13 +194,12 @@ if (!NodeList.prototype.forEach) {
 
 				// ready function
 			} else if ($.isFunction(selector)) {
-				var fn = function fn() {
-					selector.call(document, $);
-				};
 				if (document.readyState !== "loading") {
-					fn();
+					selector.call(document, $);
 				} else {
-					document.addEventListener("DOMContentLoaded", fn, { once: true });
+					document.addEventListener("DOMContentLoaded", function () {
+						selector.call(document, $);
+					}, { once: true });
 				}
 
 				// array|NodeList|HTMLCollection of nodes
@@ -1088,12 +1087,7 @@ if (!NodeList.prototype.forEach) {
 			var pre = ["before", "prepend"].indexOf(name) > -1,
 			    isFunc = $.isFunction(html);
 			var i = this.length,
-			    elems = $(),
-			    backwards = void 0,
-			    // for counting down
-			forwards = -1,
-			    // for counting up
-			obj = void 0;
+			    elems = $();
 
 			if (!isFunc) {
 				// multiple arguments containing nodes?
@@ -1106,10 +1100,12 @@ if (!NodeList.prototype.forEach) {
 				if (isFunc) {
 					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
-				backwards = elems.length;
+				var backwards = elems.length,
+				    // for counting down
+				forwards = -1; // for counting up
 				while (pre ? backwards-- : ++forwards < backwards) {
 					// insert forwards or backwards?
-					obj = elems[pre ? backwards : forwards];
+					var obj = elems[pre ? backwards : forwards];
 
 					// clone if i !== 0
 					if (i) {
