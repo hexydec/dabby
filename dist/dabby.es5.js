@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! dabbyjs v0.9.1 - 2018-02-24 by Will Earp */
+/*! dabbyjs v0.9.2 - 2018-02-27 by Will Earp */
 
 if (!Array.from) {
 	Array.from = function (arrayLike, mapFn, thisArg) {
@@ -170,8 +170,7 @@ if (!NodeList.prototype.forEach) {
 		return dabby;
 	}
 
-	var domready = false,
-	    dabby = function dabby(selector, context) {
+	var dabby = function dabby(selector, context) {
 		var _this = this;
 
 		var nodes = [],
@@ -195,13 +194,13 @@ if (!NodeList.prototype.forEach) {
 
 				// ready function
 			} else if ($.isFunction(selector)) {
-				if (domready) {
+				var fn = function fn() {
 					selector.call(document, $);
+				};
+				if (document.readyState !== "loading") {
+					fn();
 				} else {
-					document.addEventListener("DOMContentLoaded", function () {
-						selector.call(document, $);
-						domready = true;
-					}, { once: true });
+					document.addEventListener("DOMContentLoaded", fn, { once: true });
 				}
 
 				// array|NodeList|HTMLCollection of nodes
@@ -1157,38 +1156,6 @@ if (!NodeList.prototype.forEach) {
 			return func === "detach" ? $(nodes) : this;
 		};
 	});
-
-	// needs more understanding of how this is supposed to work!!!
-
-	/*["replaceWith", "replaceAll"].forEach(function (name) {
- 	$.fn[name] = function (html) {
- 		const all = name === "replaceAll",
- 			isFunc = $.isFunction(html)
- 		let i = this.length,
- 			nodes = [],
- 			replace = [],
- 			n,
- 			parent;
- 
- 		if (!isFunc) {
- 			html = $(html);
- 		}
- 		while (i--) {
- 
- 			replace = isFunc ? getVal(html, i, this[i]) : html;
- 			n = replace.length;
- 			parent = this[i].parentNode;
- 			while (n--) {
- 				if (n) {
- 					this[i].insertAdjacentElement("beforebegin", replace.get(n));
- 				} else {
- 					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
- 				}
- 			}
- 		}
- 		return all ? this : nodes;
- 	};
- });*/
 
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));

@@ -1,4 +1,3 @@
-let domready = false;
 const dabby = function (selector, context) {
 		let nodes = [],
 			match,
@@ -21,13 +20,11 @@ const dabby = function (selector, context) {
 
 			// ready function
 			} else if ($.isFunction(selector)) {
-				if (domready) {
-					selector.call(document, $);
+				const fn = () => {selector.call(document, $);};
+				if (document.readyState !== "loading") {
+					fn();
 				} else {
-					document.addEventListener("DOMContentLoaded", () => {
-						selector.call(document, $);
-						domready = true;
-					}, {once: true});
+					document.addEventListener("DOMContentLoaded", fn, {once: true});
 				}
 
 			// array|NodeList|HTMLCollection of nodes
