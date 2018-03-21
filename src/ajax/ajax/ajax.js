@@ -47,7 +47,7 @@ $.ajax = (url, settings) => {
 
 	// add data to query string
 	if (settings.data && settings.processData) {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + $.param(settings.data);
+		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 	}
 
 	// fetch script
