@@ -6,7 +6,7 @@ QUnit.test("$.fn.load", function (assert) {
 
 	var test = document.getElementsByClassName("test")[0];
 	test.innerHTML = '<div class="testtemp"></div><div class="testtemp2"></div>';
-	obj = $(".testtemp, .testtemp2");
+	var obj = $(".testtemp, .testtemp2");
 
 	// load HTML
 	obj.load("../tests/assets/sample.html", function (response, status) {

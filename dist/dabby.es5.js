@@ -1,47 +1,70 @@
 "use strict";
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _typeof7 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof6 = typeof Symbol === "function" && _typeof7(Symbol.iterator) === "symbol" ? function (obj) {
+	return typeof obj === "undefined" ? "undefined" : _typeof7(obj);
+} : function (obj) {
+	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof7(obj);
+};
 
-/*! dabbyjs v0.9.3 - 2018-03-07 by Will Earp */
+var _typeof5 = typeof Symbol === "function" && _typeof6(Symbol.iterator) === "symbol" ? function (obj) {
+	return typeof obj === "undefined" ? "undefined" : _typeof6(obj);
+} : function (obj) {
+	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof6(obj);
+};
 
-if (!Array.from) {
-	Array.from = function (arrayLike, mapFn, thisArg) {
-		var arr = [].slice.call(arrayLike);
-		if (typeof mapFn === "function") {
-			arr = arr.map(mapFn, thisArg);
+var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
+	return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
+} : function (obj) {
+	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof5(obj);
+};
+
+var _typeof3 = typeof Symbol === "function" && _typeof4(Symbol.iterator) === "symbol" ? function (obj) {
+	return typeof obj === "undefined" ? "undefined" : _typeof4(obj);
+} : function (obj) {
+	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof4(obj);
+};
+
+var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
+	return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
+} : function (obj) {
+	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof3(obj);
+};
+
+var _slicedToArray = function () {
+	function sliceIterator(arr, i) {
+		var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+			for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+				_arr.push(_s.value);if (i && _arr.length === i) break;
+			}
+		} catch (err) {
+			_d = true;_e = err;
+		} finally {
+			try {
+				if (!_n && _i["return"]) _i["return"]();
+			} finally {
+				if (_d) throw _e;
+			}
+		}return _arr;
+	}return function (arr, i) {
+		if (Array.isArray(arr)) {
+			return arr;
+		} else if (Symbol.iterator in Object(arr)) {
+			return sliceIterator(arr, i);
+		} else {
+			throw new TypeError("Invalid attempt to destructure non-iterable instance");
 		}
-		return arr;
 	};
-}
+}();
 
-// CustomEvent is not supported in IE11
-if (typeof window.CustomEvent !== "function") {
-	var _CustomEvent = function _CustomEvent(event, params) {
-		params = params || { bubbles: false, cancelable: false, detail: undefined };
-		var evt = document.createEvent("CustomEvent");
-		evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-		return evt;
-	};
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+	return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
-	_CustomEvent.prototype = window.Event.prototype;
-	window.CustomEvent = _CustomEvent;
-}
-
-// support Element.matches() in IE and older Webkit
-if (!Element.prototype.matches) {
-	Element.prototype.matches = Element.prototype.msMatchesSelector;
-}
-
-if (!NodeList.prototype.forEach) {
-	NodeList.prototype.forEach = function (callback, thisArg) {
-		thisArg = thisArg || window;
-		for (var i = 0; i < this.length; i++) {
-			callback.call(thisArg, this[i], i, this);
-		}
-	};
-}
+/*! dabbyjs v0.9.3 by Will Earp - https://github.com/hexydec/dabby */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -55,6 +78,43 @@ if (!NodeList.prototype.forEach) {
 	}
 })(undefined || window, function (window) {
 	"use strict";
+
+	if (!Array.from) {
+		Array.from = function (arrayLike, mapFn, thisArg) {
+			var arr = [].slice.call(arrayLike);
+			if (typeof mapFn === "function") {
+				arr = arr.map(mapFn, thisArg);
+			}
+			return arr;
+		};
+	}
+
+	// CustomEvent is not supported in IE11
+	if (typeof window.CustomEvent !== "function") {
+		var _CustomEvent = function _CustomEvent(event, params) {
+			params = params || { bubbles: false, cancelable: false, detail: undefined };
+			var evt = document.createEvent("CustomEvent");
+			evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+			return evt;
+		};
+
+		_CustomEvent.prototype = window.Event.prototype;
+		window.CustomEvent = _CustomEvent;
+	}
+
+	// support Element.matches() in IE and older Webkit
+	if (!Element.prototype.matches) {
+		Element.prototype.matches = Element.prototype.msMatchesSelector;
+	}
+
+	if (!NodeList.prototype.forEach) {
+		NodeList.prototype.forEach = function (callback, thisArg) {
+			thisArg = thisArg || window;
+			for (var i = 0; i < this.length; i++) {
+				callback.call(thisArg, this[i], i, this);
+			}
+		};
+	}
 
 	function camelise(prop) {
 		return prop.replace(/-([a-z])/gi, function (text, letter) {
@@ -890,7 +950,9 @@ if (!NodeList.prototype.forEach) {
 		$.fn[dim] = function (val) {
 			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
 			    wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
-			    // width or height
+
+
+			// width or height
 			io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
 			var i = this.length,
 			    value = void 0,
@@ -1101,7 +1163,9 @@ if (!NodeList.prototype.forEach) {
 					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
 				var backwards = elems.length,
-				    // for counting down
+
+
+				// for counting down
 				forwards = -1; // for counting up
 				while (pre ? backwards-- : ++forwards < backwards) {
 					// insert forwards or backwards?
@@ -1152,6 +1216,38 @@ if (!NodeList.prototype.forEach) {
 			return func === "detach" ? $(nodes) : this;
 		};
 	});
+
+	// needs more understanding of how this is supposed to work!!!
+
+	/*["replaceWith", "replaceAll"].forEach(function (name) {
+ 	$.fn[name] = function (html) {
+ 		const all = name === "replaceAll",
+ 			isFunc = $.isFunction(html)
+ 		let i = this.length,
+ 			nodes = [],
+ 			replace = [],
+ 			n,
+ 			parent;
+ 
+ 		if (!isFunc) {
+ 			html = $(html);
+ 		}
+ 		while (i--) {
+ 
+ 			replace = isFunc ? getVal(html, i, this[i]) : html;
+ 			n = replace.length;
+ 			parent = this[i].parentNode;
+ 			while (n--) {
+ 				if (n) {
+ 					this[i].insertAdjacentElement("beforebegin", replace.get(n));
+ 				} else {
+ 					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
+ 				}
+ 			}
+ 		}
+ 		return all ? this : nodes;
+ 	};
+ });*/
 
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));
@@ -1460,3 +1556,11 @@ if (!NodeList.prototype.forEach) {
 	};
 	return dabby;
 });
+//# sourceMappingURL=dabby.es5.js.map
+//# sourceMappingURL=dabby.es5.js.map
+//# sourceMappingURL=dabby.es5.js.map
+//# sourceMappingURL=dabby.es5.js.map
+//# sourceMappingURL=dabby.es5.js.map
+//# sourceMappingURL=dabby.es5.js.map
+//# sourceMappingURL=dabby.es5.js.map
+//# sourceMappingURL=dabby.es5.js.map
