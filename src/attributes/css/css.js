@@ -1,7 +1,7 @@
 $.fn.css = function (props, value) {
 
 	// set the values
-	if (value !== undefined) {
+	if (value !== undefined || $.isPlainObject(props)) {
 		return setCss(this, props, value);
 
 	// retrieve value from first property

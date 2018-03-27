@@ -246,7 +246,7 @@ $.ajax = (url, settings) => {
 
 	// add data to query string
 	if (settings.data && settings.processData) {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + $.param(settings.data);
+		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 	}
 
 	// fetch script
@@ -519,19 +519,19 @@ $.fn.attr = function (prop, value) {
 
 		// remove "Class" from name for classList method
 		let func = name.substr(0, name.length - 5),
-			i = this.length,
-			n;
-
-		// split class
-		if (typeof cls === "string") {
-			cls = cls.split(" ").reverse(); // reverse as we add them backwards
-		}
+			i = this.length;
 
 		// manage classes on nodes
 		while (i--) {
-			n = cls.length;
+			let arr = getVal(cls, this[i], i, this[i].className);
+			if (typeof arr === "string") {
+				arr = arr.split(" ").reverse(); // reverse as we add them backwards
+			} else {
+				arr = arr.reverse();
+			}
+			let n = arr.length;
 			while (n--) {
-				this[i].classList[func](getVal(cls[n], this[i], n, this[i].className));
+				this[i].classList[func](arr[n]);
 			}
 		}
 		return this;
@@ -541,7 +541,7 @@ $.fn.attr = function (prop, value) {
 $.fn.css = function (props, value) {
 
 	// set the values
-	if (value !== undefined) {
+	if (value !== undefined || $.isPlainObject(props)) {
 		return setCss(this, props, value);
 
 	// retrieve value from first property
@@ -1356,6 +1356,26 @@ $.extend = (obj, ...arrs) => {
 $.isArray = arr => Array.isArray(arr);
 
 $.isFunction = func => func && func.constructor === Function;
+
+$.isPlainObject = obj => {
+	
+	// Basic check for Type object that's not null
+	if (typeof obj === "object" && obj !== null) {
+
+		// If Object.getPrototypeOf supported, use it
+	    if (typeof Object.getPrototypeOf == 'function') {
+			let proto = Object.getPrototypeOf(obj);
+			return proto === Object.prototype || proto === null;
+	    }
+
+	    // Otherwise, use internal class
+	    // This should be reliable as if getPrototypeOf not supported, is pre-ES5
+		return Object.prototype.toString.call(obj) === "[object Object]";
+ 	}
+
+ 	// Not an object
+	return false;
+};
 
 $.isWindow = obj => obj !== null && obj === obj.window;
 

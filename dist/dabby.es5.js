@@ -1,30 +1,6 @@
 "use strict";
 
-var _typeof7 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _typeof6 = typeof Symbol === "function" && _typeof7(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-};
-
-var _typeof5 = typeof Symbol === "function" && _typeof6(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-};
-
-var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-};
-
-var _typeof3 = typeof Symbol === "function" && _typeof4(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-};
+var _typeof3 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
 	return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
@@ -372,7 +348,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 		// add data to query string
 		if (settings.data && settings.processData) {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + $.param(settings.data);
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 		}
 
 		// fetch script
@@ -655,19 +631,19 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 			// remove "Class" from name for classList method
 			var func = name.substr(0, name.length - 5),
-			    i = this.length,
-			    n = void 0;
-
-			// split class
-			if (typeof cls === "string") {
-				cls = cls.split(" ").reverse(); // reverse as we add them backwards
-			}
+			    i = this.length;
 
 			// manage classes on nodes
 			while (i--) {
-				n = cls.length;
+				var arr = getVal(cls, this[i], i, this[i].className);
+				if (typeof arr === "string") {
+					arr = arr.split(" ").reverse(); // reverse as we add them backwards
+				} else {
+					arr = arr.reverse();
+				}
+				var n = arr.length;
 				while (n--) {
-					this[i].classList[func](getVal(cls[n], this[i], n, this[i].className));
+					this[i].classList[func](arr[n]);
 				}
 			}
 			return this;
@@ -677,7 +653,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	$.fn.css = function (props, value) {
 
 		// set the values
-		if (value !== undefined) {
+		if (value !== undefined || $.isPlainObject(props)) {
 			return setCss(this, props, value);
 
 			// retrieve value from first property
@@ -1535,6 +1511,26 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 		return func && func.constructor === Function;
 	};
 
+	$.isPlainObject = function (obj) {
+
+		// Basic check for Type object that's not null
+		if ((typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && obj !== null) {
+
+			// If Object.getPrototypeOf supported, use it
+			if (typeof Object.getPrototypeOf == 'function') {
+				var proto = Object.getPrototypeOf(obj);
+				return proto === Object.prototype || proto === null;
+			}
+
+			// Otherwise, use internal class
+			// This should be reliable as if getPrototypeOf not supported, is pre-ES5
+			return Object.prototype.toString.call(obj) === "[object Object]";
+		}
+
+		// Not an object
+		return false;
+	};
+
 	$.isWindow = function (obj) {
 		return obj !== null && obj === obj.window;
 	};
@@ -1556,10 +1552,6 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	};
 	return dabby;
 });
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map

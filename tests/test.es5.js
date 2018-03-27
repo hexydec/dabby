@@ -276,6 +276,9 @@ QUnit.test("$.fn.addClass", function (assert) {
 	assert.equal(rmain.className, "testtemp test1", "Can set class");
 	main.addClass("test2 test3");
 	assert.equal(rmain.className, "testtemp test1 test2 test3", "Can set multiple classes");
+	rmain.className = "testtemp";
+	main.addClass(["new1", "new2"]);
+	assert.equal(rmain.className, "testtemp new1 new2", "Can set multiple classes as an array");
 
 	// reset
 	test.innerHTML = "";
@@ -348,6 +351,10 @@ QUnit.test("$.fn.css", function (assert) {
 	rmain.style.cssText = '';
 	assert.deepEqual(main.css("border", "1px solid red"), main, "Dabby object is returned after set");
 	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property");
+	rmain.style.cssText = '';
+	main.css({ border: "1px solid red", padding: "10px" });
+	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property through an object");
+	assert.equal(rmain.style.padding, "10px", "Can set CSS property through an object");
 
 	// uses utils/setcss/setcss.js anyway, so doesn't need extensive testing here
 
@@ -1134,6 +1141,24 @@ QUnit.module("Utils");
 QUnit.test("$.isFunction", function (assert) {
 	[function () {}, $.isFunction, window, document, document.getElementsByClassName("test")[0], "hi", 5, 3.14, {}].forEach(function (func, i) {
 		assert.equal($.isFunction(func), i < 2, "Input is" + (i < 2 ? "" : " not") + " function");
+	});
+});
+
+QUnit.module("Utilities", function (hooks) {
+
+	QUnit.test("$.isPlainObject", function (assert) {
+
+		assert.equal($.isPlainObject(document.createElement('div')), false, "Host object is not plain");
+		assert.equal($.isPlainObject(null), false, "NULL is not plain");
+		assert.equal($.isPlainObject(function () {
+			function Foo() {};return new Foo();
+		}()), false, "Instance of other object is not plain");
+		assert.equal($.isPlainObject(5), false, "Number primitive is not plain");
+		assert.equal($.isPlainObject("dabby"), false, "String primitive is not plain");
+		assert.equal($.isPlainObject(new Number(6)), false, "Number object is not plain");
+		assert.equal($.isPlainObject({}), true, "Empty object is plain");
+		assert.equal($.isPlainObject(new Object()), true, "New Object is plain");
+		assert.equal($.isPlainObject(Object.create(null)), true, "Object created from null is plain");
 	});
 });
 

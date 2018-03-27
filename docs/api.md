@@ -34,10 +34,10 @@ The library supports the following methods:
 | .data()									| Get/set data attributes									|
 | .prop()									| Get/set HTML properties									|
 | .val()									| Get/set form control values								|
-| .addClass()								| Add a class to an HTML element							|
+| .addClass(../src/attributes/class/readme.md)	| Add a class to elements in a collection				|
 | .hasClass()								| See whether an HTML element has the requested class		|
-| .removeClass()							| Remove a class from an HTML element						|
-| .toggleClass()							| Toggle a class on and off									|
+| .removeClass((../src/attributes/class/readme.md)	| Remove a class from an HTML element				|
+| .toggleClass((../src/attributes/class/readme.md)	| Toggle a class on and off							|
 
 ### Dimensions
 

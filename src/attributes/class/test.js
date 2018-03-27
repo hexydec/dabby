@@ -11,6 +11,9 @@ QUnit.test("$.fn.addClass", function (assert) {
 	assert.equal(rmain.className, "testtemp test1", "Can set class");
 	main.addClass("test2 test3");
 	assert.equal(rmain.className, "testtemp test1 test2 test3", "Can set multiple classes");
+	rmain.className = "testtemp";
+	main.addClass(["new1", "new2"]);
+	assert.equal(rmain.className, "testtemp new1 new2", "Can set multiple classes as an array");
 
 	// reset
 	test.innerHTML = "";

@@ -29,6 +29,10 @@ QUnit.test("$.fn.css", function (assert) {
 	rmain.style.cssText = '';
 	assert.deepEqual(main.css("border", "1px solid red"), main, "Dabby object is returned after set");
 	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property");
+	rmain.style.cssText = '';
+	main.css({border: "1px solid red", padding: "10px"});
+	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property through an object");
+	assert.equal(rmain.style.padding, "10px", "Can set CSS property through an object");
 
 	// uses utils/setcss/setcss.js anyway, so doesn't need extensive testing here
 
