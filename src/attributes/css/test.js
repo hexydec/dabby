@@ -30,7 +30,7 @@ QUnit.test("$.fn.css", function (assert) {
 	assert.deepEqual(main.css("border", "1px solid red"), main, "Dabby object is returned after set");
 	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property");
 	rmain.style.cssText = '';
-	main.css({border: "1px solid red", padding: "10px"});
+	main.css({border: "1px solid red", padding: 10}); // also tests unitless values
 	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property through an object");
 	assert.equal(rmain.style.padding, "10px", "Can set CSS property through an object");
 

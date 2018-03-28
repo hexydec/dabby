@@ -180,7 +180,6 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 		// set vars
 		var name = props,
-		    i = void 0,
 		    keys = void 0,
 		    k = void 0,
 		    remove = void 0;
@@ -197,10 +196,13 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 		// set properties
 		while (k--) {
-			i = dabby.length;
+			var i = dabby.length;
 			while (i--) {
-				remove = props[keys[k]] === "";
-				dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), remove ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]));
+				var val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
+				if (typeof val === "number") {
+					val += "px";
+				}
+				dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
 			}
 		}
 		return dabby;

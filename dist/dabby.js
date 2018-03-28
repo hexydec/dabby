@@ -82,7 +82,6 @@ function setCss(dabby, props, value) {
 
 	// set vars
 	let name = props,
-		i,
 		keys,
 		k,
 		remove;
@@ -99,13 +98,13 @@ function setCss(dabby, props, value) {
 
 	// set properties
 	while (k--) {
-		i = dabby.length;
+		let i = dabby.length;
 		while (i--) {
-			remove = props[keys[k]] === "";
-			dabby[i].style[remove ? "removeProperty" : "setProperty"](
-				dasherise(keys[k]),
-				remove ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]])
-			);
+			let val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
+			if (typeof val === "number") {
+				val += "px";
+			}
+			dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
 		}
 	}
 	return dabby;
