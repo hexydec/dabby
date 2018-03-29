@@ -3,13 +3,20 @@
 	$.fn[name] = function (events, selector, data, callback) {
 		let i = this.length,
 			fn= function (evt) { // delegate function
-				if (!selector || $(selector).is(evt.target)) {
+				let target = [this];
+				if (selector) {
+					let t = $(evt.target);
+					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
+				}
+				if (target) {
 					if (data) { // set data to event object
 						evt.data = data;
 					}
-					if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
-						evt.preventDefault();
-						evt.stopPropagation();
+					for (let i = 0, len = target.length; i < len; i++) {
+						if (callback.call(target[i], evt, evt.args) === false) {
+							evt.preventDefault();
+							evt.stopPropagation();
+						}
 					}
 				}
 			};
@@ -44,7 +51,7 @@
 
 				// trigger
 				while (e--) {
-					node.addEventListener(events[e], fn, {once: name === "one"});
+					node.addEventListener(events[e], fn, {once: name === "one", capture: !!selector}); //!!selector
 				}
 
 			// find the original function

@@ -763,6 +763,12 @@ $.fn.offsetParent = function () {
 	return $(this[0] ? this[0].offsetParent : null);
 };
 
+$.fn.position = function () {
+	if (this[0]) {
+		return {left: this[0].offsetLeft, top: this[0].offsetTop};
+	}
+};
+
 ["scrollLeft", "scrollTop"].forEach(item => {
 	$.fn[item] = function (pos) {
 
@@ -865,13 +871,20 @@ getEvents().forEach(event => {
 	$.fn[name] = function (events, selector, data, callback) {
 		let i = this.length,
 			fn= function (evt) { // delegate function
-				if (!selector || $(selector).is(evt.target)) {
+				let target = [this];
+				if (selector) {
+					let t = $(evt.target);
+					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
+				}
+				if (target) {
 					if (data) { // set data to event object
 						evt.data = data;
 					}
-					if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
-						evt.preventDefault();
-						evt.stopPropagation();
+					for (let i = 0, len = target.length; i < len; i++) {
+						if (callback.call(target[i], evt, evt.args) === false) {
+							evt.preventDefault();
+							evt.stopPropagation();
+						}
 					}
 				}
 			};
@@ -906,7 +919,7 @@ getEvents().forEach(event => {
 
 				// trigger
 				while (e--) {
-					node.addEventListener(events[e], fn, {once: name === "one"});
+					node.addEventListener(events[e], fn, {once: name === "one", capture: !!selector}); //!!selector
 				}
 
 			// find the original function
@@ -1049,38 +1062,6 @@ $.each({
 		return func === "detach" ? $(nodes) : this;
 	};
 });
-
-// needs more understanding of how this is supposed to work!!!
-
-/*["replaceWith", "replaceAll"].forEach(function (name) {
-	$.fn[name] = function (html) {
-		const all = name === "replaceAll",
-			isFunc = $.isFunction(html)
-		let i = this.length,
-			nodes = [],
-			replace = [],
-			n,
-			parent;
-
-		if (!isFunc) {
-			html = $(html);
-		}
-		while (i--) {
-
-			replace = isFunc ? getVal(html, i, this[i]) : html;
-			n = replace.length;
-			parent = this[i].parentNode;
-			while (n--) {
-				if (n) {
-					this[i].insertAdjacentElement("beforebegin", replace.get(n));
-				} else {
-					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
-				}
-			}
-		}
-		return all ? this : nodes;
-	};
-});*/
 
 $.fn.slice = function (start, end) {
 	return $(this.get().slice(start, end));

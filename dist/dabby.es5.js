@@ -1,44 +1,8 @@
 "use strict";
 
-var _typeof3 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-};
-
-var _slicedToArray = function () {
-	function sliceIterator(arr, i) {
-		var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
-			for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-				_arr.push(_s.value);if (i && _arr.length === i) break;
-			}
-		} catch (err) {
-			_d = true;_e = err;
-		} finally {
-			try {
-				if (!_n && _i["return"]) _i["return"]();
-			} finally {
-				if (_d) throw _e;
-			}
-		}return _arr;
-	}return function (arr, i) {
-		if (Array.isArray(arr)) {
-			return arr;
-		} else if (Symbol.iterator in Object(arr)) {
-			return sliceIterator(arr, i);
-		} else {
-			throw new TypeError("Invalid attempt to destructure non-iterable instance");
-		}
-	};
-}();
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*! dabbyjs v0.9.3 by Will Earp - https://github.com/hexydec/dabby */
 
@@ -891,6 +855,12 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 		return $(this[0] ? this[0].offsetParent : null);
 	};
 
+	$.fn.position = function () {
+		if (this[0]) {
+			return { left: this[0].offsetLeft, top: this[0].offsetTop };
+		}
+	};
+
 	["scrollLeft", "scrollTop"].forEach(function (item) {
 		$.fn[item] = function (pos) {
 
@@ -928,9 +898,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 		$.fn[dim] = function (val) {
 			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
 			    wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
-
-
-			// width or height
+			    // width or height
 			io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
 			var i = this.length,
 			    value = void 0,
@@ -999,14 +967,21 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 			var i = this.length,
 			    fn = function fn(evt) {
 				// delegate function
-				if (!selector || $(selector).is(evt.target)) {
+				var target = [this];
+				if (selector) {
+					var t = $(evt.target);
+					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
+				}
+				if (target) {
 					if (data) {
 						// set data to event object
 						evt.data = data;
 					}
-					if (callback.call(selector ? evt.target : this, evt, evt.args) === false) {
-						evt.preventDefault();
-						evt.stopPropagation();
+					for (var _i = 0, len = target.length; _i < len; _i++) {
+						if (callback.call(target[_i], evt, evt.args) === false) {
+							evt.preventDefault();
+							evt.stopPropagation();
+						}
 					}
 				}
 			};
@@ -1042,7 +1017,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 					// trigger
 					while (e--) {
-						node.addEventListener(events[e], fn, { once: name === "one" });
+						node.addEventListener(events[e], fn, { once: name === "one", capture: !!selector }); //!!selector
 					}
 
 					// find the original function
@@ -1141,9 +1116,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
 				var backwards = elems.length,
-
-
-				// for counting down
+				    // for counting down
 				forwards = -1; // for counting up
 				while (pre ? backwards-- : ++forwards < backwards) {
 					// insert forwards or backwards?
@@ -1194,38 +1167,6 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 			return func === "detach" ? $(nodes) : this;
 		};
 	});
-
-	// needs more understanding of how this is supposed to work!!!
-
-	/*["replaceWith", "replaceAll"].forEach(function (name) {
- 	$.fn[name] = function (html) {
- 		const all = name === "replaceAll",
- 			isFunc = $.isFunction(html)
- 		let i = this.length,
- 			nodes = [],
- 			replace = [],
- 			n,
- 			parent;
- 
- 		if (!isFunc) {
- 			html = $(html);
- 		}
- 		while (i--) {
- 
- 			replace = isFunc ? getVal(html, i, this[i]) : html;
- 			n = replace.length;
- 			parent = this[i].parentNode;
- 			while (n--) {
- 				if (n) {
- 					this[i].insertAdjacentElement("beforebegin", replace.get(n));
- 				} else {
- 					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
- 				}
- 			}
- 		}
- 		return all ? this : nodes;
- 	};
- });*/
 
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));
@@ -1554,7 +1495,5 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	};
 	return dabby;
 });
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map
