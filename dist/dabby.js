@@ -870,24 +870,7 @@ getEvents().forEach(event => {
 ["on", "one", "off"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
 		let i = this.length,
-			fn= function (evt) { // delegate function
-				let target = [this];
-				if (selector) {
-					let t = $(evt.target);
-					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
-				}
-				if (target) {
-					if (data) { // set data to event object
-						evt.data = data;
-					}
-					for (let i = 0, len = target.length; i < len; i++) {
-						if (callback.call(target[i], evt, evt.args) === false) {
-							evt.preventDefault();
-							evt.stopPropagation();
-						}
-					}
-				}
-			};
+			fn = ;
 
 		events = events.split(" ");
 
@@ -914,12 +897,29 @@ getEvents().forEach(event => {
 					events: events,
 					callback: callback,
 					selector: selector,
-					func: fn
+					func: function (evt) { // delegate function
+						let target = [this];
+						if (selector) {
+							let t = $(evt.target);
+							target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
+						}
+						if (target) {
+							if (data) { // set data to event object
+								evt.data = data;
+							}
+							for (let i = 0, len = target.length; i < len; i++) {
+								if (callback.call(target[i], evt, evt.args) === false) {
+									evt.preventDefault();
+									evt.stopPropagation();
+								}
+							}
+						}
+					}
 				});
 
 				// trigger
 				while (e--) {
-					node.addEventListener(events[e], fn, {once: name === "one", capture: !!selector}); //!!selector
+					node.addEventListener(events[e], node.events.func, {once: name === "one", capture: !!selector});
 				}
 
 			// find the original function
@@ -928,7 +928,7 @@ getEvents().forEach(event => {
 					node.events.forEach((evt, i) => {
 						const index = evt.events.indexOf(events[e]);
 						if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-							node.removeEventListener(events[e], evt.func, {}); // must pass same arguments
+							node.removeEventListener(events[e], evt.func, {capture: !!evt.selector}); // must pass same arguments
 							node.events[i].events.splice(index, 1);
 							if (!node.events[i].events.length) {
 								node.events.splice(i, 1);
@@ -1062,6 +1062,38 @@ $.each({
 		return func === "detach" ? $(nodes) : this;
 	};
 });
+
+// needs more understanding of how this is supposed to work!!!
+
+/*["replaceWith", "replaceAll"].forEach(function (name) {
+	$.fn[name] = function (html) {
+		const all = name === "replaceAll",
+			isFunc = $.isFunction(html)
+		let i = this.length,
+			nodes = [],
+			replace = [],
+			n,
+			parent;
+
+		if (!isFunc) {
+			html = $(html);
+		}
+		while (i--) {
+
+			replace = isFunc ? getVal(html, i, this[i]) : html;
+			n = replace.length;
+			parent = this[i].parentNode;
+			while (n--) {
+				if (n) {
+					this[i].insertAdjacentElement("beforebegin", replace.get(n));
+				} else {
+					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
+				}
+			}
+		}
+		return all ? this : nodes;
+	};
+});*/
 
 $.fn.slice = function (start, end) {
 	return $(this.get().slice(start, end));

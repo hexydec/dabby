@@ -9,6 +9,7 @@ $(selector).css(attribute);
 $(selector).css([attribute, ...]);
 $(selector).css({attribute: value, ...});
 $(selector).css(attribute, value);
+$(selector).css(attribute, function (index, currentValue) {});
 ```
 
 You can request an attribute or attributes from the first item in a collection by sending the attribute name as either a string or an array of strings. To set attributes, send an object containing attribute names as the key, and the attribute value as the value, or use the two argument form to set single attributes.
@@ -20,6 +21,12 @@ The attribute name(s) can be requested using with dash or camel case notation.
 #### value
 
 The value to set the specified attribute to on each item in the collection.
+
+#### function
+
+A callback function to generate the value with. Receives the index of the current node in the collection, and the current value. `this` will be set to the current node.
+
+Where attributes are set as an object, callback functions can also be supplied.
 
 ## Returns
 
