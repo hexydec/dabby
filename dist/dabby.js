@@ -869,26 +869,7 @@ getEvents().forEach(event => {
 // add and remove event handlers
 ["on", "one", "off"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
-		let i = this.length,
-			fn= function (evt) { // delegate function
-				let target = [this];
-				if (selector) {
-					let t = $(evt.target);
-					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
-					target = t.closest(selector);
-				}
-				if (target) {
-					if (data) { // set data to event object
-						evt.data = data;
-					}
-					for (let i = 0, len = target.length; i < len; i++) {
-						if (callback.call(target[i], evt, evt.args) === false) {
-							evt.preventDefault();
-							evt.stopPropagation();
-						}
-					}
-				}
-			};
+		let i = this.length;
 
 		events = events.split(" ");
 
@@ -910,6 +891,24 @@ getEvents().forEach(event => {
 				if (!this[i].events) {
 					this[i].events = [];
 				}
+				let fn = function (evt) { // delegate function
+					let target = [this];
+					if (selector) {
+						let t = $(evt.target);
+						target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
+					}
+					if (target) {
+						if (data) { // set data to event object
+							evt.data = data;
+						}
+						for (let i = 0, len = target.length; i < len; i++) {
+							if (callback.call(target[i], evt, evt.args) === false) {
+								evt.preventDefault();
+								evt.stopPropagation();
+							}
+						}
+					}
+				};
 				this[i].events.push({
 					events: events,
 					callback: callback,
@@ -929,9 +928,9 @@ getEvents().forEach(event => {
 					this[i].events.forEach((evt, n) => {
 						const index = evt.events.indexOf(events[e]);
 						if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-							this[i].removeEventListener(events[e], evt.func, {once: this[i].events[n].once, capture: !!this[i].events[n].selector}); // must pass same arguments
-							this[i].events[n].events.splice(index, 1); // remove event
-							if (!this[i].events[n].events.length) { // if empty, remove event entirely
+							this[i].removeEventListener(events[e], evt.func, {once: evt.once, capture: !!evt.selector}); // must pass same arguments
+							this[i].events[n].events.splice(index, 1);
+							if (!this[i].events[n].events.length) {
 								this[i].events.splice(n, 1);
 							}
 						}

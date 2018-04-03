@@ -964,28 +964,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		$.fn[name] = function (events, selector, data, callback) {
 			var _this6 = this;
 
-			var i = this.length,
-			    fn = function fn(evt) {
-				// delegate function
-				var target = [this];
-				if (selector) {
-					var t = $(evt.target);
-					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
-					target = t.closest(selector);
-				}
-				if (target) {
-					if (data) {
-						// set data to event object
-						evt.data = data;
-					}
-					for (var _i = 0, len = target.length; _i < len; _i++) {
-						if (callback.call(target[_i], evt, evt.args) === false) {
-							evt.preventDefault();
-							evt.stopPropagation();
-						}
-					}
-				}
-			};
+			var i = this.length;
 
 			events = events.split(" ");
 
@@ -1008,6 +987,26 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					if (!_this6[i].events) {
 						_this6[i].events = [];
 					}
+					var fn = function fn(evt) {
+						// delegate function
+						var target = [this];
+						if (selector) {
+							var t = $(evt.target);
+							target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
+						}
+						if (target) {
+							if (data) {
+								// set data to event object
+								evt.data = data;
+							}
+							for (var _i = 0, len = target.length; _i < len; _i++) {
+								if (callback.call(target[_i], evt, evt.args) === false) {
+									evt.preventDefault();
+									evt.stopPropagation();
+								}
+							}
+						}
+					};
 					_this6[i].events.push({
 						events: events,
 						callback: callback,
@@ -1027,10 +1026,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						_this6[i].events.forEach(function (evt, n) {
 							var index = evt.events.indexOf(events[e]);
 							if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-								_this6[i].removeEventListener(events[e], evt.func, { once: _this6[i].events[n].once, capture: !!_this6[i].events[n].selector }); // must pass same arguments
-								_this6[i].events[n].events.splice(index, 1); // remove event
+								_this6[i].removeEventListener(events[e], evt.func, { once: evt.once, capture: !!evt.selector }); // must pass same arguments
+								_this6[i].events[n].events.splice(index, 1);
 								if (!_this6[i].events[n].events.length) {
-									// if empty, remove event entirely
 									_this6[i].events.splice(n, 1);
 								}
 							}

@@ -30,7 +30,7 @@ The library supports the following methods:
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | [.attr()](../src/attributes/attr/readme.md)	| Get/set HTML attributes								|
-| .css()									| Get/set CSS attributes									|
+| [.css()](../src/attributes/css/readme.md)	| Get/set CSS attributes									|
 | .data()									| Get/set data attributes									|
 | .prop()									| Get/set HTML properties									|
 | .val()									| Get/set form control values								|
