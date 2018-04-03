@@ -26,7 +26,7 @@ function filterNodes(dabby, filter, context, not) {
 		func = (n, node) => {
 			let i = filter.length;
 			while (i--) {
-				if (node[typeof(filter[i]) === "string" ? "matches" : "isSameNode"](filter[i])) {
+				if (typeof(filter[i]) === "string" && node.matches ? node.matches(filter[i]) : node === filter[i]) {
 					return true;
 				}
 			}

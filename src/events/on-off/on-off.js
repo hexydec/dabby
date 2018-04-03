@@ -7,6 +7,7 @@
 				if (selector) {
 					let t = $(evt.target);
 					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
+					target = t.closest(selector);
 				}
 				if (target) {
 					if (data) { // set data to event object
@@ -34,36 +35,36 @@
 
 		// attach event
 		while (i--) {
-			let node = this[i],
-				e = events.length;
+			let e = events.length;
 
 			// record the original function
 			if (name !== "off") {
-				if (!node.events) {
-					node.events = [];
+				if (!this[i].events) {
+					this[i].events = [];
 				}
-				node.events.push({
+				this[i].events.push({
 					events: events,
 					callback: callback,
 					selector: selector,
-					func: fn
+					func: fn,
+					once: name === "one"
 				});
 
 				// trigger
 				while (e--) {
-					node.addEventListener(events[e], fn, {once: name === "one", capture: !!selector}); //!!selector
+					this[i].addEventListener(events[e], fn, {once: name === "one", capture: !!selector});
 				}
 
 			// find the original function
-			} else if (node.events.length) {
+			} else if (this[i].events.length) {
 				while (e--) {
-					node.events.forEach((evt, i) => {
+					this[i].events.forEach((evt, n) => {
 						const index = evt.events.indexOf(events[e]);
 						if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-							node.removeEventListener(events[e], evt.func, {}); // must pass same arguments
-							node.events[i].events.splice(index, 1);
-							if (!node.events[i].events.length) {
-								node.events.splice(i, 1);
+							this[i].removeEventListener(events[e], evt.func, {once: this[i].events[n].once, capture: !!this[i].events[n].selector}); // must pass same arguments
+							this[i].events[n].events.splice(index, 1); // remove event
+							if (!this[i].events[n].events.length) { // if empty, remove event entirely
+								this[i].events.splice(n, 1);
 							}
 						}
 					});

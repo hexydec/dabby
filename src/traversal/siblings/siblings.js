@@ -4,7 +4,7 @@ $.fn.siblings = function (selector) {
 
 	while (i--) {
 		Array.from(this[i].parentNode.children).forEach(child => {
-			if (!child.isSameNode(this[i])) {
+			if (child !== this[i]) {
 				nodes.push(child);
 			}
 		});

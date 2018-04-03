@@ -660,7 +660,7 @@ QUnit.test("getVal", function (assert) {
 	var obj = $(".test").get(0);
 	assert.equal(internals.getVal("test"), "test", "Can pass-through a value");
 	assert.equal(internals.getVal(function (i) {
-		return this.isSameNode(obj) && !i ? "test" : false;
+		return this === obj && !i ? "test" : false;
 	}, obj, 0), "test", "When passing function as value, variables and context is correct");
 	//assert.equal(internals.getVal(380, obj, 0), "380px", "Can return a number as a px value");
 	assert.equal(internals.getVal("380pt", obj, 0), "380pt", "Can pass through a number that already has a suffix");
@@ -705,7 +705,7 @@ QUnit.test("$.fn.clone", function (assert) {
 	    main = document.getElementsByClassName("test")[0];
 
 	// set and get class
-	assert.ok(clone.get(0).className === "test" && !clone.get(0).isSameNode(main), "Can clone objects");
+	assert.ok(clone.get(0).className === "test" && clone.get(0) !== main, "Can clone objects");
 });
 
 QUnit.module("Manipulation");
@@ -1190,30 +1190,6 @@ QUnit.test("$.map", function (assert) {
 	assert.deepEqual(arr, output, "$.map object");
 });
 
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map

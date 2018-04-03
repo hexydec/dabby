@@ -23,7 +23,7 @@ $.fn.index = function (selector) {
 
 		i = nodes.length;
 		while (i--) {
-			if (nodes[i].isSameNode(subject)) {
+			if (nodes[i] === subject) {
 				return i;
 			}
 		}

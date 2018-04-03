@@ -96,7 +96,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			func = function func(n, node) {
 				var i = filter.length;
 				while (i--) {
-					if (node[typeof filter[i] === "string" ? "matches" : "isSameNode"](filter[i])) {
+					if (typeof filter[i] === "string" && node.matches ? node.matches(filter[i]) : node === filter[i]) {
 						return true;
 					}
 				}
@@ -971,6 +971,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				if (selector) {
 					var t = $(evt.target);
 					target = t.add(t.parents(selector)).get(); // is the selector in the targets parents?
+					target = t.closest(selector);
 				}
 				if (target) {
 					if (data) {
@@ -1000,36 +1001,37 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// attach event
 
 			var _loop = function _loop() {
-				var node = _this6[i],
-				    e = events.length;
+				var e = events.length;
 
 				// record the original function
 				if (name !== "off") {
-					if (!node.events) {
-						node.events = [];
+					if (!_this6[i].events) {
+						_this6[i].events = [];
 					}
-					node.events.push({
+					_this6[i].events.push({
 						events: events,
 						callback: callback,
 						selector: selector,
-						func: fn
+						func: fn,
+						once: name === "one"
 					});
 
 					// trigger
 					while (e--) {
-						node.addEventListener(events[e], fn, { once: name === "one", capture: !!selector }); //!!selector
+						_this6[i].addEventListener(events[e], fn, { once: name === "one", capture: !!selector });
 					}
 
 					// find the original function
-				} else if (node.events.length) {
+				} else if (_this6[i].events.length) {
 					while (e--) {
-						node.events.forEach(function (evt, i) {
+						_this6[i].events.forEach(function (evt, n) {
 							var index = evt.events.indexOf(events[e]);
 							if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-								node.removeEventListener(events[e], evt.func, {}); // must pass same arguments
-								node.events[i].events.splice(index, 1);
-								if (!node.events[i].events.length) {
-									node.events.splice(i, 1);
+								_this6[i].removeEventListener(events[e], evt.func, { once: _this6[i].events[n].once, capture: !!_this6[i].events[n].selector }); // must pass same arguments
+								_this6[i].events[n].events.splice(index, 1); // remove event
+								if (!_this6[i].events[n].events.length) {
+									// if empty, remove event entirely
+									_this6[i].events.splice(n, 1);
 								}
 							}
 						});
@@ -1214,19 +1216,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// set variables
 			var len = this.length,
 			    i = 0,
-			    _node = $(getVal(html, this[0]))[0].cloneNode(true);
+			    node = $(getVal(html, this[0]))[0].cloneNode(true);
 
 			// insert clone into parent
-			this[0].parentNode.insertBefore(_node, null);
+			this[0].parentNode.insertBefore(node, null);
 
 			// find innermost child of node
-			while (_node.firstElementChild) {
-				_node = _node.firstElementChild;
+			while (node.firstElementChild) {
+				node = node.firstElementChild;
 			}
 
 			// attach nodes to the new node
 			for (; i < len; i++) {
-				_node.appendChild(this[i]);
+				node.appendChild(this[i]);
 			}
 		}
 		return this;
@@ -1330,7 +1332,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			i = nodes.length;
 			while (i--) {
-				if (nodes[i].isSameNode(subject)) {
+				if (nodes[i] === subject) {
 					return i;
 				}
 			}
@@ -1418,7 +1420,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		while (i--) {
 			Array.from(this[i].parentNode.children).forEach(function (child) {
-				if (!child.isSameNode(_this7[i])) {
+				if (child !== _this7[i]) {
 					nodes.push(child);
 				}
 			});
