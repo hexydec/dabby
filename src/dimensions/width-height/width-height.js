@@ -27,7 +27,7 @@
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
 			while (i--) {
-				value = getVal(val, this[i], i);
+				value = getVal(val, this[i], i, this[i][dim]);
 				if (io) {
 					props = ["padding"];
 					if (io === "outer") {

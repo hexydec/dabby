@@ -31,11 +31,11 @@ The library supports the following methods:
 |-------------------------------------------|-----------------------------------------------------------|
 | [.attr()](../src/attributes/attr/readme.md)	| Get/set HTML attributes								|
 | [.css()](../src/attributes/css/readme.md)	| Get/set CSS attributes									|
-| .data()									| Get/set data attributes									|
+| [.data()](../src/attributes/data/readme.md)	| Get/set data attributes									|
 | .prop()									| Get/set HTML properties									|
 | .val()									| Get/set form control values								|
-| .addClass(../src/attributes/class/readme.md)	| Add a class to elements in a collection				|
-| .hasClass()								| See whether an HTML element has the requested class		|
+| [.addClass](../src/attributes/class/readme.md)	| Add a class to elements in a collection				|
+| [.hasClass()](../src/attributes/hasclass/readme.md)	| See whether any elements in a collection have the requested class		|
 | .removeClass((../src/attributes/class/readme.md)	| Remove a class from an HTML element				|
 | .toggleClass((../src/attributes/class/readme.md)	| Toggle a class on and off							|
 

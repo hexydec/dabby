@@ -5,7 +5,7 @@ $.fn.prop = function (prop, value) {
 	if (value !== undefined) {
 		let i = this.length;
 		while (i--) {
-			this[i][prop] = value;
+			this[i][prop] = getVal(value, this[i], i, this[i][prop]);
 		}
 		return this;
 

@@ -7,7 +7,7 @@ $.fn.text = function (text) {
 		if (get) {
 			output.push(this[i].textContent);
 		} else {
-			this[i].textContent = getVal(text, this[i], i);
+			this[i].textContent = getVal(text, this[i], i, this[i].textContent);
 		}
 	}
 	return get ? output.join(" ") : this;

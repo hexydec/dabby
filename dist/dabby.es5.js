@@ -131,11 +131,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		return properties[prop] || prop;
 	}
 
-	function getVal(val, obj, i) {
+	function getVal(val, obj, i, current) {
 
 		// retrieve as function
 		if ($.isFunction(val)) {
-			val = val.apply(obj, Array.from(arguments).slice(2)); // pass extra arguments on
+			val = val.call(obj, i, $.isFunction(current) ? current() : current); // current can be a function
 		}
 		return val;
 	}
@@ -603,12 +603,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			while (i--) {
 				var arr = getVal(cls, this[i], i, this[i].className);
 				if (typeof arr === "string") {
-					arr = arr.split(" ").reverse(); // reverse as we add them backwards
-				} else {
-					arr = arr.reverse();
+					arr = arr.split(" ");
 				}
-				var n = arr.length;
-				while (n--) {
+				var len = arr.length;
+				for (var n = 0; n < len; n++) {
 					this[i].classList[func](arr[n]);
 				}
 			}
@@ -718,7 +716,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		if (value !== undefined) {
 			var i = this.length;
 			while (i--) {
-				this[i][prop] = value;
+				this[i][prop] = getVal(value, this[i], i, this[i][prop]);
 			}
 			return this;
 
@@ -746,17 +744,25 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			var _ret2 = function () {
 				var i = _this5.length,
 				    val = void 0;
-				while (i--) {
+
+				var _loop = function _loop() {
+					var val = getVal(value, _this5[i], i, function () {
+						return $(_this5[i]).val();
+					});
 					if (_this5[i].multiple) {
-						val = $.map($.isArray(value) ? value : [value], function (item) {
+						val = $.map($.isArray(val) ? val : [val], function (item) {
 							return String(item);
-						});
+						}); // convert to string
 						$("option", _this5[i]).each(function (key, obj) {
 							obj.selected = val.indexOf(String(obj.value)) > -1;
 						});
 					} else {
-						_this5[i].value = String(value);
+						_this5[i].value = String(val);
 					}
+				};
+
+				while (i--) {
+					_loop();
 				}
 				return {
 					v: _this5
@@ -823,7 +829,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 				// if coords is callback, generate value
 				rect = this[i].getBoundingClientRect();
-				coords = getVal(coords, i, rect);
+				coords = getVal(coords, this[i], i, rect);
 
 				if (coords.top !== undefined && coords.left !== undefined) {
 
@@ -909,7 +915,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// set value
 			if (val !== undefined && valtype !== "boolean") {
 				while (i--) {
-					value = getVal(val, this[i], i);
+					value = getVal(val, this[i], i, this[i][dim]);
 					if (io) {
 						props = ["padding"];
 						if (io === "outer") {
@@ -979,7 +985,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			// attach event
 
-			var _loop = function _loop() {
+			var _loop2 = function _loop2() {
 				var e = events.length;
 
 				// record the original function
@@ -1038,7 +1044,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			};
 
 			while (i--) {
-				_loop();
+				_loop2();
 			}
 			return this;
 		};
@@ -1082,7 +1088,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		if (html !== undefined) {
 			var i = this.length;
 			while (i--) {
-				this[i].innerHTML = getVal(html, this[i], i);
+				this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
 			}
 			return this;
 
@@ -1168,6 +1174,38 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 	});
 
+	// needs more understanding of how this is supposed to work!!!
+
+	/*["replaceWith", "replaceAll"].forEach(function (name) {
+ 	$.fn[name] = function (html) {
+ 		const all = name === "replaceAll",
+ 			isFunc = $.isFunction(html)
+ 		let i = this.length,
+ 			nodes = [],
+ 			replace = [],
+ 			n,
+ 			parent;
+ 
+ 		if (!isFunc) {
+ 			html = $(html);
+ 		}
+ 		while (i--) {
+ 
+ 			replace = isFunc ? getVal(html, i, this[i]) : html;
+ 			n = replace.length;
+ 			parent = this[i].parentNode;
+ 			while (n--) {
+ 				if (n) {
+ 					this[i].insertAdjacentElement("beforebegin", replace.get(n));
+ 				} else {
+ 					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
+ 				}
+ 			}
+ 		}
+ 		return all ? this : nodes;
+ 	};
+ });*/
+
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));
 	};
@@ -1181,7 +1219,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			if (get) {
 				output.push(this[i].textContent);
 			} else {
-				this[i].textContent = getVal(text, this[i], i);
+				this[i].textContent = getVal(text, this[i], i, this[i].textContent);
 			}
 		}
 		return get ? output.join(" ") : this;

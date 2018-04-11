@@ -415,7 +415,8 @@ QUnit.test("$.fn.val", function (assert) {
 	var obj = $("<input>", { type: "text", value: "test" }),
 	    multi = document.createElement("select"),
 	    text = $("<textarea>", { text: "test" }),
-	    // write test for this
+
+	// write test for this
 	i = 0,
 	    opt;
 
@@ -1188,5 +1189,6 @@ QUnit.test("$.map", function (assert) {
 	assert.deepEqual(arr, output, "$.map object");
 });
 
+//# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map

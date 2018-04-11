@@ -12,7 +12,9 @@ $(selector).data(obj);
 
 #### key
 
-The name of the data attribute to get/set. The key corresponds directly to any data-\* attributes, so when reading, if the node contains a corresponding data attribute, the value will be returned. The names of data attributes must conform to the naming convention of HTML data-\* attributes, so they must contain only lowercase alpha numeric characters and dashes. Names can also be sent in camelCase notation.
+The name of the data attribute to get/set. The key corresponds directly to any data-\* attributes, so when reading, if the node contains a corresponding data attribute, the value will be returned.
+
+The names of data attributes must conform to the naming convention of HTML data-\* attributes, so they must contain only lowercase alpha numeric characters and dashes. Names can also be sent in camelCase notation.
 
 #### value
 

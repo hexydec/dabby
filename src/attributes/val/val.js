@@ -5,16 +5,14 @@ $.fn.val = function (value) {
 		let i = this.length,
 			val;
 		while (i--) {
+			let val = getVal(value, this[i], i, () => $(this[i]).val());
 			if (this[i].multiple) {
-				val = $.map(
-					$.isArray(value) ? value : [value],
-					item => String(item)
-				);
+				val = $.map($.isArray(val) ? val : [val], item => String(item)); // convert to string
 				$("option", this[i]).each((key, obj) => {
 					obj.selected = val.indexOf(String(obj.value)) > -1;
 				});
 			} else {
-				this[i].value = String(value);
+				this[i].value = String(val);
 			}
 		}
 		return this;
