@@ -11,7 +11,7 @@ $.fn.offset = function (coords) {
 
 			// if coords is callback, generate value
 			rect = this[i].getBoundingClientRect();
-			coords = getVal(coords, i, rect);
+			coords = getVal(coords, this[i], i, rect);
 
 			if (coords.top !== undefined && coords.left !== undefined) {
 

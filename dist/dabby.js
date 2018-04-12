@@ -69,11 +69,11 @@ function getProp(prop) {
 	return properties[prop] || prop;
 }
 
-function getVal(val, obj, i) {
+function getVal(val, obj, i, current) {
 
 	// retrieve as function
 	if ($.isFunction(val)) {
-		val = val.apply(obj, Array.from(arguments).slice(2)); // pass extra arguments on
+		val = val.call(obj, i, $.isFunction(current) ? current() : current); // current can be a function
 	}
 	return val;
 }
@@ -524,12 +524,10 @@ $.fn.attr = function (prop, value) {
 		while (i--) {
 			let arr = getVal(cls, this[i], i, this[i].className);
 			if (typeof arr === "string") {
-				arr = arr.split(" ").reverse(); // reverse as we add them backwards
-			} else {
-				arr = arr.reverse();
+				arr = arr.split(" ");
 			}
-			let n = arr.length;
-			while (n--) {
+			const len = arr.length;
+			for (let n = 0; n < len; n++) {
 				this[i].classList[func](arr[n]);
 			}
 		}
@@ -632,7 +630,7 @@ $.fn.prop = function (prop, value) {
 	if (value !== undefined) {
 		let i = this.length;
 		while (i--) {
-			this[i][prop] = value;
+			this[i][prop] = getVal(value, this[i], i, this[i][prop]);
 		}
 		return this;
 
@@ -659,16 +657,14 @@ $.fn.val = function (value) {
 		let i = this.length,
 			val;
 		while (i--) {
+			let val = getVal(value, this[i], i, () => $(this[i]).val());
 			if (this[i].multiple) {
-				val = $.map(
-					$.isArray(value) ? value : [value],
-					item => String(item)
-				);
+				val = $.map($.isArray(val) ? val : [val], item => String(item)); // convert to string
 				$("option", this[i]).each((key, obj) => {
 					obj.selected = val.indexOf(String(obj.value)) > -1;
 				});
 			} else {
-				this[i].value = String(value);
+				this[i].value = String(val);
 			}
 		}
 		return this;
@@ -731,7 +727,7 @@ $.fn.offset = function (coords) {
 
 			// if coords is callback, generate value
 			rect = this[i].getBoundingClientRect();
-			coords = getVal(coords, i, rect);
+			coords = getVal(coords, this[i], i, rect);
 
 			if (coords.top !== undefined && coords.left !== undefined) {
 
@@ -816,7 +812,7 @@ $.fn.position = function () {
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
 			while (i--) {
-				value = getVal(val, this[i], i);
+				value = getVal(val, this[i], i, this[i][dim]);
 				if (io) {
 					props = ["padding"];
 					if (io === "outer") {
@@ -980,7 +976,7 @@ $.fn.html = function (html) {
 	if (html !== undefined) {
 		let i = this.length;
 		while (i--) {
-			this[i].innerHTML = getVal(html, this[i], i);
+			this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
 		}
 		return this;
 
@@ -1063,6 +1059,38 @@ $.each({
 	};
 });
 
+// needs more understanding of how this is supposed to work!!!
+
+/*["replaceWith", "replaceAll"].forEach(function (name) {
+	$.fn[name] = function (html) {
+		const all = name === "replaceAll",
+			isFunc = $.isFunction(html)
+		let i = this.length,
+			nodes = [],
+			replace = [],
+			n,
+			parent;
+
+		if (!isFunc) {
+			html = $(html);
+		}
+		while (i--) {
+
+			replace = isFunc ? getVal(html, i, this[i]) : html;
+			n = replace.length;
+			parent = this[i].parentNode;
+			while (n--) {
+				if (n) {
+					this[i].insertAdjacentElement("beforebegin", replace.get(n));
+				} else {
+					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
+				}
+			}
+		}
+		return all ? this : nodes;
+	};
+});*/
+
 $.fn.slice = function (start, end) {
 	return $(this.get().slice(start, end));
 };
@@ -1076,7 +1104,7 @@ $.fn.text = function (text) {
 		if (get) {
 			output.push(this[i].textContent);
 		} else {
-			this[i].textContent = getVal(text, this[i], i);
+			this[i].textContent = getVal(text, this[i], i, this[i].textContent);
 		}
 	}
 	return get ? output.join(" ") : this;

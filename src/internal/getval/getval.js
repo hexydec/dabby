@@ -1,8 +1,8 @@
-function getVal(val, obj, i) {
+function getVal(val, obj, i, current) {
 
 	// retrieve as function
 	if ($.isFunction(val)) {
-		val = val.apply(obj, Array.from(arguments).slice(2)); // pass extra arguments on
+		val = val.call(obj, i, $.isFunction(current) ? current() : current); // current can be a function
 	}
 	return val;
 }

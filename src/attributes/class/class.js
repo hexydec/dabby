@@ -9,12 +9,10 @@
 		while (i--) {
 			let arr = getVal(cls, this[i], i, this[i].className);
 			if (typeof arr === "string") {
-				arr = arr.split(" ").reverse(); // reverse as we add them backwards
-			} else {
-				arr = arr.reverse();
+				arr = arr.split(" ");
 			}
-			let n = arr.length;
-			while (n--) {
+			const len = arr.length;
+			for (let n = 0; n < len; n++) {
 				this[i].classList[func](arr[n]);
 			}
 		}

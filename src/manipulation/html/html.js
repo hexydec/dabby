@@ -4,7 +4,7 @@ $.fn.html = function (html) {
 	if (html !== undefined) {
 		let i = this.length;
 		while (i--) {
-			this[i].innerHTML = getVal(html, this[i], i);
+			this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
 		}
 		return this;
 
