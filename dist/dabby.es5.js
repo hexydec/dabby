@@ -1059,7 +1059,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			evt.args = data;
 		}
 		while (i--) {
-			this[i].dispatchEvent(evt);
+			if (this[i][name]) {
+				this[i][name]();
+			} else {
+				this[i].dispatchEvent(evt);
+			}
 		}
 		return this;
 	};
@@ -1173,38 +1177,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			return func === "detach" ? $(nodes) : this;
 		};
 	});
-
-	// needs more understanding of how this is supposed to work!!!
-
-	/*["replaceWith", "replaceAll"].forEach(function (name) {
- 	$.fn[name] = function (html) {
- 		const all = name === "replaceAll",
- 			isFunc = $.isFunction(html)
- 		let i = this.length,
- 			nodes = [],
- 			replace = [],
- 			n,
- 			parent;
- 
- 		if (!isFunc) {
- 			html = $(html);
- 		}
- 		while (i--) {
- 
- 			replace = isFunc ? getVal(html, i, this[i]) : html;
- 			n = replace.length;
- 			parent = this[i].parentNode;
- 			while (n--) {
- 				if (n) {
- 					this[i].insertAdjacentElement("beforebegin", replace.get(n));
- 				} else {
- 					nodes[i] = parent.replaceChild(replace.get(n), this[i]);
- 				}
- 			}
- 		}
- 		return all ? this : nodes;
- 	};
- });*/
 
 	$.fn.slice = function (start, end) {
 		return $(this.get().slice(start, end));
