@@ -74,10 +74,11 @@ $.ajax = (url, settings) => {
 						callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
 					}
 				});
-			});
+			}, {once: true});
 		});
 
 		script.src = settings.url;
+		script.async = settings.async;
 		document.head.appendChild(script);
 
 	// make xhr request

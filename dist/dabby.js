@@ -1,4 +1,4 @@
-/*! dabbyjs v0.9.3 by Will Earp - https://github.com/hexydec/dabby */
+/*! dabbyjs v0.9.4 by Will Earp - https://github.com/hexydec/dabby */
 
 function camelise(prop) {
 	return prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
@@ -272,10 +272,11 @@ $.ajax = (url, settings) => {
 						callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
 					}
 				});
-			});
+			}, {once: true});
 		});
 
 		script.src = settings.url;
+		script.async = settings.async;
 		document.head.appendChild(script);
 
 	// make xhr request
@@ -947,10 +948,8 @@ $.fn.trigger = function (name, data) {
 		evt.args = data;
 	}
 	while (i--) {
-		if (this[i][name]) {
+		if (this[i].dispatchEvent(evt) && this[i][name]) {
 			this[i][name]();
-		} else {
-			this[i].dispatchEvent(evt);
 		}
 	}
 	return this;

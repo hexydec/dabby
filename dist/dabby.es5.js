@@ -4,7 +4,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! dabbyjs v0.9.3 by Will Earp - https://github.com/hexydec/dabby */
+/*! dabbyjs v0.9.4 by Will Earp - https://github.com/hexydec/dabby */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -341,10 +341,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
 						}
 					});
-				});
+				}, { once: true });
 			});
 
 			script.src = settings.url;
+			script.async = settings.async;
 			document.head.appendChild(script);
 
 			// make xhr request
@@ -1059,10 +1060,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			evt.args = data;
 		}
 		while (i--) {
-			if (this[i][name]) {
+			if (this[i].dispatchEvent(evt) && this[i][name]) {
 				this[i][name]();
-			} else {
-				this[i].dispatchEvent(evt);
 			}
 		}
 		return this;
