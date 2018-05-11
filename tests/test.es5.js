@@ -1,6 +1,6 @@
 "use strict";
 
-/*! dabbyjs v0.9.3 by Will Earp - https://github.com/hexydec/dabby */
+/*! dabbyjs v0.9.4 by Will Earp - https://github.com/hexydec/dabby */
 
 QUnit.module("Core");
 
@@ -415,9 +415,7 @@ QUnit.test("$.fn.val", function (assert) {
 	var obj = $("<input>", { type: "text", value: "test" }),
 	    multi = document.createElement("select"),
 	    text = $("<textarea>", { text: "test" }),
-
-
-	// write test for this
+	    // write test for this
 	i = 0,
 	    opt;
 
@@ -600,7 +598,7 @@ QUnit.module("Events", function (hooks) {
 	});
 
 	QUnit.test("$.fn.trigger", function (assert) {
-		var divs = test.getElementsByTagName("div"),
+		var divs = test.querySelectorAll(".testtemp div"),
 		    count = 0,
 		    dabbyDivs = $(".testtemp div");
 
@@ -1190,11 +1188,5 @@ QUnit.test("$.map", function (assert) {
 	assert.deepEqual(arr, output, "$.map object");
 });
 
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map

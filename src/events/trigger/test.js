@@ -6,7 +6,7 @@ QUnit.module("Events", function (hooks) {
 	});
 
 	QUnit.test("$.fn.trigger", function (assert) {
-		var divs = test.getElementsByTagName("div"),
+		var divs = test.querySelectorAll(".testtemp div"),
 			count = 0,
 			dabbyDivs = $(".testtemp div");
 

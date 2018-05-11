@@ -45,16 +45,16 @@ $.ajax = (url, settings) => {
 		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
 	}
 
-	// add data to query string
-	if (settings.data && settings.processData) {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
-	}
-
 	// fetch script
 	if (sync || settings.crossDomain) {
 		script = document.createElement("script");
 		if (settings.scriptCharset) {
 			script.charset = settings.scriptCharset;
+		}
+
+		// add data to query string
+		if (settings.data && settings.processData) {
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 		}
 
 		// add callback parameter
@@ -133,7 +133,7 @@ $.ajax = (url, settings) => {
 		xhr.onabort = () => {
 			callback(xhr, "abort");
 		};
-		xhr.send(settings.processData ? undefined : settings.data);
+		xhr.send(settings.processData && settings.data && typeof settings.data !== "string" ? $.param(settings.data) : settings.data);
 		return xhr;
 	}
 };

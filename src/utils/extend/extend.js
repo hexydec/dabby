@@ -1,5 +1,6 @@
-$.extend = (obj, ...arrs) => {
-	const len = arrs.length;
+$.extend = (...arrs) => {
+	return Object.assign.apply(null, arrs);
+	/*const len = arrs.length;
 	let i = 0,
 		keys,
 		k;
@@ -11,5 +12,5 @@ $.extend = (obj, ...arrs) => {
 			obj[keys[k]] = arrs[i][keys[k]];
 		}
 	}
-	return obj;
+	return obj;*/
 };

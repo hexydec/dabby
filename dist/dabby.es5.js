@@ -1,8 +1,38 @@
 "use strict";
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _slicedToArray = function () {
+	function sliceIterator(arr, i) {
+		var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+			for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+				_arr.push(_s.value);if (i && _arr.length === i) break;
+			}
+		} catch (err) {
+			_d = true;_e = err;
+		} finally {
+			try {
+				if (!_n && _i["return"]) _i["return"]();
+			} finally {
+				if (_d) throw _e;
+			}
+		}return _arr;
+	}return function (arr, i) {
+		if (Array.isArray(arr)) {
+			return arr;
+		} else if (Symbol.iterator in Object(arr)) {
+			return sliceIterator(arr, i);
+		} else {
+			throw new TypeError("Invalid attempt to destructure non-iterable instance");
+		}
+	};
+}();
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+	return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 /*! dabbyjs v0.9.4 by Will Earp - https://github.com/hexydec/dabby */
 
@@ -312,16 +342,16 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + +new Date();
 		}
 
-		// add data to query string
-		if (settings.data && settings.processData) {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
-		}
-
 		// fetch script
 		if (sync || settings.crossDomain) {
 			script = document.createElement("script");
 			if (settings.scriptCharset) {
 				script.charset = settings.scriptCharset;
+			}
+
+			// add data to query string
+			if (settings.data && settings.processData) {
+				settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 			}
 
 			// add callback parameter
@@ -400,20 +430,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			xhr.onabort = function () {
 				callback(xhr, "abort");
 			};
-			xhr.send(settings.processData ? undefined : settings.data);
+			xhr.send(settings.processData && settings.data && typeof settings.data !== "string" ? $.param(settings.data) : settings.data);
 			return xhr;
 		}
 	};
 
-	$.get = function (url, data, success, type) {
-		var isFunc = data && $.isFunction(data);
-		return $.ajax((typeof url === "undefined" ? "undefined" : _typeof(url)) === "object" ? url : {
-			url: url,
-			data: isFunc ? {} : data,
-			success: isFunc ? data : success,
-			dataType: isFunc ? success : type
-		});
-	};
+	["get", "post"].forEach(function (name) {
+		$[name] = function (url, data, success, type) {
+			var isFunc = $.isFunction(data);
+			var settings = (typeof url === "undefined" ? "undefined" : _typeof(url)) === "object" ? url : {
+				url: url,
+				data: isFunc ? {} : data,
+				success: isFunc ? data : success,
+				dataType: isFunc ? success : type
+			};
+			settings.method = name.toUpperCase();
+			return $.ajax(settings);
+		};
+	});
 
 	$.getScript = function (url, success) {
 		return $.ajax({
@@ -495,18 +529,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			params = add(key, item, params);
 		});
 		return params.join("&");
-	};
-
-	$.get = function (url, data, success, type) {
-		var isFunc = $.isFunction(data);
-		var settings = (typeof url === "undefined" ? "undefined" : _typeof(url)) === "object" ? url : {
-			url: url,
-			data: isFunc ? {} : data,
-			success: isFunc ? data : success,
-			dataType: isFunc ? success : type
-		};
-		settings.type = "POST";
-		return $.ajax(settings);
 	};
 
 	$.fn.serialize = function () {
@@ -905,7 +927,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		$.fn[dim] = function (val) {
 			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
 			    wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
-			    // width or height
+
+			// width or height
 			io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
 			var i = this.length,
 			    value = void 0,
@@ -1060,9 +1083,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			evt.args = data;
 		}
 		while (i--) {
-			if (this[i].dispatchEvent(evt) && this[i][name]) {
-				this[i][name]();
-			}
+			this[i].dispatchEvent(evt);
+			/*if (this[i].dispatchEvent(evt) && this[i][name]) {
+   	this[i][name]();
+   }*/
 		}
 		return this;
 	};
@@ -1125,7 +1149,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
 				var backwards = elems.length,
-				    // for counting down
+
+				// for counting down
 				forwards = -1; // for counting up
 				while (pre ? backwards-- : ++forwards < backwards) {
 					// insert forwards or backwards?
@@ -1435,24 +1460,25 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		return $(selector ? filterNodes(nodes, selector) : nodes);
 	};
 
-	$.extend = function (obj) {
-		for (var _len = arguments.length, arrs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-			arrs[_key - 1] = arguments[_key];
+	$.extend = function () {
+		for (var _len = arguments.length, arrs = Array(_len), _key = 0; _key < _len; _key++) {
+			arrs[_key] = arguments[_key];
 		}
 
-		var len = arrs.length;
-		var i = 0,
-		    keys = void 0,
-		    k = void 0;
-
-		for (; i < len; i++) {
-			keys = Object.keys(arrs[i]);
-			k = keys.length;
-			while (k--) {
-				obj[keys[k]] = arrs[i][keys[k]];
-			}
-		}
-		return obj;
+		return Object.assign.apply(null, arrs);
+		/*const len = arrs.length;
+  let i = 0,
+  	keys,
+  	k;
+  
+  for (; i < len; i++) {
+  	keys = Object.keys(arrs[i]);
+  	k = keys.length;
+  	while (k--) {
+  		obj[keys[k]] = arrs[i][keys[k]];
+  	}
+  }
+  return obj;*/
 	};
 
 	$.isArray = function (arr) {
@@ -1504,5 +1530,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	};
 	return dabby;
 });
+//# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map

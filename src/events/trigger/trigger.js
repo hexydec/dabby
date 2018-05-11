@@ -7,9 +7,10 @@ $.fn.trigger = function (name, data) {
 		evt.args = data;
 	}
 	while (i--) {
-		if (this[i].dispatchEvent(evt) && this[i][name]) {
+		this[i].dispatchEvent(evt);
+		/*if (this[i].dispatchEvent(evt) && this[i][name]) {
 			this[i][name]();
-		}
+		}*/
 	}
 	return this;
 };

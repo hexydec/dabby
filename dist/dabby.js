@@ -243,16 +243,16 @@ $.ajax = (url, settings) => {
 		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
 	}
 
-	// add data to query string
-	if (settings.data && settings.processData) {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
-	}
-
 	// fetch script
 	if (sync || settings.crossDomain) {
 		script = document.createElement("script");
 		if (settings.scriptCharset) {
 			script.charset = settings.scriptCharset;
+		}
+
+		// add data to query string
+		if (settings.data && settings.processData) {
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 		}
 
 		// add callback parameter
@@ -331,20 +331,24 @@ $.ajax = (url, settings) => {
 		xhr.onabort = () => {
 			callback(xhr, "abort");
 		};
-		xhr.send(settings.processData ? undefined : settings.data);
+		xhr.send(settings.processData && settings.data && typeof settings.data !== "string" ? $.param(settings.data) : settings.data);
 		return xhr;
 	}
 };
 
-$.get = (url, data, success, type) => {
-	const isFunc = data && $.isFunction(data);
-	return $.ajax(typeof(url) === "object" ? url : {
-		url: url,
-		data: isFunc ? {} : data,
-		success: isFunc ? data : success,
-		dataType: isFunc ? success : type
-	});
-};
+["get", "post"].forEach(name => {
+	$[name] = (url, data, success, type) => {
+		const isFunc = $.isFunction(data);
+		let settings = typeof(url) === "object" ? url : {
+			url: url,
+			data: isFunc ? {} : data,
+			success: isFunc ? data : success,
+			dataType: isFunc ? success : type
+		};
+		settings.method = name.toUpperCase();
+		return $.ajax(settings);
+	};
+});
 
 $.getScript = (url, success) => $.ajax({
 	url: url,
@@ -417,18 +421,6 @@ $.param = obj => {
 		params = add(key, item, params);
 	});
 	return params.join("&");
-};
-
-$.get = (url, data, success, type) => {
-	const isFunc = $.isFunction(data);
-	let settings = typeof(url) === "object" ? url : {
-		url: url,
-		data: isFunc ? {} : data,
-		success: isFunc ? data : success,
-		dataType: isFunc ? success : type
-	};
-	settings.type = "POST";
-	return $.ajax(settings);
 };
 
 $.fn.serialize = function () {
@@ -948,9 +940,10 @@ $.fn.trigger = function (name, data) {
 		evt.args = data;
 	}
 	while (i--) {
-		if (this[i].dispatchEvent(evt) && this[i][name]) {
+		this[i].dispatchEvent(evt);
+		/*if (this[i].dispatchEvent(evt) && this[i][name]) {
 			this[i][name]();
-		}
+		}*/
 	}
 	return this;
 };
@@ -1316,8 +1309,9 @@ $.fn.siblings = function (selector) {
 	return $(selector ? filterNodes(nodes, selector) : nodes);
 };
 
-$.extend = (obj, ...arrs) => {
-	const len = arrs.length;
+$.extend = (...arrs) => {
+	return Object.assign.apply(null, arrs);
+	/*const len = arrs.length;
 	let i = 0,
 		keys,
 		k;
@@ -1329,7 +1323,7 @@ $.extend = (obj, ...arrs) => {
 			obj[keys[k]] = arrs[i][keys[k]];
 		}
 	}
-	return obj;
+	return obj;*/
 };
 
 $.isArray = arr => Array.isArray(arr);
