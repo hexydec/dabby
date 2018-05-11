@@ -1,38 +1,8 @@
 "use strict";
 
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _slicedToArray = function () {
-	function sliceIterator(arr, i) {
-		var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
-			for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-				_arr.push(_s.value);if (i && _arr.length === i) break;
-			}
-		} catch (err) {
-			_d = true;_e = err;
-		} finally {
-			try {
-				if (!_n && _i["return"]) _i["return"]();
-			} finally {
-				if (_d) throw _e;
-			}
-		}return _arr;
-	}return function (arr, i) {
-		if (Array.isArray(arr)) {
-			return arr;
-		} else if (Symbol.iterator in Object(arr)) {
-			return sliceIterator(arr, i);
-		} else {
-			throw new TypeError("Invalid attempt to destructure non-iterable instance");
-		}
-	};
-}();
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*! dabbyjs v0.9.4 by Will Earp - https://github.com/hexydec/dabby */
 
@@ -312,7 +282,6 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 			cache: null, // start will null so we can see if explicitly set
 			data: null,
 			dataType: null, // only changes behavior with json, jsonp, script
-			processData: true,
 			async: true,
 			crossDomain: false,
 			scriptCharset: null,
@@ -335,7 +304,16 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 		var sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
 		    script = void 0,
-		    xhr = void 0;
+		    xhr = void 0,
+		    data = void 0;
+
+		// add data to query string
+		if (settings.data) {
+			data = typeof settings.data === "string" ? settings.data : $.param(settings.data);
+		}
+		if (data && settings.method === "GET") {
+			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + data;
+		}
 
 		// add cache buster
 		if (settings.cache || settings.cache === null && sync) {
@@ -347,11 +325,6 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 			script = document.createElement("script");
 			if (settings.scriptCharset) {
 				script.charset = settings.scriptCharset;
-			}
-
-			// add data to query string
-			if (settings.data && settings.processData) {
-				settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 			}
 
 			// add callback parameter
@@ -430,7 +403,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 			xhr.onabort = function () {
 				callback(xhr, "abort");
 			};
-			xhr.send(settings.processData && settings.data && typeof settings.data !== "string" ? $.param(settings.data) : settings.data);
+			xhr.send(settings.method === "GET" ? null : data);
 			return xhr;
 		}
 	};
@@ -927,8 +900,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 		$.fn[dim] = function (val) {
 			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
 			    wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
-
-			// width or height
+			    // width or height
 			io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
 			var i = this.length,
 			    value = void 0,
@@ -1149,8 +1121,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
 				var backwards = elems.length,
-
-				// for counting down
+				    // for counting down
 				forwards = -1; // for counting up
 				while (pre ? backwards-- : ++forwards < backwards) {
 					// insert forwards or backwards?
@@ -1530,6 +1501,5 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	};
 	return dabby;
 });
-//# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map

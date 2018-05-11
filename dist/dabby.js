@@ -214,7 +214,6 @@ $.ajax = (url, settings) => {
 		cache: null, // start will null so we can see if explicitly set
 		data: null,
 		dataType: null, // only changes behavior with json, jsonp, script
-		processData: true,
 		async: true,
 		crossDomain: false,
 		scriptCharset: null,
@@ -236,7 +235,15 @@ $.ajax = (url, settings) => {
 	}
 
 	let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
-		script, xhr;
+		script, xhr, data;
+
+	// add data to query string
+	if (settings.data) {
+		data = typeof settings.data === "string" ? settings.data : $.param(settings.data);
+	}
+	if (data && settings.method === "GET") {
+		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + data;
+	}
 
 	// add cache buster
 	if (settings.cache || (settings.cache === null && sync)) {
@@ -248,11 +255,6 @@ $.ajax = (url, settings) => {
 		script = document.createElement("script");
 		if (settings.scriptCharset) {
 			script.charset = settings.scriptCharset;
-		}
-
-		// add data to query string
-		if (settings.data && settings.processData) {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + (typeof settings.data === "string" ? settings.data : $.param(settings.data));
 		}
 
 		// add callback parameter
@@ -331,7 +333,7 @@ $.ajax = (url, settings) => {
 		xhr.onabort = () => {
 			callback(xhr, "abort");
 		};
-		xhr.send(settings.processData && settings.data && typeof settings.data !== "string" ? $.param(settings.data) : settings.data);
+		xhr.send(settings.method === "GET" ? null : data);
 		return xhr;
 	}
 };
