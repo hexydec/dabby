@@ -415,9 +415,7 @@ QUnit.test("$.fn.val", function (assert) {
 	var obj = $("<input>", { type: "text", value: "test" }),
 	    multi = document.createElement("select"),
 	    text = $("<textarea>", { text: "test" }),
-
-
-	// write test for this
+	    // write test for this
 	i = 0,
 	    opt;
 
@@ -792,6 +790,28 @@ QUnit.test("$.fn.detach", function (assert) {
 
 	assert.deepEqual(obj.detach().get(0), obj.get(0), "Returns node when it is detached");
 	assert.deepEqual($(".testtemp").get(), [], "Node has been removed from DOM");
+});
+
+QUnit.module("Manipulation", function (hooks) {
+	var test = document.getElementsByClassName("test")[0];
+
+	hooks.before(function () {
+		test.innerHTML = '<div class="testtemp"><div></div><div></div><div></div></div>';
+	});
+
+	QUnit.test("$.fn.replaceWith", function (assert) {
+		$(".testtemp div").replaceWith("<h2>");
+		assert.equal($(".testtemp h2").length, 3, "Can replace nodes");
+	});
+
+	QUnit.test("$.fn.replaceAll", function (assert) {
+		$("<div>").replaceAll(".testtemp h2");
+		assert.equal($(".testtemp div").length, 3, "Can replace nodes");
+	});
+
+	hooks.after(function () {
+		test.innerHTML = "";
+	});
 });
 
 QUnit.module("Manipulation");
@@ -1190,16 +1210,5 @@ QUnit.test("$.map", function (assert) {
 	assert.deepEqual(arr, output, "$.map object");
 });
 
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
-//# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map
 //# sourceMappingURL=test.es5.js.map
