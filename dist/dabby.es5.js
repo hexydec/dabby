@@ -1,70 +1,10 @@
 "use strict";
 
-var _typeof7 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _typeof6 = typeof Symbol === "function" && _typeof7(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _typeof5 = typeof Symbol === "function" && _typeof6(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-};
-
-var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-};
-
-var _typeof3 = typeof Symbol === "function" && _typeof4(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-};
-
-var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-};
-
-var _slicedToArray = function () {
-	function sliceIterator(arr, i) {
-		var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
-			for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-				_arr.push(_s.value);if (i && _arr.length === i) break;
-			}
-		} catch (err) {
-			_d = true;_e = err;
-		} finally {
-			try {
-				if (!_n && _i["return"]) _i["return"]();
-			} finally {
-				if (_d) throw _e;
-			}
-		}return _arr;
-	}return function (arr, i) {
-		if (Array.isArray(arr)) {
-			return arr;
-		} else if (Symbol.iterator in Object(arr)) {
-			return sliceIterator(arr, i);
-		} else {
-			throw new TypeError("Invalid attempt to destructure non-iterable instance");
-		}
-	};
-}();
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-	return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
-
-/*! dabbyjs v0.9.4 by Will Earp - https://github.com/hexydec/dabby */
+/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
 
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -960,9 +900,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 		$.fn[dim] = function (val) {
 			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
 			    wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
-
-
-			// width or height
+			    // width or height
 			io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
 			var i = this.length,
 			    value = void 0,
@@ -1183,9 +1121,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 					elems = $(getVal(html, this[i], i, this[i].innerHTML));
 				}
 				var backwards = elems.length,
-
-
-				// for counting down
+				    // for counting down
 				forwards = -1; // for counting up
 				while (pre ? backwards-- : ++forwards < backwards) {
 					// insert forwards or backwards?
@@ -1596,11 +1532,5 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 	};
 	return dabby;
 });
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map
 //# sourceMappingURL=dabby.es5.js.map

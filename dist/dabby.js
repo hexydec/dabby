@@ -1,4 +1,4 @@
-/*! dabbyjs v0.9.4 by Will Earp - https://github.com/hexydec/dabby */
+/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
 
 function camelise(prop) {
 	return prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
