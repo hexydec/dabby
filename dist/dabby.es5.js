@@ -1467,20 +1467,49 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			arrs[_key] = arguments[_key];
 		}
 
-		return Object.assign.apply(null, arrs);
-		/*const len = arrs.length;
-  let i = 0,
-  	keys,
-  	k;
-  
-  for (; i < len; i++) {
-  	keys = Object.keys(arrs[i]);
-  	k = keys.length;
-  	while (k--) {
-  		obj[keys[k]] = arrs[i][keys[k]];
-  	}
-  }
-  return obj;*/
+		if (arrs[0] === true) {
+
+			// merge function will recursively merge items
+			var merge = function merge(target) {
+				for (var _len2 = arguments.length, sources = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+					sources[_key2 - 1] = arguments[_key2];
+				}
+
+				if (sources.length) {
+
+					// work on next source
+					var source = sources.shift();
+					if ($.isPlainObject(target) && $.isPlainObject(source)) {
+
+						// loop through each property
+						var keys = Object.keys(source),
+						    len = keys.length;
+						for (var i = 0; i < len; i++) {
+
+							// if target is array, merge, else overwrite with source array
+							/*if (Array.isArray(source[keys[i]])) {
+       	target[keys[i]] = Array.isArray(target[keys[i]]) ? Object.assign(target[keys[i]], source[keys[i]]) : source[keys[i]];
+       		// merge recursively if source is object, if target is not object, overwrite
+       } else */if ($.isPlainObject(source[keys[i]])) {
+								target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
+
+								// when source property is value just overwrite
+							} else {
+								target[keys[i]] = source[keys[i]];
+							}
+						}
+					}
+
+					// merge next source
+					return merge.apply(undefined, [target].concat(sources));
+				}
+				return target;
+			};
+
+			return merge.apply(null, arrs.slice(1));
+		} else {
+			return Object.assign.apply(null, arrs);
+		}
 	};
 
 	$.isArray = function (arr) {
