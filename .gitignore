@@ -2,3 +2,6 @@ node_modules
 /tests/test.js
 /tests/internals.js
 /tests/internals.es5.js
+/tests/internals.es5.js.map
+/tests/test.es5.js
+/tests/test.es5.js.map
