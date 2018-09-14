@@ -56,6 +56,39 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 	}
 
+	if (typeof Object.assign !== "function") {
+		Object.defineProperty(Object, "assign", {
+			value: function assign(target, varArgs) {
+				// .length of function is 2
+				"use strict";
+
+				if (target == null) {
+					// TypeError if undefined or null
+					throw new TypeError('Cannot convert undefined or null to object');
+				}
+
+				var to = Object(target);
+
+				for (var index = 1; index < arguments.length; index++) {
+					var nextSource = arguments[index];
+
+					if (nextSource != null) {
+						// Skip over if undefined or null
+						for (var nextKey in nextSource) {
+							// Avoid bugs when hasOwnProperty is shadowed
+							if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+								to[nextKey] = nextSource[nextKey];
+							}
+						}
+					}
+				}
+				return to;
+			},
+			writable: true,
+			configurable: true
+		});
+	}
+
 	function camelise(prop) {
 		return prop.replace(/-([a-z])/gi, function (text, letter) {
 			return letter.toUpperCase();
@@ -163,7 +196,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			var i = dabby.length;
 			while (i--) {
 				var val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
-				if (typeof val === "number") {
+				if (!isNaN(val)) {
 					val += "px";
 				}
 				dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
@@ -816,8 +849,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var doc = document.documentElement;
 		var rect = void 0,
 		    i = this.length,
-		    pos = void 0,
-		    parent = void 0;
+		    pos = void 0;
 
 		// set
 		if (coords) {
@@ -825,30 +857,31 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 				// if coords is callback, generate value
 				rect = this[i].getBoundingClientRect();
-				coords = getVal(coords, this[i], i, rect);
+				coords = getVal(coords, this[i], i, $(this[i]).offset());
 
 				if (coords.top !== undefined && coords.left !== undefined) {
 
 					// set position relative if static
-					pos = this[i].style.position || "static";
+					var style = getComputedStyle(this[i]);
+					pos = style.getPropertyValue("position");
 					if (pos === "static") {
 						this[i].style.position = "relative";
 					}
 
 					// set offset
-					this[i].style.top = parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top) + "px";
-					this[i].style.left = parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left) + "px";
+					this[i].style.top = parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top - parseFloat(style.getPropertyValue("top"))) + "px";
+					this[i].style.left = parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left - parseFloat(style.getPropertyValue("left"))) + "px";
 				}
 			}
 			return this;
 
 			// get
 		} else if (this[0]) {
-			pos = this[0].style.position;
+			pos = this[0].style.position === "fixed";
 			rect = this[0].getBoundingClientRect();
 			return {
-				top: rect.top - (pos === "fixed" ? 0 : doc.scrollTop),
-				left: rect.left - (pos === "fixed" ? 0 : doc.scrollLeft)
+				top: rect.top + (pos ? 0 : doc.scrollTop),
+				left: rect.left + (pos ? 0 : doc.scrollLeft)
 			};
 		}
 	};
@@ -868,9 +901,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			// set
 			if (pos !== undefined) {
-				var i = this.length;
+				var i = this.length,
+				    tl = item.indexOf("Top") > -1 ? "top" : "left";
 				while (i--) {
-					this[i][item] = pos;
+					var val = getVal(pos, this, i, this[i][item]);
+					if ($.isWindow(this[i])) {
+						var obj = {};
+						obj[tl] = val;
+						this[i].scroll(obj);
+					} else {
+						this[i][item] = val;
+					}
 				};
 				return this;
 
@@ -911,18 +952,27 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// set value
 			if (val !== undefined && valtype !== "boolean") {
 				while (i--) {
+
+					// set base value
 					value = getVal(val, this[i], i, this[i][dim]);
+					if (!isNaN(val)) {
+						value += "px";
+					}
+					this[i].style[wh] = value; // set here so we can convert to px
+
+					// add additional lengths
 					if (io) {
+						value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
 						props = ["padding"];
 						if (io === "outer") {
 							props.push("border");
 						}
 						value -= getAdditionalLength(this[i], wh, props);
+						if (!isNaN(val)) {
+							value += "px";
+						}
+						this[i].style[wh] = value;
 					}
-					if (!isNaN(val)) {
-						value += "px";
-					}
-					this[i].style[wh] = value;
 				}
 				return this;
 
@@ -941,7 +991,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					// add padding on, or if outer and margins requested, add margins on
 					if (io === "" || io === "outer" && val === true) {
-						value -= getAdditionalLength(this[0], wh, [io === "" ? "padding" : "margin"]);
+						value += getAdditionalLength(this[0], wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
 					}
 					return value;
 
@@ -1076,7 +1126,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	$.fn.empty = function () {
 		var i = this.length;
 		while (i--) {
-			this[i].innerHTML = "";
+			while (this[i].firstChild && this[i].removeChild(this[i].firstChild)) {}
 		}
 		return this;
 	};
@@ -1486,11 +1536,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						    len = keys.length;
 						for (var i = 0; i < len; i++) {
 
-							// if target is array, merge, else overwrite with source array
-							/*if (Array.isArray(source[keys[i]])) {
-       	target[keys[i]] = Array.isArray(target[keys[i]]) ? Object.assign(target[keys[i]], source[keys[i]]) : source[keys[i]];
-       		// merge recursively if source is object, if target is not object, overwrite
-       } else */if ($.isPlainObject(source[keys[i]])) {
+							// merge recursively if source is object, if target is not object, overwrite
+							if ($.isPlainObject(source[keys[i]])) {
 								target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
 
 								// when source property is value just overwrite

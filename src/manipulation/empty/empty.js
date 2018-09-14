@@ -1,7 +1,7 @@
 $.fn.empty = function () {
 	let i = this.length;
 	while (i--) {
-		this[i].innerHTML = "";
+		while (this[i].firstChild && this[i].removeChild(this[i].firstChild));
 	}
 	return this;
 };

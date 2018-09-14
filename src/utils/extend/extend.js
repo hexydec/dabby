@@ -14,12 +14,8 @@ $.extend = (...arrs) => {
 						len = keys.length;
 					for (let i = 0; i < len; i++) {
 
-						// if target is array, merge, else overwrite with source array
-						/*if (Array.isArray(source[keys[i]])) {
-							target[keys[i]] = Array.isArray(target[keys[i]]) ? Object.assign(target[keys[i]], source[keys[i]]) : source[keys[i]];
-
 						// merge recursively if source is object, if target is not object, overwrite
-						} else */if ($.isPlainObject(source[keys[i]])) {
+						if ($.isPlainObject(source[keys[i]])) {
 							target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
 
 						// when source property is value just overwrite
@@ -34,7 +30,6 @@ $.extend = (...arrs) => {
 			}
 			return target;
 		}
-
 		return merge.apply(null, arrs.slice(1));
 	} else {
 		return Object.assign.apply(null, arrs);

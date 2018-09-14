@@ -21,7 +21,7 @@ function setCss(dabby, props, value) {
 		let i = dabby.length;
 		while (i--) {
 			let val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
-			if (typeof val === "number") {
+			if (!isNaN(val)) {
 				val += "px";
 			}
 			dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);

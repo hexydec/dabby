@@ -101,7 +101,7 @@ function setCss(dabby, props, value) {
 		let i = dabby.length;
 		while (i--) {
 			let val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
-			if (typeof val === "number") {
+			if (!isNaN(val)) {
 				val += "px";
 			}
 			dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
@@ -713,8 +713,7 @@ $.fn.offset = function (coords) {
 	const doc = document.documentElement;
 	let rect,
 		i = this.length,
-		pos,
-		parent;
+		pos;
 
 	// set
 	if (coords) {
@@ -722,30 +721,31 @@ $.fn.offset = function (coords) {
 
 			// if coords is callback, generate value
 			rect = this[i].getBoundingClientRect();
-			coords = getVal(coords, this[i], i, rect);
+			coords = getVal(coords, this[i], i, $(this[i]).offset());
 
 			if (coords.top !== undefined && coords.left !== undefined) {
 
 				// set position relative if static
-				pos = this[i].style.position || "static";
+				let style = getComputedStyle(this[i]);
+				pos = style.getPropertyValue("position");
 				if (pos === "static") {
 					this[i].style.position = "relative";
 				}
 
 				// set offset
-				this[i].style.top = (parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top)) + "px";
-				this[i].style.left = (parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left)) + "px";
+				this[i].style.top = (parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top - parseFloat(style.getPropertyValue("top")))) + "px";
+				this[i].style.left = (parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left - parseFloat(style.getPropertyValue("left")))) + "px";
 			}
 		}
 		return this;
 
 	// get
 	} else if (this[0]) {
-		pos = this[0].style.position;
+		pos = this[0].style.position === "fixed";
 		rect = this[0].getBoundingClientRect();
 		return {
-			top: rect.top - (pos === "fixed" ? 0 : doc.scrollTop),
-			left: rect.left - (pos === "fixed" ? 0 : doc.scrollLeft)
+			top: rect.top + (pos ? 0 : doc.scrollTop),
+			left: rect.left + (pos ? 0 : doc.scrollLeft)
 		};
 	}
 };
@@ -765,9 +765,17 @@ $.fn.position = function () {
 
 		// set
 		if (pos !== undefined) {
-			let i = this.length;
+			let i = this.length,
+				tl = item.indexOf("Top") > -1 ? "top" : "left";
 			while (i--) {
-				this[i][item] = pos;
+				let val = getVal(pos, this, i, this[i][item]);
+				if ($.isWindow(this[i])) {
+					let obj = {};
+					obj[tl] = val;
+					this[i].scroll(obj);
+				} else {
+					this[i][item] = val;
+				}
 			};
 			return this;
 
@@ -807,18 +815,27 @@ $.fn.position = function () {
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
 			while (i--) {
+
+				// set base value
 				value = getVal(val, this[i], i, this[i][dim]);
+				if (!isNaN(val)) {
+					value += "px";
+				}
+				this[i].style[wh] = value; // set here so we can convert to px
+
+				// add additional lengths
 				if (io) {
+					value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
 					props = ["padding"];
 					if (io === "outer") {
 						props.push("border");
 					}
 					value -= getAdditionalLength(this[i], wh, props);
+					if (!isNaN(val)) {
+						value += "px";
+					}
+					this[i].style[wh] = value;
 				}
-				if (!isNaN(val)) {
-					value += "px";
-				}
-				this[i].style[wh] = value;
 			}
 			return this;
 
@@ -837,7 +854,7 @@ $.fn.position = function () {
 
 				// add padding on, or if outer and margins requested, add margins on
 				if (io === "" || (io === "outer" && val === true)) {
-					value -= getAdditionalLength(this[0], wh, [io === "" ? "padding" : "margin"]);
+					value += getAdditionalLength(this[0], wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
 				}
 				return value;
 
@@ -963,7 +980,7 @@ $.fn.clone = function () {
 $.fn.empty = function () {
 	let i = this.length;
 	while (i--) {
-		this[i].innerHTML = "";
+		while (this[i].firstChild && this[i].removeChild(this[i].firstChild));
 	}
 	return this;
 };
@@ -1358,12 +1375,8 @@ $.extend = (...arrs) => {
 						len = keys.length;
 					for (let i = 0; i < len; i++) {
 
-						// if target is array, merge, else overwrite with source array
-						/*if (Array.isArray(source[keys[i]])) {
-							target[keys[i]] = Array.isArray(target[keys[i]]) ? Object.assign(target[keys[i]], source[keys[i]]) : source[keys[i]];
-
 						// merge recursively if source is object, if target is not object, overwrite
-						} else */if ($.isPlainObject(source[keys[i]])) {
+						if ($.isPlainObject(source[keys[i]])) {
 							target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
 
 						// when source property is value just overwrite
@@ -1378,7 +1391,6 @@ $.extend = (...arrs) => {
 			}
 			return target;
 		}
-
 		return merge.apply(null, arrs.slice(1));
 	} else {
 		return Object.assign.apply(null, arrs);

@@ -3,9 +3,17 @@
 
 		// set
 		if (pos !== undefined) {
-			let i = this.length;
+			let i = this.length,
+				tl = item.indexOf("Top") > -1 ? "top" : "left";
 			while (i--) {
-				this[i][item] = pos;
+				let val = getVal(pos, this, i, this[i][item]);
+				if ($.isWindow(this[i])) {
+					let obj = {};
+					obj[tl] = val;
+					this[i].scroll(obj);
+				} else {
+					this[i][item] = val;
+				}
 			};
 			return this;
 

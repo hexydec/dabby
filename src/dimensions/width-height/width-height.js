@@ -27,18 +27,27 @@
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
 			while (i--) {
+
+				// set base value
 				value = getVal(val, this[i], i, this[i][dim]);
+				if (!isNaN(val)) {
+					value += "px";
+				}
+				this[i].style[wh] = value; // set here so we can convert to px
+
+				// add additional lengths
 				if (io) {
+					value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
 					props = ["padding"];
 					if (io === "outer") {
 						props.push("border");
 					}
 					value -= getAdditionalLength(this[i], wh, props);
+					if (!isNaN(val)) {
+						value += "px";
+					}
+					this[i].style[wh] = value;
 				}
-				if (!isNaN(val)) {
-					value += "px";
-				}
-				this[i].style[wh] = value;
 			}
 			return this;
 
@@ -57,7 +66,7 @@
 
 				// add padding on, or if outer and margins requested, add margins on
 				if (io === "" || (io === "outer" && val === true)) {
-					value -= getAdditionalLength(this[0], wh, [io === "" ? "padding" : "margin"]);
+					value += getAdditionalLength(this[0], wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
 				}
 				return value;
 
