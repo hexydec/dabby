@@ -756,13 +756,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	};
 
 	$.fn.removeProp = function (prop) {
-		var i = this.length;
-		prop = getProp(prop);
+		if (this[0]) {
+			var i = this.length;
+			prop = getProp(prop);
 
-		while (i--) {
-			delete this[i][prop];
+			while (i--) {
+				delete this[i][prop];
+			}
+			return this;
 		}
-		return this;
 	};
 
 	$.fn.val = function (value) {

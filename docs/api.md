@@ -32,7 +32,8 @@ The library supports the following methods:
 | [.attr()](../src/attributes/attr/readme.md)	| Get/set HTML attributes								|
 | [.css()](../src/attributes/css/readme.md)	| Get/set CSS attributes									|
 | [.data()](../src/attributes/data/readme.md)	| Get/set data attributes									|
-| .prop()									| Get/set HTML properties									|
+| [.prop()](../src/attributes/prop/readme.md)	| Get/set properties									|
+| .removeProp()								| Remove the selected property								|
 | .val()									| Get/set form control values								|
 | [.addClass](../src/attributes/class/readme.md)	| Add a class to elements in a collection				|
 | [.hasClass()](../src/attributes/hasclass/readme.md)	| See whether any elements in a collection have the requested class		|
@@ -45,6 +46,7 @@ The library supports the following methods:
 |-------------------------------------------|-----------------------------------------------------------|
 | .offset()									| Get/set the top and left position							|
 | .offsetParent()							| Get the offset parent of the first node					|
+| .position()								| Get the top and left position relative to the offset parent |
 | .width()									| Get/set the width of a set of elements					|
 | .height()									| Get/set the height of a set of elements					|
 | .innerWidth()								| Get/set the width of a set of elements including padding	|
@@ -60,16 +62,15 @@ The library supports the following methods:
 |-------------------------------------------|-----------------------------------------------------------|
 | .on()										| Attach a callback to an event on elements or their parents|
 | .one()									| Attach a callback to an event to be triggered only once	|
-| .off()									| Remove a callback attached with .on()/.one()		|
+| .off()									| Remove a callback attached with .on()/.one()				|
 | .trigger()								| Trigger an event on the supplied nodes					|
 | .focusin()								| Trigger the focusin event on the supplied nodes			|
 | .focusout()								| Trigger the focusout event on the supplied nodes			|
 | .focus()									| Trigger the focus event on the supplied nodes				|
 | .blur()									| Trigger the blur event on the supplied nodes				|
-| .load()									| Trigger the load event on the supplied nodes				|
+| .resize()									| Trigger the resize event on the supplied nodes			|
 | .scroll()									| Trigger the scroll event on the supplied nodes			|
 | .unload()									| Trigger the unload event on the supplied nodes			|
-| .resize()									| Trigger the resize event on the supplied nodes			|
 | .click()									| Trigger the click event on the supplied nodes				|
 | .dblclick()								| Trigger the dblclick event on the supplied nodes			|
 | .mousedown()								| Trigger the mousedown event on the supplied nodes			|
@@ -104,6 +105,8 @@ The library supports the following methods:
 | .insertAfter()							| Insert HTML after each item in a collection				|
 | .remove()									| Remove nodes from the DOM									|
 | .detach()									| Detach nodes from the DOM									|
+| .replaceWith()							| Replace the nodes in the current collection with a new collection |
+| .replaceAll()								| Same a .replaceWith() with the elements and arguments reversed |
 | .slice()									| Slice a collection by index								|
 | .text()									| Get/set textnodes of a collection							|
 | .unwrap()									| Unwrap a collection of nodes of its parent				|
@@ -116,6 +119,7 @@ The library supports the following methods:
 |-------------------------------------------|-----------------------------------------------------------|
 | .add()									| Add nodes to a collection									|
 | .children()								| Retrieve the children of nodes in a collection			|
+| .closest()								| Get the first element matching the first node or its ancestors |
 | .eq()										| Retrieve a node from the specified index of a collection	|
 | .filter()									| Filter nodes in a collection with a callback or selector	|
 | .not()									| Reduce a collection with nodes or a selector				|
@@ -124,6 +128,7 @@ The library supports the following methods:
 | .has()									| Determine whether a collection has the specified children	|
 | .index()									| Get the index of a node or position in its siblings		|
 | .is()										| Determine if a collection matches a node/selector			|
+| .last()									| Get the last node in a collection							|
 | .next()									| Get the next sibling of a node							|
 | .nextAll()								| Get all siblings forward of a node						|
 | .nextUntil()								| Get all sibling forward of a node until a node/selector	|
@@ -140,7 +145,9 @@ The library supports the following methods:
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | $.each()									| Apply a callback function to an array or object			|
+| $.extend()								| Extend an array with one or more arrays					|
 | $.isArray()								| Determine whether the input is an array					|
 | $.isFunction()							| Determine whether the input is an function				|
+| $.isPlainObject()							| Determine whether the input is an plain object			|
 | $.isWindow()								| Determine whether the input node/object is the window		|
 | $.map()									| Map a callback function onto each item in an array/object	|
