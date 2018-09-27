@@ -1,3 +1,10 @@
+import $ from "../../core/dabby/dabby.js";
+import getVal from "../../internal/getval/getval.js";
+import "../../utils/isarray/isarray.js";
+import "../../utils/map/map.js";
+import "../../core/each/each.js";
+import "../../traversal/filter/filter.js";
+
 $.fn.val = function (value) {
 
 	// set value

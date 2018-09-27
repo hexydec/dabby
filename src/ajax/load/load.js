@@ -1,8 +1,15 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/isfunction/isfunction.js";
+import "../ajax/ajax.js";
+import "../../traversal/filter/filter.js";
+
 $.fn.load = function (url, data, success) {
 	if (this[0]) {
 
 		// get selector from URL
-		const [uri, selector] = url.split(" ", 2);
+		url = url.split(" ", 2);
+		const uri = url[0],
+			selector = url[1];
 
 		// check for data
 		if ($.isFunction(data)) {

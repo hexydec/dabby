@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import camelise from "../../internal/camelise/camelise.js";
+
 $.fn.data = function (name, data) {
 
 	// convert data to object

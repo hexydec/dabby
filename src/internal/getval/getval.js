@@ -1,4 +1,6 @@
-function getVal(val, obj, i, current) {
+import "../../utils/isfunction/isfunction.js";
+
+export default (val, obj, i, current) => {
 
 	// retrieve as function
 	if ($.isFunction(val)) {

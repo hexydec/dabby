@@ -1,3 +1,5 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.fn.index = function (selector) {
 	let index = -1;
 

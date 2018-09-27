@@ -1,3 +1,8 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/isplainobject/isplainobject.js";
+import setCss from "../../internal/setcss/setcss.js";
+import dasherise from "../../internal/dasherise/dasherise.js";
+
 $.fn.css = function (props, value) {
 
 	// set the values

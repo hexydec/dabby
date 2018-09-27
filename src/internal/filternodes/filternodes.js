@@ -1,4 +1,7 @@
-function filterNodes(dabby, filter, context, not) {
+import "../../utils/isfunction/isfunction.js";
+import $ from "../../core/dabby/dabby.js";
+
+export default (dabby, filter, context, not) => {
 	let func,
 		nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
 

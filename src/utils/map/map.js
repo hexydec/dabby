@@ -1,3 +1,5 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.map = (obj, callback) => {
 	const keys = Object.keys(obj),
 		len = keys.length;

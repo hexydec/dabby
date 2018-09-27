@@ -1,3 +1,9 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/each/each.js";
+import "../../utils/isfunction/isfunction.js";
+import "../../traversal/add/add.js";
+import getVal from "../../internal/getval/getval.js";
+
 $.each({
 	before: "beforeBegin",
 	prepend: "afterBegin",

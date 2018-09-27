@@ -1,4 +1,6 @@
-// needs more understanding of how this is supposed to work!!!
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/isfunction/isfunction.js";
+import getVal from "../../internal/getval/getval.js";
 
 ["replaceWith", "replaceAll"].forEach(name => {
 	$.fn[name] = function (html) {

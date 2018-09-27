@@ -1,3 +1,7 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/isfunction/isfunction.js";
+import "../ajax/ajax.js";
+
 ["get", "post"].forEach(name => {
 	$[name] = (url, data, success, type) => {
 		const isFunc = $.isFunction(data);

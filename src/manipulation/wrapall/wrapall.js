@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import getVal from "../../internal/getval/getval.js";
+
 $.fn.wrapAll = function (html) {
 	if (this[0]) {
 

@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/each/each.js";
+
 $.each({
 	insertBefore: "before",
 	prependTo: "prepend",

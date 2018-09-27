@@ -1,3 +1,5 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.fn.clone = function () {
 	let nodes = [],
 		i = this.length;

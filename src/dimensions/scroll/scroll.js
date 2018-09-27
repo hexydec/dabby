@@ -1,3 +1,7 @@
+import $ from "../../core/dabby/dabby.js";
+import getVal from "../../internal/getval/getval.js";
+import "../../utils/iswindow/iswindow.js";
+
 ["scrollLeft", "scrollTop"].forEach(item => {
 	$.fn[item] = function (pos) {
 

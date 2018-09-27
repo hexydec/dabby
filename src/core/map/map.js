@@ -1,3 +1,5 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.fn.map = function (callback) {
 	const len = this.length;
 	let values = [],

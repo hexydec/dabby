@@ -1,3 +1,10 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../traversal/filter/filter.js";
+import "../../utils/isarray/isarray.js";
+import "../../core/each/each.js";
+import "../../attributes/val/val.js";
+import "../param/param.js";
+
 $.fn.serialize = function () {
 	const selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
 		obj = this.is(selector) ? this.filter(selector) : $(selector, this),

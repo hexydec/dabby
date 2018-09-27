@@ -1,4 +1,4 @@
-function getProp(prop) {
+export default prop => {
 	let properties = {
 		"for": "htmlFor",
 		"class": "className",

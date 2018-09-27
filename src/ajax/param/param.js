@@ -1,3 +1,7 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/isarray/isarray.js";
+import "../../utils/each/each.js";
+
 $.param = obj => {
 	let params = [],
 		add = (key, value, params) => {

@@ -1,3 +1,8 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/extend/extend.js";
+import "../param/param.js";
+import "../../utils/each/each.js";
+
 $.ajax = (url, settings) => {
 
 	// normalise args

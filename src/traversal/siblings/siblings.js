@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import filterNodes from "../../internal/filternodes/filternodes.js";
+
 $.fn.siblings = function (selector) {
 	let i = this.length,
 		nodes = [];

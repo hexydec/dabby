@@ -1,3 +1,5 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.fn.trigger = function (name, data) {
 	const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
 	let i = this.length;

@@ -1,3 +1,7 @@
+import $ from "../../core/dabby/dabby.js";
+import getProp from "../../internal/getprop/getprop.js";
+import getVal from "../../internal/getval/getval.js";
+
 $.fn.prop = function (prop, value) {
 	prop = getProp(prop);
 

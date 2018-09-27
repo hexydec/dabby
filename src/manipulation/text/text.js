@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import getVal from "../../internal/getval/getval.js";
+
 $.fn.text = function (text) {
 	const get = text === undefined;
 	let len = this.length,

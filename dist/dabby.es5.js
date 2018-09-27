@@ -1,1614 +1,1602 @@
-"use strict";
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
-
-(function (global, factory) {
-	if (typeof define === "function" && define.amd) {
-		define(function () {
-			return factory(global);
-		});
-	} else if (typeof exports !== "undefined") {
-		module.exports = factory(global);
-	} else if (!global.$) {
-		global.$ = factory(global);
-	}
-})(undefined || window, function (window) {
-	"use strict";
-
-	if (!Array.from) {
-		Array.from = function (arrayLike, mapFn, thisArg) {
-			var arr = [].slice.call(arrayLike);
-			if (typeof mapFn === "function") {
-				arr = arr.map(mapFn, thisArg);
-			}
-			return arr;
-		};
-	}
-
-	// CustomEvent is not supported in IE11
-	if (typeof window.CustomEvent !== "function") {
-		var _CustomEvent = function _CustomEvent(event, params) {
-			params = params || { bubbles: false, cancelable: false, detail: undefined };
-			var evt = document.createEvent("CustomEvent");
-			evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-			return evt;
-		};
-
-		_CustomEvent.prototype = window.Event.prototype;
-		window.CustomEvent = _CustomEvent;
-	}
-
-	// support Element.matches() in IE and older Webkit
-	if (!Element.prototype.matches) {
-		Element.prototype.matches = Element.prototype.msMatchesSelector;
-	}
-
-	if (!NodeList.prototype.forEach) {
-		NodeList.prototype.forEach = function (callback, thisArg) {
-			thisArg = thisArg || window;
-			for (var i = 0; i < this.length; i++) {
-				callback.call(thisArg, this[i], i, this);
-			}
-		};
-	}
-
-	if (typeof Object.assign !== "function") {
-		Object.defineProperty(Object, "assign", {
-			value: function assign(target, varArgs) {
-				// .length of function is 2
-				"use strict";
-
-				if (target == null) {
-					// TypeError if undefined or null
-					throw new TypeError('Cannot convert undefined or null to object');
-				}
-
-				var to = Object(target);
-
-				for (var index = 1; index < arguments.length; index++) {
-					var nextSource = arguments[index];
-
-					if (nextSource != null) {
-						// Skip over if undefined or null
-						for (var nextKey in nextSource) {
-							// Avoid bugs when hasOwnProperty is shadowed
-							if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-								to[nextKey] = nextSource[nextKey];
-							}
-						}
-					}
-				}
-				return to;
-			},
-			writable: true,
-			configurable: true
-		});
-	}
-
-	function camelise(prop) {
-		return prop.replace(/-([a-z])/gi, function (text, letter) {
-			return letter.toUpperCase();
-		});
-	}
-
-	function dasherise(prop) {
-		return prop.replace(/[A-Z]/g, function (letter) {
-			return "-" + letter.toLowerCase();
-		});
-	}
-
-	function filterNodes(dabby, filter, context, not) {
-		var func = void 0,
-		    nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
-
-		// sort out args
-		if (typeof context === "boolean") {
-			not = context;
-			context = null;
-		}
-
-		// function
-		if ($.isFunction(filter)) {
-			func = filter;
-
-			// nodes
-		} else {
-
-			// normalise filters
-			if (typeof filter === "string") {
-				filter = [filter];
-			} else {
-				filter = Array.from($(filter, context));
-			}
-
-			// filter function
-			func = function func(n, node) {
-				var i = filter.length;
-				while (i--) {
-					if (typeof filter[i] === "string" && node.matches ? node.matches(filter[i]) : node === filter[i]) {
-						return true;
-					}
-				}
-				return false;
-			};
-		}
-		return nodes.filter(function (item, i) {
-			return func.call(item, i, item) !== Boolean(not);
-		}, nodes);
-	}
-
-	function getEvents() {
-		return ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
-	}
-
-	function getProp(prop) {
-		var properties = {
-			"for": "htmlFor",
-			"class": "className",
-			"tabindex": "tabIndex",
-			"readonly": "readOnly",
-			"maxlength": "maxLength",
-			"cellspacing": "cellSpacing",
-			"cellpadding": "cellPadding",
-			"rowspan": "rowSpan",
-			"colspan": "colSpan",
-			"usemap": "useMap",
-			"frameborder": "frameBorder",
-			"contenteditable": "contentEditable"
-		};
-		prop = prop.toLowerCase();
-		return properties[prop] || prop;
-	}
-
-	function getVal(val, obj, i, current) {
-
-		// retrieve as function
-		if ($.isFunction(val)) {
-			val = val.call(obj, i, $.isFunction(current) ? current() : current); // current can be a function
-		}
-		return val;
-	}
-
-	function setCss(dabby, props, value) {
-
-		// set vars
-		var name = props,
-		    keys = void 0,
-		    k = void 0,
-		    remove = void 0;
-
-		// normalise props
-		if (typeof props === "string") {
-			props = {};
-			props[name] = value;
-		}
-
-		// cache properties for loop
-		keys = Object.keys(props);
-		k = keys.length;
-
-		// set properties
-		while (k--) {
-			var i = dabby.length;
-			while (i--) {
-				var val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
-				if (!isNaN(val)) {
-					val += "px";
-				}
-				dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
-			}
-		}
-		return dabby;
-	}
-
-	var dabby = function dabby(selector, context) {
-		var _this = this;
-
-		var nodes = [],
-		    match = void 0,
-		    obj = void 0;
-
-		// enables new object to be created through $()
-		if (!(this instanceof dabby)) {
-			return new dabby(selector, context);
-
-			// if no selector, return empty colletion
-		} else if (selector) {
-
-			// $ collection
-			if (selector instanceof dabby) {
-				return selector;
-
-				// single node
-			} else if (selector.nodeType || $.isWindow(selector)) {
-				nodes = [selector];
-
-				// ready function
-			} else if ($.isFunction(selector)) {
-				if (document.readyState !== "loading") {
-					selector.call(document, $);
-				} else {
-					document.addEventListener("DOMContentLoaded", function () {
-						selector.call(document, $);
-					}, { once: true });
-				}
-
-				// array|NodeList|HTMLCollection of nodes
-			} else if (typeof selector !== "string") {
-				nodes = selector;
-
-				// CSS selector
-			} else if (selector.indexOf("<") === -1) {
-				context = context || document;
-				$(context).each(function (i, obj) {
-					nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
-				});
-
-				// create a single node and attach properties
-			} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
-				nodes.push(document.createElement(match[1]));
-
-				// context is CSS attributes
-				if (context instanceof Object) {
-					obj = $(nodes);
-					$.each(context, function (prop, value) {
-						obj.attr(prop, value);
-					});
-				}
-
-				// parse HTML into nodes
-			} else {
-				//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-				obj = document.createElement("template");
-				obj.innerHTML = selector;
-				nodes = obj.content ? obj.content.children : obj.children;
-			}
-		}
-
-		// build nodes
-		this.length = 0;
-		Array.from(nodes).forEach(function (node) {
-			// HTMLCollection objects don't support forEach
-			if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) {
-				// only element, document, documentFragment and window
-				_this[_this.length++] = node;
-			}
-		});
-		return this;
-	},
-	    $ = dabby; // alias in this scope
-
-	// alias functions
-	dabby.fn = dabby.prototype;
-
-	$.each = function (obj, callback) {
-		var keys = Object.keys(obj),
-		    len = keys.length;
-
-		for (var i = 0; i < len; i++) {
-			if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
-				break; // stop if callback returns false
-			}
-		}
-		return obj;
-	};
-
-	$.ajax = function (url, settings) {
-
-		// normalise args
-		if ((typeof url === "undefined" ? "undefined" : _typeof(url)) === "object") {
-			settings = url;
-		} else {
-			if ((typeof settings === "undefined" ? "undefined" : _typeof(settings)) !== "object") {
-				settings = {};
-			}
-			settings.url = url;
-		}
-
-		// set default settings
-		settings = $.extend({
-			method: "GET",
-			cache: null, // start will null so we can see if explicitly set
-			data: null,
-			dataType: null, // only changes behavior with json, jsonp, script
-			async: true,
-			crossDomain: false,
-			scriptCharset: null,
-			jsonp: "callback",
-			jsonpCallback: "dabby" + Date.now(),
-			headers: {
-				"X-Requested-With": "XMLHttpRequest",
-				"Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
-			},
-			context: null,
-			statusCode: {},
-			username: null,
-			password: null
-		}, settings);
-
-		// determine datatype
-		if (!settings.dataType && /\.js($|\?)/.test(settings.url)) {
-			settings.dataType = "script";
-		}
-
-		var sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
-		    script = void 0,
-		    xhr = void 0,
-		    data = void 0;
-
-		// add data to query string
-		if (settings.data) {
-			data = typeof settings.data === "string" ? settings.data : $.param(settings.data);
-		}
-		if (data && settings.method === "GET") {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + data;
-		}
-
-		// add cache buster
-		if (settings.cache || settings.cache === null && sync) {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + +new Date();
-		}
-
-		// fetch script
-		if (sync || settings.crossDomain) {
-			script = document.createElement("script");
-			if (settings.scriptCharset) {
-				script.charset = settings.scriptCharset;
-			}
-
-			// add callback parameter
-			if (settings.dataType === "jsonp") {
-				settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
-			}
-
-			// setup event callbacks
-			$.each({
-				load: "success",
-				error: "error"
-			}, function (key, value) {
-				script.addEventListener(key, function () {
-					var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
-					[settings[value], settings.complete].forEach(function (callback) {
-						if (callback) {
-							callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
-						}
-					});
-				}, { once: true });
-			});
-
-			script.src = settings.url;
-			script.async = settings.async;
-			document.head.appendChild(script);
-
-			// make xhr request
-		} else {
-			var callback = function callback(xhr, status) {
-				var response = xhr.responseText,
-				    callbacks = [];
-
-				// parse JSON
-				if (["json", null].indexOf(settings.dataType) > -1) {
-					try {
-						response = JSON.parse(response);
-					} catch (e) {
-						// do nothing
-					}
-				}
-
-				// run callbacks
-				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(function (callback) {
-					if (callback) {
-						callback.apply(settings.context, callback === settings.complete ? [xhr, status] : [response, status, xhr]);
-					}
-				});
-			};
-
-			// create XHR object
-			xhr = new XMLHttpRequest();
-			xhr.open(settings.method, settings.url, settings.async);
-
-			// add authoisation header
-			if (settings.username) {
-				settings.headers.Authorization = btoa(settings.username + ":" + settings.password);
-			}
-
-			// headers
-			$.each(settings.headers, function (key, value) {
-				xhr.setRequestHeader(key, value);
-			});
-
-			// callbacks
-			xhr.onload = function () {
-				var types = {
-					200: "success",
-					204: "nocontent",
-					304: "notmodified"
-				};
-				callback(xhr, types[xhr.status] || "error");
-			};
-			xhr.ontimeout = function () {
-				callback(xhr, "timeout");
-			};
-			xhr.onabort = function () {
-				callback(xhr, "abort");
-			};
-			xhr.send(settings.method === "GET" ? null : data);
-			return xhr;
-		}
-	};
-
-	["get", "post"].forEach(function (name) {
-		$[name] = function (url, data, success, type) {
-			var isFunc = $.isFunction(data);
-			var settings = (typeof url === "undefined" ? "undefined" : _typeof(url)) === "object" ? url : {
-				url: url,
-				data: isFunc ? {} : data,
-				success: isFunc ? data : success,
-				dataType: isFunc ? success : type
-			};
-			settings.method = name.toUpperCase();
-			return $.ajax(settings);
-		};
-	});
-
-	$.getScript = function (url, success) {
-		return $.ajax({
-			url: url,
-			dataType: "script",
-			success: success
-		});
-	};
-
-	$.fn.load = function (url, data, _success) {
-		var _this2 = this;
-
-		if (this[0]) {
-
-			// get selector from URL
-			var _url$split = url.split(" ", 2),
-			    _url$split2 = _slicedToArray(_url$split, 2),
-			    uri = _url$split2[0],
-			    selector = _url$split2[1];
-
-			// check for data
-
-
-			if ($.isFunction(data)) {
-				_success = data;
-				data = undefined;
-			}
-
-			// make AJAX request
-			$.ajax(uri, {
-				data: data,
-				type: data instanceof Object ? "POST" : "GET",
-				success: function success(response, status, xhr) {
-
-					// if a selector is specified, find it in the returned document
-					var html = "",
-					    i = _this2.length;
-
-					// refine by selector if supplied
-					if (selector) {
-						$(response).filter(selector).each(function (key, obj) {
-							html += obj.outerHTML;
-						});
-					} else {
-						html = response;
-					}
-
-					// set HTML to nodes in collection
-					while (i--) {
-						_this2[i].innerHTML = html;
-
-						// fire success callback on nodes
-						if (_success) {
-							_success.call(_this2[i], response, status, xhr);
-						}
-					}
-				}
-			});
-		}
-		return this;
-	};
-
-	$.param = function (obj) {
-		var params = [],
-		    add = function add(key, value, params) {
-			var isArr = $.isArray(value);
-			if (isArr || (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object") {
-				$.each(value, function (i, val) {
-					params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
-				});
-			} else {
-				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
-			}
-			return params;
-		};
-
-		// process values
-		$.each(obj, function (key, item) {
-			params = add(key, item, params);
-		});
-		return params.join("&");
-	};
-
-	$.fn.serialize = function () {
-		var selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
-		    obj = this.is(selector) ? this.filter(selector) : $(selector, this),
-		    add = function add(name, value, params) {
-			var match = void 0;
-
-			if ((match = name.match(/([^\[]*)\[([^\]]*)\](.*)/)) !== null) {
-				name = match[1];
-				var arr = add(match[2] + match[3], value, params[name] || {});
-				value = arr;
-			}
-
-			if (name !== "") {
-				params[name] = value;
-			} else {
-				if (!$.isArray(params)) {
-					params = [];
-				}
-				params = params.concat($.isArray(value) ? value : [value]);
-			}
-			return params;
-		};
-
-		var params = {};
-
-		// process values
-		obj.each(function (key, obj) {
-			var value = $(obj).val();
-			if (!obj.disabled && value !== undefined) {
-				params = add(obj.getAttribute("name"), value, params);
-			}
-		});
-		return $.param(params);
-	};
-
-	$.fn.attr = function (prop, value) {
-		var _this3 = this;
-
-		var isArr = $.isArray(prop),
-		    i = void 0,
-		    events = void 0,
-		    arr = {};
-
-		// set properties
-		if (isArr || value || value === null) {
-			i = this.length, events = getEvents();
-
-			// normalise to array
-			if (!isArr) {
-				arr[prop] = value;
-				prop = arr;
-			}
-
-			while (i--) {
-				$.each(prop, function (key, val) {
-					if (events.indexOf(key) > -1) {
-						$(_this3[i]).on(key, val);
-					} else if (key === "style") {
-						_this3[i].style.cssText = val;
-					} else if (key === "class") {
-						_this3[i].className = val;
-					} else if (key === "text") {
-						_this3[i].textContent = val;
-					} else if (value === null) {
-						_this3[i].removeAttribute(key);
-					} else {
-						_this3[i].setAttribute(key, val);
-					}
-				});
-			}
-			return this;
-
-			// retrieve properties
-		} else if (this[0]) {
-			if (prop === "style") {
-				return this[0].style.cssText;
-			}
-			if (prop === "class") {
-				return this[0].className;
-			}
-			return this[0].getAttribute(prop);
-		}
-	};
-
-	["addClass", "removeClass", "toggleClass"].forEach(function (name) {
-		$.fn[name] = function (cls) {
-
-			// remove "Class" from name for classList method
-			var func = name.substr(0, name.length - 5),
-			    i = this.length;
-
-			// manage classes on nodes
-			while (i--) {
-				var arr = getVal(cls, this[i], i, this[i].className);
-				if (typeof arr === "string") {
-					arr = arr.split(" ");
-				}
-				var len = arr.length;
-				for (var n = 0; n < len; n++) {
-					this[i].classList[func](arr[n]);
-				}
-			}
-			return this;
-		};
-	});
-
-	$.fn.css = function (props, value) {
-
-		// set the values
-		if (value !== undefined || $.isPlainObject(props)) {
-			return setCss(this, props, value);
-
-			// retrieve value from first property
-		} else if (this[0]) {
-			var name = props,
-			    i = void 0,
-			    style = getComputedStyle(this[0], ""),
-			    output = {},
-			    ret = false;
-
-			if (typeof name === "string") {
-				props = [name];
-				ret = true;
-			}
-			i = props.length;
-			while (i--) {
-				output[props[i]] = style.getPropertyValue(dasherise(props[i]));
-				if (ret) {
-					return output[props[i]];
-				}
-			}
-			return output;
-		}
-	};
-
-	$.fn.data = function (name, data) {
-		var _this4 = this;
-
-		// convert data to object
-		if ((typeof name === "undefined" ? "undefined" : _typeof(name)) === "object") {
-			data = name;
-		} else if (data !== undefined) {
-			var temp = {};
-			temp[name] = data;
-			data = temp;
-		}
-
-		// set value
-		if (data !== undefined) {
-			var _ret = function () {
-				var i = _this4.length;
-				while (i--) {
-					$.each(data, function (key, value) {
-						_this4[i].dataset[camelise(key)] = (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" ? JSON.stringify(value) : value;
-					});
-				}
-				return {
-					v: _this4
-				};
-
-				// get value
-			}();
-
-			if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
-		} else if (this[0] && this[0].dataset) {
-			var parse = function parse(value) {
-				try {
-					return JSON.parse(value);
-				} catch (e) {
-					return value;
-				}
-			};
-
-			// all properties
-			if (name === undefined) {
-				var arr = {};
-				$.each(this[0].dataset, function (key, value) {
-					arr[key] = parse(value);
-				});
-				return arr;
-
-				// retrieve specific property
-			} else {
-				name = camelise(name);
-				if (this[0].dataset.hasOwnProperty(name)) {
-					return parse(this[0].dataset[name]);
-				}
-			}
-		}
-	};
-
-	$.fn.hasClass = function (cls) {
-		var i = this.length;
-		while (i--) {
-			if (this[i].classList.contains(cls)) {
-				return true;
-			}
-		}
-		return false;
-	};
-
-	$.fn.prop = function (prop, value) {
-		prop = getProp(prop);
-
-		// set
-		if (value !== undefined) {
-			var i = this.length;
-			while (i--) {
-				this[i][prop] = getVal(value, this[i], i, this[i][prop]);
-			}
-			return this;
-
-			// get
-		} else if (this[0]) {
-			return this[0][prop];
-		}
-	};
-
-	$.fn.removeProp = function (prop) {
-		if (this[0]) {
-			var i = this.length;
-			prop = getProp(prop);
-
-			while (i--) {
-				delete this[i][prop];
-			}
-			return this;
-		}
-	};
-
-	$.fn.val = function (value) {
-		var _this5 = this;
-
-		// set value
-		if (value !== undefined) {
-			var _ret2 = function () {
-				var i = _this5.length,
-				    val = void 0;
-
-				var _loop = function _loop() {
-					var val = getVal(value, _this5[i], i, function () {
-						return $(_this5[i]).val();
-					});
-					if (_this5[i].multiple) {
-						val = $.map($.isArray(val) ? val : [val], function (item) {
-							return String(item);
-						}); // convert to string
-						$("option", _this5[i]).each(function (key, obj) {
-							obj.selected = val.indexOf(String(obj.value)) > -1;
-						});
-					} else {
-						_this5[i].value = String(val);
-					}
-				};
-
-				while (i--) {
-					_loop();
-				}
-				return {
-					v: _this5
-				};
-
-				// read value from first node
-			}();
-
-			if ((typeof _ret2 === "undefined" ? "undefined" : _typeof(_ret2)) === "object") return _ret2.v;
-		} else if (this[0]) {
-
-			// get multiple values
-			if (this[0].multiple) {
-				var values = [];
-				$("option", this[0]).each(function (key, obj) {
-					if (obj.selected) {
-						values.push(String(obj.value));
-					}
-				});
-				return values;
-
-				// get radio box value
-			} else if (this[0].type === "radio") {
-				var obj = this.filter("[name='" + this[0].name + "']:checked")[0];
-				return obj ? String(obj.value) : undefined;
-
-				// get single value
-			} else if (this[0].type !== "checkbox" || this[0].checked) {
-				return String(this[0].value);
-			}
-		}
-	};
-
-	$.fn.each = function (callback) {
-		$.each(Array.from(this), callback);
-		return this;
-	};
-
-	$.fn.get = function (i) {
-		return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
-	};
-
-	$.fn.map = function (callback) {
-		var len = this.length;
-		var values = [],
-		    i = 0;
-
-		for (; i < len; i++) {
-			values.push(callback.call(this[i], i, this[i]));
-		}
-		return values;
-	};
-
-	$.fn.offset = function (coords) {
-		var doc = document.documentElement;
-		var rect = void 0,
-		    i = this.length,
-		    pos = void 0;
-
-		// set
-		if (coords) {
-			while (i--) {
-
-				// if coords is callback, generate value
-				rect = this[i].getBoundingClientRect();
-				coords = getVal(coords, this[i], i, $(this[i]).offset());
-
-				if (coords.top !== undefined && coords.left !== undefined) {
-
-					// set position relative if static
-					var style = getComputedStyle(this[i]);
-					pos = style.getPropertyValue("position");
-					if (pos === "static") {
-						this[i].style.position = "relative";
-					}
-
-					// set offset
-					this[i].style.top = parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top - parseFloat(style.getPropertyValue("top"))) + "px";
-					this[i].style.left = parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left - parseFloat(style.getPropertyValue("left"))) + "px";
-				}
-			}
-			return this;
-
-			// get
-		} else if (this[0]) {
-			pos = this[0].style.position === "fixed";
-			rect = this[0].getBoundingClientRect();
-			return {
-				top: rect.top + (pos ? 0 : doc.scrollTop),
-				left: rect.left + (pos ? 0 : doc.scrollLeft)
-			};
-		}
-	};
-
-	$.fn.offsetParent = function () {
-		return $(this[0] ? this[0].offsetParent : null);
-	};
-
-	$.fn.position = function () {
-		if (this[0]) {
-			return { left: this[0].offsetLeft, top: this[0].offsetTop };
-		}
-	};
-
-	["scrollLeft", "scrollTop"].forEach(function (item) {
-		$.fn[item] = function (pos) {
-
-			// set
-			if (pos !== undefined) {
-				var i = this.length,
-				    tl = item.indexOf("Top") > -1 ? "top" : "left";
-				while (i--) {
-					var val = getVal(pos, this, i, this[i][item]);
-					if ($.isWindow(this[i])) {
-						var obj = {};
-						obj[tl] = val;
-						this[i].scroll(obj);
-					} else {
-						this[i][item] = val;
-					}
-				};
-				return this;
-
-				// get
-			} else if (this[0]) {
-				return this[0][item];
-			}
-		};
-	});
-
-	["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(function (dim) {
-
-		var getAdditionalLength = function getAdditionalLength(obj, wh, props) {
-			var style = getComputedStyle(obj);
-			var i = props.length,
-			    value = 0,
-			    suffix = void 0;
-
-			while (i--) {
-				suffix = props[i] === "border" ? "-width" : "";
-				value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-left" : "-top") + suffix)) || 0;
-				value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
-			}
-			return value;
-		};
-
-		$.fn[dim] = function (val) {
-			var valtype = typeof val === "undefined" ? "undefined" : _typeof(val),
-			    wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
-			    // width or height
-			io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
-			var i = this.length,
-			    value = void 0,
-			    whu = void 0,
-			    props = void 0,
-			    param = void 0;
-
-			// set value
-			if (val !== undefined && valtype !== "boolean") {
-				while (i--) {
-
-					// set base value
-					value = getVal(val, this[i], i, this[i][dim]);
-					if (!isNaN(val)) {
-						value += "px";
-					}
-					this[i].style[wh] = value; // set here so we can convert to px
-
-					// add additional lengths
-					if (io) {
-						value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
-						props = ["padding"];
-						if (io === "outer") {
-							props.push("border");
-						}
-						value -= getAdditionalLength(this[i], wh, props);
-						if (!isNaN(val)) {
-							value += "px";
-						}
-						this[i].style[wh] = value;
-					}
-				}
-				return this;
-
-				// get value
-			} else if (this[0]) {
-				whu = wh === "width" ? "Width" : "Height";
-
-				// document
-				if (this[0].nodeType === Node.DOCUMENT_NODE) {
-					return this[0].documentElement["scroll" + whu];
-
-					// element
-				} else if (!$.isWindow(this[0])) {
-					param = io === "outer" ? "offset" : "client";
-					value = this[0][param + whu];
-
-					// add padding on, or if outer and margins requested, add margins on
-					if (io === "" || io === "outer" && val === true) {
-						value += getAdditionalLength(this[0], wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
-					}
-					return value;
-
-					// window
-				} else if (io === "inner") {
-					return this[0].document.documentElement["client" + whu];
-				} else {
-					return this[0]["inner" + whu];
-				}
-			}
-		};
-	});
-
-	getEvents().forEach(function (event) {
-		$.fn[event] = function (data, callback) {
-			return data ? this.on(event, data, callback) : this.trigger(event);
-		};
-	});
-
-	// add and remove event handlers
-	["on", "one", "off"].forEach(function (name) {
-		$.fn[name] = function (events, selector, data, callback) {
-			var _this6 = this;
-
-			var i = this.length;
-
-			events = events.split(" ");
-
-			// sort out args
-			if ($.isFunction(selector)) {
-				callback = selector;
-				selector = null;
-			} else if ($.isFunction(data)) {
-				callback = data;
-				data = null;
-			}
-
-			// attach event
-
-			var _loop2 = function _loop2() {
-				var e = events.length;
-
-				// record the original function
-				if (name !== "off") {
-					if (!_this6[i].events) {
-						_this6[i].events = [];
-					}
-					var fn = function fn(evt) {
-						// delegate function
-						var target = [this];
-						if (selector) {
-							var t = $(evt.target);
-							target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
-						}
-						if (target) {
-							if (data) {
-								// set data to event object
-								evt.data = data;
-							}
-							for (var _i = 0, len = target.length; _i < len; _i++) {
-								if (callback.call(target[_i], evt, evt.args) === false) {
-									evt.preventDefault();
-									evt.stopPropagation();
-								}
-							}
-						}
-					};
-					_this6[i].events.push({
-						events: events,
-						callback: callback,
-						selector: selector,
-						func: fn,
-						once: name === "one"
-					});
-
-					// trigger
-					while (e--) {
-						_this6[i].addEventListener(events[e], fn, { once: name === "one", capture: !!selector });
-					}
-
-					// find the original function
-				} else if (_this6[i].events.length) {
-					while (e--) {
-						_this6[i].events.forEach(function (evt, n) {
-							var index = evt.events.indexOf(events[e]);
-							if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-								_this6[i].removeEventListener(events[e], evt.func, { once: evt.once, capture: !!evt.selector }); // must pass same arguments
-								_this6[i].events[n].events.splice(index, 1);
-								if (!_this6[i].events[n].events.length) {
-									_this6[i].events.splice(n, 1);
-								}
-							}
-						});
-					}
-				}
-			};
-
-			while (i--) {
-				_loop2();
-			}
-			return this;
-		};
-	});
-
-	$.fn.trigger = function (name, data) {
-		var evt = new CustomEvent(name, { bubbles: true, cancelable: true });
-		var i = this.length;
-
-		// copy extra data to event object
-		if (data) {
-			evt.args = data;
-		}
-		while (i--) {
-			this[i].dispatchEvent(evt);
-			/*if (this[i].dispatchEvent(evt) && this[i][name]) {
-   	this[i][name]();
-   }*/
-		}
-		return this;
-	};
-
-	$.fn.clone = function () {
-		var nodes = [],
-		    i = this.length;
-
-		while (i--) {
-			nodes[i] = this[i].cloneNode(true);
-		}
-		return $(nodes);
-	};
-
-	$.fn.empty = function () {
-		var i = this.length;
-		while (i--) {
-			while (this[i].firstChild && this[i].removeChild(this[i].firstChild)) {}
-		}
-		return this;
-	};
-
-	$.fn.html = function (html) {
-
-		// set
-		if (html !== undefined) {
-			var i = this.length;
-			while (i--) {
-				this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
-			}
-			return this;
-
-			// get
-		} else if (this[0]) {
-			return this[0].innerHTML;
-		}
-	};
-
-	$.each({
-		before: "beforeBegin",
-		prepend: "afterBegin",
-		append: "beforeEnd",
-		after: "afterEnd"
-	}, function (name, pos) {
-		$.fn[name] = function (html) {
-			var pre = ["before", "prepend"].indexOf(name) > -1,
-			    isFunc = $.isFunction(html);
-			var i = this.length,
-			    elems = $();
-
-			if (!isFunc) {
-				// multiple arguments containing nodes?
-				$.each(arguments, function (i, arg) {
-					elems.add(arg);
-				});
-			}
-
-			while (i--) {
-				if (isFunc) {
-					elems = $(getVal(html, this[i], i, this[i].innerHTML));
-				}
-				var backwards = elems.length,
-				    // for counting down
-				forwards = -1; // for counting up
-				while (pre ? backwards-- : ++forwards < backwards) {
-					// insert forwards or backwards?
-					var obj = elems[pre ? backwards : forwards];
-
-					// clone if i !== 0
-					if (i) {
-						obj = obj.cloneNode(true);
-					}
-					this[i].insertAdjacentElement(pos, obj);
-				}
-			}
-			return this;
-		};
-	});
-
-	$.each({
-		insertBefore: "before",
-		prependTo: "prepend",
-		appendTo: "append",
-		insertAfter: "after"
-	}, function (name, func) {
-		$.fn[name] = function (selector) {
-			var i = this.length,
-			    obj = $(selector);
-
-			while (i--) {
-				obj[func](this[i]);
-			}
-			return this;
-		};
-	});
-
-	["remove", "detach"].forEach(function (func) {
-		$.fn[func] = function (selector) {
-			var i = this.length,
-			    nodes = [],
-			    obj = [];
-
-			// detach selected nodes
-			while (i--) {
-				if (!selector || filterNodes(this[i], selector).length) {
-					nodes.push(this[i].parentNode.removeChild(this[i]));
-				}
-			}
-
-			// create a new dabby object to return
-			return func === "detach" ? $(nodes) : this;
-		};
-	});
-
-	// needs more understanding of how this is supposed to work!!!
-
-	["replaceWith", "replaceAll"].forEach(function (name) {
-		$.fn[name] = function (html) {
-			var all = name === "replaceAll",
-			    source = all ? $(html) : this;
-			var target = all ? this : html,
-			    isFunc = $.isFunction(target);
-
-			if (!isFunc) {
-				target = $(target);
-			}
-
-			var i = source.length;
-
-			while (i--) {
-				var n = target.length,
-				    parent = source[i].parentNode;
-				while (n--) {
-					var replace = isFunc ? getVal(target[n], n, target[n]) : target[n];
-					if (n) {
-						source[i].insertAdjacentElement("beforebegin", replace.cloneNode(true));
-					} else {
-						source[i] = parent.replaceChild(i ? replace.cloneNode(true) : replace, source[i]);
-					}
-				}
-			}
-			return this;
-		};
-	});
-
-	$.fn.slice = function (start, end) {
-		return $(this.get().slice(start, end));
-	};
-
-	$.fn.text = function (text) {
-		var get = text === undefined;
-		var len = this.length,
-		    output = [],
-		    i = 0;
-		for (; i < len; i++) {
-			if (get) {
-				output.push(this[i].textContent);
-			} else {
-				this[i].textContent = getVal(text, this[i], i, this[i].textContent);
-			}
-		}
-		return get ? output.join(" ") : this;
-	};
-
-	$.fn.unwrap = function (selector) {
-		this.parent(selector).not("body").each(function (key, obj) {
-			var parent = obj.parentNode;
-
-			$(obj.children).each(function (i, node) {
-				parent.insertBefore(node, obj);
-			});
-			parent.removeChild(obj);
-		});
-		return this;
-	};
-
-	$.fn.wrap = function (html) {
-		var i = this.length;
-
-		while (i--) {
-			$(this[i]).wrapAll(getVal(html, this[i], i));
-		}
-		return this;
-	};
-
-	$.fn.wrapAll = function (html) {
-		if (this[0]) {
-
-			// set variables
-			var len = this.length,
-			    i = 0,
-			    node = $(getVal(html, this[0]))[0].cloneNode(true);
-
-			// insert clone into parent
-			this[0].parentNode.insertBefore(node, null);
-
-			// find innermost child of node
-			while (node.firstElementChild) {
-				node = node.firstElementChild;
-			}
-
-			// attach nodes to the new node
-			for (; i < len; i++) {
-				node.appendChild(this[i]);
-			}
-		}
-		return this;
-	};
-
-	$.fn.add = function (nodes, context) {
-		nodes = $(nodes, context);
-		var len = this.length,
-		    i = nodes.length;
-
-		this.length += i;
-		while (i--) {
-			this[i + len] = nodes[i];
-		}
-		return this;
-	};
-
-	$.fn.children = function (selector) {
-		var nodes = [],
-		    i = this.length;
-
-		while (i--) {
-			nodes = nodes.concat(Array.from(this[i].children));
-		}
-
-		// filter nodes by selector
-		if (selector) {
-			nodes = filterNodes(nodes, selector);
-		}
-		return $(nodes);
-	};
-
-	$.fn.closest = function (selector, context) {
-		var i = this.length,
-		    nodes = [],
-		    parents = void 0,
-		    node = void 0;
-
-		while (i--) {
-			parents = [];
-			node = this[i];
-			while (node) {
-				parents.push(node);
-				node = node.parentNode;
-			}
-			parents = filterNodes(parents, selector, context);
-			if (parents[0]) {
-				nodes.push(parents[0]);
-			}
-		}
-		return $(nodes);
-	};
-
-	$.fn.eq = function (i) {
-		var key = i < 0 ? i + this.length : i;
-		return $(this[key] || null);
-	};
-
-	["filter", "not"].forEach(function (name) {
-		$.fn[name] = function (selector) {
-			return $(filterNodes(this, selector, name === "not"));
-		};
-	});
-
-	$.fn.find = function (selector) {
-		return $(selector, this);
-	};
-
-	$.fn.first = function () {
-		return $(this[0]);
-	};
-
-	$.fn.has = function (selector) {
-		return $(this.get().filter(function (node) {
-			return !!$(selector, node).length;
-		}));
-	};
-
-	$.fn.index = function (selector) {
-		var index = -1;
-
-		if (this[0]) {
-			var nodes = void 0,
-			    subject = this[0],
-			    type = typeof selector === "undefined" ? "undefined" : _typeof(selector),
-			    i = void 0;
-
-			// if no selector, match against first elements siblings
-			if (type === "undefined") {
-				nodes = this[0].parentNode.children;
-
-				// if selector is string, match first node in current collection against resulting collection
-			} else if (type === "string") {
-				nodes = $(selector);
-
-				// if element or collection match the element or first node against current collection
-			} else {
-				nodes = this;
-				subject = $(selector)[0];
-			}
-
-			i = nodes.length;
-			while (i--) {
-				if (nodes[i] === subject) {
-					return i;
-				}
-			}
-		}
-		return index;
-	};
-
-	$.fn.is = function (selector) {
-		return !!filterNodes(this, selector).length;
-	};
-
-	$.fn.last = function () {
-		return this.eq(-1);
-	};
-
-	["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
-		$.fn[func] = function (selector, filter) {
-			var next = func.indexOf("next") > -1,
-			    all = func.indexOf("All") > -1,
-			    until = func.indexOf("Until") > -1,
-			    method = next ? "nextElementSibling" : "previousElementSibling";
-			var nodes = [],
-			    i = this.length,
-			    sibling = void 0;
-
-			// look through each node and get siblings
-			while (i--) {
-				sibling = this[i][method];
-				while (sibling) {
-					nodes.push(sibling);
-					if (all || until && filterNodes(sibling, selector).length) {
-						break;
-					} else {
-						sibling = sibling[method];
-					}
-				}
-			}
-
-			// swap args for *Until methods
-			if (until) {
-				selector = filter;
-			}
-
-			// filter siblings by selector
-			if (selector) {
-				nodes = filterNodes(nodes, selector);
-			}
-
-			// return new collection
-			return $(nodes);
-		};
-	});
-
-	["parent", "parents", "parentsUntil"].forEach(function (func) {
-		$.fn[func] = function (selector, filter) {
-			var all = func.indexOf("s") > -1,
-			    until = func.indexOf("U") > -1;
-			var nodes = [],
-			    i = this.length,
-			    parent = void 0;
-
-			while (i--) {
-				parent = this[i].parentNode;
-				while (parent && parent.nodeType === Node.ELEMENT_NODE) {
-					nodes.push(parent);
-					if (!all || until && filterNodes(parent, selector).length) {
-						break;
-					} else {
-						parent = parent.parentNode;
-					}
-				}
-			}
-			if (selector) {
-				nodes = filterNodes(nodes, selector);
-			}
-			return $(nodes);
-		};
-	});
-
-	$.fn.siblings = function (selector) {
-		var _this7 = this;
-
-		var i = this.length,
-		    nodes = [];
-
-		while (i--) {
-			Array.from(this[i].parentNode.children).forEach(function (child) {
-				if (child !== _this7[i]) {
-					nodes.push(child);
-				}
-			});
-		}
-		return $(selector ? filterNodes(nodes, selector) : nodes);
-	};
-
-	$.extend = function () {
-		for (var _len = arguments.length, arrs = Array(_len), _key = 0; _key < _len; _key++) {
-			arrs[_key] = arguments[_key];
-		}
-
-		if (arrs[0] === true) {
-
-			// merge function will recursively merge items
-			var merge = function merge(target) {
-				for (var _len2 = arguments.length, sources = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-					sources[_key2 - 1] = arguments[_key2];
-				}
-
-				if (sources.length) {
-
-					// work on next source
-					var source = sources.shift();
-					if ($.isPlainObject(target) && $.isPlainObject(source)) {
-
-						// loop through each property
-						var keys = Object.keys(source),
-						    len = keys.length;
-						for (var i = 0; i < len; i++) {
-
-							// merge recursively if source is object, if target is not object, overwrite
-							if ($.isPlainObject(source[keys[i]])) {
-								target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
-
-								// when source property is value just overwrite
-							} else {
-								target[keys[i]] = source[keys[i]];
-							}
-						}
-					}
-
-					// merge next source
-					return merge.apply(undefined, [target].concat(sources));
-				}
-				return target;
-			};
-
-			return merge.apply(null, arrs.slice(1));
-		} else {
-			return Object.assign.apply(null, arrs);
-		}
-	};
-
-	$.isArray = function (arr) {
-		return Array.isArray(arr);
-	};
-
-	$.isFunction = function (func) {
-		return func && func.constructor === Function;
-	};
-
-	$.isPlainObject = function (obj) {
-
-		// Basic check for Type object that's not null
-		if ((typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && obj !== null) {
-
-			// If Object.getPrototypeOf supported, use it
-			if (typeof Object.getPrototypeOf == 'function') {
-				var proto = Object.getPrototypeOf(obj);
-				return proto === Object.prototype || proto === null;
-			}
-
-			// Otherwise, use internal class
-			// This should be reliable as if getPrototypeOf not supported, is pre-ES5
-			return Object.prototype.toString.call(obj) === "[object Object]";
-		}
-
-		// Not an object
-		return false;
-	};
-
-	$.isWindow = function (obj) {
-		return obj !== null && obj === obj.window;
-	};
-
-	$.map = function (obj, callback) {
-		var keys = Object.keys(obj),
-		    len = keys.length;
-		var arr = [],
-		    i = 0,
-		    result = void 0;
-
-		for (; i < len; i++) {
-			result = callback.call(window, obj[keys[i]], keys[i]);
-			if (![null, undefined].indexOf(result) > -1) {
-				arr.push(result);
-			}
-		}
-		return arr;
-	};
-	return dabby;
-});
-//# sourceMappingURL=dabby.es5.js.map
-//# sourceMappingURL=dabby.es5.js.map
+if (!Array.from) {
+  Array.from = function (arrayLike, mapFn, thisArg) {
+    var arr = [].slice.call(arrayLike);
+
+    if (typeof mapFn === "function") {
+      arr = arr.map(mapFn, thisArg);
+    }
+
+    return arr;
+  };
+}
+
+// CustomEvent is not supported in IE11
+if (typeof window.CustomEvent !== "function") {
+  var CustomEvent$1 = function CustomEvent(event, params) {
+    params = params || {
+      bubbles: false,
+      cancelable: false,
+      detail: undefined
+    };
+    var evt = document.createEvent("CustomEvent");
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+    return evt;
+  };
+
+  CustomEvent$1.prototype = window.Event.prototype;
+  window.CustomEvent = CustomEvent$1;
+}
+
+// support Element.matches() in IE and older Webkit
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.msMatchesSelector;
+}
+
+if (!NodeList.prototype.forEach) {
+  NodeList.prototype.forEach = function (callback, thisArg) {
+    thisArg = thisArg || window;
+
+    for (var i = 0; i < this.length; i++) {
+      callback.call(thisArg, this[i], i, this);
+    }
+  };
+}
+
+if (typeof Object.assign !== "function") {
+  Object.defineProperty(Object, "assign", {
+    value: function assign(target, varArgs) {
+      // .length of function is 2
+      if (target == null) {
+        // TypeError if undefined or null
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var to = Object(target);
+
+      for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+
+        if (nextSource != null) {
+          // Skip over if undefined or null
+          for (var nextKey in nextSource) {
+            // Avoid bugs when hasOwnProperty is shadowed
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+              to[nextKey] = nextSource[nextKey];
+            }
+          }
+        }
+      }
+
+      return to;
+    },
+    writable: true,
+    configurable: true
+  });
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+var $ = function (exports) {
+  var $$1 = function dabby(selector, context) {
+    var _this = this;
+
+    var nodes = [],
+        match,
+        obj; // enables new object to be created through $()
+
+    if (!(this instanceof dabby)) {
+      return new dabby(selector, context); // if no selector, return empty colletion
+    } else if (selector) {
+      // $ collection
+      if (selector instanceof dabby) {
+        return selector; // single node
+      } else if (selector.nodeType || isWindow(selector)) {
+        nodes = [selector]; // ready function
+      } else if (isFunction(selector)) {
+        if (document.readyState !== "loading") {
+          selector.call(document, $$1);
+        } else {
+          document.addEventListener("DOMContentLoaded", function () {
+            selector.call(document, $$1);
+          }, {
+            once: true
+          });
+        } // array|NodeList|HTMLCollection of nodes
+
+      } else if (typeof selector !== "string") {
+        nodes = selector; // CSS selector
+      } else if (selector.indexOf("<") === -1) {
+        $$1(context || document).each(function (i, obj) {
+          nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
+        }); // create a single node and attach properties
+      } else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
+        nodes.push(document.createElement(match[1])); // context is CSS attributes
+
+        if (context instanceof Object) {
+          obj = $$1(nodes);
+          utilEach(context, function (prop, value) {
+            obj.attr(prop, value);
+          });
+        } // parse HTML into nodes
+
+      } else {
+        //nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
+        obj = document.createElement("template");
+        obj.innerHTML = selector;
+        nodes = obj.content ? obj.content.children : obj.children;
+      }
+    } // build nodes
+
+
+    this.length = 0;
+    Array.from(nodes).forEach(function (node) {
+      // HTMLCollection objects don't support forEach
+      if ([1, 9, 11].indexOf(node.nodeType) > -1 || isWindow(node)) {
+        // only element, document, documentFragment and window
+        _this[_this.length++] = node;
+      }
+    });
+    return this;
+  }; // alias functions
+
+
+  $$1.fn = $$1.prototype;
+
+  $$1.each = function (obj, callback) {
+    var keys = Object.keys(obj),
+        len = keys.length;
+
+    for (var i = 0; i < len; i++) {
+      if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
+        break; // stop if callback returns false
+      }
+    }
+
+    return obj;
+  };
+
+  $$1.fn.each = function (callback) {
+    $$1.each(Array.from(this), callback);
+    return this;
+  };
+
+  $$1.isWindow = function (obj) {
+    return obj !== null && obj === obj.window;
+  };
+
+  $$1.isFunction = function (func) {
+    return func && func.constructor === Function;
+  };
+
+  $$1.isPlainObject = function (obj) {
+    // Basic check for Type object that's not null
+    if (_typeof(obj) === "object" && obj !== null) {
+      // If Object.getPrototypeOf supported, use it
+      if (typeof Object.getPrototypeOf == 'function') {
+        var proto = Object.getPrototypeOf(obj);
+        return proto === Object.prototype || proto === null;
+      } // Otherwise, use internal class
+      // This should be reliable as if getPrototypeOf not supported, is pre-ES5
+
+
+      return Object.prototype.toString.call(obj) === "[object Object]";
+    } // Not an object
+
+
+    return false;
+  };
+
+  $$1.extend = function () {
+    for (var _len = arguments.length, arrs = new Array(_len), _key = 0; _key < _len; _key++) {
+      arrs[_key] = arguments[_key];
+    }
+
+    if (arrs[0] === true) {
+      // merge function will recursively merge items
+      var merge = function merge(target) {
+        for (var _len2 = arguments.length, sources = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+          sources[_key2 - 1] = arguments[_key2];
+        }
+
+        if (sources.length) {
+          // work on next source
+          var source = sources.shift();
+
+          if ($$1.isPlainObject(target) && $$1.isPlainObject(source)) {
+            // loop through each property
+            var keys = Object.keys(source),
+                len = keys.length;
+
+            for (var i = 0; i < len; i++) {
+              // merge recursively if source is object, if target is not object, overwrite
+              if ($$1.isPlainObject(source[keys[i]])) {
+                target[keys[i]] = $$1.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]]; // when source property is value just overwrite
+              } else {
+                target[keys[i]] = source[keys[i]];
+              }
+            }
+          } // merge next source
+
+
+          return merge.apply(void 0, [target].concat(sources));
+        }
+
+        return target;
+      };
+
+      return merge.apply(null, arrs.slice(1));
+    } else {
+      return Object.assign.apply(null, arrs);
+    }
+  };
+
+  $$1.isArray = function (arr) {
+    return Array.isArray(arr);
+  };
+
+  $$1.param = function (obj) {
+    var params = [],
+        add = function add(key, value, params) {
+      var isArr = $$1.isArray(value);
+
+      if (isArr || _typeof(value) === "object") {
+        $$1.each(value, function (i, val) {
+          params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
+        });
+      } else {
+        params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
+      }
+
+      return params;
+    }; // process values
+
+
+    $$1.each(obj, function (key, item) {
+      params = add(key, item, params);
+    });
+    return params.join("&");
+  };
+
+  $$1.ajax = function (url, settings) {
+    // normalise args
+    if (_typeof(url) === "object") {
+      settings = url;
+    } else {
+      if (_typeof(settings) !== "object") {
+        settings = {};
+      }
+
+      settings.url = url;
+    } // set default settings
+
+
+    settings = $$1.extend({
+      method: "GET",
+      cache: null,
+      // start will null so we can see if explicitly set
+      data: null,
+      dataType: null,
+      // only changes behavior with json, jsonp, script
+      async: true,
+      crossDomain: false,
+      scriptCharset: null,
+      jsonp: "callback",
+      jsonpCallback: "dabby" + Date.now(),
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
+      },
+      context: null,
+      statusCode: {},
+      username: null,
+      password: null
+    }, settings); // determine datatype
+
+    if (!settings.dataType && /\.js($|\?)/.test(settings.url)) {
+      settings.dataType = "script";
+    }
+
+    var sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
+        script,
+        xhr,
+        data; // add data to query string
+
+    if (settings.data) {
+      data = typeof settings.data === "string" ? settings.data : $$1.param(settings.data);
+    }
+
+    if (data && settings.method === "GET") {
+      settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + data;
+    } // add cache buster
+
+
+    if (settings.cache || settings.cache === null && sync) {
+      settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + +new Date();
+    } // fetch script
+
+
+    if (sync || settings.crossDomain) {
+      script = document.createElement("script");
+
+      if (settings.scriptCharset) {
+        script.charset = settings.scriptCharset;
+      } // add callback parameter
+
+
+      if (settings.dataType === "jsonp") {
+        settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
+      } // setup event callbacks
+
+
+      $$1.each({
+        load: "success",
+        error: "error"
+      }, function (key, value) {
+        script.addEventListener(key, function () {
+          var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
+          [settings[value], settings.complete].forEach(function (callback) {
+            if (callback) {
+              callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
+            }
+          });
+        }, {
+          once: true
+        });
+      });
+      script.src = settings.url;
+      script.async = settings.async;
+      document.head.appendChild(script); // make xhr request
+    } else {
+      var callback = function callback(xhr, status) {
+        var response = xhr.responseText; // parse JSON
+
+        if (["json", null].indexOf(settings.dataType) > -1) {
+          try {
+            response = JSON.parse(response);
+          } catch (e) {// do nothing
+          }
+        } // run callbacks
+
+
+        [settings.statusCode[xhr.status], settings[status], settings.complete].forEach(function (callback) {
+          if (callback) {
+            callback.apply(settings.context, callback === settings.complete ? [xhr, status] : [response, status, xhr]);
+          }
+        });
+      }; // create XHR object
+
+
+      xhr = new XMLHttpRequest();
+      xhr.open(settings.method, settings.url, settings.async); // add authoisation header
+
+      if (settings.username) {
+        settings.headers.Authorization = btoa(settings.username + ":" + settings.password);
+      } // headers
+
+
+      $$1.each(settings.headers, function (key, value) {
+        xhr.setRequestHeader(key, value);
+      }); // callbacks
+
+      xhr.onload = function () {
+        var types = {
+          200: "success",
+          204: "nocontent",
+          304: "notmodified"
+        };
+        callback(xhr, types[xhr.status] || "error");
+      };
+
+      xhr.ontimeout = function () {
+        callback(xhr, "timeout");
+      };
+
+      xhr.onabort = function () {
+        callback(xhr, "abort");
+      };
+
+      xhr.send(settings.method === "GET" ? null : data);
+      return xhr;
+    }
+  };
+
+  ["get", "post"].forEach(function (name) {
+    $$1[name] = function (url, data, success, type) {
+      var isFunc = $$1.isFunction(data);
+      var settings = _typeof(url) === "object" ? url : {
+        url: url,
+        data: isFunc ? {} : data,
+        success: isFunc ? data : success,
+        dataType: isFunc ? success : type
+      };
+      settings.method = name.toUpperCase();
+      return $$1.ajax(settings);
+    };
+  });
+
+  $$1.getScript = function (url, success) {
+    return $$1.ajax({
+      url: url,
+      dataType: "script",
+      success: success
+    });
+  };
+
+  var filterNodes = function filterNodes(dabby, filter, context, not) {
+    var func,
+        nodes = dabby.nodeType ? [dabby] : Array.from(dabby); // sort out args
+
+    if (typeof context === "boolean") {
+      not = context;
+      context = null;
+    } // function
+
+
+    if ($$1.isFunction(filter)) {
+      func = filter; // nodes
+    } else {
+      // normalise filters
+      if (typeof filter === "string") {
+        filter = [filter];
+      } else {
+        filter = Array.from($$1(filter, context));
+      } // filter function
+
+
+      func = function func(n, node) {
+        var i = filter.length;
+
+        while (i--) {
+          if (typeof filter[i] === "string" && node.matches ? node.matches(filter[i]) : node === filter[i]) {
+            return true;
+          }
+        }
+
+        return false;
+      };
+    }
+
+    return nodes.filter(function (item, i) {
+      return func.call(item, i, item) !== Boolean(not);
+    }, nodes);
+  };
+
+  ["filter", "not", "is"].forEach(function (name) {
+    $$1.fn[name] = function (selector) {
+      var nodes = filterNodes(this, selector, name === "not");
+      return name === "is" ? !!nodes : $$1(nodes);
+    };
+  });
+
+  $$1.fn.load = function (url, data, _success) {
+    var _this2 = this;
+
+    if (this[0]) {
+      // get selector from URL
+      url = url.split(" ", 2);
+      var uri = url[0],
+          selector = url[1]; // check for data
+
+      if ($$1.isFunction(data)) {
+        _success = data;
+        data = undefined;
+      } // make AJAX request
+
+
+      $$1.ajax(uri, {
+        data: data,
+        type: data instanceof Object ? "POST" : "GET",
+        success: function success(response, status, xhr) {
+          // if a selector is specified, find it in the returned document
+          var html = "",
+              i = _this2.length; // refine by selector if supplied
+
+          if (selector) {
+            $$1(response).filter(selector).each(function (key, obj) {
+              html += obj.outerHTML;
+            });
+          } else {
+            html = response;
+          } // set HTML to nodes in collection
+
+
+          while (i--) {
+            _this2[i].innerHTML = html; // fire success callback on nodes
+
+            if (_success) {
+              _success.call(_this2[i], response, status, xhr);
+            }
+          }
+        }
+      });
+    }
+
+    return this;
+  };
+
+  var getVal = function getVal(val, obj, i, current) {
+    // retrieve as function
+    if ($.isFunction(val)) {
+      val = val.call(obj, i, $.isFunction(current) ? current() : current); // current can be a function
+    }
+
+    return val;
+  };
+
+  $$1.map = function (obj, callback) {
+    var keys = Object.keys(obj),
+        len = keys.length;
+    var arr = [],
+        i = 0,
+        result;
+
+    for (; i < len; i++) {
+      result = callback.call(window, obj[keys[i]], keys[i]);
+
+      if (![null, undefined].indexOf(result) > -1) {
+        arr.push(result);
+      }
+    }
+
+    return arr;
+  };
+
+  $$1.fn.val = function (value) {
+    var _this3 = this;
+
+    // set value
+    if (value !== undefined) {
+      var _ret = function () {
+        var i = _this3.length;
+
+        var _loop = function _loop() {
+          var val = getVal(value, _this3[i], i, function () {
+            return $$1(_this3[i]).val();
+          });
+
+          if (_this3[i].multiple) {
+            val = $$1.map($$1.isArray(val) ? val : [val], function (item) {
+              return String(item);
+            }); // convert to string
+
+            $$1("option", _this3[i]).each(function (key, obj) {
+              obj.selected = val.indexOf(String(obj.value)) > -1;
+            });
+          } else {
+            _this3[i].value = String(val);
+          }
+        };
+
+        while (i--) {
+          _loop();
+        }
+
+        return {
+          v: _this3
+        }; // read value from first node
+      }();
+
+      if (_typeof(_ret) === "object") return _ret.v;
+    } else if (this[0]) {
+      // get multiple values
+      if (this[0].multiple) {
+        var values = [];
+        $$1("option", this[0]).each(function (key, obj) {
+          if (obj.selected) {
+            values.push(String(obj.value));
+          }
+        });
+        return values; // get radio box value
+      } else if (this[0].type === "radio") {
+        var obj = this.filter("[name='" + this[0].name + "']:checked")[0];
+        return obj ? String(obj.value) : undefined; // get single value
+      } else if (this[0].type !== "checkbox" || this[0].checked) {
+        return String(this[0].value);
+      }
+    }
+  };
+
+  $$1.fn.serialize = function () {
+    var selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
+        obj = this.is(selector) ? this.filter(selector) : $$1(selector, this),
+        add = function add(name, value, params) {
+      var match;
+
+      if ((match = name.match(/([^\[]*)\[([^\]]*)\](.*)/)) !== null) {
+        name = match[1];
+        var arr = add(match[2] + match[3], value, params[name] || {});
+        value = arr;
+      }
+
+      if (name !== "") {
+        params[name] = value;
+      } else {
+        if (!$$1.isArray(params)) {
+          params = [];
+        }
+
+        params = params.concat($$1.isArray(value) ? value : [value]);
+      }
+
+      return params;
+    };
+
+    var params = {}; // process values
+
+    obj.each(function (key, obj) {
+      var value = $$1(obj).val();
+
+      if (!obj.disabled && value !== undefined) {
+        params = add(obj.getAttribute("name"), value, params);
+      }
+    });
+    return $$1.param(params);
+  };
+
+  $$1.fn.add = function (nodes, context) {
+    nodes = $$1(nodes, context);
+    var len = this.length,
+        i = nodes.length;
+    this.length += i;
+
+    while (i--) {
+      this[i + len] = nodes[i];
+    }
+
+    return this;
+  };
+
+  ["parent", "parents", "parentsUntil"].forEach(function (func) {
+    $$1.fn[func] = function (selector, filter) {
+      var all = func.indexOf("s") > -1,
+          until = func.indexOf("U") > -1;
+      var nodes = [],
+          i = this.length,
+          parent;
+
+      while (i--) {
+        parent = this[i].parentNode;
+
+        while (parent && parent.nodeType === Node.ELEMENT_NODE) {
+          nodes.push(parent);
+
+          if (!all || until && filterNodes(parent, selector).length) {
+            break;
+          } else {
+            parent = parent.parentNode;
+          }
+        }
+      }
+
+      if (selector) {
+        nodes = filterNodes(nodes, selector);
+      }
+
+      return $$1(nodes);
+    };
+  });
+
+  $$1.fn.get = function (i) {
+    return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
+  };
+
+  ["on", "one", "off"].forEach(function (name) {
+    $$1.fn[name] = function (events, selector, data, callback) {
+      var _this4 = this;
+
+      var i = this.length;
+      events = events.split(" "); // sort out args
+
+      if ($$1.isFunction(selector)) {
+        callback = selector;
+        selector = null;
+      } else if ($$1.isFunction(data)) {
+        callback = data;
+        data = null;
+      } // attach event
+
+
+      var _loop2 = function _loop2() {
+        var e = events.length; // record the original function
+
+        if (name !== "off") {
+          if (!_this4[i].events) {
+            _this4[i].events = [];
+          }
+
+          var fn = function fn(evt) {
+            // delegate function
+            var target = [this];
+
+            if (selector) {
+              var t = $$1(evt.target);
+              target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
+            }
+
+            if (target) {
+              if (data) {
+                // set data to event object
+                evt.data = data;
+              }
+
+              for (var _i = 0, len = target.length; _i < len; _i++) {
+                if (callback.call(target[_i], evt, evt.args) === false) {
+                  evt.preventDefault();
+                  evt.stopPropagation();
+                }
+              }
+            }
+          };
+
+          _this4[i].events.push({
+            events: events,
+            callback: callback,
+            selector: selector,
+            func: fn,
+            once: name === "one"
+          }); // trigger
+
+
+          while (e--) {
+            _this4[i].addEventListener(events[e], fn, {
+              once: name === "one",
+              capture: !!selector
+            });
+          } // find the original function
+
+        } else if (_this4[i].events.length) {
+          while (e--) {
+            _this4[i].events.forEach(function (evt, n) {
+              var index = evt.events.indexOf(events[e]);
+
+              if (index !== -1 && evt.callback === callback && evt.selector === selector) {
+                _this4[i].removeEventListener(events[e], evt.func, {
+                  once: evt.once,
+                  capture: !!evt.selector
+                }); // must pass same arguments
+
+
+                _this4[i].events[n].events.splice(index, 1);
+
+                if (!_this4[i].events[n].events.length) {
+                  _this4[i].events.splice(n, 1);
+                }
+              }
+            });
+          }
+        }
+      };
+
+      while (i--) {
+        _loop2();
+      }
+
+      return this;
+    };
+  });
+  var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
+
+  $$1.fn.attr = function (prop, value) {
+    var _this5 = this;
+
+    var isArr = $$1.isArray(prop),
+        i,
+        events$$1,
+        arr = {}; // set properties
+
+    if (isArr || value || value === null) {
+      i = this.length; // normalise to array
+
+      if (!isArr) {
+        arr[prop] = value;
+        prop = arr;
+      }
+
+      while (i--) {
+        $$1.each(prop, function (key, val) {
+          if (events$$1.indexOf(key) > -1) {
+            $$1(_this5[i]).on(key, val);
+          } else if (key === "style") {
+            _this5[i].style.cssText = val;
+          } else if (key === "class") {
+            _this5[i].className = val;
+          } else if (key === "text") {
+            _this5[i].textContent = val;
+          } else if (value === null) {
+            _this5[i].removeAttribute(key);
+          } else {
+            _this5[i].setAttribute(key, val);
+          }
+        });
+      }
+
+      return this; // retrieve properties
+    } else if (this[0]) {
+      if (prop === "style") {
+        return this[0].style.cssText;
+      }
+
+      if (prop === "class") {
+        return this[0].className;
+      }
+
+      return this[0].getAttribute(prop);
+    }
+  };
+
+  ["addClass", "removeClass", "toggleClass"].forEach(function (name) {
+    $$1.fn[name] = function (cls) {
+      // remove "Class" from name for classList method
+      var func = name.substr(0, name.length - 5),
+          i = this.length; // manage classes on nodes
+
+      while (i--) {
+        var arr = getVal(cls, this[i], i, this[i].className);
+
+        if (typeof arr === "string") {
+          arr = arr.split(" ");
+        }
+
+        var len = arr.length;
+
+        for (var n = 0; n < len; n++) {
+          this[i].classList[func](arr[n]);
+        }
+      }
+
+      return this;
+    };
+  });
+
+  var dasherise = function dasherise(prop) {
+    return prop.replace(/[A-Z]/g, function (letter) {
+      return "-" + letter.toLowerCase();
+    });
+  };
+
+  var setCss = function setCss(dabby, props, value) {
+    // set vars
+    var name = props,
+        keys,
+        k,
+        remove; // normalise props
+
+    if (typeof props === "string") {
+      props = {};
+      props[name] = value;
+    } // cache properties for loop
+
+
+    keys = Object.keys(props);
+    k = keys.length; // set properties
+
+    while (k--) {
+      var i = dabby.length;
+
+      while (i--) {
+        var val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
+
+        if (!isNaN(val)) {
+          val += "px";
+        }
+
+        dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
+      }
+    }
+
+    return dabby;
+  };
+
+  $$1.fn.css = function (props, value) {
+    // set the values
+    if (value !== undefined || $$1.isPlainObject(props)) {
+      return setCss(this, props, value); // retrieve value from first property
+    } else if (this[0]) {
+      var name = props,
+          i,
+          style = getComputedStyle(this[0], ""),
+          output = {},
+          ret = false;
+
+      if (typeof name === "string") {
+        props = [name];
+        ret = true;
+      }
+
+      i = props.length;
+
+      while (i--) {
+        output[props[i]] = style.getPropertyValue(dasherise(props[i]));
+
+        if (ret) {
+          return output[props[i]];
+        }
+      }
+
+      return output;
+    }
+  };
+
+  var camelise = function camelise(prop) {
+    return prop.replace(/-([a-z])/gi, function (text, letter) {
+      return letter.toUpperCase();
+    });
+  };
+
+  $$1.fn.data = function (name, data) {
+    var _this6 = this;
+
+    // convert data to object
+    if (_typeof(name) === "object") {
+      data = name;
+    } else if (data !== undefined) {
+      var temp = {};
+      temp[name] = data;
+      data = temp;
+    } // set value
+
+
+    if (data !== undefined) {
+      var _ret2 = function () {
+        var i = _this6.length;
+
+        while (i--) {
+          $$1.each(data, function (key, value) {
+            _this6[i].dataset[camelise(key)] = _typeof(value) === "object" ? JSON.stringify(value) : value;
+          });
+        }
+
+        return {
+          v: _this6
+        }; // get value
+      }();
+
+      if (_typeof(_ret2) === "object") return _ret2.v;
+    } else if (this[0] && this[0].dataset) {
+      var parse = function parse(value) {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          return value;
+        }
+      }; // all properties
+
+
+      if (name === undefined) {
+        var arr = {};
+        $$1.each(this[0].dataset, function (key, value) {
+          arr[key] = parse(value);
+        });
+        return arr; // retrieve specific property
+      } else {
+        name = camelise(name);
+
+        if (this[0].dataset.hasOwnProperty(name)) {
+          return parse(this[0].dataset[name]);
+        }
+      }
+    }
+  };
+
+  $$1.fn.hasClass = function (cls) {
+    var i = this.length;
+
+    while (i--) {
+      if (this[i].classList.contains(cls)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  var getProp = function getProp(prop) {
+    var properties = {
+      "for": "htmlFor",
+      "class": "className",
+      "tabindex": "tabIndex",
+      "readonly": "readOnly",
+      "maxlength": "maxLength",
+      "cellspacing": "cellSpacing",
+      "cellpadding": "cellPadding",
+      "rowspan": "rowSpan",
+      "colspan": "colSpan",
+      "usemap": "useMap",
+      "frameborder": "frameBorder",
+      "contenteditable": "contentEditable"
+    };
+    prop = prop.toLowerCase();
+    return properties[prop] || prop;
+  };
+
+  $$1.fn.prop = function (prop, value) {
+    prop = getProp(prop); // set
+
+    if (value !== undefined) {
+      var i = this.length;
+
+      while (i--) {
+        this[i][prop] = getVal(value, this[i], i, this[i][prop]);
+      }
+
+      return this; // get
+    } else if (this[0]) {
+      return this[0][prop];
+    }
+  };
+
+  $$1.fn.removeProp = function (prop) {
+    if (this[0]) {
+      var i = this.length;
+      prop = getProp(prop);
+
+      while (i--) {
+        delete this[i][prop];
+      }
+
+      return this;
+    }
+  };
+
+  $$1.fn.map = function (callback) {
+    var len = this.length;
+    var values = [],
+        i = 0;
+
+    for (; i < len; i++) {
+      values.push(callback.call(this[i], i, this[i]));
+    }
+
+    return values;
+  };
+
+  $$1.fn.offset = function (coords) {
+    var doc = document.documentElement;
+    var rect,
+        i = this.length,
+        pos; // set
+
+    if (coords) {
+      while (i--) {
+        // if coords is callback, generate value
+        rect = this[i].getBoundingClientRect();
+        coords = getVal(coords, this[i], i, $$1(this[i]).offset());
+
+        if (coords.top !== undefined && coords.left !== undefined) {
+          // set position relative if static
+          var style = getComputedStyle(this[i]);
+          pos = style.getPropertyValue("position");
+
+          if (pos === "static") {
+            this[i].style.position = "relative";
+          } // set offset
+
+
+          this[i].style.top = parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top - parseFloat(style.getPropertyValue("top"))) + "px";
+          this[i].style.left = parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left - parseFloat(style.getPropertyValue("left"))) + "px";
+        }
+      }
+
+      return this; // get
+    } else if (this[0]) {
+      pos = this[0].style.position === "fixed";
+      rect = this[0].getBoundingClientRect();
+      return {
+        top: rect.top + (pos ? 0 : doc.scrollTop),
+        left: rect.left + (pos ? 0 : doc.scrollLeft)
+      };
+    }
+  };
+
+  $$1.fn.offsetParent = function () {
+    return $$1(this[0] ? this[0].offsetParent : null);
+  };
+
+  $$1.fn.position = function () {
+    if (this[0]) {
+      return {
+        left: this[0].offsetLeft,
+        top: this[0].offsetTop
+      };
+    }
+  };
+
+  ["scrollLeft", "scrollTop"].forEach(function (item) {
+    $$1.fn[item] = function (pos) {
+      // set
+      if (pos !== undefined) {
+        var i = this.length,
+            tl = item.indexOf("Top") > -1 ? "top" : "left";
+
+        while (i--) {
+          var val = getVal(pos, this, i, this[i][item]);
+
+          if ($$1.isWindow(this[i])) {
+            var obj = {};
+            obj[tl] = val;
+            this[i].scroll(obj);
+          } else {
+            this[i][item] = val;
+          }
+        }
+
+        return this; // get
+      } else if (this[0]) {
+        return this[0][item];
+      }
+    };
+  });
+  ["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(function (dim) {
+    var getAdditionalLength = function getAdditionalLength(obj, wh, props) {
+      var style = getComputedStyle(obj);
+      var i = props.length,
+          value = 0,
+          suffix;
+
+      while (i--) {
+        suffix = props[i] === "border" ? "-width" : "";
+        value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-left" : "-top") + suffix)) || 0;
+        value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
+      }
+
+      return value;
+    };
+
+    $$1.fn[dim] = function (val) {
+      var valtype = _typeof(val),
+          wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
+          // width or height
+      io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : ""; // inner outer or neither
+
+
+      var i = this.length,
+          value,
+          whu,
+          props,
+          param; // set value
+
+      if (val !== undefined && valtype !== "boolean") {
+        while (i--) {
+          // set base value
+          value = getVal(val, this[i], i, this[i][dim]);
+
+          if (!isNaN(val)) {
+            value += "px";
+          }
+
+          this[i].style[wh] = value; // set here so we can convert to px
+          // add additional lengths
+
+          if (io) {
+            value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
+            props = ["padding"];
+
+            if (io === "outer") {
+              props.push("border");
+            }
+
+            value -= getAdditionalLength(this[i], wh, props);
+
+            if (!isNaN(val)) {
+              value += "px";
+            }
+
+            this[i].style[wh] = value;
+          }
+        }
+
+        return this; // get value
+      } else if (this[0]) {
+        whu = wh === "width" ? "Width" : "Height"; // document
+
+        if (this[0].nodeType === Node.DOCUMENT_NODE) {
+          return this[0].documentElement["scroll" + whu]; // element
+        } else if (!$$1.isWindow(this[0])) {
+          param = io === "outer" ? "offset" : "client";
+          value = this[0][param + whu]; // add padding on, or if outer and margins requested, add margins on
+
+          if (io === "" || io === "outer" && val === true) {
+            value += getAdditionalLength(this[0], wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
+          }
+
+          return value; // window
+        } else if (io === "inner") {
+          return this[0].document.documentElement["client" + whu];
+        } else {
+          return this[0]["inner" + whu];
+        }
+      }
+    };
+  });
+
+  $$1.fn.trigger = function (name, data) {
+    var evt = new CustomEvent(name, {
+      bubbles: true,
+      cancelable: true
+    });
+    var i = this.length; // copy extra data to event object
+
+    if (data) {
+      evt.args = data;
+    }
+
+    while (i--) {
+      this[i].dispatchEvent(evt);
+      /*if (this[i].dispatchEvent(evt) && this[i][name]) {
+      	this[i][name]();
+      }*/
+    }
+
+    return this;
+  };
+
+  events.forEach(function (event) {
+    $$1.fn[event] = function (data, callback) {
+      return data ? this.on(event, data, callback) : this.trigger(event);
+    };
+  });
+
+  $$1.fn.clone = function () {
+    var nodes = [],
+        i = this.length;
+
+    while (i--) {
+      nodes[i] = this[i].cloneNode(true);
+    }
+
+    return $$1(nodes);
+  };
+
+  $$1.fn.empty = function () {
+    var i = this.length;
+
+    while (i--) {
+      while (this[i].firstChild && this[i].removeChild(this[i].firstChild)) {
+        
+      }
+    }
+
+    return this;
+  };
+
+  $$1.fn.html = function (html) {
+    // set
+    if (html !== undefined) {
+      var i = this.length;
+
+      while (i--) {
+        this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
+      }
+
+      return this; // get
+    } else if (this[0]) {
+      return this[0].innerHTML;
+    }
+  };
+
+  $$1.each({
+    before: "beforeBegin",
+    prepend: "afterBegin",
+    append: "beforeEnd",
+    after: "afterEnd"
+  }, function (name, pos) {
+    $$1.fn[name] = function (html) {
+      var pre = ["before", "prepend"].indexOf(name) > -1,
+          isFunc = $$1.isFunction(html);
+      var i = this.length,
+          elems = $$1();
+
+      if (!isFunc) {
+        // multiple arguments containing nodes?
+        $$1.each(arguments, function (i, arg) {
+          elems.add(arg);
+        });
+      }
+
+      while (i--) {
+        if (isFunc) {
+          elems = $$1(getVal(html, this[i], i, this[i].innerHTML));
+        }
+
+        var backwards = elems.length,
+            // for counting down
+        forwards = -1; // for counting up
+
+        while (pre ? backwards-- : ++forwards < backwards) {
+          // insert forwards or backwards?
+          var obj = elems[pre ? backwards : forwards]; // clone if i !== 0
+
+          if (i) {
+            obj = obj.cloneNode(true);
+          }
+
+          this[i].insertAdjacentElement(pos, obj);
+        }
+      }
+
+      return this;
+    };
+  });
+  $$1.each({
+    insertBefore: "before",
+    prependTo: "prepend",
+    appendTo: "append",
+    insertAfter: "after"
+  }, function (name, func) {
+    $$1.fn[name] = function (selector) {
+      var i = this.length,
+          obj = $$1(selector);
+
+      while (i--) {
+        obj[func](this[i]);
+      }
+
+      return this;
+    };
+  });
+  ["remove", "detach"].forEach(function (func) {
+    $$1.fn[func] = function (selector) {
+      var i = this.length,
+          nodes = []; // detach selected nodes
+
+      while (i--) {
+        if (!selector || filterNodes(this[i], selector).length) {
+          nodes.push(this[i].parentNode.removeChild(this[i]));
+        }
+      } // create a new dabby object to return
+
+
+      return func === "detach" ? $$1(nodes) : this;
+    };
+  });
+  ["replaceWith", "replaceAll"].forEach(function (name) {
+    $$1.fn[name] = function (html) {
+      var all = name === "replaceAll",
+          source = all ? $$1(html) : this;
+      var target = all ? this : html,
+          isFunc = $$1.isFunction(target);
+
+      if (!isFunc) {
+        target = $$1(target);
+      }
+
+      var i = source.length;
+
+      while (i--) {
+        var n = target.length,
+            parent = source[i].parentNode;
+
+        while (n--) {
+          var replace = isFunc ? getVal(target[n], n, target[n]) : target[n];
+
+          if (n) {
+            source[i].insertAdjacentElement("beforebegin", replace.cloneNode(true));
+          } else {
+            source[i] = parent.replaceChild(i ? replace.cloneNode(true) : replace, source[i]);
+          }
+        }
+      }
+
+      return this;
+    };
+  });
+
+  $$1.fn.slice = function (start, end) {
+    return $$1(this.get().slice(start, end));
+  };
+
+  $$1.fn.text = function (text) {
+    var get = text === undefined;
+    var len = this.length,
+        output = [],
+        i = 0;
+
+    for (; i < len; i++) {
+      if (get) {
+        output.push(this[i].textContent);
+      } else {
+        this[i].textContent = getVal(text, this[i], i, this[i].textContent);
+      }
+    }
+
+    return get ? output.join(" ") : this;
+  };
+
+  $$1.fn.wrapAll = function (html) {
+    if (this[0]) {
+      // set variables
+      var len = this.length,
+          i = 0,
+          node = $$1(getVal(html, this[0]))[0].cloneNode(true); // insert clone into parent
+
+      this[0].parentNode.insertBefore(node, null); // find innermost child of node
+
+      while (node.firstElementChild) {
+        node = node.firstElementChild;
+      } // attach nodes to the new node
+
+
+      for (; i < len; i++) {
+        node.appendChild(this[i]);
+      }
+    }
+
+    return this;
+  };
+
+  $$1.fn.wrap = function (html) {
+    var i = this.length;
+
+    while (i--) {
+      $$1(this[i]).wrapAll(getVal(html, this[i], i));
+    }
+
+    return this;
+  };
+
+  $$1.fn.children = function (selector) {
+    var nodes = [],
+        i = this.length;
+
+    while (i--) {
+      nodes = nodes.concat(Array.from(this[i].children));
+    } // filter nodes by selector
+
+
+    if (selector) {
+      nodes = filterNodes(nodes, selector);
+    }
+
+    return $$1(nodes);
+  };
+
+  $$1.fn.closest = function (selector, context) {
+    var i = this.length,
+        nodes = [],
+        parents,
+        node;
+
+    while (i--) {
+      parents = [];
+      node = this[i];
+
+      while (node) {
+        parents.push(node);
+        node = node.parentNode;
+      }
+
+      parents = filterNodes(parents, selector, context);
+
+      if (parents[0]) {
+        nodes.push(parents[0]);
+      }
+    }
+
+    return $$1(nodes);
+  };
+
+  $$1.fn.eq = function (i) {
+    var key = i < 0 ? i + this.length : i;
+    return $$1(this[key] || null);
+  };
+
+  $$1.fn.find = function (selector) {
+    return $$1(selector, this);
+  };
+
+  $$1.fn.first = function () {
+    return $$1(this[0]);
+  };
+
+  $$1.fn.has = function (selector) {
+    return $$1(this.get().filter(function (node) {
+      return !!$$1(selector, node).length;
+    }));
+  };
+
+  $$1.fn.index = function (selector) {
+    var index = -1;
+
+    if (this[0]) {
+      var nodes,
+          subject = this[0],
+          type = _typeof(selector),
+          i; // if no selector, match against first elements siblings
+
+
+      if (type === "undefined") {
+        nodes = this[0].parentNode.children; // if selector is string, match first node in current collection against resulting collection
+      } else if (type === "string") {
+        nodes = $$1(selector); // if element or collection match the element or first node against current collection
+      } else {
+        nodes = this;
+        subject = $$1(selector)[0];
+      }
+
+      i = nodes.length;
+
+      while (i--) {
+        if (nodes[i] === subject) {
+          return i;
+        }
+      }
+    }
+
+    return index;
+  };
+
+  $$1.fn.last = function () {
+    return this.eq(-1);
+  };
+
+  ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
+    $$1.fn[func] = function (selector, filter) {
+      var next = func.indexOf("next") > -1,
+          all = func.indexOf("All") > -1,
+          until = func.indexOf("Until") > -1,
+          method = next ? "nextElementSibling" : "previousElementSibling";
+      var nodes = [],
+          i = this.length,
+          sibling; // look through each node and get siblings
+
+      while (i--) {
+        sibling = this[i][method];
+
+        while (sibling) {
+          nodes.push(sibling);
+
+          if (all || until && filterNodes(sibling, selector).length) {
+            break;
+          } else {
+            sibling = sibling[method];
+          }
+        }
+      } // swap args for *Until methods
+
+
+      if (until) {
+        selector = filter;
+      } // filter siblings by selector
+
+
+      if (selector) {
+        nodes = filterNodes(nodes, selector);
+      } // return new collection
+
+
+      return $$1(nodes);
+    };
+  });
+
+  $$1.fn.siblings = function (selector) {
+    var _this7 = this;
+
+    var i = this.length,
+        nodes = [];
+
+    while (i--) {
+      Array.from(this[i].parentNode.children).forEach(function (child) {
+        if (child !== _this7[i]) {
+          nodes.push(child);
+        }
+      });
+    }
+
+    return $$1(selector ? filterNodes(nodes, selector) : nodes);
+  };
+
+  exports.$ = $$1;
+  return exports;
+}({});

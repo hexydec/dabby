@@ -1,4 +1,4 @@
-const dabby = function (selector, context) {
+const $ = function dabby(selector, context) {
 	let nodes = [],
 		match,
 		obj;
@@ -15,11 +15,11 @@ const dabby = function (selector, context) {
 			return selector;
 
 		// single node
-		} else if (selector.nodeType || $.isWindow(selector)) {
+		} else if (selector.nodeType || isWindow(selector)) {
 			nodes = [selector];
 
 		// ready function
-		} else if ($.isFunction(selector)) {
+		} else if (isFunction(selector)) {
 			if (document.readyState !== "loading") {
 				selector.call(document, $);
 			} else {
@@ -32,8 +32,7 @@ const dabby = function (selector, context) {
 
 		// CSS selector
 		} else if (selector.indexOf("<") === -1) {
-			context = context || document;
-			$(context).each((i, obj) => {
+			$(context || document).each((i, obj) => {
 				nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
 			});
 
@@ -44,7 +43,7 @@ const dabby = function (selector, context) {
 			// context is CSS attributes
 			if (context instanceof Object) {
 				obj = $(nodes);
-				$.each(context, (prop, value) => {
+				utilEach(context, (prop, value) => {
 					obj.attr(prop, value);
 				});
 			}
@@ -61,13 +60,14 @@ const dabby = function (selector, context) {
 	// build nodes
 	this.length = 0;
 	Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-		if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) { // only element, document, documentFragment and window
+		if ([1, 9, 11].indexOf(node.nodeType) > -1 || isWindow(node)) { // only element, document, documentFragment and window
 			this[this.length++] = node;
 		}
 	});
 	return this;
-},
-	$ = dabby; // alias in this scope
+};
 
 // alias functions
-dabby.fn = dabby.prototype;
+$.fn = $.prototype;
+
+export default $;

@@ -1,4 +1,7 @@
-function setCss(dabby, props, value) {
+import getVal from "../getval/getval.js";
+import dasherise from "../dasherise/dasherise.js";
+
+export default (dabby, props, value) => {
 
 	// set vars
 	let name = props,

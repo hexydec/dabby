@@ -1,3 +1,10 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/isfunction/isfunction.js";
+import "../../traversal/add/add.js";
+import "../../traversal/parents/parents.js";
+import "../../traversal/filter/filter.js";
+import "../../core/get/get.js";
+
 // add and remove event handlers
 ["on", "one", "off"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {

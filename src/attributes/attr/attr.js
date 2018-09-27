@@ -1,3 +1,9 @@
+import $ from "../../core/dabby/dabby.js";
+import "../../utils/isarray/isarray.js";
+import "../../utils/each/each.js";
+import "../../events/on-off/on-off.js";
+import events from "../../internal/getevents/getevents.js";
+
 $.fn.attr = function (prop, value) {
 	let isArr = $.isArray(prop),
 		i,
@@ -6,8 +12,7 @@ $.fn.attr = function (prop, value) {
 
 	// set properties
 	if (isArr || value || value === null) {
-		i = this.length,
-		events = getEvents();
+		i = this.length;
 
 		// normalise to array
 		if (!isArr) {

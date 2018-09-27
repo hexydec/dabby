@@ -10,9 +10,9 @@
     "jquery",
     "client",
     "browser",
-	"selector",
-	"alternative",
-	"javascript"
+    "selector",
+    "alternative",
+    "javascript"
   ],
   "contributors": [],
   "main": "dist/dabby.min.js",
@@ -21,26 +21,28 @@
     "url": "https://github.com/hexydec/dabby/issues"
   },
   "scripts": {
-	  "test": "grunt test"
+    "test": "grunt test"
   },
   "devDependencies": {
-    "grunt": "*",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-watch": "*",
-    "babel-core": "^6.26.0",
-    "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-minify": "^0.2.0",
-    "babel-polyfill": "^6.26.0",
-    "grunt-babel": "^7.0.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-plugin-uglify": "^1.0.2",
+    "babel-preset-minify": "^0.4.3",
+    "grunt": "^1.0.3",
+    "grunt-babel": "^8.0.0",
     "grunt-contrib-qunit": "^2.0.0",
     "grunt-contrib-uglify": "^3.2.1",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-rollup": "^9.0.0",
     "load-grunt-tasks": "^3.5.2",
-    "qunitjs": "^2.3.3"
+    "qunitjs": "^2.4.1",
+    "rollup": "^0.66.1",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-uglify": "^6.0.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hexydec/dabby.git"
-  }
+  },
+  "dependencies": {}
 }

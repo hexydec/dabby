@@ -1,3 +1,5 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.fn.add = function (nodes, context) {
 	nodes = $(nodes, context);
 	let len = this.length,

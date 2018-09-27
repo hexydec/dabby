@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import getVal from "../../internal/getval/getval.js";
+
 ["addClass", "removeClass", "toggleClass"].forEach(name => {
 	$.fn[name] = function (cls) {
 

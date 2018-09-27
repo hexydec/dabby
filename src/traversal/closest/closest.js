@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import filterNodes from "../../internal/filternodes/filternodes.js";
+
 $.fn.closest = function (selector, context) {
 	let i = this.length,
 		nodes = [],

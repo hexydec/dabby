@@ -1,5 +1,7 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.isPlainObject = obj => {
-	
+
 	// Basic check for Type object that's not null
 	if (typeof obj === "object" && obj !== null) {
 

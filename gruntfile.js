@@ -17,6 +17,8 @@ module.exports = function (grunt) {
 	}
 	files.push("!src/**/test.js");
 
+	var babel = require("rollup-plugin-babel");
+
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
@@ -69,6 +71,40 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		rollup: {
+			options: {
+				format: "iife",
+				moduleName: "$",
+				sourcemap: true
+			},
+			es6: {
+				options: {
+	  				plugins: [
+	  					babel({
+	  						presets: [
+								["@babel/preset-env", {"targets": {"esmodules": true}}]
+							],
+	  						exclude: './node_modules/**'
+	  					})
+	  				]
+				},
+				"dest": "dist/dabby.js",
+				"src": "src/build.js"
+			},
+			es5: {
+				options: {
+					format: "es",
+	  				plugins: [
+	  					babel({
+	  						presets: ["@babel/preset-env"],
+	  						exclude: './node_modules/**'
+	  					})
+	  				]
+				},
+				"dest": "dist/dabby.es5.js",
+				"src": "src/build.es5.js"
+			}
+		},
 		babel: {
 			es6: {
 				files: {
@@ -80,7 +116,7 @@ module.exports = function (grunt) {
 					presets: ["minify"]
 				}
 			},
-			es5: {
+			/*es5: {
 				files: {
 					[outdir + "/dabby.es5.js"]: outdir + "/dabby.es5.js",
 					"tests/internals.es5.js": "tests/internals.es5.js",
@@ -97,7 +133,7 @@ module.exports = function (grunt) {
 						}]
 					]
 				}
-			}
+			}*/
 		},
 		uglify: {
 			options: {
@@ -113,13 +149,13 @@ module.exports = function (grunt) {
 		watch: {
 			main: {
 				files: ["src/**/*.js", "!src/**/test.js", "gruntfile.js", "package.json"],
-				tasks: ["concat:es6", "concat:es5", "babel", "uglify"]
+				tasks: ["rollup", "babel", "uglify"]
 			},
-			test: {
-				files: ["gruntfile.js", "package.json", "src/test.js", "src/**/test.js", "src/internal/**/*.js"],
-				tasks: ["concat:testes6", "concat:testes5", "concat:internalses6", "babel"]
-			}
+			//test: {
+			//	files: ["gruntfile.js", "package.json", "src/test.js", "src/**/test.js", "src/internal/**/*.js"],
+			//	tasks: ["concat:testes6", "concat:testes5", "concat:internalses6", "babel"]
+			//}
 		}
 	});
-	grunt.registerTask("default", ["concat", "babel", "uglify"]);
+	grunt.registerTask("default", ["rollup", "babel", "uglify"]);
 };

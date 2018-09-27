@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import "../isplainobject/isplainobject.js";
+
 $.extend = (...arrs) => {
 	if (arrs[0] === true) {
 

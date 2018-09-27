@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import filterNodes from "../../internal/filternodes/filternodes.js";
+
 ["remove", "detach"].forEach(func => {
 	$.fn[func] = function (selector) {
 		let i = this.length,

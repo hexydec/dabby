@@ -1,3 +1,6 @@
+import $ from "../../core/dabby/dabby.js";
+import filterNodes from "../../internal/filternodes/filternodes.js";
+
 ["parent", "parents", "parentsUntil"].forEach(func => {
 	$.fn[func] = function (selector, filter) {
 		const all = func.indexOf("s") > -1,

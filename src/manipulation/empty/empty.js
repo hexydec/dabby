@@ -1,3 +1,5 @@
+import $ from "../../core/dabby/dabby.js";
+
 $.fn.empty = function () {
 	let i = this.length;
 	while (i--) {
