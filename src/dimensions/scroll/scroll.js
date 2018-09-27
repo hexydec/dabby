@@ -23,6 +23,9 @@ import "../../utils/iswindow/iswindow.js";
 
 		// get
 		} else if (this[0]) {
+			if ($.isWindow(this[0])) {
+				item = item === "scrollTop" ? "pageYOffset" : "pageXOffset";
+			}
 			return this[0][item];
 		}
 	};

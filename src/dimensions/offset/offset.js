@@ -16,17 +16,27 @@ $.fn.offset = function (coords) {
 			coords = getVal(coords, this[i], i, $(this[i]).offset());
 
 			if (coords.top !== undefined && coords.left !== undefined) {
-
-				// set position relative if static
 				let style = getComputedStyle(this[i]);
 				pos = style.getPropertyValue("position");
+
+				// set position relative if static
 				if (pos === "static") {
 					this[i].style.position = "relative";
 				}
 
+				// add current offset
+				coords.top += parseFloat(style.getPropertyValue("top")) || 0;
+				coords.left += parseFloat(style.getPropertyValue("left")) || 0;
+
+				// remove parent offset and viewport scroll
+				if (pos !== "fixed") {
+					coords.top -= doc.scrollTop + rect.top;
+					coords.left -= doc.scrollLeft + rect.left;
+				}
+
 				// set offset
-				this[i].style.top = (parseFloat(coords.top) - (pos === "fixed" ? 0 : doc.scrollTop + rect.top - parseFloat(style.getPropertyValue("top")))) + "px";
-				this[i].style.left = (parseFloat(coords.left) - (pos === "fixed" ? 0 : doc.scrollLeft + rect.left - parseFloat(style.getPropertyValue("left")))) + "px";
+				this[i].style.top = coords.top + "px";
+				this[i].style.left = coords.left + "px";
 			}
 		}
 		return this;
