@@ -1,3 +1,4 @@
+import $ from "../../core/core.js";
 import "../../utils/isfunction/isfunction.js";
 
 export default (val, obj, i, current) => {

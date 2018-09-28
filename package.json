@@ -26,6 +26,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
+    "@comandeer/babel-plugin-banner": "^4.0.0",
     "babel-plugin-uglify": "^1.0.2",
     "babel-preset-minify": "^0.4.3",
     "grunt": "^1.0.3",

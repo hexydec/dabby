@@ -1,3 +1,3 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 
 $.isWindow = obj => obj !== null && obj === obj.window;

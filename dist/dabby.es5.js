@@ -1,95 +1,92 @@
-if (!Array.from) {
-  Array.from = function (arrayLike, mapFn, thisArg) {
-    var arr = [].slice.call(arrayLike);
+"use strict";
 
-    if (typeof mapFn === "function") {
-      arr = arr.map(mapFn, thisArg);
-    }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-    return arr;
-  };
-}
+/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
+(function (global, factory) {
+  (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? factory() : typeof define === 'function' && define.amd ? define(factory) : factory();
+})(void 0, function () {
+  'use strict';
 
-// CustomEvent is not supported in IE11
-if (typeof window.CustomEvent !== "function") {
-  var CustomEvent$1 = function CustomEvent(event, params) {
-    params = params || {
-      bubbles: false,
-      cancelable: false,
-      detail: undefined
-    };
-    var evt = document.createEvent("CustomEvent");
-    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-    return evt;
-  };
+  if (!Array.from) {
+    Array.from = function (arrayLike, mapFn, thisArg) {
+      var arr = [].slice.call(arrayLike);
 
-  CustomEvent$1.prototype = window.Event.prototype;
-  window.CustomEvent = CustomEvent$1;
-}
-
-// support Element.matches() in IE and older Webkit
-if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector;
-}
-
-if (!NodeList.prototype.forEach) {
-  NodeList.prototype.forEach = function (callback, thisArg) {
-    thisArg = thisArg || window;
-
-    for (var i = 0; i < this.length; i++) {
-      callback.call(thisArg, this[i], i, this);
-    }
-  };
-}
-
-if (typeof Object.assign !== "function") {
-  Object.defineProperty(Object, "assign", {
-    value: function assign(target, varArgs) {
-      // .length of function is 2
-      if (target == null) {
-        // TypeError if undefined or null
-        throw new TypeError('Cannot convert undefined or null to object');
+      if (typeof mapFn === "function") {
+        arr = arr.map(mapFn, thisArg);
       }
 
-      var to = Object(target);
-
-      for (var index = 1; index < arguments.length; index++) {
-        var nextSource = arguments[index];
-
-        if (nextSource != null) {
-          // Skip over if undefined or null
-          for (var nextKey in nextSource) {
-            // Avoid bugs when hasOwnProperty is shadowed
-            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-              to[nextKey] = nextSource[nextKey];
-            }
-          }
-        }
-      }
-
-      return to;
-    },
-    writable: true,
-    configurable: true
-  });
-}
-
-function _typeof(obj) {
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
+      return arr;
     };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  } // CustomEvent is not supported in IE11
+
+
+  if (typeof window.CustomEvent !== "function") {
+    var CustomEvent$1 = function CustomEvent$1(event, params) {
+      params = params || {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+      };
+      var evt = document.createEvent("CustomEvent");
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      return evt;
+    };
+
+    CustomEvent$1.prototype = window.Event.prototype;
+    window.CustomEvent = CustomEvent$1;
+  } // support Element.matches() in IE and older Webkit
+
+
+  if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector;
+  }
+
+  if (!NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = function (callback, thisArg) {
+      thisArg = thisArg || window;
+
+      for (var i = 0; i < this.length; i++) {
+        callback.call(thisArg, this[i], i, this);
+      }
     };
   }
 
-  return _typeof(obj);
-}
+  if (typeof Object.assign !== "function") {
+    Object.defineProperty(Object, "assign", {
+      value: function assign(target, varArgs) {
+        // .length of function is 2
+        if (target == null) {
+          // TypeError if undefined or null
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
 
-var $ = function (exports) {
-  var $$1 = function dabby(selector, context) {
+        var to = Object(target);
+
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+
+          if (nextSource != null) {
+            // Skip over if undefined or null
+            for (var nextKey in nextSource) {
+              // Avoid bugs when hasOwnProperty is shadowed
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+
+        return to;
+      },
+      writable: true,
+      configurable: true
+    });
+  }
+  /*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
+
+
+  var $ = function dabby(selector, context) {
     var _this = this;
 
     var nodes = [],
@@ -106,10 +103,10 @@ var $ = function (exports) {
         nodes = [selector]; // ready function
       } else if (isFunction(selector)) {
         if (document.readyState !== "loading") {
-          selector.call(document, $$1);
+          selector.call(document, $);
         } else {
           document.addEventListener("DOMContentLoaded", function () {
-            selector.call(document, $$1);
+            selector.call(document, $);
           }, {
             once: true
           });
@@ -118,14 +115,14 @@ var $ = function (exports) {
       } else if (typeof selector !== "string") {
         nodes = selector; // CSS selector
       } else if (selector.indexOf("<") === -1) {
-        $$1(context || document).each(function (i, obj) {
+        $(context || document).each(function (i, obj) {
           nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
         }); // create a single node and attach properties
       } else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
         nodes.push(document.createElement(match[1])); // context is CSS attributes
 
         if (context instanceof Object) {
-          obj = $$1(nodes);
+          obj = $(nodes);
           utilEach(context, function (prop, value) {
             obj.attr(prop, value);
           });
@@ -152,9 +149,9 @@ var $ = function (exports) {
   }; // alias functions
 
 
-  $$1.fn = $$1.prototype;
+  $.fn = $.prototype;
 
-  $$1.each = function (obj, callback) {
+  $.each = function (obj, callback) {
     var keys = Object.keys(obj),
         len = keys.length;
 
@@ -167,20 +164,20 @@ var $ = function (exports) {
     return obj;
   };
 
-  $$1.fn.each = function (callback) {
-    $$1.each(Array.from(this), callback);
+  $.fn.each = function (callback) {
+    $.each(Array.from(this), callback);
     return this;
   };
 
-  $$1.isWindow = function (obj) {
+  $.isWindow = function (obj) {
     return obj !== null && obj === obj.window;
   };
 
-  $$1.isFunction = function (func) {
+  $.isFunction = function (func) {
     return func && func.constructor === Function;
   };
 
-  $$1.isPlainObject = function (obj) {
+  $.isPlainObject = function (obj) {
     // Basic check for Type object that's not null
     if (_typeof(obj) === "object" && obj !== null) {
       // If Object.getPrototypeOf supported, use it
@@ -198,7 +195,7 @@ var $ = function (exports) {
     return false;
   };
 
-  $$1.extend = function () {
+  $.extend = function () {
     for (var _len = arguments.length, arrs = new Array(_len), _key = 0; _key < _len; _key++) {
       arrs[_key] = arguments[_key];
     }
@@ -214,15 +211,15 @@ var $ = function (exports) {
           // work on next source
           var source = sources.shift();
 
-          if ($$1.isPlainObject(target) && $$1.isPlainObject(source)) {
+          if ($.isPlainObject(target) && $.isPlainObject(source)) {
             // loop through each property
             var keys = Object.keys(source),
                 len = keys.length;
 
             for (var i = 0; i < len; i++) {
               // merge recursively if source is object, if target is not object, overwrite
-              if ($$1.isPlainObject(source[keys[i]])) {
-                target[keys[i]] = $$1.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]]; // when source property is value just overwrite
+              if ($.isPlainObject(source[keys[i]])) {
+                target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]]; // when source property is value just overwrite
               } else {
                 target[keys[i]] = source[keys[i]];
               }
@@ -242,17 +239,17 @@ var $ = function (exports) {
     }
   };
 
-  $$1.isArray = function (arr) {
+  $.isArray = function (arr) {
     return Array.isArray(arr);
   };
 
-  $$1.param = function (obj) {
+  $.param = function (obj) {
     var params = [],
         add = function add(key, value, params) {
-      var isArr = $$1.isArray(value);
+      var isArr = $.isArray(value);
 
       if (isArr || _typeof(value) === "object") {
-        $$1.each(value, function (i, val) {
+        $.each(value, function (i, val) {
           params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
         });
       } else {
@@ -263,13 +260,13 @@ var $ = function (exports) {
     }; // process values
 
 
-    $$1.each(obj, function (key, item) {
+    $.each(obj, function (key, item) {
       params = add(key, item, params);
     });
     return params.join("&");
   };
 
-  $$1.ajax = function (url, settings) {
+  $.ajax = function (url, settings) {
     // normalise args
     if (_typeof(url) === "object") {
       settings = url;
@@ -282,7 +279,7 @@ var $ = function (exports) {
     } // set default settings
 
 
-    settings = $$1.extend({
+    settings = $.extend({
       method: "GET",
       cache: null,
       // start will null so we can see if explicitly set
@@ -314,7 +311,7 @@ var $ = function (exports) {
         data; // add data to query string
 
     if (settings.data) {
-      data = typeof settings.data === "string" ? settings.data : $$1.param(settings.data);
+      data = typeof settings.data === "string" ? settings.data : $.param(settings.data);
     }
 
     if (data && settings.method === "GET") {
@@ -340,7 +337,7 @@ var $ = function (exports) {
       } // setup event callbacks
 
 
-      $$1.each({
+      $.each({
         load: "success",
         error: "error"
       }, function (key, value) {
@@ -386,7 +383,7 @@ var $ = function (exports) {
       } // headers
 
 
-      $$1.each(settings.headers, function (key, value) {
+      $.each(settings.headers, function (key, value) {
         xhr.setRequestHeader(key, value);
       }); // callbacks
 
@@ -413,8 +410,8 @@ var $ = function (exports) {
   };
 
   ["get", "post"].forEach(function (name) {
-    $$1[name] = function (url, data, success, type) {
-      var isFunc = $$1.isFunction(data);
+    $[name] = function (url, data, success, type) {
+      var isFunc = $.isFunction(data);
       var settings = _typeof(url) === "object" ? url : {
         url: url,
         data: isFunc ? {} : data,
@@ -422,12 +419,12 @@ var $ = function (exports) {
         dataType: isFunc ? success : type
       };
       settings.method = name.toUpperCase();
-      return $$1.ajax(settings);
+      return $.ajax(settings);
     };
   });
 
-  $$1.getScript = function (url, success) {
-    return $$1.ajax({
+  $.getScript = function (url, success) {
+    return $.ajax({
       url: url,
       dataType: "script",
       success: success
@@ -444,14 +441,14 @@ var $ = function (exports) {
     } // function
 
 
-    if ($$1.isFunction(filter)) {
+    if ($.isFunction(filter)) {
       func = filter; // nodes
     } else {
       // normalise filters
       if (typeof filter === "string") {
         filter = [filter];
       } else {
-        filter = Array.from($$1(filter, context));
+        filter = Array.from($(filter, context));
       } // filter function
 
 
@@ -474,13 +471,13 @@ var $ = function (exports) {
   };
 
   ["filter", "not", "is"].forEach(function (name) {
-    $$1.fn[name] = function (selector) {
+    $.fn[name] = function (selector) {
       var nodes = filterNodes(this, selector, name === "not");
-      return name === "is" ? !!nodes : $$1(nodes);
+      return name === "is" ? !!nodes : $(nodes);
     };
   });
 
-  $$1.fn.load = function (url, data, _success) {
+  $.fn.load = function (url, data, _success) {
     var _this2 = this;
 
     if (this[0]) {
@@ -489,13 +486,13 @@ var $ = function (exports) {
       var uri = url[0],
           selector = url[1]; // check for data
 
-      if ($$1.isFunction(data)) {
+      if ($.isFunction(data)) {
         _success = data;
         data = undefined;
       } // make AJAX request
 
 
-      $$1.ajax(uri, {
+      $.ajax(uri, {
         data: data,
         type: data instanceof Object ? "POST" : "GET",
         success: function success(response, status, xhr) {
@@ -504,7 +501,7 @@ var $ = function (exports) {
               i = _this2.length; // refine by selector if supplied
 
           if (selector) {
-            $$1(response).filter(selector).each(function (key, obj) {
+            $(response).filter(selector).each(function (key, obj) {
               html += obj.outerHTML;
             });
           } else {
@@ -535,7 +532,7 @@ var $ = function (exports) {
     return val;
   };
 
-  $$1.map = function (obj, callback) {
+  $.map = function (obj, callback) {
     var keys = Object.keys(obj),
         len = keys.length;
     var arr = [],
@@ -553,7 +550,7 @@ var $ = function (exports) {
     return arr;
   };
 
-  $$1.fn.val = function (value) {
+  $.fn.val = function (value) {
     var _this3 = this;
 
     // set value
@@ -563,15 +560,15 @@ var $ = function (exports) {
 
         var _loop = function _loop() {
           var val = getVal(value, _this3[i], i, function () {
-            return $$1(_this3[i]).val();
+            return $(_this3[i]).val();
           });
 
           if (_this3[i].multiple) {
-            val = $$1.map($$1.isArray(val) ? val : [val], function (item) {
+            val = $.map($.isArray(val) ? val : [val], function (item) {
               return String(item);
             }); // convert to string
 
-            $$1("option", _this3[i]).each(function (key, obj) {
+            $("option", _this3[i]).each(function (key, obj) {
               obj.selected = val.indexOf(String(obj.value)) > -1;
             });
           } else {
@@ -593,7 +590,7 @@ var $ = function (exports) {
       // get multiple values
       if (this[0].multiple) {
         var values = [];
-        $$1("option", this[0]).each(function (key, obj) {
+        $("option", this[0]).each(function (key, obj) {
           if (obj.selected) {
             values.push(String(obj.value));
           }
@@ -608,9 +605,9 @@ var $ = function (exports) {
     }
   };
 
-  $$1.fn.serialize = function () {
+  $.fn.serialize = function () {
     var selector = "input[name]:not([type=file]):not([type=submit]),textarea[name],select[name]",
-        obj = this.is(selector) ? this.filter(selector) : $$1(selector, this),
+        obj = this.is(selector) ? this.filter(selector) : $(selector, this),
         add = function add(name, value, params) {
       var match;
 
@@ -623,11 +620,11 @@ var $ = function (exports) {
       if (name !== "") {
         params[name] = value;
       } else {
-        if (!$$1.isArray(params)) {
+        if (!$.isArray(params)) {
           params = [];
         }
 
-        params = params.concat($$1.isArray(value) ? value : [value]);
+        params = params.concat($.isArray(value) ? value : [value]);
       }
 
       return params;
@@ -636,17 +633,17 @@ var $ = function (exports) {
     var params = {}; // process values
 
     obj.each(function (key, obj) {
-      var value = $$1(obj).val();
+      var value = $(obj).val();
 
       if (!obj.disabled && value !== undefined) {
         params = add(obj.getAttribute("name"), value, params);
       }
     });
-    return $$1.param(params);
+    return $.param(params);
   };
 
-  $$1.fn.add = function (nodes, context) {
-    nodes = $$1(nodes, context);
+  $.fn.add = function (nodes, context) {
+    nodes = $(nodes, context);
     var len = this.length,
         i = nodes.length;
     this.length += i;
@@ -659,7 +656,7 @@ var $ = function (exports) {
   };
 
   ["parent", "parents", "parentsUntil"].forEach(function (func) {
-    $$1.fn[func] = function (selector, filter) {
+    $.fn[func] = function (selector, filter) {
       var all = func.indexOf("s") > -1,
           until = func.indexOf("U") > -1;
       var nodes = [],
@@ -684,25 +681,26 @@ var $ = function (exports) {
         nodes = filterNodes(nodes, selector);
       }
 
-      return $$1(nodes);
+      return $(nodes);
     };
   });
 
-  $$1.fn.get = function (i) {
+  $.fn.get = function (i) {
     return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
-  };
+  }; // add and remove event handlers
+
 
   ["on", "one", "off"].forEach(function (name) {
-    $$1.fn[name] = function (events, selector, data, callback) {
+    $.fn[name] = function (events, selector, data, callback) {
       var _this4 = this;
 
       var i = this.length;
       events = events.split(" "); // sort out args
 
-      if ($$1.isFunction(selector)) {
+      if ($.isFunction(selector)) {
         callback = selector;
         selector = null;
-      } else if ($$1.isFunction(data)) {
+      } else if ($.isFunction(data)) {
         callback = data;
         data = null;
       } // attach event
@@ -721,7 +719,7 @@ var $ = function (exports) {
             var target = [this];
 
             if (selector) {
-              var t = $$1(evt.target);
+              var t = $(evt.target);
               target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
             }
 
@@ -788,10 +786,10 @@ var $ = function (exports) {
   });
   var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
 
-  $$1.fn.attr = function (prop, value) {
+  $.fn.attr = function (prop, value) {
     var _this5 = this;
 
-    var isArr = $$1.isArray(prop),
+    var isArr = $.isArray(prop),
         i,
         events$$1,
         arr = {}; // set properties
@@ -805,9 +803,9 @@ var $ = function (exports) {
       }
 
       while (i--) {
-        $$1.each(prop, function (key, val) {
+        $.each(prop, function (key, val) {
           if (events$$1.indexOf(key) > -1) {
-            $$1(_this5[i]).on(key, val);
+            $(_this5[i]).on(key, val);
           } else if (key === "style") {
             _this5[i].style.cssText = val;
           } else if (key === "class") {
@@ -837,7 +835,7 @@ var $ = function (exports) {
   };
 
   ["addClass", "removeClass", "toggleClass"].forEach(function (name) {
-    $$1.fn[name] = function (cls) {
+    $.fn[name] = function (cls) {
       // remove "Class" from name for classList method
       var func = name.substr(0, name.length - 5),
           i = this.length; // manage classes on nodes
@@ -899,9 +897,9 @@ var $ = function (exports) {
     return dabby;
   };
 
-  $$1.fn.css = function (props, value) {
+  $.fn.css = function (props, value) {
     // set the values
-    if (value !== undefined || $$1.isPlainObject(props)) {
+    if (value !== undefined || $.isPlainObject(props)) {
       return setCss(this, props, value); // retrieve value from first property
     } else if (this[0]) {
       var name = props,
@@ -935,7 +933,7 @@ var $ = function (exports) {
     });
   };
 
-  $$1.fn.data = function (name, data) {
+  $.fn.data = function (name, data) {
     var _this6 = this;
 
     // convert data to object
@@ -953,7 +951,7 @@ var $ = function (exports) {
         var i = _this6.length;
 
         while (i--) {
-          $$1.each(data, function (key, value) {
+          $.each(data, function (key, value) {
             _this6[i].dataset[camelise(key)] = _typeof(value) === "object" ? JSON.stringify(value) : value;
           });
         }
@@ -976,7 +974,7 @@ var $ = function (exports) {
 
       if (name === undefined) {
         var arr = {};
-        $$1.each(this[0].dataset, function (key, value) {
+        $.each(this[0].dataset, function (key, value) {
           arr[key] = parse(value);
         });
         return arr; // retrieve specific property
@@ -990,7 +988,7 @@ var $ = function (exports) {
     }
   };
 
-  $$1.fn.hasClass = function (cls) {
+  $.fn.hasClass = function (cls) {
     var i = this.length;
 
     while (i--) {
@@ -1021,7 +1019,7 @@ var $ = function (exports) {
     return properties[prop] || prop;
   };
 
-  $$1.fn.prop = function (prop, value) {
+  $.fn.prop = function (prop, value) {
     prop = getProp(prop); // set
 
     if (value !== undefined) {
@@ -1037,7 +1035,7 @@ var $ = function (exports) {
     }
   };
 
-  $$1.fn.removeProp = function (prop) {
+  $.fn.removeProp = function (prop) {
     if (this[0]) {
       var i = this.length;
       prop = getProp(prop);
@@ -1050,7 +1048,7 @@ var $ = function (exports) {
     }
   };
 
-  $$1.fn.map = function (callback) {
+  $.fn.map = function (callback) {
     var len = this.length;
     var values = [],
         i = 0;
@@ -1062,7 +1060,7 @@ var $ = function (exports) {
     return values;
   };
 
-  $$1.fn.offset = function (coords) {
+  $.fn.offset = function (coords) {
     var doc = document.documentElement;
     var rect,
         i = this.length,
@@ -1072,7 +1070,7 @@ var $ = function (exports) {
       while (i--) {
         // if coords is callback, generate value
         rect = this[i].getBoundingClientRect();
-        coords = getVal(coords, this[i], i, $$1(this[i]).offset());
+        coords = getVal(coords, this[i], i, $(this[i]).offset());
 
         if (coords.top !== undefined && coords.left !== undefined) {
           var style = getComputedStyle(this[i]);
@@ -1108,11 +1106,11 @@ var $ = function (exports) {
     }
   };
 
-  $$1.fn.offsetParent = function () {
-    return $$1(this[0] ? this[0].offsetParent : null);
+  $.fn.offsetParent = function () {
+    return $(this[0] ? this[0].offsetParent : null);
   };
 
-  $$1.fn.position = function () {
+  $.fn.position = function () {
     if (this[0]) {
       return {
         left: this[0].offsetLeft,
@@ -1122,7 +1120,7 @@ var $ = function (exports) {
   };
 
   ["scrollLeft", "scrollTop"].forEach(function (item) {
-    $$1.fn[item] = function (pos) {
+    $.fn[item] = function (pos) {
       // set
       if (pos !== undefined) {
         var i = this.length,
@@ -1131,7 +1129,7 @@ var $ = function (exports) {
         while (i--) {
           var val = getVal(pos, this, i, this[i][item]);
 
-          if ($$1.isWindow(this[i])) {
+          if ($.isWindow(this[i])) {
             var obj = {};
             obj[tl] = val;
             this[i].scroll(obj);
@@ -1142,7 +1140,7 @@ var $ = function (exports) {
 
         return this; // get
       } else if (this[0]) {
-        if ($$1.isWindow(this[0])) {
+        if ($.isWindow(this[0])) {
           item = item === "scrollTop" ? "pageYOffset" : "pageXOffset";
         }
 
@@ -1166,7 +1164,7 @@ var $ = function (exports) {
       return value;
     };
 
-    $$1.fn[dim] = function (val) {
+    $.fn[dim] = function (val) {
       var valtype = _typeof(val),
           wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
           // width or height
@@ -1215,7 +1213,7 @@ var $ = function (exports) {
 
         if (this[0].nodeType === Node.DOCUMENT_NODE) {
           return this[0].documentElement["scroll" + whu]; // element
-        } else if (!$$1.isWindow(this[0])) {
+        } else if (!$.isWindow(this[0])) {
           param = io === "outer" ? "offset" : "client";
           value = this[0][param + whu]; // add padding on, or if outer and margins requested, add margins on
 
@@ -1233,7 +1231,7 @@ var $ = function (exports) {
     };
   });
 
-  $$1.fn.trigger = function (name, data) {
+  $.fn.trigger = function (name, data) {
     var evt = new CustomEvent(name, {
       bubbles: true,
       cancelable: true
@@ -1255,12 +1253,12 @@ var $ = function (exports) {
   };
 
   events.forEach(function (event) {
-    $$1.fn[event] = function (data, callback) {
+    $.fn[event] = function (data, callback) {
       return data ? this.on(event, data, callback) : this.trigger(event);
     };
   });
 
-  $$1.fn.clone = function () {
+  $.fn.clone = function () {
     var nodes = [],
         i = this.length;
 
@@ -1268,22 +1266,22 @@ var $ = function (exports) {
       nodes[i] = this[i].cloneNode(true);
     }
 
-    return $$1(nodes);
+    return $(nodes);
   };
 
-  $$1.fn.empty = function () {
+  $.fn.empty = function () {
     var i = this.length;
 
     while (i--) {
       while (this[i].firstChild && this[i].removeChild(this[i].firstChild)) {
-        
+        ;
       }
     }
 
     return this;
   };
 
-  $$1.fn.html = function (html) {
+  $.fn.html = function (html) {
     // set
     if (html !== undefined) {
       var i = this.length;
@@ -1298,28 +1296,28 @@ var $ = function (exports) {
     }
   };
 
-  $$1.each({
+  $.each({
     before: "beforeBegin",
     prepend: "afterBegin",
     append: "beforeEnd",
     after: "afterEnd"
   }, function (name, pos) {
-    $$1.fn[name] = function (html) {
+    $.fn[name] = function (html) {
       var pre = ["before", "prepend"].indexOf(name) > -1,
-          isFunc = $$1.isFunction(html);
+          isFunc = $.isFunction(html);
       var i = this.length,
-          elems = $$1();
+          elems = $();
 
       if (!isFunc) {
         // multiple arguments containing nodes?
-        $$1.each(arguments, function (i, arg) {
+        $.each(arguments, function (i, arg) {
           elems.add(arg);
         });
       }
 
       while (i--) {
         if (isFunc) {
-          elems = $$1(getVal(html, this[i], i, this[i].innerHTML));
+          elems = $(getVal(html, this[i], i, this[i].innerHTML));
         }
 
         var backwards = elems.length,
@@ -1341,15 +1339,15 @@ var $ = function (exports) {
       return this;
     };
   });
-  $$1.each({
+  $.each({
     insertBefore: "before",
     prependTo: "prepend",
     appendTo: "append",
     insertAfter: "after"
   }, function (name, func) {
-    $$1.fn[name] = function (selector) {
+    $.fn[name] = function (selector) {
       var i = this.length,
-          obj = $$1(selector);
+          obj = $(selector);
 
       while (i--) {
         obj[func](this[i]);
@@ -1359,7 +1357,7 @@ var $ = function (exports) {
     };
   });
   ["remove", "detach"].forEach(function (func) {
-    $$1.fn[func] = function (selector) {
+    $.fn[func] = function (selector) {
       var i = this.length,
           nodes = []; // detach selected nodes
 
@@ -1370,18 +1368,18 @@ var $ = function (exports) {
       } // create a new dabby object to return
 
 
-      return func === "detach" ? $$1(nodes) : this;
+      return func === "detach" ? $(nodes) : this;
     };
   });
   ["replaceWith", "replaceAll"].forEach(function (name) {
-    $$1.fn[name] = function (html) {
+    $.fn[name] = function (html) {
       var all = name === "replaceAll",
-          source = all ? $$1(html) : this;
+          source = all ? $(html) : this;
       var target = all ? this : html,
-          isFunc = $$1.isFunction(target);
+          isFunc = $.isFunction(target);
 
       if (!isFunc) {
-        target = $$1(target);
+        target = $(target);
       }
 
       var i = source.length;
@@ -1405,11 +1403,11 @@ var $ = function (exports) {
     };
   });
 
-  $$1.fn.slice = function (start, end) {
-    return $$1(this.get().slice(start, end));
+  $.fn.slice = function (start, end) {
+    return $(this.get().slice(start, end));
   };
 
-  $$1.fn.text = function (text) {
+  $.fn.text = function (text) {
     var get = text === undefined;
     var len = this.length,
         output = [],
@@ -1426,12 +1424,12 @@ var $ = function (exports) {
     return get ? output.join(" ") : this;
   };
 
-  $$1.fn.wrapAll = function (html) {
+  $.fn.wrapAll = function (html) {
     if (this[0]) {
       // set variables
       var len = this.length,
           i = 0,
-          node = $$1(getVal(html, this[0]))[0].cloneNode(true); // insert clone into parent
+          node = $(getVal(html, this[0])).get(0).cloneNode(true); // insert clone into parent
 
       this[0].parentNode.insertBefore(node, null); // find innermost child of node
 
@@ -1448,17 +1446,17 @@ var $ = function (exports) {
     return this;
   };
 
-  $$1.fn.wrap = function (html) {
+  $.fn.wrap = function (html) {
     var i = this.length;
 
     while (i--) {
-      $$1(this[i]).wrapAll(getVal(html, this[i], i));
+      $(this[i]).wrapAll(getVal(html, this[i], i));
     }
 
     return this;
   };
 
-  $$1.fn.children = function (selector) {
+  $.fn.children = function (selector) {
     var nodes = [],
         i = this.length;
 
@@ -1471,10 +1469,10 @@ var $ = function (exports) {
       nodes = filterNodes(nodes, selector);
     }
 
-    return $$1(nodes);
+    return $(nodes);
   };
 
-  $$1.fn.closest = function (selector, context) {
+  $.fn.closest = function (selector, context) {
     var i = this.length,
         nodes = [],
         parents,
@@ -1496,29 +1494,29 @@ var $ = function (exports) {
       }
     }
 
-    return $$1(nodes);
+    return $(nodes);
   };
 
-  $$1.fn.eq = function (i) {
+  $.fn.eq = function (i) {
     var key = i < 0 ? i + this.length : i;
-    return $$1(this[key] || null);
+    return $(this[key] || null);
   };
 
-  $$1.fn.find = function (selector) {
-    return $$1(selector, this);
+  $.fn.find = function (selector) {
+    return $(selector, this);
   };
 
-  $$1.fn.first = function () {
-    return $$1(this[0]);
+  $.fn.first = function () {
+    return $(this[0]);
   };
 
-  $$1.fn.has = function (selector) {
-    return $$1(this.get().filter(function (node) {
-      return !!$$1(selector, node).length;
+  $.fn.has = function (selector) {
+    return $(this.get().filter(function (node) {
+      return !!$(selector, node).length;
     }));
   };
 
-  $$1.fn.index = function (selector) {
+  $.fn.index = function (selector) {
     var index = -1;
 
     if (this[0]) {
@@ -1531,10 +1529,10 @@ var $ = function (exports) {
       if (type === "undefined") {
         nodes = this[0].parentNode.children; // if selector is string, match first node in current collection against resulting collection
       } else if (type === "string") {
-        nodes = $$1(selector); // if element or collection match the element or first node against current collection
+        nodes = $(selector); // if element or collection match the element or first node against current collection
       } else {
         nodes = this;
-        subject = $$1(selector)[0];
+        subject = $(selector)[0];
       }
 
       i = nodes.length;
@@ -1549,12 +1547,12 @@ var $ = function (exports) {
     return index;
   };
 
-  $$1.fn.last = function () {
+  $.fn.last = function () {
     return this.eq(-1);
   };
 
   ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
-    $$1.fn[func] = function (selector, filter) {
+    $.fn[func] = function (selector, filter) {
       var next = func.indexOf("next") > -1,
           all = func.indexOf("All") > -1,
           until = func.indexOf("Until") > -1,
@@ -1588,11 +1586,11 @@ var $ = function (exports) {
       } // return new collection
 
 
-      return $$1(nodes);
+      return $(nodes);
     };
   });
 
-  $$1.fn.siblings = function (selector) {
+  $.fn.siblings = function (selector) {
     var _this7 = this;
 
     var i = this.length,
@@ -1606,9 +1604,7 @@ var $ = function (exports) {
       });
     }
 
-    return $$1(selector ? filterNodes(nodes, selector) : nodes);
+    return $(selector ? filterNodes(nodes, selector) : nodes);
   };
-
-  exports.$ = $$1;
-  return exports;
-}({});
+});
+//# sourceMappingURL=dabby.es5.js.map

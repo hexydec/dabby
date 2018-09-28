@@ -1,3 +1,3 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 
 $.isFunction = func => func && func.constructor === Function;

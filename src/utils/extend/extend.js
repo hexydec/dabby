@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 import "../isplainobject/isplainobject.js";
 
 $.extend = (...arrs) => {

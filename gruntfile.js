@@ -5,38 +5,20 @@
  */
 module.exports = function (grunt) {
 	require("load-grunt-tasks")(grunt);
-
-	// build files using include or exclude arguments
-	var files = ["src/internal/**/*.js", "src/dabby.js", "src/utils/each/each.js"],
-		outdir = grunt.option("outdir") || "dist";
-
-	if (grunt.option("include")) {
-		files.push("src/*/**/{"+grunt.option("include")+"}.js");
-	} else {
-		files.push("src/*/**/"+(grunt.option("exclude") ? "!(" + grunt.option("exclude").replace(",", "|") + ")" : "*")+".js");
-	}
-	files.push("!src/**/test.js");
-
-	var babel = require("rollup-plugin-babel");
+	var banner = "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby */\n";
 
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
-		concat: {
+		/*concat: {
 			options: {
-				banner: "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby */\n\n",
+				banner: banner,
 				sourceMap: true,
-				sourceMapStyle: "link",
-				/*process: function(src, filepath) {
-					if (filepath !== "src/export.js") {
-						src = "\t" + src.replace(/\n/g, "\n\t");
-					}
-					return src;
-				}*/
+				sourceMapStyle: "link"
 			},
 			es6: {
 				files: {
-					[outdir + "/dabby.js"]: files.concat("!src/polyfill/*.js", "src/export.js")
+					["dist/dabby.js"]: files.concat("!src/polyfill/*.js", "src/export.js")
 				}
 			},
 			es5: {
@@ -44,7 +26,7 @@ module.exports = function (grunt) {
 					footer: "return dabby;}));"
 				},
 				files: {
-					[outdir + "/dabby.es5.js"]: ["src/export.es5.js", "src/polyfill/*.js"].concat(files)
+					["dist/dabby.es5.js"]: ["src/export.es5.js", "src/polyfill/*.js"].concat(files)
 				}
 			},
 			internalses6: {
@@ -52,54 +34,40 @@ module.exports = function (grunt) {
 					banner: "import $ from \"../dist/dabby.js\";\n\n",
 					footer: "export {camelise, dasherise, filterNodes, getEvents, getProp, getVal, setCss};"
 				},
-				files: {
-					"tests/internals.js": ["src/internal/**/*.js", "!src/**/test.js"]
-				}
+				files: {*/
+					//"tests/internals.js": ["src/internal/**/*.js", "!src/**/test.js"]
+				/*}
 			},
 			testes6: {
 				options: {
 					banner: "import $ from \"../dist/dabby.js\";\nimport * as internals from \"./internals.js\";\n\n"
 				},
-				files: {
-					"tests/test.js": ["src/test.js", "src/**/test.js"]
-				}
+				files: {*/
+					//"tests/test.js": ["src/test.js", "src/**/test.js"]
+				/*}
 			},
 			testes5: {
-				files: {
-					"tests/test.es5.js": ["src/test.js", "src/**/test.js"],
-					"tests/internals.es5.js": ["src/internal/**/*.js", "!src/**/test.js"]
-				}
+				files: {*/
+					//"tests/test.es5.js": ["src/test.js", "src/**/test.js"],
+					//"tests/internals.es5.js": ["src/internal/**/*.js", "!src/**/test.js"]
+				/*}
 			}
-		},
+		},*/
 		rollup: {
 			options: {
-				format: "iife",
-				moduleName: "$",
-				sourcemap: true
+				sourcemap: true,
+				banner: banner,
 			},
 			es6: {
 				options: {
-	  				plugins: [
-	  					babel({
-	  						presets: [
-								["@babel/preset-env", {"targets": {"esmodules": true}}]
-							],
-	  						exclude: './node_modules/**'
-	  					})
-	  				]
+					format: "es"
 				},
 				"dest": "dist/dabby.js",
 				"src": "src/build.js"
 			},
 			es5: {
 				options: {
-					format: "es",
-	  				plugins: [
-	  					babel({
-	  						presets: ["@babel/preset-env"],
-	  						exclude: './node_modules/**'
-	  					})
-	  				]
+					format: "umd"
 				},
 				"dest": "dist/dabby.es5.js",
 				"src": "src/build.es5.js"
@@ -108,41 +76,46 @@ module.exports = function (grunt) {
 		babel: {
 			es6: {
 				files: {
-					[outdir + "/dabby.min.js"]: outdir + "/dabby.js",
+					["dist/dabby.min.js"]: "dist/dabby.js",
 					//"tests/test.js": "tests/test.js"
 				},
 				options: {
 					sourceMap: false,
-					presets: ["minify"]
+					presets: [
+						"minify",
+					],
+					plugins: [
+						//["@comandeer/banner", {banner: banner}]
+					]
 				}
 			},
-			/*es5: {
+			es5: {
 				files: {
-					[outdir + "/dabby.es5.js"]: outdir + "/dabby.es5.js",
+					["dist/dabby.es5.js"]: "dist/dabby.es5.js",
 					"tests/internals.es5.js": "tests/internals.es5.js",
 					"tests/test.es5.js": "tests/test.es5.js"
 				},
 				options: {
 					sourceMap: true,
 					presets: [
-						["env", {
+						["@babel/env", {
 							"targets": {
 								"browsers": ["last 2 versions", "IE >= 11"]
 							},
-							"useBuiltIns": true
+							"useBuiltIns": false
 						}]
 					]
 				}
-			}*/
+			}
 		},
 		uglify: {
 			options: {
-				banner: "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby *\/",
+				banner: banner,
 				report: "gzip"
 			},
 			minified: {
 				files: {
-					[outdir + "/dabby.es5.min.js"]: outdir + "/dabby.es5.js"
+					["dist/dabby.es5.min.js"]: "dist/dabby.es5.js"
 				}
 			}
 		},

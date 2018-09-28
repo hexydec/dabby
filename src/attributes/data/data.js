@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 import camelise from "../../internal/camelise/camelise.js";
 
 $.fn.data = function (name, data) {

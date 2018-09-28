@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 import "../../utils/extend/extend.js";
 import "../param/param.js";
 import "../../utils/each/each.js";

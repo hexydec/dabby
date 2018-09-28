@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 
 $.fn.trigger = function (name, data) {
 	const evt = new CustomEvent(name, {bubbles: true, cancelable: true});

@@ -1,3 +1,3 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 
 $.isArray = arr => Array.isArray(arr);

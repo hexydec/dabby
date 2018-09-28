@@ -1,5 +1,5 @@
+import $ from "../../core/core.js";
 import "../../utils/isfunction/isfunction.js";
-import $ from "../../core/dabby/dabby.js";
 
 export default (dabby, filter, context, not) => {
 	let func,

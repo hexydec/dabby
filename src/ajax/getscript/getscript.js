@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 import "../ajax/ajax.js";
 
 $.getScript = (url, success) => $.ajax({

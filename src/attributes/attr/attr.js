@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 import "../../utils/isarray/isarray.js";
 import "../../utils/each/each.js";
 import "../../events/on-off/on-off.js";

@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 
 $.map = (obj, callback) => {
 	const keys = Object.keys(obj),

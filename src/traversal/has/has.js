@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../core/core.js";
 import "../../core/get/get.js";
 
 $.fn.has = function (selector) {
