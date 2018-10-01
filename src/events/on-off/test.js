@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Events", function (hooks) {
 	var test = document.getElementsByClassName("test")[0];
 

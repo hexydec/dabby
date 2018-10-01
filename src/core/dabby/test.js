@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Core");
 
 // add mouseevent support

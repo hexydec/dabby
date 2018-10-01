@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Traversal");
 
 QUnit.test("$.fn.has", function (assert) {

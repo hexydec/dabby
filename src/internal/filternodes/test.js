@@ -1,3 +1,6 @@
+import {$} from "../../../dist/dabby.js";
+import filterNodes from "./filternodes.js";
+
 QUnit.module("Internal");
 
 QUnit.test("filterNodes", function (assert) {
@@ -8,11 +11,11 @@ QUnit.test("filterNodes", function (assert) {
 	obj = $(".testtemp div");
 	filtered = $(".testtemp .class1");
 
-	assert.deepEqual(internals.filterNodes(obj, ".class1"), filtered.get());
-	assert.deepEqual(internals.filterNodes(obj, filtered), filtered.get());
-	assert.deepEqual(internals.filterNodes(obj, filtered.get()), filtered.get());
-	assert.deepEqual(internals.filterNodes(obj, function (i, node) {
+	assert.deepEqual(filterNodes(obj, ".class1"), filtered.get());
+	assert.deepEqual(filterNodes(obj, filtered), filtered.get());
+	assert.deepEqual(filterNodes(obj, filtered.get()), filtered.get());
+	assert.deepEqual(filterNodes(obj, function (i, node) {
 		return node.className === "class1";
 	}), filtered.get());
-	assert.deepEqual(internals.filterNodes(obj, ".class2, .class3", true), filtered.get());
+	assert.deepEqual(filterNodes(obj, ".class2, .class3", true), filtered.get());
 });

@@ -1,4 +1,6 @@
-	QUnit.module("Traversal");
+	import {$} from "../../../dist/dabby.js";
+
+QUnit.module("Traversal");
 
 QUnit.test("$.fn.filter/$.fn.not", function (assert) {
 	var test = document.getElementsByClassName("test")[0],

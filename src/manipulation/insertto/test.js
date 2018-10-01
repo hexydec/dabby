@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Manipulation");
 
 QUnit.test("$.fn.insertTo", function (assert) {

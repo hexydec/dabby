@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Manipulation");
 
 QUnit.test("$.fn.wrapAll", function (assert) {

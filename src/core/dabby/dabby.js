@@ -15,11 +15,11 @@ const $ = function dabby(selector, context) {
 			return selector;
 
 		// single node
-		} else if (selector.nodeType || isWindow(selector)) {
+		} else if (selector.nodeType || $.isWindow(selector)) {
 			nodes = [selector];
 
 		// ready function
-		} else if (isFunction(selector)) {
+		} else if ($.isFunction(selector)) {
 			if (document.readyState !== "loading") {
 				selector.call(document, $);
 			} else {
@@ -43,7 +43,7 @@ const $ = function dabby(selector, context) {
 			// context is CSS attributes
 			if (context instanceof Object) {
 				obj = $(nodes);
-				utilEach(context, (prop, value) => {
+				$.each(context, (prop, value) => {
 					obj.attr(prop, value);
 				});
 			}
@@ -60,7 +60,7 @@ const $ = function dabby(selector, context) {
 	// build nodes
 	this.length = 0;
 	Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-		if ([1, 9, 11].indexOf(node.nodeType) > -1 || isWindow(node)) { // only element, document, documentFragment and window
+		if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) { // only element, document, documentFragment and window
 			this[this.length++] = node;
 		}
 	});

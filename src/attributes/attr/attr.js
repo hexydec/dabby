@@ -7,7 +7,6 @@ import events from "../../internal/getevents/getevents.js";
 $.fn.attr = function (prop, value) {
 	let isArr = $.isArray(prop),
 		i,
-		events,
 		arr = {};
 
 	// set properties

@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Utilities", function (hooks) {
 
 	QUnit.test("$.isPlainObject", function (assert) {

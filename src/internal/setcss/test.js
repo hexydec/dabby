@@ -1,3 +1,6 @@
+import {$} from "../../../dist/dabby.js";
+import setCss from "./setcss.js";
+
 QUnit.module("Internal");
 
 QUnit.test("setCss", function (assert) {
@@ -12,18 +15,18 @@ QUnit.test("setCss", function (assert) {
 		};;
 
 	rmain.style.cssText = "";
-	assert.deepEqual(internals.setCss(main, "border-left-color", "red"), main, "Returns Dabby object when CSS is set");
+	assert.deepEqual(setCss(main, "border-left-color", "red"), main, "Returns Dabby object when CSS is set");
 	assert.equal(rmain.style.borderLeftColor, "red", "Can set CSS property");
 	rmain.style.cssText = "";
-	internals.setCss(main, "borderLeftColor", "red");
+	setCss(main, "borderLeftColor", "red");
 	assert.equal(rmain.style.borderLeftColor, "red", "Can set camelCase CSS property");
 	rmain.style.cssText = "";
-	internals.setCss(main, props);
+	setCss(main, props);
 	assert.deepEqual(main.css(Object.keys(props)), output, "Can set multiple CSS properties");
 	rmain.style.cssText = "";
-	internals.setCss(main, propsCC);
+	setCss(main, propsCC);
 	assert.deepEqual(main.css(Object.keys(props)), output, "Can set multiple camelCase CSS properties");
-	internals.setCss(main, "borderLeftColor", function (index, current) {
+	setCss(main, "borderLeftColor", function (index, current) {
 		assert.equal(current, "red", "Callback function receives current value");
 		return "green";
 	});

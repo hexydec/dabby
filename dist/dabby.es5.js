@@ -2,7 +2,6 @@
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
 (function (global, factory) {
   (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? factory() : typeof define === 'function' && define.amd ? define(factory) : factory();
 })(void 0, function () {
@@ -83,8 +82,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       configurable: true
     });
   }
-  /*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
-
 
   var $ = function dabby(selector, context) {
     var _this = this;
@@ -99,9 +96,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       // $ collection
       if (selector instanceof dabby) {
         return selector; // single node
-      } else if (selector.nodeType || isWindow(selector)) {
+      } else if (selector.nodeType || $.isWindow(selector)) {
         nodes = [selector]; // ready function
-      } else if (isFunction(selector)) {
+      } else if ($.isFunction(selector)) {
         if (document.readyState !== "loading") {
           selector.call(document, $);
         } else {
@@ -123,7 +120,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (context instanceof Object) {
           obj = $(nodes);
-          utilEach(context, function (prop, value) {
+          $.each(context, function (prop, value) {
             obj.attr(prop, value);
           });
         } // parse HTML into nodes
@@ -140,7 +137,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     this.length = 0;
     Array.from(nodes).forEach(function (node) {
       // HTMLCollection objects don't support forEach
-      if ([1, 9, 11].indexOf(node.nodeType) > -1 || isWindow(node)) {
+      if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) {
         // only element, document, documentFragment and window
         _this[_this.length++] = node;
       }
@@ -473,7 +470,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   ["filter", "not", "is"].forEach(function (name) {
     $.fn[name] = function (selector) {
       var nodes = filterNodes(this, selector, name === "not");
-      return name === "is" ? !!nodes : $(nodes);
+      return name === "is" ? !!nodes.length : $(nodes);
     };
   });
 
@@ -632,6 +629,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var params = {}; // process values
 
+    console.log(this.is(selector), this.filter(selector), $(selector, this));
     obj.each(function (key, obj) {
       var value = $(obj).val();
 
@@ -791,7 +789,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var isArr = $.isArray(prop),
         i,
-        events$$1,
         arr = {}; // set properties
 
     if (isArr || value || value === null) {
@@ -804,7 +801,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       while (i--) {
         $.each(prop, function (key, val) {
-          if (events$$1.indexOf(key) > -1) {
+          if (events.indexOf(key) > -1) {
             $(_this5[i]).on(key, val);
           } else if (key === "style") {
             _this5[i].style.cssText = val;
@@ -1422,6 +1419,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     return get ? output.join(" ") : this;
+  };
+
+  $.fn.unwrap = function (selector) {
+    this.parent(selector).not("body").each(function (key, obj) {
+      var parent = obj.parentNode;
+      $(obj.children).each(function (i, node) {
+        parent.insertBefore(node, obj);
+      });
+      parent.removeChild(obj);
+    });
+    return this;
   };
 
   $.fn.wrapAll = function (html) {

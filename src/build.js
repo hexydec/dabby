@@ -45,6 +45,7 @@ import "./manipulation/remove/remove.js";
 import "./manipulation/replace/replace.js";
 import "./manipulation/slice/slice.js";
 import "./manipulation/text/text.js";
+import "./manipulation/unwrap/unwrap.js";
 import "./manipulation/wrap/wrap.js";
 import "./manipulation/wrapall/wrapall.js";
 

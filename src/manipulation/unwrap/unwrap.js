@@ -1,6 +1,6 @@
 import $ from "../../core/core.js";
 import "../../traversal/parents/parents.js";
-import "../../traversal/filter-not/filter-not.js";
+import "../../traversal/filter/filter.js";
 import "../../core/each/each.js";
 
 $.fn.unwrap = function (selector) {

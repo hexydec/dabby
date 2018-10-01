@@ -1,5 +1,3 @@
-/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
-
 const $ = function dabby(selector, context) {
 	let nodes = [],
 		match,
@@ -17,11 +15,11 @@ const $ = function dabby(selector, context) {
 			return selector;
 
 		// single node
-		} else if (selector.nodeType || isWindow(selector)) {
+		} else if (selector.nodeType || $.isWindow(selector)) {
 			nodes = [selector];
 
 		// ready function
-		} else if (isFunction(selector)) {
+		} else if ($.isFunction(selector)) {
 			if (document.readyState !== "loading") {
 				selector.call(document, $);
 			} else {
@@ -45,7 +43,7 @@ const $ = function dabby(selector, context) {
 			// context is CSS attributes
 			if (context instanceof Object) {
 				obj = $(nodes);
-				utilEach(context, (prop, value) => {
+				$.each(context, (prop, value) => {
 					obj.attr(prop, value);
 				});
 			}
@@ -62,7 +60,7 @@ const $ = function dabby(selector, context) {
 	// build nodes
 	this.length = 0;
 	Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-		if ([1, 9, 11].indexOf(node.nodeType) > -1 || isWindow(node)) { // only element, document, documentFragment and window
+		if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) { // only element, document, documentFragment and window
 			this[this.length++] = node;
 		}
 	});
@@ -376,7 +374,7 @@ var filterNodes = (dabby, filter, context, not) => {
 ["filter", "not", "is"].forEach(name => {
 	$.fn[name] = function (selector) {
 		const nodes = filterNodes(this, selector, name === "not");
-		return name === "is" ? !!nodes : $(nodes);
+		return name === "is" ? !!nodes.length : $(nodes);
 	};
 });
 
@@ -522,6 +520,7 @@ $.fn.serialize = function () {
 	let params = {};
 
 	// process values
+	console.log(this.is(selector), this.filter(selector), $(selector, this));
 	obj.each((key, obj) => {
 		const value = $(obj).val();
 		if (!obj.disabled && value !== undefined) {
@@ -654,7 +653,6 @@ var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unloa
 $.fn.attr = function (prop, value) {
 	let isArr = $.isArray(prop),
 		i,
-		events$$1,
 		arr = {};
 
 	// set properties
@@ -669,7 +667,7 @@ $.fn.attr = function (prop, value) {
 
 		while (i--) {
 			$.each(prop, (key, val) => {
-				if (events$$1.indexOf(key) > -1) {
+				if (events.indexOf(key) > -1) {
 					$(this[i]).on(key, val);
 				} else if (key === "style") {
 					this[i].style.cssText = val;
@@ -1250,6 +1248,18 @@ $.fn.text = function (text) {
 		}
 	}
 	return get ? output.join(" ") : this;
+};
+
+$.fn.unwrap = function (selector) {
+	this.parent(selector).not("body").each((key, obj) => {
+		const parent = obj.parentNode;
+
+		$(obj.children).each((i, node) => {
+			parent.insertBefore(node, obj);
+		});
+		parent.removeChild(obj);
+	});
+	return this;
 };
 
 $.fn.wrapAll = function (html) {

@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Attributes");
 
 QUnit.test("$.fn.prop", function (assert) {

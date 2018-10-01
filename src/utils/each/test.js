@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Utils");
 
 QUnit.test("$.fn.each", function (assert) {

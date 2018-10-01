@@ -31,6 +31,7 @@ $.fn.serialize = function () {
 	let params = {};
 
 	// process values
+	console.log(this.is(selector), this.filter(selector), $(selector, this));
 	obj.each((key, obj) => {
 		const value = $(obj).val();
 		if (!obj.disabled && value !== undefined) {

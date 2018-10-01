@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Dimensions");
 
 QUnit.test("$.fn.width/$.fn.height", function (assert) {

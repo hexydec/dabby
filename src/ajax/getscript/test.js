@@ -1,3 +1,5 @@
+import {$} from "../../../dist/dabby.js";
+
 QUnit.module("Ajax");
 
 QUnit.test("$.getScript", function (assert) {
