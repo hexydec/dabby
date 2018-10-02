@@ -913,9 +913,9 @@ $.fn.offset = function (coords) {
 
 			// if coords is callback, generate value
 			rect = this[i].getBoundingClientRect();
-			coords = getVal(coords, this[i], i, $(this[i]).offset());
+			let itemCoords = Object.create(getVal(coords, this[i], i, $(this[i]).offset())); // copy the object
 
-			if (coords.top !== undefined && coords.left !== undefined) {
+			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
 				let style = getComputedStyle(this[i]);
 				pos = style.getPropertyValue("position");
 
@@ -925,18 +925,18 @@ $.fn.offset = function (coords) {
 				}
 
 				// add current offset
-				coords.top += parseFloat(style.getPropertyValue("top")) || 0;
-				coords.left += parseFloat(style.getPropertyValue("left")) || 0;
+				itemCoords.top += parseFloat(style.getPropertyValue("top")) || 0;
+				itemCoords.left += parseFloat(style.getPropertyValue("left")) || 0;
 
 				// remove parent offset and viewport scroll
 				if (pos !== "fixed") {
-					coords.top -= doc.scrollTop + rect.top;
-					coords.left -= doc.scrollLeft + rect.left;
+					itemCoords.top -= doc.scrollTop + rect.top;
+					itemCoords.left -= doc.scrollLeft + rect.left;
 				}
 
 				// set offset
-				this[i].style.top = coords.top + "px";
-				this[i].style.left = coords.left + "px";
+				this[i].style.top = itemCoords.top + "px";
+				this[i].style.left = itemCoords.left + "px";
 			}
 		}
 		return this;
