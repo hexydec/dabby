@@ -28,7 +28,7 @@ $.ajax = (url, settings) => {
 		jsonpCallback: "dabby" + Date.now(),
 		headers: {
 			"X-Requested-With": "XMLHttpRequest",
-			"Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
+			"Content-Type": settings.contentType || "application/x-www-form-urlencoded;charset=UTF-8"
 		},
 		context: null,
 		statusCode: {},

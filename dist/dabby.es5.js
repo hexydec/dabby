@@ -2,6 +2,7 @@
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
 (function (global, factory) {
   (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? factory() : typeof define === 'function' && define.amd ? define(factory) : factory();
 })(void 0, function () {
@@ -82,6 +83,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       configurable: true
     });
   }
+  /*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
+
 
   var $ = function dabby(selector, context) {
     var _this = this;
@@ -290,7 +293,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       jsonpCallback: "dabby" + Date.now(),
       headers: {
         "X-Requested-With": "XMLHttpRequest",
-        "Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
+        "Content-Type": settings.contentType || "application/x-www-form-urlencoded;charset=UTF-8"
       },
       context: null,
       statusCode: {},
@@ -629,7 +632,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var params = {}; // process values
 
-    console.log(this.is(selector), this.filter(selector), $(selector, this));
     obj.each(function (key, obj) {
       var value = $(obj).val();
 

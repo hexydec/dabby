@@ -48,4 +48,4 @@ Where the vanilla Javascript code is simple, use that instead of the internal Da
 
 This will make Dabby.js as fast as possible and prevent unneeded dependencies, making custom builds smaller.
 
-Where functionality is more complex, it is better to use Dabby methods as described above than duplicating its functionality.
+Where functionality is more complex, it is better to use Dabby.js methods as described above than duplicating its functionality.

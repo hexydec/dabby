@@ -1,3 +1,5 @@
+/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
+
 const $ = function dabby(selector, context) {
 	let nodes = [],
 		match,
@@ -197,7 +199,7 @@ $.ajax = (url, settings) => {
 		jsonpCallback: "dabby" + Date.now(),
 		headers: {
 			"X-Requested-With": "XMLHttpRequest",
-			"Content-Type": settings.contentType || "application/x-www-form-urlencoded; charset=UTF-8"
+			"Content-Type": settings.contentType || "application/x-www-form-urlencoded;charset=UTF-8"
 		},
 		context: null,
 		statusCode: {},
@@ -520,7 +522,6 @@ $.fn.serialize = function () {
 	let params = {};
 
 	// process values
-	console.log(this.is(selector), this.filter(selector), $(selector, this));
 	obj.each((key, obj) => {
 		const value = $(obj).val();
 		if (!obj.disabled && value !== undefined) {

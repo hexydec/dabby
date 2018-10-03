@@ -1,25 +1,26 @@
 module.exports = function (grunt) {
 	require("load-grunt-tasks")(grunt);
-	var banner = "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby */";
+	var banner = "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby */\n";
 	var path = require('path');
 
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
 		rollup: {
-			options: {
-				sourcemap: true
-			},
 			es6: {
 				options: {
-					format: "es"
+					format: "es",
+					sourcemap: true,
+					banner: banner
 				},
 				src: "src/build.js",
 				dest: "dist/dabby.js"
 			},
 			es5: {
 				options: {
-					format: "umd"
+					format: "umd",
+					sourcemap: true,
+					banner: banner
 				},
 				src: "src/build.es5.js",
 				dest: "dist/dabby.es5.js"
@@ -38,22 +39,18 @@ module.exports = function (grunt) {
 		babel: {
 			es6: {
 				files: {
-					["dist/dabby.min.js"]: "dist/dabby.js",
-					//"tests/test.js": "tests/test.js"
+					"dist/dabby.min.js": "dist/dabby.js"
 				},
 				options: {
 					sourceMap: false,
 					presets: [
-						"minify",
-					],
-					plugins: [
-						["@comandeer/babel-plugin-banner", {banner: banner}]
+						["minify", {mangle: {exclude: ["$"], topLevel: true}}]
 					]
 				}
 			},
 			es5: {
 				files: {
-					["dist/dabby.es5.js"]: "dist/dabby.es5.js",
+					"dist/dabby.es5.js": "dist/dabby.es5.js",
 					"tests/internals.es5.js": "tests/internals.es5.js",
 					"tests/test.es5.js": "tests/test.es5.js"
 				},
@@ -77,7 +74,7 @@ module.exports = function (grunt) {
 			},
 			minified: {
 				files: {
-					["dist/dabby.es5.min.js"]: "dist/dabby.es5.js"
+					"dist/dabby.es5.min.js": "dist/dabby.es5.js"
 				}
 			}
 		},

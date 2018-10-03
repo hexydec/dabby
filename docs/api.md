@@ -9,9 +9,9 @@ The library supports the following methods:
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
 | [$()](../src/readme.md)					| Create a Dabby collection from nodes, selectors, or HTML	|
-| [.each()](../src/core/each/readme.md)		| Apply a callback function to a Dabby object				|
-| [.get()](../src/core/get/readme.md)		| Retrieve one or all native nodes from a Dabby object		|
-| [.map()](../src/core/map/readme.md)		| Map a callback function onto each item in a Dabby object	|
+| [$.fn.each()](../src/core/each/readme.md)		| Apply a callback function to a Dabby object				|
+| [$.fn.get()](../src/core/get/readme.md)		| Retrieve one or all native nodes from a Dabby object		|
+| [$.fn.map()](../src/core/map/readme.md)		| Map a callback function onto each item in a Dabby object	|
 
 ### Ajax
 
@@ -22,123 +22,123 @@ The library supports the following methods:
 | [$.post()](../src/ajax/post/readme.md)	| Shorthand to make AJAX requests using the POST method		|
 | [$.getScript()](../src/ajax/getscript/readme.md) | Shorthand to insert a script into the DOM			|
 | [$.param()](../src/ajax/param/readme.md)	| Render a query string from an object						|
-| [.load()](../src/ajax/load/readme.md)		| Make an AJAX request to insert HTML it into the DOM		|
-| [.serialize()](../src/ajax/serialize/readme.md)	| Serialize the value of form elements into a query string	|
+| [$.fn.load()](../src/ajax/load/readme.md)		| Make an AJAX request to insert HTML it into the DOM		|
+| [$.fn.serialize()](../src/ajax/serialize/readme.md)	| Serialize the value of form elements into a query string	|
 
 ### Attributes
 
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
-| [.attr()](../src/attributes/attr/readme.md)	| Get/set HTML attributes								|
-| [.css()](../src/attributes/css/readme.md)	| Get/set CSS attributes									|
-| [.data()](../src/attributes/data/readme.md)	| Get/set data attributes									|
-| [.prop()](../src/attributes/prop/readme.md)	| Get/set properties									|
-| .removeProp()								| Remove the selected property								|
-| .val()									| Get/set form control values								|
-| [.addClass](../src/attributes/class/readme.md)	| Add a class to elements in a collection				|
-| [.hasClass()](../src/attributes/hasclass/readme.md)	| See whether any elements in a collection have the requested class		|
-| .removeClass((../src/attributes/class/readme.md)	| Remove a class from an HTML element				|
-| .toggleClass((../src/attributes/class/readme.md)	| Toggle a class on and off							|
+| [$.fn.attr()](../src/attributes/attr/readme.md)	| Get/set HTML attributes								|
+| [$.fn.css()](../src/attributes/css/readme.md)	| Get/set CSS attributes									|
+| [$.fn.data()](../src/attributes/data/readme.md)	| Get/set data attributes									|
+| [$.fn.prop()](../src/attributes/prop/readme.md)	| Get/set properties									|
+| $.fn.removeProp()							| Remove the selected property								|
+| $.fn.val()								| Get/set form control values								|
+| [$.fn.addClass()](../src/attributes/class/readme.md)	| Add a class to elements in a collection				|
+| [$.fn.hasClass()](../src/attributes/hasclass/readme.md)	| See whether any elements in a collection have the requested class		|
+| [$.fn.removeClass()](../src/attributes/class/readme.md)	| Remove a class from an HTML element				|
+| [$.fn.toggleClass()](../src/attributes/class/readme.md)	| Toggle a class on and off							|
 
 ### Dimensions
 
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
-| .offset()									| Get/set the top and left position							|
-| .offsetParent()							| Get the offset parent of the first node					|
-| .position()								| Get the top and left position relative to the offset parent |
-| .width()									| Get/set the width of a set of elements					|
-| .height()									| Get/set the height of a set of elements					|
-| .innerWidth()								| Get/set the width of a set of elements including padding	|
-| .innerHeight()							| Get/set the height of a set of elements including padding	|
-| .outerWidth()								| Get/set the width of elements including padding/margin	|
-| .outerHeight()							| Get/set the height of elements including padding/margin	|
-| .scrollLeft()								| Get/set the scrollLeft attribute							|
-| .scrollTop()								| Get/set the scrollTop attribute							|
+| $.fn.offset()								| Get/set the top and left position							|
+| $.fn.offsetParent()						| Get the offset parent of the first node					|
+| $.fn.position()							| Get the top and left position relative to the offset parent |
+| $.fn.width()								| Get/set the width of a set of elements					|
+| $.fn.height()								| Get/set the height of a set of elements					|
+| $.fn.innerWidth()							| Get/set the width of a set of elements including padding	|
+| $.fn.innerHeight()						| Get/set the height of a set of elements including padding	|
+| $.fn.outerWidth()							| Get/set the width of elements including padding/margin	|
+| $.fn.outerHeight()						| Get/set the height of elements including padding/margin	|
+| $.fn.scrollLeft()							| Get/set the scrollLeft attribute							|
+| $.fn.scrollTop()							| Get/set the scrollTop attribute							|
 
 ### Events
 
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
-| .on()										| Attach a callback to an event on elements or their parents|
-| .one()									| Attach a callback to an event to be triggered only once	|
-| .off()									| Remove a callback attached with .on()/.one()				|
-| .trigger()								| Trigger an event on the supplied nodes					|
-| .focusin()								| Trigger the focusin event on the supplied nodes			|
-| .focusout()								| Trigger the focusout event on the supplied nodes			|
-| .focus()									| Trigger the focus event on the supplied nodes				|
-| .blur()									| Trigger the blur event on the supplied nodes				|
-| .resize()									| Trigger the resize event on the supplied nodes			|
-| .scroll()									| Trigger the scroll event on the supplied nodes			|
-| .unload()									| Trigger the unload event on the supplied nodes			|
-| .click()									| Trigger the click event on the supplied nodes				|
-| .dblclick()								| Trigger the dblclick event on the supplied nodes			|
-| .mousedown()								| Trigger the mousedown event on the supplied nodes			|
-| .mouseup()								| Trigger the mouseup event on the supplied nodes			|
-| .mousemove()								| Trigger the mousemove event on the supplied nodes			|
-| .mouseover()								| Trigger the mouseover event on the supplied nodes			|
-| .mouseout()								| Trigger the mouseout event on the supplied nodes			|
-| .mouseenter()								| Trigger the mouseenter event on the supplied nodes		|
-| .mouseleave()								| Trigger the mouseleave event on the supplied nodes		|
-| .change()									| Trigger the change event on the supplied nodes			|
-| .select()									| Trigger the select event on the supplied nodes			|
-| .keydown()								| Trigger the keydown event on the supplied nodes			|
-| .keypress()								| Trigger the keypress event on the supplied nodes			|
-| .keyup()									| Trigger the keyup event on the supplied nodes				|
-| .error()									| Trigger the error event on the supplied nodes				|
-| .submit()									| Trigger the submit event on the supplied nodes			|
+| $.fn.on()									| Attach a callback to an event on elements or their parents|
+| $.fn.one()								| Attach a callback to an event to be triggered only once	|
+| $.fn.off()								| Remove a callback attached with .on()/.one()				|
+| $.fn.trigger()							| Trigger an event on the supplied nodes					|
+| $.fn.focusin()							| Trigger the focusin event on the supplied nodes			|
+| $.fn.focusout()							| Trigger the focusout event on the supplied nodes			|
+| $.fn.focus()								| Trigger the focus event on the supplied nodes				|
+| $.fn.blur()								| Trigger the blur event on the supplied nodes				|
+| $.fn.resize()								| Trigger the resize event on the supplied nodes			|
+| $.fn.scroll()								| Trigger the scroll event on the supplied nodes			|
+| $.fn.unload()								| Trigger the unload event on the supplied nodes			|
+| $.fn.click()								| Trigger the click event on the supplied nodes				|
+| $.fn.dblclick()							| Trigger the dblclick event on the supplied nodes			|
+| $.fn.mousedown()							| Trigger the mousedown event on the supplied nodes			|
+| $.fn.mouseup()							| Trigger the mouseup event on the supplied nodes			|
+| $.fn.mousemove()							| Trigger the mousemove event on the supplied nodes			|
+| $.fn.mouseover()							| Trigger the mouseover event on the supplied nodes			|
+| $.fn.mouseout()							| Trigger the mouseout event on the supplied nodes			|
+| $.fn.mouseenter()							| Trigger the mouseenter event on the supplied nodes		|
+| $.fn.mouseleave()							| Trigger the mouseleave event on the supplied nodes		|
+| $.fn.change()								| Trigger the change event on the supplied nodes			|
+| $.fn.select()								| Trigger the select event on the supplied nodes			|
+| $.fn.keydown()							| Trigger the keydown event on the supplied nodes			|
+| $.fn.keypress()							| Trigger the keypress event on the supplied nodes			|
+| $.fn.keyup()								| Trigger the keyup event on the supplied nodes				|
+| $.fn.error()								| Trigger the error event on the supplied nodes				|
+| $.fn.submit()								| Trigger the submit event on the supplied nodes			|
 
 ### Manipulation
 
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
-| .clone()									| Clone a collection										|
-| .empty()									| Empty a set of DOM nodes of content/HTML					|
-| .html()									| Get/set the innerHTML property of a collection			|
-| .before()									| Insert HTML before each item in a collection				|
-| .prepend()								| Insert HTML as the first child of each item				|
-| .append()									| Insert HTML as the last child of each item				|
-| .after()									| Insert HTML after each item in a collection				|
-| .insertBefore()							| Insert HTML before each item in a collection				|
-| .prependTo()								| Insert HTML as the first child of each item				|
-| .appendTo()								| Insert HTML as the last child of each item				|
-| .insertAfter()							| Insert HTML after each item in a collection				|
-| .remove()									| Remove nodes from the DOM									|
-| .detach()									| Detach nodes from the DOM									|
-| .replaceWith()							| Replace the nodes in the current collection with a new collection |
-| .replaceAll()								| Same a .replaceWith() with the elements and arguments reversed |
-| .slice()									| Slice a collection by index								|
-| .text()									| Get/set textnodes of a collection							|
-| .unwrap()									| Unwrap a collection of nodes of its parent				|
-| .wrap()									| Wrap each node in a collection with the supplied node(s)	|
-| .wrapAll()								| Wrap all nodes in a collection with the supplied node(s)	|
+| $.fn.clone()								| Clone a collection										|
+| $.fn.empty()								| Empty a set of DOM nodes of content/HTML					|
+| $.fn.html()								| Get/set the innerHTML property of a collection			|
+| $.fn.before()								| Insert HTML before each item in a collection				|
+| $.fn.prepend()							| Insert HTML as the first child of each item				|
+| $.fn.append()								| Insert HTML as the last child of each item				|
+| $.fn.after()								| Insert HTML after each item in a collection				|
+| $.fn.insertBefore()						| Insert HTML before each item in a collection				|
+| $.fn.prependTo()							| Insert HTML as the first child of each item				|
+| $.fn.appendTo()							| Insert HTML as the last child of each item				|
+| $.fn.insertAfter()						| Insert HTML after each item in a collection				|
+| $.fn.remove()								| Remove nodes from the DOM									|
+| $.fn.detach()								| Detach nodes from the DOM									|
+| $.fn.replaceWith()						| Replace the nodes in the current collection with a new collection |
+| $.fn.replaceAll()							| Same a .replaceWith() with the elements and arguments reversed |
+| $.fn.slice()								| Slice a collection by index								|
+| $.fn.text()								| Get/set textnodes of a collection							|
+| $.fn.unwrap()								| Unwrap a collection of nodes of its parent				|
+| $.fn.wrap()								| Wrap each node in a collection with the supplied node(s)	|
+| $.fn.wrapAll()							| Wrap all nodes in a collection with the supplied node(s)	|
 
 ### Traversal
 
 | Method									| Description												|
 |-------------------------------------------|-----------------------------------------------------------|
-| .add()									| Add nodes to a collection									|
-| .children()								| Retrieve the children of nodes in a collection			|
-| .closest()								| Get the first element matching the first node or its ancestors |
-| .eq()										| Retrieve a node from the specified index of a collection	|
-| .filter()									| Filter nodes in a collection with a callback or selector	|
-| .not()									| Reduce a collection with nodes or a selector				|
-| .find()									| Find descendants of a collection with a selector			|
-| .first()									| Get the first node in a collection						|
-| .has()									| Determine whether a collection has the specified children	|
-| .index()									| Get the index of a node or position in its siblings		|
-| .is()										| Determine if a collection matches a node/selector			|
-| .last()									| Get the last node in a collection							|
-| .next()									| Get the next sibling of a node							|
-| .nextAll()								| Get all siblings forward of a node						|
-| .nextUntil()								| Get all sibling forward of a node until a node/selector	|
-| .prev()									| Get the previous sibling of a node						|
-| .prevAll()								| Get all sibling behind a node								|
-| .prevUntil()								| Get all sibling behind a node until a node/selector		|
-| .parent()									| Get the immediate parents of the items a collection		|
-| .parents()								| Get all ancestors of the items in a collection			|
-| .parentsUntil()							| Get all ancestors until a node/selector is found			|
-| .siblings()								| Get all siblings of the nodes in a collection				|
+| $.fn.add()								| Add nodes to a collection									|
+| $.fn.children()							| Retrieve the children of nodes in a collection			|
+| $.fn.closest()							| Get the first element matching the first node or its ancestors |
+| $.fn.eq()									| Retrieve a node from the specified index of a collection	|
+| $.fn.filter()								| Filter nodes in a collection with a callback or selector	|
+| $.fn.not()								| Reduce a collection with nodes or a selector				|
+| $.fn.find()								| Find descendants of a collection with a selector			|
+| $.fn.first()								| Get the first node in a collection						|
+| $.fn.has()								| Determine whether a collection has the specified children	|
+| $.fn.index()								| Get the index of a node or position in its siblings		|
+| $.fn.is()									| Determine if a collection matches a node/selector			|
+| $.fn.last()								| Get the last node in a collection							|
+| $.fn.next()								| Get the next sibling of a node							|
+| $.fn.nextAll()							| Get all siblings forward of a node						|
+| $.fn.nextUntil()							| Get all sibling forward of a node until a node/selector	|
+| $.fn.prev()								| Get the previous sibling of a node						|
+| $.fn.prevAll()							| Get all sibling behind a node								|
+| $.fn.prevUntil()							| Get all sibling behind a node until a node/selector		|
+| $.fn.parent()								| Get the immediate parents of the items a collection		|
+| $.fn.parents()							| Get all ancestors of the items in a collection			|
+| $.fn.parentsUntil()						| Get all ancestors until a node/selector is found			|
+| $.fn.siblings()							| Get all siblings of the nodes in a collection				|
 
 ### Utilities
 

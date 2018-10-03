@@ -1,10 +1,10 @@
 # About Dabby.js
 
-Dabby.js is designed to be a simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (~5kb minified and Gzipped), it also comes with a code scanner to render custom builds.
+Dabby.js is designed to be a simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (~6kb minified and Gzipped), you can also build it as part of your project and only include the bits you are actually using.
 
 ## Project Aims
 
-- Be small (5 - 10kb minified and gzipped)
+- Be small (Less than 10kb minified and gzipped)
 - Be built in a modular was so that its components can be included as needed
 - Be fast, tries to use the browsers native functions in each method (Without duplicating more complex functionality)
 - Be easy to understand. jQuery and other clone libraries' code can be a little obfuscated to read and understand
@@ -23,11 +23,11 @@ First things first, Dabby.js is not jQuery, whilst it replicates much of jQuery'
 
 It is designed to be a cut down version of jQuery, leaning more on the browser than smoothing everything out for you like jQuery does.
 
-It is however designed to be completely modular, and comes with a rudimentary code scanner (Currently written in PHP) that will take your code and build a custom version of dabby for that code.
+It is however designed to be completely modular, as it is written as ES6 modules, this means you can just include the bits you are actually using in your project.
 
-Dabby.js is designed for modern browsers and supports IE11+, Chrome, Firefox, iOS 9.3+, and Android (What versions of some of these browsers I don't know yet).
+Dabby.js is designed for modern browsers and supports IE11+, Chrome, Firefox, iOS 8+, and Android 4.4.4.
 
-The final thing to note is that currently the full dabby.js library weighs in at just under 5kb zipped, and can be smaller with a custom build.
+The final thing to note is that currently the full dabby.js library weighs in at just under 6kb zipped, and can be smaller with a custom build.
 
 ## Differences between dabby.js and jQuery:
 
@@ -38,4 +38,4 @@ The final thing to note is that currently the full dabby.js library weighs in at
 - ‎Ajax support is much more basic, dabby doesn't support global callbacks or promises, and only offers a subset of the configuration options
 - ‎The Ajax object returned is the native XHR object, not a super or custom object like jQuery's jqXHR object
 - ‎Dabby does not stack selectors like jQuery does, so methods like andBack() are not supported
-- ‎It may not support all the inputs of each method that jQuery does
+- ‎It may not support all the inputs of each method that jQuery does (See documentation for each method to see differences if available)
