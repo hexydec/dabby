@@ -1,4 +1,4 @@
-import {$} from "../../../dist/dabby.js";
+import $ from "../../../dist/dabby.js";
 
 QUnit.module("Traversal");
 

@@ -1447,4 +1447,4 @@ $.fn.siblings = function (selector) {
 // traversal
 // utilities
 
-export { $ };
+export default $;

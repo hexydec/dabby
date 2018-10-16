@@ -73,4 +73,4 @@ import "./utils/isplainobject/isplainobject.js";
 import "./utils/iswindow/iswindow.js";
 import "./utils/map/map.js";
 
-export {$};
+export default $;

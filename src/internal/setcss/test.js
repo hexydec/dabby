@@ -1,4 +1,5 @@
-import {$} from "../../../dist/dabby.js";
+import $ from "../../../dist/dabby.js";
+
 import setCss from "./setcss.js";
 
 QUnit.module("Internal");

@@ -20,20 +20,33 @@ module.exports = function (grunt) {
 				options: {
 					format: "umd",
 					sourcemap: true,
-					banner: banner
+					banner: banner,
+					moduleName: "$"
 				},
 				src: "src/build.es5.js",
 				dest: "dist/dabby.es5.js"
 			},
 			test: {
 				options: {
+					format: "es",
 					external: [
-						path.resolve(__dirname, "dist/dabby.js"),
-						path.resolve(__dirname, "node_modules/qunitjs/qunit/qunit.js")
-					]
+						path.resolve(__dirname, "dist/dabby.js")
+					],
+					//globals: {[path.resolve(__dirname, "dist/dabby.js")]: "$"}
 				},
 				src: "src/test.js",
 				dest: "tests/test.js"
+			},
+			testes5: {
+				options: {
+					format: "iife",
+					external: [
+						path.resolve(__dirname, "dist/dabby.js")
+					],
+					globals: {[path.resolve(__dirname, "dist/dabby.js")]: "$"}
+				},
+				src: "src/test.js",
+				dest: "tests/test.es5.js"
 			}
 		},
 		babel: {
@@ -51,17 +64,17 @@ module.exports = function (grunt) {
 			es5: {
 				files: {
 					"dist/dabby.es5.js": "dist/dabby.es5.js",
-					"tests/internals.es5.js": "tests/internals.es5.js",
 					"tests/test.es5.js": "tests/test.es5.js"
 				},
 				options: {
 					sourceMap: true,
 					presets: [
 						["@babel/env", {
-							"targets": {
+							targets: {
 								"browsers": ["last 2 versions", "IE >= 11"]
 							},
-							"useBuiltIns": false
+							useBuiltIns: false,
+							modules: false
 						}]
 					]
 				}

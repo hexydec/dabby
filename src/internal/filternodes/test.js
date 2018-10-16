@@ -1,4 +1,5 @@
-import {$} from "../../../dist/dabby.js";
+import $ from "../../../dist/dabby.js";
+
 import filterNodes from "./filternodes.js";
 
 QUnit.module("Internal");
