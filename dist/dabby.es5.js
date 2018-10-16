@@ -288,9 +288,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       jsonp: "callback",
       jsonpCallback: "dabby" + Date.now(),
       headers: {
-        "X-Requested-With": "XMLHttpRequest",
-        "Content-Type": settings.contentType || "application/x-www-form-urlencoded;charset=UTF-8"
+        "X-Requested-With": "XMLHttpRequest"
       },
+      xhr: function xhr() {
+        return new XMLHttpRequest();
+      },
+      contentType: "application/x-www-form-urlencoded; charset=UTF-8",
       context: null,
       statusCode: {},
       username: null,
@@ -303,11 +306,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
         script,
-        xhr,
         data; // add data to query string
 
     if (settings.data) {
-      data = typeof settings.data === "string" ? settings.data : $.param(settings.data);
+      if (typeof settings.data === "string" || settings.data instanceof FormData) {
+        data = settings.data;
+      } else {
+        data = $.param(settings.data);
+      }
     }
 
     if (data && settings.method === "GET") {
@@ -352,10 +358,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       script.async = settings.async;
       document.head.appendChild(script); // make xhr request
     } else {
-      var callback = function callback(xhr, status) {
+      var xhr = settings.xhr(),
+          callback = function callback(xhr, status) {
         var response = xhr.responseText; // parse JSON
 
-        if (["json", null].indexOf(settings.dataType) > -1) {
+        if (["json", null, undefined].indexOf(settings.dataType) > -1) {
           try {
             response = JSON.parse(response);
           } catch (e) {// do nothing
@@ -365,23 +372,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         [settings.statusCode[xhr.status], settings[status], settings.complete].forEach(function (callback) {
           if (callback) {
-            callback.apply(settings.context, callback === settings.complete ? [xhr, status] : [response, status, xhr]);
+            var success = [settings.statusCode[xhr.status], settings["success"]].indexOf(callback) > -1;
+            callback.apply(settings.context, success ? [response, status, xhr] : [xhr, status]);
           }
         });
-      }; // create XHR object
+      }; // callbacks
 
-
-      xhr = new XMLHttpRequest();
-      xhr.open(settings.method, settings.url, settings.async); // add authoisation header
-
-      if (settings.username) {
-        settings.headers.Authorization = btoa(settings.username + ":" + settings.password);
-      } // headers
-
-
-      $.each(settings.headers, function (key, value) {
-        xhr.setRequestHeader(key, value);
-      }); // callbacks
 
       xhr.onload = function () {
         var types = {
@@ -399,6 +395,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       xhr.onabort = function () {
         callback(xhr, "abort");
       };
+
+      xhr.open(settings.method, settings.url, settings.async, settings.username, settings.password); // add headers
+
+      if (settings.contentType) {
+        settings.headers["Content-Type"] = settings.contentType;
+      }
+
+      $.each(settings.headers, function (key, value) {
+        xhr.setRequestHeader(key, value);
+      }); // send request
 
       xhr.send(settings.method === "GET" ? null : data);
       return xhr;

@@ -198,9 +198,10 @@ $.ajax = (url, settings) => {
 		jsonp: "callback",
 		jsonpCallback: "dabby" + Date.now(),
 		headers: {
-			"X-Requested-With": "XMLHttpRequest",
-			"Content-Type": settings.contentType || "application/x-www-form-urlencoded;charset=UTF-8"
+			"X-Requested-With": "XMLHttpRequest"
 		},
+		xhr: () => new XMLHttpRequest(),
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 		context: null,
 		statusCode: {},
 		username: null,
@@ -213,11 +214,15 @@ $.ajax = (url, settings) => {
 	}
 
 	let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
-		script, xhr, data;
+		script, data;
 
 	// add data to query string
 	if (settings.data) {
-		data = typeof settings.data === "string" ? settings.data : $.param(settings.data);
+		if (typeof settings.data === "string" || settings.data instanceof FormData) {
+			data = settings.data;
+		} else {
+			data = $.param(settings.data);
+		}
 	}
 	if (data && settings.method === "GET") {
 		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + data;
@@ -261,39 +266,27 @@ $.ajax = (url, settings) => {
 
 	// make xhr request
 	} else {
-		const callback = (xhr, status) => {
-			let response = xhr.responseText;
+		const xhr = settings.xhr(),
+			callback = (xhr, status) => {
+				let response = xhr.responseText;
 
-			// parse JSON
-			if (["json", null].indexOf(settings.dataType) > -1) {
-				try {
-					response = JSON.parse(response);
-				} catch (e) {
-					// do nothing
+				// parse JSON
+				if (["json", null, undefined].indexOf(settings.dataType) > -1) {
+					try {
+						response = JSON.parse(response);
+					} catch (e) {
+						// do nothing
+					}
 				}
-			}
 
-			// run callbacks
-			[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(callback => {
-				if (callback) {
-					callback.apply(settings.context, callback === settings.complete ? [xhr, status] : [response, status, xhr]);
-				}
-			});
-		};
-
-		// create XHR object
-		xhr = new XMLHttpRequest();
-		xhr.open(settings.method, settings.url, settings.async);
-
-		// add authoisation header
-		if (settings.username) {
-			settings.headers.Authorization = btoa(settings.username + ":" + settings.password);
-		}
-
-		// headers
-		$.each(settings.headers, (key, value) => {
-			xhr.setRequestHeader(key, value);
-		});
+				// run callbacks
+				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(callback => {
+					if (callback) {
+						const success = [settings.statusCode[xhr.status], settings["success"]].indexOf(callback) > -1;
+						callback.apply(settings.context, success ? [response, status, xhr] : [xhr, status]);
+					}
+				});
+			};
 
 		// callbacks
 		xhr.onload = () => {
@@ -310,6 +303,18 @@ $.ajax = (url, settings) => {
 		xhr.onabort = () => {
 			callback(xhr, "abort");
 		};
+
+		xhr.open(settings.method, settings.url, settings.async, settings.username, settings.password);
+
+		// add headers
+		if (settings.contentType) {
+			settings.headers["Content-Type"] = settings.contentType;
+		}
+		$.each(settings.headers, (key, value) => {
+			xhr.setRequestHeader(key, value);
+		});
+
+		// send request
 		xhr.send(settings.method === "GET" ? null : data);
 		return xhr;
 	}
