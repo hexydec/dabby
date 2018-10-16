@@ -1,4 +1,4 @@
-/*! dabbyjs v0.9.5 by Will Earp - https://github.com/hexydec/dabby */
+/*! dabbyjs v0.9.6 by Will Earp - https://github.com/hexydec/dabby */
 
 const $ = function dabby(selector, context) {
 	let nodes = [],

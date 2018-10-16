@@ -4,8 +4,8 @@ A lightweight modular jQuery clone/alternative library built for modern browsers
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-16.2kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-5.98kb-brightgreen.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-16.3kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-6.01kb-brightgreen.svg)
 
 **This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
 
@@ -48,7 +48,8 @@ Dabby.js compiles to both ES6 and ES5 bundles, to support all browsers, include 
 
 ```html
 <script src="dist/dabby.es5.js" nomodule></script>
-<script src="dist/dabby.js" type="module"></script>
+<script src="yourfile.es5.js" nomodule></script>
+<script src="yourfile.js" type="module"></script> // include dist/dabby.js or dist/dabby.min.js in your ES6 file.
 ```
 
 ## Browser Support
@@ -66,7 +67,7 @@ Dabby.js is billed as a jQuery clone library, and as such tries to implement as 
 As Dabby.js is built in ES6, you can include just the parts you need in your project (If you are using ES6 modules). Include the core library like this, methods can be imported without a variable:
 
 ```javascript
-include {$} from "/src/core/core.js"; // update to reference where you have the project stored
+include $ from "/src/core/core.js"; // update to reference where you have the project stored
 include "/src/traversal/filter/filter.js"; // I need $.fn.is(), which is written with $.fn.filter() and $.fn.not()
 ```
 
