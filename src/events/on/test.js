@@ -46,6 +46,18 @@ QUnit.module("Events", function (hooks) {
 		assert.equal(body.off(name, ".testtemp", func), body, "Returns self on remove event");
 		obj.trigger(name);
 		assert.equal(triggered, 2, "Events are removed from the correct object");
+
+		// test removing event with no handler
+		body.on(name, ".testtemp", func);
+		body.off(name, ".testtemp");
+		obj.trigger(name);
+		assert.equal(triggered, 2, "Events are removed from the correct delegated object by event name");
+
+		// test removing event with no handler
+		obj.on(name, func);
+		obj.off(name);
+		obj.trigger(name);
+		assert.equal(triggered, 2, "Events are removed from the correct object by event name");
 	});
 
 	hooks.after(function () {

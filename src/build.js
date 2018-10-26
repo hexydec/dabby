@@ -32,7 +32,8 @@ import "./dimensions/width-height/width-height.js";
 
 // events
 import "./events/named/named.js";
-import "./events/on-off/on-off.js";
+import "./events/on/on.js";
+import "./events/off/off.js";
 import "./events/trigger/trigger.js";
 
 // manipulation

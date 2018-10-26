@@ -8,7 +8,7 @@ $.param = obj => {
 			let isArr = $.isArray(value);
 			if (isArr || typeof value === "object") {
 				$.each(value, (i, val) => {
-					params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
+					params = add(`${key}[${isArr ? "" : i}]`, val, params);
 				});
 			} else {
 				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));

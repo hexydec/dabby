@@ -2,14 +2,16 @@
 
 const $ = function dabby(selector, context) {
 	let nodes = [],
-		match,
-		obj;
-
-	// enables new object to be created through $()
-	if (!(this instanceof dabby)) {
-		return new dabby(selector, context);
+		match;
 
 	// if no selector, return empty colletion
+	if (this instanceof dabby) {
+		selector = Array.from(selector).filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)); // only element, document, documentFragment and window
+		this.length = selector.length;
+		Object.assign(this, selector);
+		return this;
+
+	// gather nodes
 	} else if (selector) {
 
 		// $ collection
@@ -44,29 +46,17 @@ const $ = function dabby(selector, context) {
 
 			// context is CSS attributes
 			if (context instanceof Object) {
-				obj = $(nodes);
-				$.each(context, (prop, value) => {
-					obj.attr(prop, value);
-				});
+				$(nodes).attr(context);
 			}
 
 		// parse HTML into nodes
 		} else {
-			//nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-			obj = document.createElement("template");
+			const obj = document.createElement("template");
 			obj.innerHTML = selector;
 			nodes = obj.content ? obj.content.children : obj.children;
 		}
 	}
-
-	// build nodes
-	this.length = 0;
-	Array.from(nodes).forEach(node => { // HTMLCollection objects don't support forEach
-		if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) { // only element, document, documentFragment and window
-			this[this.length++] = node;
-		}
-	});
-	return this;
+	return new dabby(nodes);
 };
 
 // alias functions
@@ -159,7 +149,7 @@ $.param = obj => {
 			let isArr = $.isArray(value);
 			if (isArr || typeof value === "object") {
 				$.each(value, (i, val) => {
-					params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
+					params = add(`${key}[${isArr ? "" : i}]`, val, params);
 				});
 			} else {
 				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
@@ -491,7 +481,7 @@ $.fn.val = function (value) {
 
 		// get radio box value
 		} else if (this[0].type === "radio") {
-			let obj = this.filter("[name='" + this[0].name + "']:checked")[0];
+			let obj = this.filter(`[name="${this[0].name}"]:checked`)[0];
 			return obj ? String(obj.value) : undefined;
 
 		// get single value
@@ -579,7 +569,7 @@ $.fn.get = function (i) {
 };
 
 // add and remove event handlers
-["on", "one", "off"].forEach(name => {
+["on", "one"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
 		let i = this.length;
 
@@ -588,10 +578,10 @@ $.fn.get = function (i) {
 		// sort out args
 		if ($.isFunction(selector)) {
 			callback = selector;
-			selector = null;
+			selector = undefined;
 		} else if ($.isFunction(data)) {
 			callback = data;
-			data = null;
+			data = undefined;
 		}
 
 		// attach event
@@ -599,55 +589,38 @@ $.fn.get = function (i) {
 			let e = events.length;
 
 			// record the original function
-			if (name !== "off") {
-				if (!this[i].events) {
-					this[i].events = [];
+			if (!this[i].events) {
+				this[i].events = [];
+			}
+			let fn = function (evt) { // delegate function
+				let target = [this];
+				if (selector) {
+					let t = $(evt.target);
+					target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
 				}
-				let fn = function (evt) { // delegate function
-					let target = [this];
-					if (selector) {
-						let t = $(evt.target);
-						target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
+				if (target) {
+					if (data) { // set data to event object
+						evt.data = data;
 					}
-					if (target) {
-						if (data) { // set data to event object
-							evt.data = data;
-						}
-						for (let i = 0, len = target.length; i < len; i++) {
-							if (callback.call(target[i], evt, evt.args) === false) {
-								evt.preventDefault();
-								evt.stopPropagation();
-							}
+					for (let i = 0, len = target.length; i < len; i++) {
+						if (callback.call(target[i], evt, evt.args) === false) {
+							evt.preventDefault();
+							evt.stopPropagation();
 						}
 					}
-				};
-				this[i].events.push({
-					events: events,
-					callback: callback,
-					selector: selector,
-					func: fn,
-					once: name === "one"
-				});
-
-				// trigger
-				while (e--) {
-					this[i].addEventListener(events[e], fn, {once: name === "one", capture: !!selector});
 				}
+			};
+			this[i].events.push({
+				events: events,
+				callback: callback,
+				selector: selector,
+				func: fn,
+				once: name === "one"
+			});
 
-			// find the original function
-			} else if (this[i].events.length) {
-				while (e--) {
-					this[i].events.forEach((evt, n) => {
-						const index = evt.events.indexOf(events[e]);
-						if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-							this[i].removeEventListener(events[e], evt.func, {once: evt.once, capture: !!evt.selector}); // must pass same arguments
-							this[i].events[n].events.splice(index, 1);
-							if (!this[i].events[n].events.length) {
-								this[i].events.splice(n, 1);
-							}
-						}
-					});
-				}
+			// trigger
+			while (e--) {
+				this[i].addEventListener(events[e], fn, {once: name === "one", capture: !!selector});
 			}
 		}
 		return this;
@@ -657,18 +630,18 @@ $.fn.get = function (i) {
 var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
 
 $.fn.attr = function (prop, value) {
-	let isArr = $.isArray(prop),
+	let isObj = typeof prop !== "string",
 		i,
-		arr = {};
+		obj = {};
 
 	// set properties
-	if (isArr || value || value === null) {
+	if (isObj || value || value === null) {
 		i = this.length;
 
-		// normalise to array
-		if (!isArr) {
-			arr[prop] = value;
-			prop = arr;
+		// normalise to object
+		if (!isObj) {
+			obj[prop] = value;
+			prop = obj;
 		}
 
 		while (i--) {
@@ -724,7 +697,7 @@ $.fn.attr = function (prop, value) {
 	};
 });
 
-var dasherise = prop => prop.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase());
+var dasherise = prop => prop.replace(/[A-Z]/g, letter => "-" + letter.toLowerCase());
 
 var setCss = (dabby, props, value) => {
 
@@ -1101,6 +1074,44 @@ events.forEach(event => {
 		return data ? this.on(event, data, callback) : this.trigger(event);
 	};
 });
+
+// add and remove event handlers
+$.fn.off = function (events, selector, data, callback) {
+	let i = this.length;
+
+	events = events.split(" ");
+
+	// sort out args
+	if ($.isFunction(selector)) {
+		callback = selector;
+		selector = undefined;
+	} else if ($.isFunction(data)) {
+		callback = data;
+		data = undefined;
+	}
+
+	// attach event
+	while (i--) {
+
+		// find the original function
+		if (this[i].events.length) {
+			let e = events.length;
+			while (e--) {
+				this[i].events.forEach((evt, n) => {
+					const index = evt.events.indexOf(events[e]);
+					if (index !== -1 && (!callback || evt.callback === callback) && (!selector || evt.selector === selector)) {
+						this[i].removeEventListener(events[e], evt.func, {once: evt.once, capture: !!evt.selector}); // must pass same arguments
+						this[i].events[n].events.splice(index, 1);
+						if (!this[i].events[n].events.length) {
+							this[i].events.splice(n, 1);
+						}
+					}
+				});
+			}
+		}
+	}
+	return this;
+};
 
 $.fn.clone = function () {
 	let nodes = [],

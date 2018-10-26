@@ -32,7 +32,7 @@ import "./dimensions/width-height/test.js";
 
 // events
 //import "./events/named/test.js";
-import "./events/on-off/test.js";
+import "./events/on/test.js";
 import "./events/trigger/test.js";
 
 // internals

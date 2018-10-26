@@ -1,22 +1,21 @@
 import $ from "../../core/core.js";
-import "../../utils/isarray/isarray.js";
 import "../../utils/each/each.js";
-import "../../events/on-off/on-off.js";
+import "../../events/on/on.js";
 import events from "../../internal/getevents/getevents.js";
 
 $.fn.attr = function (prop, value) {
-	let isArr = $.isArray(prop),
+	let isObj = typeof prop !== "string",
 		i,
-		arr = {};
+		obj = {};
 
 	// set properties
-	if (isArr || value || value === null) {
+	if (isObj || value || value === null) {
 		i = this.length;
 
-		// normalise to array
-		if (!isArr) {
-			arr[prop] = value;
-			prop = arr;
+		// normalise to object
+		if (!isObj) {
+			obj[prop] = value;
+			prop = obj;
 		}
 
 		while (i--) {

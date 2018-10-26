@@ -39,7 +39,7 @@ $.fn.val = function (value) {
 
 		// get radio box value
 		} else if (this[0].type === "radio") {
-			let obj = this.filter("[name='" + this[0].name + "']:checked")[0];
+			let obj = this.filter(`[name="${this[0].name}"]:checked`)[0];
 			return obj ? String(obj.value) : undefined;
 
 		// get single value

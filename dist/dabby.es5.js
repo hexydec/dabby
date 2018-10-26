@@ -83,14 +83,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }
 
   var $ = function dabby(selector, context) {
-    var _this = this;
-
     var nodes = [],
-        match,
-        obj; // enables new object to be created through $()
+        match; // if no selector, return empty colletion
 
-    if (!(this instanceof dabby)) {
-      return new dabby(selector, context); // if no selector, return empty colletion
+    if (this instanceof dabby) {
+      selector = Array.from(selector).filter(function (node) {
+        return [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node);
+      }); // only element, document, documentFragment and window
+
+      this.length = selector.length;
+      Object.assign(this, selector);
+      return this; // gather nodes
     } else if (selector) {
       // $ collection
       if (selector instanceof dabby) {
@@ -118,30 +121,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         nodes.push(document.createElement(match[1])); // context is CSS attributes
 
         if (context instanceof Object) {
-          obj = $(nodes);
-          $.each(context, function (prop, value) {
-            obj.attr(prop, value);
-          });
+          $(nodes).attr(context);
         } // parse HTML into nodes
 
       } else {
-        //nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-        obj = document.createElement("template");
+        var obj = document.createElement("template");
         obj.innerHTML = selector;
         nodes = obj.content ? obj.content.children : obj.children;
       }
-    } // build nodes
+    }
 
-
-    this.length = 0;
-    Array.from(nodes).forEach(function (node) {
-      // HTMLCollection objects don't support forEach
-      if ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) {
-        // only element, document, documentFragment and window
-        _this[_this.length++] = node;
-      }
-    });
-    return this;
+    return new dabby(nodes);
   }; // alias functions
 
 
@@ -246,7 +236,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (isArr || _typeof(value) === "object") {
         $.each(value, function (i, val) {
-          params = add(key + "[" + (isArr ? "" : i) + "]", val, params);
+          params = add("".concat(key, "[").concat(isArr ? "" : i, "]"), val, params);
         });
       } else {
         params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
@@ -480,7 +470,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   $.fn.load = function (url, data, _success) {
-    var _this2 = this;
+    var _this = this;
 
     if (this[0]) {
       // get selector from URL
@@ -500,7 +490,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         success: function success(response, status, xhr) {
           // if a selector is specified, find it in the returned document
           var html = "",
-              i = _this2.length; // refine by selector if supplied
+              i = _this.length; // refine by selector if supplied
 
           if (selector) {
             $(response).filter(selector).each(function (key, obj) {
@@ -512,10 +502,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
           while (i--) {
-            _this2[i].innerHTML = html; // fire success callback on nodes
+            _this[i].innerHTML = html; // fire success callback on nodes
 
             if (_success) {
-              _success.call(_this2[i], response, status, xhr);
+              _success.call(_this[i], response, status, xhr);
             }
           }
         }
@@ -553,28 +543,28 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.val = function (value) {
-    var _this3 = this;
+    var _this2 = this;
 
     // set value
     if (value !== undefined) {
       var _ret = function () {
-        var i = _this3.length;
+        var i = _this2.length;
 
         var _loop = function _loop() {
-          var val = getVal(value, _this3[i], i, function () {
-            return $(_this3[i]).val();
+          var val = getVal(value, _this2[i], i, function () {
+            return $(_this2[i]).val();
           });
 
-          if (_this3[i].multiple) {
+          if (_this2[i].multiple) {
             val = $.map($.isArray(val) ? val : [val], function (item) {
               return String(item);
             }); // convert to string
 
-            $("option", _this3[i]).each(function (key, obj) {
+            $("option", _this2[i]).each(function (key, obj) {
               obj.selected = val.indexOf(String(obj.value)) > -1;
             });
           } else {
-            _this3[i].value = String(val);
+            _this2[i].value = String(val);
           }
         };
 
@@ -583,7 +573,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
 
         return {
-          v: _this3
+          v: _this2
         }; // read value from first node
       }();
 
@@ -599,7 +589,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         });
         return values; // get radio box value
       } else if (this[0].type === "radio") {
-        var obj = this.filter("[name='" + this[0].name + "']:checked")[0];
+        var obj = this.filter("[name=\"".concat(this[0].name, "\"]:checked"))[0];
         return obj ? String(obj.value) : undefined; // get single value
       } else if (this[0].type !== "checkbox" || this[0].checked) {
         return String(this[0].value);
@@ -692,95 +682,65 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // add and remove event handlers
 
 
-  ["on", "one", "off"].forEach(function (name) {
+  ["on", "one"].forEach(function (name) {
     $.fn[name] = function (events, selector, data, callback) {
-      var _this4 = this;
-
       var i = this.length;
       events = events.split(" "); // sort out args
 
       if ($.isFunction(selector)) {
         callback = selector;
-        selector = null;
+        selector = undefined;
       } else if ($.isFunction(data)) {
         callback = data;
-        data = null;
+        data = undefined;
       } // attach event
 
 
-      var _loop2 = function _loop2() {
+      while (i--) {
         var e = events.length; // record the original function
 
-        if (name !== "off") {
-          if (!_this4[i].events) {
-            _this4[i].events = [];
-          }
-
-          var fn = function fn(evt) {
-            // delegate function
-            var target = [this];
-
-            if (selector) {
-              var t = $(evt.target);
-              target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
-            }
-
-            if (target) {
-              if (data) {
-                // set data to event object
-                evt.data = data;
-              }
-
-              for (var _i = 0, len = target.length; _i < len; _i++) {
-                if (callback.call(target[_i], evt, evt.args) === false) {
-                  evt.preventDefault();
-                  evt.stopPropagation();
-                }
-              }
-            }
-          };
-
-          _this4[i].events.push({
-            events: events,
-            callback: callback,
-            selector: selector,
-            func: fn,
-            once: name === "one"
-          }); // trigger
-
-
-          while (e--) {
-            _this4[i].addEventListener(events[e], fn, {
-              once: name === "one",
-              capture: !!selector
-            });
-          } // find the original function
-
-        } else if (_this4[i].events.length) {
-          while (e--) {
-            _this4[i].events.forEach(function (evt, n) {
-              var index = evt.events.indexOf(events[e]);
-
-              if (index !== -1 && evt.callback === callback && evt.selector === selector) {
-                _this4[i].removeEventListener(events[e], evt.func, {
-                  once: evt.once,
-                  capture: !!evt.selector
-                }); // must pass same arguments
-
-
-                _this4[i].events[n].events.splice(index, 1);
-
-                if (!_this4[i].events[n].events.length) {
-                  _this4[i].events.splice(n, 1);
-                }
-              }
-            });
-          }
+        if (!this[i].events) {
+          this[i].events = [];
         }
-      };
 
-      while (i--) {
-        _loop2();
+        var fn = function fn(evt) {
+          // delegate function
+          var target = [this];
+
+          if (selector) {
+            var t = $(evt.target);
+            target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
+          }
+
+          if (target) {
+            if (data) {
+              // set data to event object
+              evt.data = data;
+            }
+
+            for (var _i = 0, len = target.length; _i < len; _i++) {
+              if (callback.call(target[_i], evt, evt.args) === false) {
+                evt.preventDefault();
+                evt.stopPropagation();
+              }
+            }
+          }
+        };
+
+        this[i].events.push({
+          events: events,
+          callback: callback,
+          selector: selector,
+          func: fn,
+          once: name === "one"
+        }); // trigger
+
+        while (e--) {
+          this[i].addEventListener(events[e], fn, {
+            once: name === "one",
+            capture: !!selector
+          });
+        }
       }
 
       return this;
@@ -789,34 +749,34 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
 
   $.fn.attr = function (prop, value) {
-    var _this5 = this;
+    var _this3 = this;
 
-    var isArr = $.isArray(prop),
+    var isObj = typeof prop !== "string",
         i,
-        arr = {}; // set properties
+        obj = {}; // set properties
 
-    if (isArr || value || value === null) {
-      i = this.length; // normalise to array
+    if (isObj || value || value === null) {
+      i = this.length; // normalise to object
 
-      if (!isArr) {
-        arr[prop] = value;
-        prop = arr;
+      if (!isObj) {
+        obj[prop] = value;
+        prop = obj;
       }
 
       while (i--) {
         $.each(prop, function (key, val) {
           if (events.indexOf(key) > -1) {
-            $(_this5[i]).on(key, val);
+            $(_this3[i]).on(key, val);
           } else if (key === "style") {
-            _this5[i].style.cssText = val;
+            _this3[i].style.cssText = val;
           } else if (key === "class") {
-            _this5[i].className = val;
+            _this3[i].className = val;
           } else if (key === "text") {
-            _this5[i].textContent = val;
+            _this3[i].textContent = val;
           } else if (value === null) {
-            _this5[i].removeAttribute(key);
+            _this3[i].removeAttribute(key);
           } else {
-            _this5[i].setAttribute(key, val);
+            _this3[i].setAttribute(key, val);
           }
         });
       }
@@ -935,7 +895,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.data = function (name, data) {
-    var _this6 = this;
+    var _this4 = this;
 
     // convert data to object
     if (_typeof(name) === "object") {
@@ -949,16 +909,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     if (data !== undefined) {
       var _ret2 = function () {
-        var i = _this6.length;
+        var i = _this4.length;
 
         while (i--) {
           $.each(data, function (key, value) {
-            _this6[i].dataset[camelise(key)] = _typeof(value) === "object" ? JSON.stringify(value) : value;
+            _this4[i].dataset[camelise(key)] = _typeof(value) === "object" ? JSON.stringify(value) : value;
           });
         }
 
         return {
-          v: _this6
+          v: _this4
         }; // get value
       }();
 
@@ -1257,7 +1217,54 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $.fn[event] = function (data, callback) {
       return data ? this.on(event, data, callback) : this.trigger(event);
     };
-  });
+  }); // add and remove event handlers
+
+  $.fn.off = function (events, selector, data, callback) {
+    var _this5 = this;
+
+    var i = this.length;
+    events = events.split(" "); // sort out args
+
+    if ($.isFunction(selector)) {
+      callback = selector;
+      selector = undefined;
+    } else if ($.isFunction(data)) {
+      callback = data;
+      data = undefined;
+    } // attach event
+
+
+    while (i--) {
+      // find the original function
+      if (this[i].events.length) {
+        (function () {
+          var e = events.length;
+
+          while (e--) {
+            _this5[i].events.forEach(function (evt, n) {
+              var index = evt.events.indexOf(events[e]);
+
+              if (index !== -1 && (!callback || evt.callback === callback) && (!selector || evt.selector === selector)) {
+                _this5[i].removeEventListener(events[e], evt.func, {
+                  once: evt.once,
+                  capture: !!evt.selector
+                }); // must pass same arguments
+
+
+                _this5[i].events[n].events.splice(index, 1);
+
+                if (!_this5[i].events[n].events.length) {
+                  _this5[i].events.splice(n, 1);
+                }
+              }
+            });
+          }
+        })();
+      }
+    }
+
+    return this;
+  };
 
   $.fn.clone = function () {
     var nodes = [],
@@ -1603,14 +1610,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   $.fn.siblings = function (selector) {
-    var _this7 = this;
+    var _this6 = this;
 
     var i = this.length,
         nodes = [];
 
     while (i--) {
       Array.from(this[i].parentNode.children).forEach(function (child) {
-        if (child !== _this7[i]) {
+        if (child !== _this6[i]) {
           nodes.push(child);
         }
       });

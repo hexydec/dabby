@@ -604,7 +604,17 @@
 
       assert.equal(body.off(name, ".testtemp", func), body, "Returns self on remove event");
       obj.trigger(name);
-      assert.equal(triggered, 2, "Events are removed from the correct object");
+      assert.equal(triggered, 2, "Events are removed from the correct object"); // test removing event with no handler
+
+      body.on(name, ".testtemp", func);
+      body.off(name, ".testtemp");
+      obj.trigger(name);
+      assert.equal(triggered, 2, "Events are removed from the correct delegated object by event name"); // test removing event with no handler
+
+      obj.on(name, func);
+      obj.off(name);
+      obj.trigger(name);
+      assert.equal(triggered, 2, "Events are removed from the correct object by event name");
     });
     hooks.after(function () {
       test.innerHTML = "";
@@ -659,14 +669,17 @@
   });
 
   var $$1 = function dabby(selector, context) {
-    var _this = this;
-
     var nodes = [],
-        match,
-        obj; // enables new object to be created through $()
+        match; // if no selector, return empty colletion
 
-    if (!(this instanceof dabby)) {
-      return new dabby(selector, context); // if no selector, return empty colletion
+    if (this instanceof dabby) {
+      selector = Array.from(selector).filter(function (node) {
+        return [1, 9, 11].indexOf(node.nodeType) > -1 || $$1.isWindow(node);
+      }); // only element, document, documentFragment and window
+
+      this.length = selector.length;
+      Object.assign(this, selector);
+      return this; // gather nodes
     } else if (selector) {
       // $ collection
       if (selector instanceof dabby) {
@@ -694,30 +707,17 @@
         nodes.push(document.createElement(match[1])); // context is CSS attributes
 
         if (context instanceof Object) {
-          obj = $$1(nodes);
-          $$1.each(context, function (prop, value) {
-            obj.attr(prop, value);
-          });
+          $$1(nodes).attr(context);
         } // parse HTML into nodes
 
       } else {
-        //nodes = (context || doc).createRange().createContextualFragment(selector).childNodes; // not supported in iOS 9
-        obj = document.createElement("template");
+        var obj = document.createElement("template");
         obj.innerHTML = selector;
         nodes = obj.content ? obj.content.children : obj.children;
       }
-    } // build nodes
+    }
 
-
-    this.length = 0;
-    Array.from(nodes).forEach(function (node) {
-      // HTMLCollection objects don't support forEach
-      if ([1, 9, 11].indexOf(node.nodeType) > -1 || $$1.isWindow(node)) {
-        // only element, document, documentFragment and window
-        _this[_this.length++] = node;
-      }
-    });
-    return this;
+    return new dabby(nodes);
   }; // alias functions
 
 
