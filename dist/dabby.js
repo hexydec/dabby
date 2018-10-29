@@ -79,9 +79,203 @@ $.fn.each = function (callback) {
 	return this;
 };
 
-$.isWindow = obj => obj !== null && obj === obj.window;
-
 $.isFunction = func => func && func.constructor === Function;
+
+$.fn.add = function (nodes, context) {
+	nodes = $(nodes, context);
+	let len = this.length,
+		i = nodes.length;
+
+	this.length += i;
+	while (i--) {
+		this[i + len] = nodes[i];
+	}
+	return this;
+};
+
+var filterNodes = (dabby, filter, context, not) => {
+	let func,
+		nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
+
+	// sort out args
+	if (typeof context === "boolean") {
+		not = context;
+		context = null;
+	}
+
+	// function
+	if ($.isFunction(filter)) {
+		func = filter;
+
+	// nodes
+	} else {
+
+		// normalise filters
+		if (typeof(filter) === "string") {
+			filter = [filter];
+		} else {
+			filter = Array.from($(filter, context));
+		}
+
+		// filter function
+		func = (n, node) => {
+			let i = filter.length;
+			while (i--) {
+				if (typeof(filter[i]) === "string" && node.matches ? node.matches(filter[i]) : node === filter[i]) {
+					return true;
+				}
+			}
+			return false;
+		};
+	}
+	return nodes.filter((item, i) => func.call(item, i, item) !== Boolean(not), nodes);
+}
+
+["parent", "parents", "parentsUntil"].forEach(func => {
+	$.fn[func] = function (selector, filter) {
+		const all = func.indexOf("s") > -1,
+			until = func.indexOf("U") > -1;
+		let nodes = [],
+			i = this.length,
+			parent;
+
+		while (i--) {
+			parent = this[i].parentNode;
+			while (parent && parent.nodeType === Node.ELEMENT_NODE) {
+				nodes.push(parent);
+				if (!all || (until && filterNodes(parent, selector).length)) {
+					break;
+				} else {
+					parent = parent.parentNode;
+				}
+			}
+		}
+		if (selector) {
+			nodes = filterNodes(nodes, selector);
+		}
+		return $(nodes);
+	};
+});
+
+["filter", "not", "is"].forEach(name => {
+	$.fn[name] = function (selector) {
+		const nodes = filterNodes(this, selector, name === "not");
+		return name === "is" ? !!nodes.length : $(nodes);
+	};
+});
+
+$.fn.get = function (i) {
+	return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
+};
+
+// add and remove event handlers
+["on", "one"].forEach(name => {
+	$.fn[name] = function (events, selector, data, callback) {
+		let i = this.length;
+
+		events = events.split(" ");
+
+		// sort out args
+		if ($.isFunction(selector)) {
+			callback = selector;
+			selector = undefined;
+		} else if ($.isFunction(data)) {
+			callback = data;
+			data = undefined;
+		}
+
+		// attach event
+		while (i--) {
+			let e = events.length;
+
+			// record the original function
+			if (!this[i].events) {
+				this[i].events = [];
+			}
+			let fn = function (evt) { // delegate function
+				let target = [this];
+				if (selector) {
+					let t = $(evt.target);
+					target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
+				}
+				if (target) {
+					if (data) { // set data to event object
+						evt.data = data;
+					}
+					for (let i = 0, len = target.length; i < len; i++) {
+						if (callback.call(target[i], evt, evt.args) === false) {
+							evt.preventDefault();
+							evt.stopPropagation();
+						}
+					}
+				}
+			};
+			this[i].events.push({
+				events: events,
+				callback: callback,
+				selector: selector,
+				func: fn,
+				once: name === "one"
+			});
+
+			// trigger
+			while (e--) {
+				this[i].addEventListener(events[e], fn, {once: name === "one", capture: !!selector});
+			}
+		}
+		return this;
+	};
+});
+
+var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
+
+$.fn.attr = function (prop, value) {
+	let isObj = typeof prop !== "string",
+		i,
+		obj = {};
+
+	// set properties
+	if (isObj || value || value === null) {
+		i = this.length;
+
+		// normalise to object
+		if (!isObj) {
+			obj[prop] = value;
+			prop = obj;
+		}
+
+		while (i--) {
+			$.each(prop, (key, val) => {
+				if (events.indexOf(key) > -1) {
+					$(this[i]).on(key, val);
+				} else if (key === "style") {
+					this[i].style.cssText = val;
+				} else if (key === "class") {
+					this[i].className = val;
+				} else if (key === "text") {
+					this[i].textContent = val;
+				} else if (value === null) {
+					this[i].removeAttribute(key);
+				} else {
+					this[i].setAttribute(key, val);
+				}
+			});
+		}
+		return this;
+
+	// retrieve properties
+	} else if (this[0]) {
+		if (prop === "style") {
+			return this[0].style.cssText;
+		}
+		if (prop === "class") {
+			return this[0].className;
+		}
+		return this[0].getAttribute(prop);
+	}
+};
+
+$.isWindow = obj => obj !== null && obj === obj.window;
 
 $.isPlainObject = obj => {
 
@@ -330,51 +524,6 @@ $.getScript = (url, success) => $.ajax({
 	success: success
 });
 
-var filterNodes = (dabby, filter, context, not) => {
-	let func,
-		nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
-
-	// sort out args
-	if (typeof context === "boolean") {
-		not = context;
-		context = null;
-	}
-
-	// function
-	if ($.isFunction(filter)) {
-		func = filter;
-
-	// nodes
-	} else {
-
-		// normalise filters
-		if (typeof(filter) === "string") {
-			filter = [filter];
-		} else {
-			filter = Array.from($(filter, context));
-		}
-
-		// filter function
-		func = (n, node) => {
-			let i = filter.length;
-			while (i--) {
-				if (typeof(filter[i]) === "string" && node.matches ? node.matches(filter[i]) : node === filter[i]) {
-					return true;
-				}
-			}
-			return false;
-		};
-	}
-	return nodes.filter((item, i) => func.call(item, i, item) !== Boolean(not), nodes);
-}
-
-["filter", "not", "is"].forEach(name => {
-	$.fn[name] = function (selector) {
-		const nodes = filterNodes(this, selector, name === "not");
-		return name === "is" ? !!nodes.length : $(nodes);
-	};
-});
-
 $.fn.load = function (url, data, success) {
 	if (this[0]) {
 
@@ -524,155 +673,6 @@ $.fn.serialize = function () {
 		}
 	});
 	return $.param(params);
-};
-
-$.fn.add = function (nodes, context) {
-	nodes = $(nodes, context);
-	let len = this.length,
-		i = nodes.length;
-
-	this.length += i;
-	while (i--) {
-		this[i + len] = nodes[i];
-	}
-	return this;
-};
-
-["parent", "parents", "parentsUntil"].forEach(func => {
-	$.fn[func] = function (selector, filter) {
-		const all = func.indexOf("s") > -1,
-			until = func.indexOf("U") > -1;
-		let nodes = [],
-			i = this.length,
-			parent;
-
-		while (i--) {
-			parent = this[i].parentNode;
-			while (parent && parent.nodeType === Node.ELEMENT_NODE) {
-				nodes.push(parent);
-				if (!all || (until && filterNodes(parent, selector).length)) {
-					break;
-				} else {
-					parent = parent.parentNode;
-				}
-			}
-		}
-		if (selector) {
-			nodes = filterNodes(nodes, selector);
-		}
-		return $(nodes);
-	};
-});
-
-$.fn.get = function (i) {
-	return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
-};
-
-// add and remove event handlers
-["on", "one"].forEach(name => {
-	$.fn[name] = function (events, selector, data, callback) {
-		let i = this.length;
-
-		events = events.split(" ");
-
-		// sort out args
-		if ($.isFunction(selector)) {
-			callback = selector;
-			selector = undefined;
-		} else if ($.isFunction(data)) {
-			callback = data;
-			data = undefined;
-		}
-
-		// attach event
-		while (i--) {
-			let e = events.length;
-
-			// record the original function
-			if (!this[i].events) {
-				this[i].events = [];
-			}
-			let fn = function (evt) { // delegate function
-				let target = [this];
-				if (selector) {
-					let t = $(evt.target);
-					target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
-				}
-				if (target) {
-					if (data) { // set data to event object
-						evt.data = data;
-					}
-					for (let i = 0, len = target.length; i < len; i++) {
-						if (callback.call(target[i], evt, evt.args) === false) {
-							evt.preventDefault();
-							evt.stopPropagation();
-						}
-					}
-				}
-			};
-			this[i].events.push({
-				events: events,
-				callback: callback,
-				selector: selector,
-				func: fn,
-				once: name === "one"
-			});
-
-			// trigger
-			while (e--) {
-				this[i].addEventListener(events[e], fn, {once: name === "one", capture: !!selector});
-			}
-		}
-		return this;
-	};
-});
-
-var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
-
-$.fn.attr = function (prop, value) {
-	let isObj = typeof prop !== "string",
-		i,
-		obj = {};
-
-	// set properties
-	if (isObj || value || value === null) {
-		i = this.length;
-
-		// normalise to object
-		if (!isObj) {
-			obj[prop] = value;
-			prop = obj;
-		}
-
-		while (i--) {
-			$.each(prop, (key, val) => {
-				if (events.indexOf(key) > -1) {
-					$(this[i]).on(key, val);
-				} else if (key === "style") {
-					this[i].style.cssText = val;
-				} else if (key === "class") {
-					this[i].className = val;
-				} else if (key === "text") {
-					this[i].textContent = val;
-				} else if (value === null) {
-					this[i].removeAttribute(key);
-				} else {
-					this[i].setAttribute(key, val);
-				}
-			});
-		}
-		return this;
-
-	// retrieve properties
-	} else if (this[0]) {
-		if (prop === "style") {
-			return this[0].style.cssText;
-		}
-		if (prop === "class") {
-			return this[0].className;
-		}
-		return this[0].getAttribute(prop);
-	}
 };
 
 ["addClass", "removeClass", "toggleClass"].forEach(name => {
@@ -1053,7 +1053,6 @@ $.fn.position = function () {
 });
 
 $.fn.trigger = function (name, data) {
-	const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
 	let i = this.length;
 
 	// copy extra data to event object
@@ -1061,10 +1060,11 @@ $.fn.trigger = function (name, data) {
 		evt.args = data;
 	}
 	while (i--) {
-		this[i].dispatchEvent(evt);
-		/*if (this[i].dispatchEvent(evt) && this[i][name]) {
+		if (this[i][name]) {
 			this[i][name]();
-		}*/
+		} else {
+			this[i].dispatchEvent(new CustomEvent(name, {bubbles: true, cancelable: true}));
+		}
 	}
 	return this;
 };
