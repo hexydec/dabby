@@ -7,7 +7,10 @@ QUnit.test("$.fn.val", function (assert) {
 		multi = document.createElement("select"),
 		text = $("<textarea>", {text: "test"}), // write test for this
 		i = 0,
-		opt;
+		opt,
+		radio = $("<input>", {type: "radio", name: "radio", value: "radio1"}).add(
+			$("<input>", {type: "radio", name: "radio", value: "radio2"})
+		);
 
 	assert.equal(obj.val(), "test", "Can read value");
 	assert.deepEqual(obj.val("new value"), obj, "Returns self when setting value");
@@ -26,4 +29,11 @@ QUnit.test("$.fn.val", function (assert) {
 
 	text.val("new value");
 	assert.equal(text.val(), "new value", "Can set and read value from textarea");
+
+	console.log(radio);
+
+	assert.equal(radio.val(), "radio1", "Can retrieve value of radio box");
+	assert.equal(radio.val("radio2"), radio, "Can set value of radio box");
+	assert.equal(radio.filter(":checked").val(), "radio2", "Can get value of radio box");
+
 });

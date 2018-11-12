@@ -13,13 +13,21 @@ $.fn.val = function (value) {
 			val;
 		while (i--) {
 			let val = getVal(value, this[i], i, () => $(this[i]).val());
+
+			// multi-select control
 			if (this[i].multiple) {
 				val = $.map($.isArray(val) ? val : [val], item => String(item)); // convert to string
 				$("option", this[i]).each((key, obj) => {
 					obj.selected = val.indexOf(String(obj.value)) > -1;
 				});
-			} else {
+
+			// any other form control
+			} else if (this[i].type !== "radio") {
 				this[i].value = String(val);
+
+			// radio control
+			} else if (String(this[i].value) === String(val)) {
+				this[i].checked = true;
 			}
 		}
 		return this;
@@ -36,11 +44,6 @@ $.fn.val = function (value) {
 				}
 			});
 			return values;
-
-		// get radio box value
-		} else if (this[0].type === "radio") {
-			let obj = this.filter(`[name="${this[0].name}"]:checked`)[0];
-			return obj ? String(obj.value) : undefined;
 
 		// get single value
 		} else if (this[0].type !== "checkbox" || this[0].checked) {
