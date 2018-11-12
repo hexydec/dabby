@@ -1068,10 +1068,11 @@ $.fn.trigger = function (name, data) {
 		evt.args = data;
 	}
 	while (i--) {
-		this[i].dispatchEvent(evt);
-		/*if (this[i].dispatchEvent(evt) && this[i][name]) {
+		if (this[i][name]) {
 			this[i][name]();
-		}*/
+		} else {
+			this[i].dispatchEvent(evt);
+		}
 	}
 	return this;
 };

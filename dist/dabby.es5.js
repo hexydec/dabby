@@ -1207,10 +1207,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     while (i--) {
-      this[i].dispatchEvent(evt);
-      /*if (this[i].dispatchEvent(evt) && this[i][name]) {
-      	this[i][name]();
-      }*/
+      if (this[i][name]) {
+        this[i][name]();
+      } else {
+        this[i].dispatchEvent(evt);
+      }
     }
 
     return this;
