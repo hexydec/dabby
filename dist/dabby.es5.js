@@ -1000,16 +1000,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.removeProp = function (prop) {
-    if (this[0]) {
-      var i = this.length;
-      prop = getProp(prop);
+    var i = this.length;
+    prop = getProp(prop);
 
-      while (i--) {
-        delete this[i][prop];
-      }
-
-      return this;
+    while (i--) {
+      delete this[i][prop];
     }
+
+    return this;
   };
 
   $.fn.map = function (callback) {

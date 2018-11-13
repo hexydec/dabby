@@ -33,8 +33,8 @@ The library supports the following methods:
 | [$.fn.css()](../src/attributes/css/readme.md)	| Get/set CSS attributes									|
 | [$.fn.data()](../src/attributes/data/readme.md)	| Get/set data attributes									|
 | [$.fn.prop()](../src/attributes/prop/readme.md)	| Get/set properties									|
-| $.fn.removeProp()							| Remove the selected property								|
-| $.fn.val()								| Get/set form control values								|
+| [$.fn.removeProp()](../src/attributes/removeprop/readme.md)| Remove the selected property								|
+| [$.fn.val()](../src/attributes/val/readme.md)	| Get/set form control values								|
 | [$.fn.addClass()](../src/attributes/class/readme.md)	| Add a class to elements in a collection				|
 | [$.fn.hasClass()](../src/attributes/hasclass/readme.md)	| See whether any elements in a collection have the requested class		|
 | [$.fn.removeClass()](../src/attributes/class/readme.md)	| Remove a class from an HTML element				|

@@ -865,15 +865,13 @@ $.fn.prop = function (prop, value) {
 };
 
 $.fn.removeProp = function (prop) {
-	if (this[0]) {
-		let i = this.length;
-		prop = getProp(prop);
+	let i = this.length;
+	prop = getProp(prop);
 
-		while (i--) {
-			delete this[i][prop];
-		}
-		return this;
+	while (i--) {
+		delete this[i][prop];
 	}
+	return this;
 };
 
 $.fn.map = function (callback) {

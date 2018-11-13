@@ -25,7 +25,7 @@ A plain object of key / value pairs representing the attributes to set.
 
 ### function
 
-A callback that receives the index of the element in the collection, and the current value of the attrivute. Should return the new attribute value. `this` will reference the current item in the collection that is being processed.
+A callback that receives the index of the element in the collection, and the current value of the attribute. Should return the new attribute value. `this` will reference the current item in the collection that is being processed.
 
 ## Returns
 
