@@ -1205,7 +1205,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     while (i--) {
-      if (this[i][name]) {
+      if ($.isFunction(this[i][name])) {
+        console.log("isfunction", name);
         this[i][name]();
       } else {
         this[i].dispatchEvent(evt);

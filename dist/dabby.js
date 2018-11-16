@@ -1066,7 +1066,8 @@ $.fn.trigger = function (name, data) {
 		evt.args = data;
 	}
 	while (i--) {
-		if (this[i][name]) {
+		if ($.isFunction(this[i][name])) {
+			console.log("isfunction", name);
 			this[i][name]();
 		} else {
 			this[i].dispatchEvent(evt);

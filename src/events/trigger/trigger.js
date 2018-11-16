@@ -1,4 +1,5 @@
 import $ from "../../core/core.js";
+import "../../utils/isfunction/isfunction.js";
 
 $.fn.trigger = function (name, data) {
 	const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
@@ -9,7 +10,7 @@ $.fn.trigger = function (name, data) {
 		evt.args = data;
 	}
 	while (i--) {
-		if (this[i][name]) {
+		if ($.isFunction(this[i][name])) {
 			this[i][name]();
 		} else {
 			this[i].dispatchEvent(evt);
