@@ -1,34 +1,32 @@
+import $ from "../../core/core.js";
+import "../../utils/each/each.js";
 import getVal from "../getval/getval.js";
 import dasherise from "../dasherise/dasherise.js";
 
 export default (dabby, props, value) => {
 
-	// set vars
-	let name = props,
-		keys,
-		k,
-		remove;
-
 	// normalise props
 	if (typeof props === "string") {
+		const name = props;
 		props = {};
 		props[name] = value;
 	}
 
-	// cache properties for loop
-	keys = Object.keys(props);
-	k = keys.length;
+	// prepare values
+	let values = [];
+	$.each(props, (i, prop) => {
+		values[i] = getVal(dabby, prop, obj => obj.style[i]);
+	});
 
 	// set properties
-	while (k--) {
+	$.each(values, (key, val) => {
 		let i = dabby.length;
 		while (i--) {
-			let val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
 			if (!isNaN(val)) {
 				val += "px";
 			}
-			dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
+			dabby[i].style[value === "" ? "removeProperty" : "setProperty"](dasherise(key), val);
 		}
-	}
+	});
 	return dabby;
 }

@@ -1,13 +1,16 @@
 import $ from "../../core/core.js";
-import getVal from "../../internal/getval/getval.js";
+import getVal from "../../utils/isfunction/isfunction.js";
 
 $.fn.wrapAll = function (html) {
 	if (this[0]) {
+		if ($.isFunction(html)) {
+			html = html.call(this[0]);
+		}
 
 		// set variables
 		let len = this.length,
 			i = 0,
-			node = $(getVal(html, this[0])).get(0).cloneNode(true);
+			node = $(html).get(0).cloneNode(true);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);

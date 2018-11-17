@@ -5,9 +5,10 @@ $.fn.html = function (html) {
 
 	// set
 	if (html !== undefined) {
-		let i = this.length;
+		let i = this.length,
+			values = getVal(this, html, obj => obj.innerHTML);
 		while (i--) {
-			this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
+			this[i].innerHTML = values[i];
 		}
 		return this;
 

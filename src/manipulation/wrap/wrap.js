@@ -3,10 +3,11 @@ import getVal from "../../internal/getval/getval.js";
 import "../wrapall/wrapall.js";
 
 $.fn.wrap = function (html) {
-	let i = this.length;
+	let i = this.length,
+		values = getVal(this, html);
 
 	while (i--) {
-		$(this[i]).wrapAll(getVal(html, this[i], i));
+		$(this[i]).wrapAll(values[i]);
 	}
 	return this;
 }

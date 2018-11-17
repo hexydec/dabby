@@ -30,10 +30,9 @@ QUnit.test("$.fn.val", function (assert) {
 	text.val("new value");
 	assert.equal(text.val(), "new value", "Can set and read value from textarea");
 
-	console.log(radio);
-
 	assert.equal(radio.val(), "radio1", "Can retrieve value of radio box");
 	assert.equal(radio.val("radio2"), radio, "Can set value of radio box");
+	console.log(radio);
 	assert.equal(radio.filter(":checked").val(), "radio2", "Can get value of radio box");
 
 });

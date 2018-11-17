@@ -375,9 +375,9 @@
     assert.deepEqual(obj.val(), ["1", "3", "5"], "Can set and read multiple values");
     text.val("new value");
     assert.equal(text.val(), "new value", "Can set and read value from textarea");
-    console.log(radio);
     assert.equal(radio.val(), "radio1", "Can retrieve value of radio box");
     assert.equal(radio.val("radio2"), radio, "Can set value of radio box");
+    console.log(radio);
     assert.equal(radio.filter(":checked").val(), "radio2", "Can get value of radio box");
   });
   QUnit.module("Core"); // add mouseevent support
@@ -985,56 +985,55 @@
     assert.deepEqual(filterNodes(obj, ".class2, .class3", true), filtered.get());
   });
 
-  var getVal = function getVal(val, obj, i, current) {
-    // retrieve as function
-    if ($$1.isFunction(val)) {
-      val = val.call(obj, i, $$1.isFunction(current) ? current() : current); // current can be a function
+  var getVal = function getVal(obj, val, current) {
+    var i = obj.length,
+        values = [],
+        funcVal = $$1.isFunction(val),
+        funcCurrent = $$1.isFunction(current);
+
+    while (i--) {
+      values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
     }
 
-    return val;
+    return values;
   };
 
   QUnit.module("Internal");
   QUnit.test("getVal", function (assert) {
-    var obj = $(".test").get(0);
-    assert.equal(getVal("test"), "test", "Can pass-through a value");
-    assert.equal(getVal(function (i) {
-      return this === obj && !i ? "test" : false;
-    }, obj, 0), "test", "When passing function as value, variables and context is correct"); //assert.equal(getVal(380, obj, 0), "380px", "Can return a number as a px value");
-
-    assert.equal(getVal("380pt", obj, 0), "380pt", "Can pass through a number that already has a suffix");
+    var obj = $(".test");
+    assert.deepEqual(getVal(obj, "test"), ["test"], "Can pass-through a value");
+    assert.deepEqual(getVal(obj, function (i) {
+      return this === obj[0] && !i ? "test" : false;
+    }), ["test"], "When passing function as value, variables and context is correct");
   });
 
   var setCss = function setCss(dabby, props, value) {
-    // set vars
-    var name = props,
-        keys,
-        k,
-        remove; // normalise props
-
+    // normalise props
     if (typeof props === "string") {
+      var name = props;
       props = {};
       props[name] = value;
-    } // cache properties for loop
+    } // prepare values
 
 
-    keys = Object.keys(props);
-    k = keys.length; // set properties
+    var values = [];
+    $$1.each(props, function (i, prop) {
+      values[i] = getVal(dabby, prop, function (obj) {
+        return obj.style[i];
+      });
+    }); // set properties
 
-    while (k--) {
+    $$1.each(values, function (key, val) {
       var i = dabby.length;
 
       while (i--) {
-        var val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
-
         if (!isNaN(val)) {
           val += "px";
         }
 
-        dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
+        dabby[i].style[value === "" ? "removeProperty" : "setProperty"](dasherise(key), val);
       }
-    }
-
+    });
     return dabby;
   };
 

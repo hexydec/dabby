@@ -675,13 +675,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this;
   };
 
-  var getVal = function getVal(val, obj, i, current) {
-    // retrieve as function
-    if ($.isFunction(val)) {
-      val = val.call(obj, i, $.isFunction(current) ? current() : current); // current can be a function
+  var getVal = function getVal(obj, val, current) {
+    var i = obj.length,
+        values = [],
+        funcVal = $.isFunction(val),
+        funcCurrent = $.isFunction(current);
+
+    while (i--) {
+      values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
     }
 
-    return val;
+    return values;
   };
 
   $.map = function (obj, callback) {
@@ -708,30 +712,26 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // set value
     if (value !== undefined) {
       var _ret = function () {
-        var i = _this3.length;
+        var i = _this3.length,
+            values = getVal(_this3, value, function (obj) {
+          return obj.val();
+        });
 
-        var _loop = function _loop() {
-          var val = getVal(value, _this3[i], i, function () {
-            return $(_this3[i]).val();
-          }); // multi-select control
-
+        while (i--) {
+          // multi-select control
           if (_this3[i].multiple) {
-            val = $.map($.isArray(val) ? val : [val], function (item) {
+            values[i] = $.map($.isArray(values[i]) ? values[i] : [values[i]], function (item) {
               return String(item);
             }); // convert to string
 
             $("option", _this3[i]).each(function (key, obj) {
-              obj.selected = val.indexOf(String(obj.value)) > -1;
+              obj.selected = values[i].indexOf(String(obj.value)) > -1;
             }); // any other form control
           } else if (_this3[i].type !== "radio") {
-            _this3[i].value = String(val); // radio control
-          } else if (String(_this3[i].value) === String(val)) {
+            _this3[i].value = String(values[i]); // radio control
+          } else if (String(_this3[i].value) === String(values[i])) {
             _this3[i].checked = true;
           }
-        };
-
-        while (i--) {
-          _loop();
         }
 
         return {
@@ -802,19 +802,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $.fn[name] = function (cls) {
       // remove "Class" from name for classList method
       var func = name.substr(0, name.length - 5),
-          i = this.length; // manage classes on nodes
+          i = this.length,
+          values = getVal(this, cls, function (obj) {
+        return obj.className;
+      }); // manage classes on nodes
 
       while (i--) {
-        var arr = getVal(cls, this[i], i, this[i].className);
-
-        if (typeof arr === "string") {
-          arr = arr.split(" ");
+        if (typeof values[i] === "string") {
+          values[i] = values[i].split(" ");
         }
 
-        var len = arr.length;
+        var len = values[i].length;
 
         for (var n = 0; n < len; n++) {
-          this[i].classList[func](arr[n]);
+          this[i].classList[func](values[i][n]);
         }
       }
 
@@ -829,35 +830,32 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var setCss = function setCss(dabby, props, value) {
-    // set vars
-    var name = props,
-        keys,
-        k,
-        remove; // normalise props
-
+    // normalise props
     if (typeof props === "string") {
+      var name = props;
       props = {};
       props[name] = value;
-    } // cache properties for loop
+    } // prepare values
 
 
-    keys = Object.keys(props);
-    k = keys.length; // set properties
+    var values = [];
+    $.each(props, function (i, prop) {
+      values[i] = getVal(dabby, prop, function (obj) {
+        return obj.style[i];
+      });
+    }); // set properties
 
-    while (k--) {
+    $.each(values, function (key, val) {
       var i = dabby.length;
 
       while (i--) {
-        var val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
-
         if (!isNaN(val)) {
           val += "px";
         }
 
-        dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
+        dabby[i].style[value === "" ? "removeProperty" : "setProperty"](dasherise(key), val);
       }
-    }
-
+    });
     return dabby;
   };
 
@@ -984,18 +982,36 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.prop = function (prop, value) {
-    prop = getProp(prop); // set
+    var _this5 = this;
 
-    if (value !== undefined) {
-      var i = this.length;
+    var isObj = $.isPlainObject(prop); // set
 
-      while (i--) {
-        this[i][prop] = getVal(value, this[i], i, this[i][prop]);
-      }
+    if (value !== undefined || isObj) {
+      // normalise values
+      if (!isObj) {
+        var tmp = {};
+        tmp[prop] = value;
+        prop = tmp;
+      } // retrieve values
 
+
+      var values = [];
+      $.each(prop, function (key, val) {
+        values[getProp(key)] = getVal(_this5, val, function (obj) {
+          return obj[key];
+        });
+      }); // set properties
+
+      $.each(values, function (key, val) {
+        var i = _this5.length;
+
+        while (i--) {
+          _this5[i][key] = val[i];
+        }
+      });
       return this; // get
     } else if (this[0]) {
-      return this[0][prop];
+      return this[0][getProp(prop)];
     }
   };
 
@@ -1029,10 +1045,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         pos; // set
 
     if (coords) {
+      var values = getVal(this, coords, function (obj) {
+        return obj.offset();
+      }); // copy the object
+
       while (i--) {
         // if coords is callback, generate value
         rect = this[i].getBoundingClientRect();
-        var itemCoords = Object.create(getVal(coords, this[i], i, $(this[i]).offset())); // copy the object
+        var itemCoords = Object.create(values[i]); // copy the object
 
         if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
           var style = getComputedStyle(this[i]);
@@ -1086,17 +1106,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       // set
       if (pos !== undefined) {
         var i = this.length,
-            tl = item.indexOf("Top") > -1 ? "top" : "left";
+            tl = item.indexOf("Top") > -1 ? "top" : "left",
+            values = getVal(this, pos, function (obj) {
+          return obj[item];
+        });
 
         while (i--) {
-          var val = getVal(pos, this, i, this[i][item]);
-
           if ($.isWindow(this[i])) {
             var obj = {};
-            obj[tl] = val;
+            obj[tl] = values[i];
             this[i].scroll(obj);
           } else {
-            this[i][item] = val;
+            this[i][item] = values[i];
           }
         }
 
@@ -1140,32 +1161,34 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           param; // set value
 
       if (val !== undefined && valtype !== "boolean") {
+        var values = getVal(this, val, function (obj) {
+          return obj[dim];
+        });
+
         while (i--) {
           // set base value
-          value = getVal(val, this[i], i, this[i][dim]);
-
-          if (!isNaN(val)) {
-            value += "px";
+          if (!isNaN(values[i])) {
+            values[i] += "px";
           }
 
-          this[i].style[wh] = value; // set here so we can convert to px
+          this[i].style[wh] = values[i]; // set here so we can convert to px
           // add additional lengths
 
           if (io) {
-            value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
+            values[i] = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
             props = ["padding"];
 
             if (io === "outer") {
               props.push("border");
             }
 
-            value -= getAdditionalLength(this[i], wh, props);
+            values[i] -= getAdditionalLength(this[i], wh, props);
 
-            if (!isNaN(val)) {
-              value += "px";
+            if (!isNaN(values[i])) {
+              values[i] += "px";
             }
 
-            this[i].style[wh] = value;
+            this[i].style[wh] = values[i];
           }
         }
 
@@ -1206,7 +1229,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     while (i--) {
       if ($.isFunction(this[i][name])) {
-        console.log("isfunction", name);
         this[i][name]();
       } else {
         this[i].dispatchEvent(evt);
@@ -1223,7 +1245,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }); // add and remove event handlers
 
   $.fn.off = function (events, selector, data, callback) {
-    var _this5 = this;
+    var _this6 = this;
 
     var i = this.length;
     events = events.split(" "); // sort out args
@@ -1244,20 +1266,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var e = events.length;
 
           while (e--) {
-            _this5[i].events.forEach(function (evt, n) {
+            _this6[i].events.forEach(function (evt, n) {
               var index = evt.events.indexOf(events[e]);
 
               if (index !== -1 && (!callback || evt.callback === callback) && (!selector || evt.selector === selector)) {
-                _this5[i].removeEventListener(events[e], evt.func, {
+                _this6[i].removeEventListener(events[e], evt.func, {
                   once: evt.once,
                   capture: !!evt.selector
                 }); // must pass same arguments
 
 
-                _this5[i].events[n].events.splice(index, 1);
+                _this6[i].events[n].events.splice(index, 1);
 
-                if (!_this5[i].events[n].events.length) {
-                  _this5[i].events.splice(n, 1);
+                if (!_this6[i].events[n].events.length) {
+                  _this6[i].events.splice(n, 1);
                 }
               }
             });
@@ -1295,10 +1317,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   $.fn.html = function (html) {
     // set
     if (html !== undefined) {
-      var i = this.length;
+      var i = this.length,
+          values = getVal(this, html, function (obj) {
+        return obj.innerHTML;
+      });
 
       while (i--) {
-        this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
+        this[i].innerHTML = values[i];
       }
 
       return this; // get
@@ -1314,36 +1339,35 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     after: "afterEnd"
   }, function (name, pos) {
     $.fn[name] = function (html) {
-      var pre = ["before", "prepend"].indexOf(name) > -1,
-          isFunc = $.isFunction(html);
-      var i = this.length,
-          elems = $();
+      var pre = ["before", "prepend"].indexOf(name) > -1;
+      var arr = [];
 
-      if (!isFunc) {
-        // multiple arguments containing nodes?
+      if ($.isFunction(html)) {
+        arr = getVal(this, html, function (obj) {
+          return obj.innerHTML;
+        }); // multiple arguments containing nodes
+      } else {
+        var elems = $();
         $.each(arguments, function (i, arg) {
-          elems.add(arg);
+          return elems.add(arg);
         });
+        var _i2 = this.length;
+
+        while (_i2--) {
+          arr[_i2] = _i2 ? elems.clone() : elems;
+        }
       }
 
-      while (i--) {
-        if (isFunc) {
-          elems = $(getVal(html, this[i], i, this[i].innerHTML));
-        }
+      var i = this.length;
 
-        var backwards = elems.length,
+      while (i--) {
+        var backwards = arr[i].length,
             // for counting down
         forwards = -1; // for counting up
 
         while (pre ? backwards-- : ++forwards < backwards) {
           // insert forwards or backwards?
-          var obj = elems[pre ? backwards : forwards]; // clone if i !== 0
-
-          if (i) {
-            obj = obj.cloneNode(true);
-          }
-
-          this[i].insertAdjacentElement(pos, obj);
+          this[i].insertAdjacentElement(pos, arr[i][pre ? backwards : forwards]);
         }
       }
 
@@ -1419,20 +1443,26 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.text = function (text) {
-    var get = text === undefined;
-    var len = this.length,
-        output = [],
-        i = 0;
+    var i = this.length,
+        output = [];
 
-    for (; i < len; i++) {
-      if (get) {
-        output.push(this[i].textContent);
-      } else {
-        this[i].textContent = getVal(text, this[i], i, this[i].textContent);
+    if (text === undefined) {
+      while (i--) {
+        output[i] = this[i].textContent;
       }
-    }
 
-    return get ? output.join(" ") : this;
+      return output.join(" ");
+    } else {
+      var values = getVal(this, text, function (obj) {
+        return obj.textContent;
+      });
+
+      while (i--) {
+        this[i].textContent = values[i];
+      }
+
+      return this;
+    }
   };
 
   $.fn.unwrap = function (selector) {
@@ -1448,10 +1478,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   $.fn.wrapAll = function (html) {
     if (this[0]) {
-      // set variables
+      if ($.isFunction(html)) {
+        html = html.call(this[0]);
+      } // set variables
+
+
       var len = this.length,
           i = 0,
-          node = $(getVal(html, this[0])).get(0).cloneNode(true); // insert clone into parent
+          node = $(html).get(0).cloneNode(true); // insert clone into parent
 
       this[0].parentNode.insertBefore(node, null); // find innermost child of node
 
@@ -1469,10 +1503,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.wrap = function (html) {
-    var i = this.length;
+    var i = this.length,
+        values = getVal(this, html);
 
     while (i--) {
-      $(this[i]).wrapAll(getVal(html, this[i], i));
+      $(this[i]).wrapAll(values[i]);
     }
 
     return this;
@@ -1613,14 +1648,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   $.fn.siblings = function (selector) {
-    var _this6 = this;
+    var _this7 = this;
 
     var i = this.length,
         nodes = [];
 
     while (i--) {
       Array.from(this[i].parentNode.children).forEach(function (child) {
-        if (child !== _this6[i]) {
+        if (child !== _this7[i]) {
           nodes.push(child);
         }
       });

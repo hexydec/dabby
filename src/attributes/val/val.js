@@ -10,23 +10,23 @@ $.fn.val = function (value) {
 	// set value
 	if (value !== undefined) {
 		let i = this.length,
-			val;
+			values = getVal(this, value, obj => obj.val());
+
 		while (i--) {
-			let val = getVal(value, this[i], i, () => $(this[i]).val());
 
 			// multi-select control
 			if (this[i].multiple) {
-				val = $.map($.isArray(val) ? val : [val], item => String(item)); // convert to string
+				values[i] = $.map($.isArray(values[i]) ? values[i] : [values[i]], item => String(item)); // convert to string
 				$("option", this[i]).each((key, obj) => {
-					obj.selected = val.indexOf(String(obj.value)) > -1;
+					obj.selected = values[i].indexOf(String(obj.value)) > -1;
 				});
 
 			// any other form control
 			} else if (this[i].type !== "radio") {
-				this[i].value = String(val);
+				this[i].value = String(values[i]);
 
 			// radio control
-			} else if (String(this[i].value) === String(val)) {
+			} else if (String(this[i].value) === String(values[i])) {
 				this[i].checked = true;
 			}
 		}

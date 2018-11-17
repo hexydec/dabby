@@ -30,27 +30,27 @@ import "../../utils/iswindow/iswindow.js";
 
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
+			const values = getVal(this, val, obj => obj[dim]);
 			while (i--) {
 
 				// set base value
-				value = getVal(val, this[i], i, this[i][dim]);
-				if (!isNaN(val)) {
-					value += "px";
+				if (!isNaN(values[i])) {
+					values[i] += "px";
 				}
-				this[i].style[wh] = value; // set here so we can convert to px
+				this[i].style[wh] = values[i]; // set here so we can convert to px
 
 				// add additional lengths
 				if (io) {
-					value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
+					values[i] = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
 					props = ["padding"];
 					if (io === "outer") {
 						props.push("border");
 					}
-					value -= getAdditionalLength(this[i], wh, props);
-					if (!isNaN(val)) {
-						value += "px";
+					values[i] -= getAdditionalLength(this[i], wh, props);
+					if (!isNaN(values[i])) {
+						values[i] += "px";
 					}
-					this[i].style[wh] = value;
+					this[i].style[wh] = values[i];
 				}
 			}
 			return this;

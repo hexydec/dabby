@@ -8,15 +8,15 @@ import "../../utils/iswindow/iswindow.js";
 		// set
 		if (pos !== undefined) {
 			let i = this.length,
-				tl = item.indexOf("Top") > -1 ? "top" : "left";
+				tl = item.indexOf("Top") > -1 ? "top" : "left",
+				values = getVal(this, pos, obj => obj[item]);
 			while (i--) {
-				let val = getVal(pos, this, i, this[i][item]);
 				if ($.isWindow(this[i])) {
 					let obj = {};
-					obj[tl] = val;
+					obj[tl] = values[i];
 					this[i].scroll(obj);
 				} else {
-					this[i][item] = val;
+					this[i][item] = values[i];
 				}
 			};
 			return this;

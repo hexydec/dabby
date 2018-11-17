@@ -9,11 +9,12 @@ $.fn.offset = function (coords) {
 
 	// set
 	if (coords) {
+		const values = getVal(this, coords, obj => obj.offset()); // copy the object
 		while (i--) {
-
 			// if coords is callback, generate value
+
 			rect = this[i].getBoundingClientRect();
-			let itemCoords = Object.create(getVal(coords, this[i], i, $(this[i]).offset())); // copy the object
+			const itemCoords = Object.create(values[i]); // copy the object
 
 			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
 				let style = getComputedStyle(this[i]);

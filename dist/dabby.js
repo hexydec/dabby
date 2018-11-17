@@ -572,13 +572,15 @@ $.fn.load = function (url, data, success) {
 	return this;
 };
 
-var getVal = (val, obj, i, current) => {
-
-	// retrieve as function
-	if ($.isFunction(val)) {
-		val = val.call(obj, i, $.isFunction(current) ? current() : current); // current can be a function
+var getVal = (obj, val, current) => {
+	let i = obj.length,
+		values = [],
+		funcVal = $.isFunction(val),
+		funcCurrent = $.isFunction(current);
+	while (i--) {
+		values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
 	}
-	return val;
+	return values;
 }
 
 $.map = (obj, callback) => {
@@ -601,23 +603,24 @@ $.fn.val = function (value) {
 
 	// set value
 	if (value !== undefined) {
-		let i = this.length;
+		let i = this.length,
+			values = getVal(this, value, obj => obj.val());
+
 		while (i--) {
-			let val = getVal(value, this[i], i, () => $(this[i]).val());
 
 			// multi-select control
 			if (this[i].multiple) {
-				val = $.map($.isArray(val) ? val : [val], item => String(item)); // convert to string
+				values[i] = $.map($.isArray(values[i]) ? values[i] : [values[i]], item => String(item)); // convert to string
 				$("option", this[i]).each((key, obj) => {
-					obj.selected = val.indexOf(String(obj.value)) > -1;
+					obj.selected = values[i].indexOf(String(obj.value)) > -1;
 				});
 
 			// any other form control
 			} else if (this[i].type !== "radio") {
-				this[i].value = String(val);
+				this[i].value = String(values[i]);
 
 			// radio control
-			} else if (String(this[i].value) === String(val)) {
+			} else if (String(this[i].value) === String(values[i])) {
 				this[i].checked = true;
 			}
 		}
@@ -687,17 +690,17 @@ $.fn.serialize = function () {
 
 		// remove "Class" from name for classList method
 		let func = name.substr(0, name.length - 5),
-			i = this.length;
+			i = this.length,
+			values = getVal(this, cls, obj => obj.className);
 
 		// manage classes on nodes
 		while (i--) {
-			let arr = getVal(cls, this[i], i, this[i].className);
-			if (typeof arr === "string") {
-				arr = arr.split(" ");
+			if (typeof values[i] === "string") {
+				values[i] = values[i].split(" ");
 			}
-			const len = arr.length;
+			const len = values[i].length;
 			for (let n = 0; n < len; n++) {
-				this[i].classList[func](arr[n]);
+				this[i].classList[func](values[i][n]);
 			}
 		}
 		return this;
@@ -708,33 +711,29 @@ var dasherise = prop => prop.replace(/[A-Z]/g, letter => "-" + letter.toLowerCas
 
 var setCss = (dabby, props, value) => {
 
-	// set vars
-	let name = props,
-		keys,
-		k,
-		remove;
-
 	// normalise props
 	if (typeof props === "string") {
+		const name = props;
 		props = {};
 		props[name] = value;
 	}
 
-	// cache properties for loop
-	keys = Object.keys(props);
-	k = keys.length;
+	// prepare values
+	let values = [];
+	$.each(props, (i, prop) => {
+		values[i] = getVal(dabby, prop, obj => obj.style[i]);
+	});
 
 	// set properties
-	while (k--) {
+	$.each(values, (key, val) => {
 		let i = dabby.length;
 		while (i--) {
-			let val = props[keys[k]] === "" ? undefined : getVal(props[keys[k]], dabby[i], k, dabby[i].style[keys[k]]);
 			if (!isNaN(val)) {
 				val += "px";
 			}
-			dabby[i].style[remove ? "removeProperty" : "setProperty"](dasherise(keys[k]), val);
+			dabby[i].style[value === "" ? "removeProperty" : "setProperty"](dasherise(key), val);
 		}
-	}
+	});
 	return dabby;
 }
 
@@ -848,19 +847,36 @@ var getProp = prop => {
 }
 
 $.fn.prop = function (prop, value) {
-	prop = getProp(prop);
+	const isObj = $.isPlainObject(prop);
 
 	// set
-	if (value !== undefined) {
-		let i = this.length;
-		while (i--) {
-			this[i][prop] = getVal(value, this[i], i, this[i][prop]);
+	if (value !== undefined || isObj) {
+
+		// normalise values
+		if (!isObj) {
+			const tmp = {};
+			tmp[prop] = value;
+			prop = tmp;
 		}
+
+		// retrieve values
+		let values = [];
+		$.each(prop, (key, val) => {
+			values[getProp(key)] = getVal(this, val, obj => obj[key]);
+		});
+
+		// set properties
+		$.each(values, (key, val) => {
+			let i = this.length;
+			while (i--) {
+				this[i][key] = val[i];
+			}
+		});
 		return this;
 
 	// get
 	} else if (this[0]) {
-		return this[0][prop];
+		return this[0][getProp(prop)];
 	}
 };
 
@@ -893,11 +909,12 @@ $.fn.offset = function (coords) {
 
 	// set
 	if (coords) {
+		const values = getVal(this, coords, obj => obj.offset()); // copy the object
 		while (i--) {
-
 			// if coords is callback, generate value
+
 			rect = this[i].getBoundingClientRect();
-			let itemCoords = Object.create(getVal(coords, this[i], i, $(this[i]).offset())); // copy the object
+			const itemCoords = Object.create(values[i]); // copy the object
 
 			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
 				let style = getComputedStyle(this[i]);
@@ -952,15 +969,15 @@ $.fn.position = function () {
 		// set
 		if (pos !== undefined) {
 			let i = this.length,
-				tl = item.indexOf("Top") > -1 ? "top" : "left";
+				tl = item.indexOf("Top") > -1 ? "top" : "left",
+				values = getVal(this, pos, obj => obj[item]);
 			while (i--) {
-				let val = getVal(pos, this, i, this[i][item]);
 				if ($.isWindow(this[i])) {
 					let obj = {};
-					obj[tl] = val;
+					obj[tl] = values[i];
 					this[i].scroll(obj);
 				} else {
-					this[i][item] = val;
+					this[i][item] = values[i];
 				}
 			}
 			return this;
@@ -1003,27 +1020,27 @@ $.fn.position = function () {
 
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
+			const values = getVal(this, val, obj => obj[dim]);
 			while (i--) {
 
 				// set base value
-				value = getVal(val, this[i], i, this[i][dim]);
-				if (!isNaN(val)) {
-					value += "px";
+				if (!isNaN(values[i])) {
+					values[i] += "px";
 				}
-				this[i].style[wh] = value; // set here so we can convert to px
+				this[i].style[wh] = values[i]; // set here so we can convert to px
 
 				// add additional lengths
 				if (io) {
-					value = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
+					values[i] = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
 					props = ["padding"];
 					if (io === "outer") {
 						props.push("border");
 					}
-					value -= getAdditionalLength(this[i], wh, props);
-					if (!isNaN(val)) {
-						value += "px";
+					values[i] -= getAdditionalLength(this[i], wh, props);
+					if (!isNaN(values[i])) {
+						values[i] += "px";
 					}
-					this[i].style[wh] = value;
+					this[i].style[wh] = values[i];
 				}
 			}
 			return this;
@@ -1067,7 +1084,6 @@ $.fn.trigger = function (name, data) {
 	}
 	while (i--) {
 		if ($.isFunction(this[i][name])) {
-			console.log("isfunction", name);
 			this[i][name]();
 		} else {
 			this[i].dispatchEvent(evt);
@@ -1142,9 +1158,10 @@ $.fn.html = function (html) {
 
 	// set
 	if (html !== undefined) {
-		let i = this.length;
+		let i = this.length,
+			values = getVal(this, html, obj => obj.innerHTML);
 		while (i--) {
-			this[i].innerHTML = getVal(html, this[i], i, this[i].innerHTML);
+			this[i].innerHTML = values[i];
 		}
 		return this;
 
@@ -1161,31 +1178,28 @@ $.each({
 	after: "afterEnd"
 }, (name, pos) => {
 	$.fn[name] = function (html) {
-		const pre = ["before", "prepend"].indexOf(name) > -1,
-			isFunc = $.isFunction(html);
-		let i = this.length,
-			elems = $();
+		const pre = ["before", "prepend"].indexOf(name) > -1;
+		let arr = [];
 
-		if (!isFunc) { // multiple arguments containing nodes?
-			$.each(arguments, (i, arg) => {
-				elems.add(arg);
-			});
+		if ($.isFunction(html)) {
+			arr = getVal(this, html, obj => obj.innerHTML);
+
+		// multiple arguments containing nodes
+		} else {
+			const elems = $();
+			$.each(arguments, (i, arg) => elems.add(arg));
+			let i = this.length;
+			while (i--) {
+				arr[i] = i ? elems.clone() : elems;
+			}
 		}
 
+		let i = this.length;
 		while (i--) {
-			if (isFunc) {
-				elems = $(getVal(html, this[i], i, this[i].innerHTML));
-			}
-			let backwards = elems.length, // for counting down
+			let backwards = arr[i].length, // for counting down
 				forwards = -1; // for counting up
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				let obj = elems[pre ? backwards : forwards];
-
-				// clone if i !== 0
-				if (i) {
-					obj = obj.cloneNode(true);
-				}
-				this[i].insertAdjacentElement(pos, obj);
+				this[i].insertAdjacentElement(pos, arr[i][pre ? backwards : forwards]);
 			}
 		}
 		return this;
@@ -1260,18 +1274,20 @@ $.fn.slice = function (start, end) {
 };
 
 $.fn.text = function (text) {
-	const get = text === undefined;
-	let len = this.length,
-		output = [],
-		i = 0;
-	for (; i < len; i++) {
-		if (get) {
-			output.push(this[i].textContent);
-		} else {
-			this[i].textContent = getVal(text, this[i], i, this[i].textContent);
+	let i = this.length,
+		output = [];
+	if (text === undefined) {
+		while (i--) {
+			output[i] = this[i].textContent;
 		}
+		return output.join(" ");
+	} else {
+		const values = getVal(this, text, obj => obj.textContent);
+		while (i--) {
+			this[i].textContent = values[i];
+		}
+		return this;
 	}
-	return get ? output.join(" ") : this;
 };
 
 $.fn.unwrap = function (selector) {
@@ -1288,11 +1304,14 @@ $.fn.unwrap = function (selector) {
 
 $.fn.wrapAll = function (html) {
 	if (this[0]) {
+		if ($.isFunction(html)) {
+			html = html.call(this[0]);
+		}
 
 		// set variables
 		let len = this.length,
 			i = 0,
-			node = $(getVal(html, this[0])).get(0).cloneNode(true);
+			node = $(html).get(0).cloneNode(true);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);
@@ -1311,10 +1330,11 @@ $.fn.wrapAll = function (html) {
 };
 
 $.fn.wrap = function (html) {
-	let i = this.length;
+	let i = this.length,
+		values = getVal(this, html);
 
 	while (i--) {
-		$(this[i]).wrapAll(getVal(html, this[i], i));
+		$(this[i]).wrapAll(values[i]);
 	}
 	return this;
 };
