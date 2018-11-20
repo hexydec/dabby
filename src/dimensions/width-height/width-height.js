@@ -4,8 +4,7 @@ import "../../utils/iswindow/iswindow.js";
 
 ["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
 
-	const getAdditionalLength = (obj, wh, props) => {
-		const style = getComputedStyle(obj);
+	const getAdditionalLength = (style, wh, props) => {
 		let i = props.length,
 			value = 0,
 			suffix;
@@ -26,32 +25,35 @@ import "../../utils/iswindow/iswindow.js";
 			value,
 			whu,
 			props,
-			param;
+			param,
+			style;
 
 		// set value
 		if (val !== undefined && valtype !== "boolean") {
 			const values = getVal(this, val, obj => obj[dim]);
 			while (i--) {
 
-				// set base value
-				if (!isNaN(values[i])) {
-					values[i] += "px";
-				}
-				this[i].style[wh] = values[i]; // set here so we can convert to px
-
 				// add additional lengths
 				if (io) {
-					values[i] = parseFloat(getComputedStyle(this[i]).getPropertyValue(wh));
+					style = getComputedStyle(this[i]);
+
+					// convert to px if other unit
+					if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
+						this[i].style[wh] = values[i];
+						values[i] = style.getPropertyValue(wh);
+					}
+
+					// take off px
+					values[i] = parseFloat(values[i]);
+
+					// get additional length
 					props = ["padding"];
 					if (io === "outer") {
 						props.push("border");
 					}
-					values[i] -= getAdditionalLength(this[i], wh, props);
-					if (!isNaN(values[i])) {
-						values[i] += "px";
-					}
-					this[i].style[wh] = values[i];
+					values[i] -= getAdditionalLength(style, wh, props);
 				}
+				this[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
 			}
 			return this;
 
@@ -70,7 +72,8 @@ import "../../utils/iswindow/iswindow.js";
 
 				// add padding on, or if outer and margins requested, add margins on
 				if (io === "" || (io === "outer" && val === true)) {
-					value += getAdditionalLength(this[0], wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
+					style = getComputedStyle(this[0]);
+					value += getAdditionalLength(style, wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
 				}
 				return value;
 

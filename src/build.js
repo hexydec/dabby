@@ -16,6 +16,7 @@ import "./attributes/data/data.js";
 import "./attributes/hasclass/hasclass.js";
 import "./attributes/prop/prop.js";
 import "./attributes/removeprop/removeprop.js";
+import "./attributes/show-hide/show-hide.js";
 import "./attributes/val/val.js";
 
 // core

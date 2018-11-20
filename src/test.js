@@ -14,6 +14,7 @@ import "./attributes/css/test.js";
 import "./attributes/data/test.js";
 import "./attributes/hasclass/test.js";
 import "./attributes/prop/test.js";
+import "./attributes/show-hide/test.js";
 //import "./attributes/removeprop/test.js";
 import "./attributes/val/test.js";
 
