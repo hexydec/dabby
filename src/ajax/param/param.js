@@ -1,12 +1,11 @@
 import $ from "../../core/core.js";
-import "../../utils/isarray/isarray.js";
 import "../../utils/isfunction/isfunction.js";
 import "../../utils/each/each.js";
 
 $.param = obj => {
 	let params = [],
 		add = (key, value, params) => {
-			let isArr = $.isArray(value);
+			let isArr = Array.isArray(value);
 			if (isArr || typeof value === "object") {
 				$.each(value, (i, val) => {
 					params = add(`${key}[${isArr ? "" : i}]`, val, params);

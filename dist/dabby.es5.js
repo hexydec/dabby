@@ -131,9 +131,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         } // parse HTML into nodes
 
       } else {
-        var obj = document.createElement("template");
-        obj.innerHTML = selector;
-        nodes = obj.content ? obj.content.children : obj.children;
+        var obj = document.implementation.createHTMLDocument("");
+        obj.body.innerHTML = selector;
+        nodes = obj.body.children;
       }
     }
 
@@ -232,14 +232,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return Object.assign.apply(null, arrs);
   };
 
-  $.isArray = function (arr) {
-    return Array.isArray(arr);
-  };
-
   $.param = function (obj) {
     var params = [],
         add = function add(key, value, params) {
-      var isArr = $.isArray(value);
+      var isArr = Array.isArray(value);
 
       if (isArr || _typeof(value) === "object") {
         $.each(value, function (i, val) {
@@ -572,7 +568,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         while (i--) {
           // string value, just set to value attribute
-          if (!$.isArray(values[i])) {
+          if (!Array.isArray(values[i])) {
             _this2[i].value = values[i]; // array on select, set matching values to selected
           } else if (_this2[i].type === "select-multiple") {
             values[i] = values[i].map(function (val) {
@@ -628,11 +624,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       if (name !== "") {
         params[name] = value;
       } else {
-        if (!$.isArray(params)) {
+        if (!Array.isArray(params)) {
           params = [];
         }
 
-        params = params.concat($.isArray(value) ? value : [value]);
+        params = params.concat(Array.isArray(value) ? value : [value]);
       }
 
       return params;
@@ -1721,6 +1717,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     return $(selector ? filterNodes(nodes, selector) : nodes);
+  };
+
+  $.isArray = function (arr) {
+    return Array.isArray(arr);
   }; // ajax
   // attributes
   // core

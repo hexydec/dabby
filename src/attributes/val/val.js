@@ -1,6 +1,5 @@
 import $ from "../../core/core.js";
 import getVal from "../../internal/getval/getval.js";
-import "../../utils/isarray/isarray.js";
 import "../../utils/map/map.js";
 import "../../core/each/each.js";
 
@@ -14,7 +13,7 @@ $.fn.val = function (value) {
 		while (i--) {
 
 			// string value, just set to value attribute
-			if (!$.isArray(values[i])) {
+			if (!Array.isArray(values[i])) {
 				this[i].value = values[i];
 
 			// array on select, set matching values to selected

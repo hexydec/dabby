@@ -769,9 +769,9 @@
         } // parse HTML into nodes
 
       } else {
-        var obj = document.createElement("template");
-        obj.innerHTML = selector;
-        nodes = obj.content ? obj.content.children : obj.children;
+        var obj = document.implementation.createHTMLDocument("");
+        obj.body.innerHTML = selector;
+        nodes = obj.body.children;
       }
     }
 

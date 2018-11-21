@@ -54,9 +54,9 @@ const $ = function dabby(selector, context) {
 
 		// parse HTML into nodes
 		} else {
-			const obj = document.createElement("template");
-			obj.innerHTML = selector;
-			nodes = obj.content ? obj.content.children : obj.children;
+			const obj = document.implementation.createHTMLDocument("");
+			obj.body.innerHTML = selector;
+			nodes = obj.body.children;
 		}
 	}
 	return new dabby(nodes);
@@ -145,12 +145,10 @@ $.extend = (...arrs) => {
 	return Object.assign.apply(null, arrs);
 };
 
-$.isArray = arr => Array.isArray(arr);
-
 $.param = obj => {
 	let params = [],
 		add = (key, value, params) => {
-			let isArr = $.isArray(value);
+			let isArr = Array.isArray(value);
 			if (isArr || typeof value === "object") {
 				$.each(value, (i, val) => {
 					params = add(`${key}[${isArr ? "" : i}]`, val, params);
@@ -469,7 +467,7 @@ $.fn.val = function (value) {
 		while (i--) {
 
 			// string value, just set to value attribute
-			if (!$.isArray(values[i])) {
+			if (!Array.isArray(values[i])) {
 				this[i].value = values[i];
 
 			// array on select, set matching values to selected
@@ -522,10 +520,10 @@ $.fn.serialize = function () {
 			if (name !== "") {
 				params[name] = value;
 			} else {
-				if (!$.isArray(params)) {
+				if (!Array.isArray(params)) {
 					params = [];
 				}
-				params = params.concat($.isArray(value) ? value : [value]);
+				params = params.concat(Array.isArray(value) ? value : [value]);
 			}
 			return params;
 		};
@@ -1512,6 +1510,8 @@ $.fn.siblings = function (selector) {
 	}
 	return $(selector ? filterNodes(nodes, selector) : nodes);
 };
+
+$.isArray = arr => Array.isArray(arr);
 
 // ajax
 // attributes

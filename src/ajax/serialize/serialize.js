@@ -1,6 +1,5 @@
 import $ from "../../core/core.js";
 import "../../traversal/filter/filter.js";
-import "../../utils/isarray/isarray.js";
 import "../../core/each/each.js";
 import "../../attributes/val/val.js";
 import "../param/param.js";
@@ -19,10 +18,10 @@ $.fn.serialize = function () {
 			if (name !== "") {
 				params[name] = value;
 			} else {
-				if (!$.isArray(params)) {
+				if (!Array.isArray(params)) {
 					params = [];
 				}
-				params = params.concat($.isArray(value) ? value : [value]);
+				params = params.concat(Array.isArray(value) ? value : [value]);
 			}
 			return params;
 		};

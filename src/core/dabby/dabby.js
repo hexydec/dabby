@@ -52,9 +52,9 @@ const $ = function dabby(selector, context) {
 
 		// parse HTML into nodes
 		} else {
-			const obj = document.createElement("template");
-			obj.innerHTML = selector;
-			nodes = obj.content ? obj.content.children : obj.children;
+			const obj = document.implementation.createHTMLDocument("");
+			obj.body.innerHTML = selector;
+			nodes = obj.body.children;
 		}
 	}
 	return new dabby(nodes);
