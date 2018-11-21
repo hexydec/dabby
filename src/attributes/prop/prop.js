@@ -30,9 +30,10 @@ $.fn.prop = function (prop, value) {
 			}
 		});
 		return this;
+	}
 
 	// get
-	} else if (this[0]) {
+	if (this[0]) {
 		return this[0][getProp(prop)];
 	}
 };

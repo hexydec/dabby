@@ -1,8 +1,6 @@
 /*! dabbyjs v0.9.6 by Will Earp - https://github.com/hexydec/dabby */
 
 const $ = function dabby(selector, context) {
-	let nodes = [],
-		match;
 
 	// if no selector, return empty colletion
 	if (this instanceof dabby) {
@@ -10,16 +8,21 @@ const $ = function dabby(selector, context) {
 		this.length = selector.length;
 		Object.assign(this, selector);
 		return this;
+	}
+
+	// $ collection
+	if (selector instanceof dabby) {
+		return selector;
+	}
+
+	let nodes = [],
+		match;
 
 	// gather nodes
-	} else if (selector) {
-
-		// $ collection
-		if (selector instanceof dabby) {
-			return selector;
+	if (selector) {
 
 		// single node
-		} else if (selector.nodeType || $.isWindow(selector)) {
+		if (selector.nodeType || $.isWindow(selector)) {
 			nodes = [selector];
 
 		// ready function
@@ -42,7 +45,7 @@ const $ = function dabby(selector, context) {
 
 		// create a single node and attach properties
 		} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
-			nodes.push(document.createElement(match[1]));
+			nodes = [document.createElement(match[1])];
 
 			// context is CSS attributes
 			if (context instanceof Object) {
@@ -79,19 +82,262 @@ $.fn.each = function (callback) {
 	return this;
 };
 
+$.isWindow = obj => obj !== null && obj === obj.window;
+
 $.isFunction = func => func && func.constructor === Function;
 
-$.fn.add = function (nodes, context) {
-	nodes = $(nodes, context);
-	let len = this.length,
-		i = nodes.length;
+//import "../attributes/attr/attr.js"; // must add attr yourself if you want this functionality, as it could make your build smaller
 
-	this.length += i;
-	while (i--) {
-		this[i + len] = nodes[i];
-	}
-	return this;
+$.isPlainObject = obj => {
+
+	// Basic check for Type object that's not null
+	if (typeof obj === "object" && obj !== null) {
+
+		// If Object.getPrototypeOf supported, use it
+	    if (typeof Object.getPrototypeOf == 'function') {
+			let proto = Object.getPrototypeOf(obj);
+			return proto === Object.prototype || proto === null;
+	    }
+
+	    // Otherwise, use internal class
+	    // This should be reliable as if getPrototypeOf not supported, is pre-ES5
+		return Object.prototype.toString.call(obj) === "[object Object]";
+ 	}
+
+ 	// Not an object
+	return false;
 };
+
+$.extend = (...arrs) => {
+	if (arrs[0] === true) {
+
+		// merge function will recursively merge items
+		function merge(target, ...sources) {
+			if (sources.length) {
+
+				// work on next source
+				const source = sources.shift();
+				if ($.isPlainObject(target) && $.isPlainObject(source)) {
+
+					// loop through each property
+					const keys = Object.keys(source),
+						len = keys.length;
+					for (let i = 0; i < len; i++) {
+
+						// merge recursively if source is object, if target is not object, overwrite
+						if ($.isPlainObject(source[keys[i]])) {
+							target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
+
+						// when source property is value just overwrite
+						} else {
+							target[keys[i]] = source[keys[i]];
+						}
+					}
+				}
+
+				// merge next source
+			    return merge(target, ...sources);
+			}
+			return target;
+		}
+		return merge.apply(null, arrs.slice(1));
+	}
+	return Object.assign.apply(null, arrs);
+};
+
+$.isArray = arr => Array.isArray(arr);
+
+$.param = obj => {
+	let params = [],
+		add = (key, value, params) => {
+			let isArr = $.isArray(value);
+			if (isArr || typeof value === "object") {
+				$.each(value, (i, val) => {
+					params = add(`${key}[${isArr ? "" : i}]`, val, params);
+				});
+			} else {
+				if ($.isFunction(value)) {
+					value = value();
+				}
+				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value === null ? "" : value));
+			}
+			return params;
+		};
+
+	// process values
+	$.each(obj, (key, item) => {
+		params = add(key, item, params);
+	});
+	return params.join("&");
+};
+
+$.ajax = (url, settings) => {
+
+	// normalise args
+	if (typeof url === "object") {
+		settings = url;
+	} else {
+		if (typeof settings !== "object") {
+			settings = {};
+		}
+		settings.url = url;
+	}
+
+	// set default settings
+	settings = Object.assign({
+		method: "GET",
+		cache: null, // start will null so we can see if explicitly set
+		data: null,
+		dataType: null, // only changes behavior with json, jsonp, script
+		async: true,
+		crossDomain: false,
+		scriptCharset: null,
+		jsonp: "callback",
+		jsonpCallback: "dabby" + Date.now(),
+		headers: {
+			"X-Requested-With": "XMLHttpRequest"
+		},
+		xhr: () => new XMLHttpRequest(),
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		context: null,
+		statusCode: {},
+		username: null,
+		password: null
+	}, settings);
+
+	// determine datatype
+	if (!settings.dataType && settings.url.split("?")[0].split(".").pop() === "js") {
+		settings.dataType = "script";
+	}
+
+	let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
+		join = settings.url.indexOf("?") > -1 ? "&" : "?",
+		script, data;
+
+	// add data to query string
+	if (settings.data) {
+		if (typeof settings.data === "string" || settings.data instanceof FormData) {
+			data = settings.data;
+		} else {
+			data = $.param(settings.data);
+		}
+	}
+	if (data && settings.method === "GET") {
+		settings.url += join + data;
+		join = "&";
+	}
+
+	// add cache buster
+	if (settings.cache || (settings.cache === null && sync)) {
+		settings.url += join + "_=" + (+new Date());
+		join = "&";
+	}
+
+	// fetch script
+	if (sync || settings.crossDomain) {
+		script = document.createElement("script");
+		if (settings.scriptCharset) {
+			script.charset = settings.scriptCharset;
+		}
+
+		// add callback parameter
+		if (settings.dataType === "jsonp") {
+			settings.url += join + settings.jsonp + "=" + settings.jsonpCallback;
+		}
+
+		// setup event callbacks
+		$.each({
+			load: "success",
+			error: "error"
+		}, (key, value) => {
+			script.addEventListener(key, () => {
+				const response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
+				[settings[value], settings.complete].forEach(callback => {
+					if (callback) {
+						callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
+					}
+				});
+			}, {once: true});
+		});
+
+		script.src = settings.url;
+		script.async = settings.async;
+		document.head.appendChild(script);
+
+	// make xhr request
+	} else {
+		const xhr = settings.xhr(),
+			callback = (xhr, status) => {
+				let response = xhr.responseText;
+
+				// parse JSON
+				if (["json", null, undefined].indexOf(settings.dataType) > -1) {
+					try {
+						response = JSON.parse(response);
+					} catch (e) {
+						// do nothing
+					}
+				}
+
+				// run callbacks
+				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach((callback, i) => {
+					if (callback) {
+						callback.apply(settings.context, i < 2 ? [response, status, xhr] : [xhr, status]);
+					}
+				});
+			};
+
+		// callbacks
+		xhr.onload = () => {
+			const types = {
+				200: "success",
+				204: "nocontent",
+				304: "notmodified"
+			};
+			callback(xhr, types[xhr.status] || "error");
+		};
+		xhr.ontimeout = () => {
+			callback(xhr, "timeout");
+		};
+		xhr.onabort = () => {
+			callback(xhr, "abort");
+		};
+
+		xhr.open(settings.method, settings.url, settings.async, settings.username, settings.password);
+
+		// add headers
+		if (settings.contentType) {
+			settings.headers["Content-Type"] = settings.contentType;
+		}
+		$.each(settings.headers, (key, value) => {
+			xhr.setRequestHeader(key, value);
+		});
+
+		// send request
+		xhr.send(settings.method === "GET" ? null : data);
+		return xhr;
+	}
+};
+
+["get", "post"].forEach(name => {
+	$[name] = (url, data, success, type) => {
+		const isFunc = $.isFunction(data);
+		let settings = typeof(url) === "object" ? url : {
+			url: url,
+			data: isFunc ? {} : data,
+			success: isFunc ? data : success,
+			dataType: isFunc ? success : type
+		};
+		settings.method = name.toUpperCase();
+		return $.ajax(settings);
+	};
+});
+
+$.getScript = (url, success) => $.ajax({
+	url: url,
+	dataType: "script",
+	success: success
+});
 
 var filterNodes = (dabby, filter, context, not) => {
 	let func,
@@ -131,6 +377,188 @@ var filterNodes = (dabby, filter, context, not) => {
 	return nodes.filter((item, i) => func.call(item, i, item) !== Boolean(not), nodes);
 }
 
+["filter", "not", "is"].forEach(name => {
+	$.fn[name] = function (selector) {
+		const nodes = filterNodes(this, selector, name === "not");
+		return name === "is" ? !!nodes.length : $(nodes);
+	};
+});
+
+$.fn.load = function (url, data, success) {
+	if (this[0]) {
+
+		// get selector from URL
+		url = url.split(" ", 2);
+		const uri = url[0],
+			selector = url[1];
+
+		// check for data
+		if ($.isFunction(data)) {
+			success = data;
+			data = undefined;
+		}
+
+		// make AJAX request
+		$.ajax(uri, {
+			data: data,
+			type: data instanceof Object ? "POST" : "GET",
+			success: (response, status, xhr) => {
+
+				// if a selector is specified, find it in the returned document
+				let html = "",
+					i = this.length;
+
+				// refine by selector if supplied
+				if (selector) {
+					$(response).filter(selector).each((key, obj) => {
+						html += obj.outerHTML;
+					});
+				} else {
+					html = response;
+				}
+
+				// set HTML to nodes in collection
+				while (i--) {
+					this[i].innerHTML = html;
+
+					// fire success callback on nodes
+					if (success) {
+						success.call(this[i], response, status, xhr);
+					}
+				}
+			}
+		});
+	}
+	return this;
+};
+
+var getVal = (obj, val, current) => {
+	let i = obj.length,
+		values = [],
+		funcVal = $.isFunction(val),
+		funcCurrent = $.isFunction(current);
+	while (i--) {
+		values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
+	}
+	return values;
+}
+
+$.map = (obj, callback) => {
+	const keys = Object.keys(obj),
+		len = keys.length;
+	let arr = [],
+		i = 0,
+		result;
+
+	for (; i < len; i++) {
+		result = callback.call(window, obj[keys[i]], keys[i]);
+		if (![null, undefined].indexOf(result) > -1) {
+			arr.push(result);
+		}
+	}
+	return arr;
+};
+
+$.fn.val = function (value) {
+
+	// set value
+	if (value !== undefined) {
+		let i = this.length,
+			values = getVal(this, value, obj => obj.val());
+
+		while (i--) {
+
+			// string value, just set to value attribute
+			if (!$.isArray(values[i])) {
+				this[i].value = values[i];
+
+			// array on select, set matching values to selected
+			} else if (this[i].type === "select-multiple") {
+				values[i] = values[i].map(val => String(val));
+				$("option", this[i]).each((key, obj) => {
+					obj.selected = values[i].indexOf(obj.value) > -1;
+				});
+
+			// set the checked attribute for radios and checkbox
+			} else {
+				this[i].checked = values[i].indexOf(this[i].value) > -1;
+			}
+		}
+		return this;
+	}
+
+	// read value from first node
+	if (this[0]) {
+
+		// get multiple values
+		if (this[0].type === "select-multiple") {
+			let values = [];
+			$("option", this[0]).each((key, obj) => {
+				if (obj.selected) {
+					values.push(String(obj.value));
+				}
+			});
+			return values;
+		}
+
+		// get single value
+		if (this[0].type !== "checkbox" || this[0].checked) {
+			return String(this[0].value);
+		}
+	}
+};
+
+$.fn.serialize = function () {
+	const selector = "input[name]:not([type=file]):not([type=submit]):not([type=radio]):not([type=checkbox]),input[name]:checked,textarea[name],select[name]",
+		add = (name, value, params) => {
+			let match;
+
+			if ((match = name.match(/([^\[]*)\[([^\]]*)\](.*)/)) !== null) {
+				name = match[1];
+				let arr = add(match[2] + match[3], value, params[name] || {});
+				value = arr;
+			}
+
+			if (name !== "") {
+				params[name] = value;
+			} else {
+				if (!$.isArray(params)) {
+					params = [];
+				}
+				params = params.concat($.isArray(value) ? value : [value]);
+			}
+			return params;
+		};
+	let obj = this.filter(selector);
+
+	if (!obj.length) {
+		obj = $(selector, this);
+	}
+
+	let params = {};
+
+	// process values
+	obj.each((key, obj) => {
+		const value = $(obj).val();
+		if (!obj.disabled && value !== undefined) {
+			params = add(obj.name, value, params);
+		}
+	});
+	return $.param(params);
+};
+
+$.fn.add = function (nodes, context) {
+	nodes = $(nodes, context);
+	let len = this.length,
+		i = nodes.length;
+
+	this.length += i;
+	while (i--) {
+		this[i + len] = nodes[i];
+	}
+	return this;
+};
+
 ["parent", "parents", "parentsUntil"].forEach(func => {
 	$.fn[func] = function (selector, filter) {
 		const all = func.indexOf("s") > -1,
@@ -154,13 +582,6 @@ var filterNodes = (dabby, filter, context, not) => {
 			nodes = filterNodes(nodes, selector);
 		}
 		return $(nodes);
-	};
-});
-
-["filter", "not", "is"].forEach(name => {
-	$.fn[name] = function (selector) {
-		const nodes = filterNodes(this, selector, name === "not");
-		return name === "is" ? !!nodes.length : $(nodes);
 	};
 });
 
@@ -275,416 +696,6 @@ $.fn.attr = function (prop, value) {
 	}
 };
 
-$.isWindow = obj => obj !== null && obj === obj.window;
-
-$.isPlainObject = obj => {
-
-	// Basic check for Type object that's not null
-	if (typeof obj === "object" && obj !== null) {
-
-		// If Object.getPrototypeOf supported, use it
-	    if (typeof Object.getPrototypeOf == 'function') {
-			let proto = Object.getPrototypeOf(obj);
-			return proto === Object.prototype || proto === null;
-	    }
-
-	    // Otherwise, use internal class
-	    // This should be reliable as if getPrototypeOf not supported, is pre-ES5
-		return Object.prototype.toString.call(obj) === "[object Object]";
- 	}
-
- 	// Not an object
-	return false;
-};
-
-$.extend = (...arrs) => {
-	if (arrs[0] === true) {
-
-		// merge function will recursively merge items
-		function merge(target, ...sources) {
-			if (sources.length) {
-
-				// work on next source
-				const source = sources.shift();
-				if ($.isPlainObject(target) && $.isPlainObject(source)) {
-
-					// loop through each property
-					const keys = Object.keys(source),
-						len = keys.length;
-					for (let i = 0; i < len; i++) {
-
-						// merge recursively if source is object, if target is not object, overwrite
-						if ($.isPlainObject(source[keys[i]])) {
-							target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
-
-						// when source property is value just overwrite
-						} else {
-							target[keys[i]] = source[keys[i]];
-						}
-					}
-				}
-
-				// merge next source
-			    return merge(target, ...sources);
-			}
-			return target;
-		}
-		return merge.apply(null, arrs.slice(1));
-	} else {
-		return Object.assign.apply(null, arrs);
-	}
-};
-
-$.isArray = arr => Array.isArray(arr);
-
-$.param = obj => {
-	let params = [],
-		add = (key, value, params) => {
-			let isArr = $.isArray(value);
-			if (isArr || typeof value === "object") {
-				$.each(value, (i, val) => {
-					params = add(`${key}[${isArr ? "" : i}]`, val, params);
-				});
-			} else {
-				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
-			}
-			return params;
-		};
-
-	// process values
-	$.each(obj, (key, item) => {
-		params = add(key, item, params);
-	});
-	return params.join("&");
-};
-
-$.ajax = (url, settings) => {
-
-	// normalise args
-	if (typeof url === "object") {
-		settings = url;
-	} else {
-		if (typeof settings !== "object") {
-			settings = {};
-		}
-		settings.url = url;
-	}
-
-	// set default settings
-	settings = $.extend({
-		method: "GET",
-		cache: null, // start will null so we can see if explicitly set
-		data: null,
-		dataType: null, // only changes behavior with json, jsonp, script
-		async: true,
-		crossDomain: false,
-		scriptCharset: null,
-		jsonp: "callback",
-		jsonpCallback: "dabby" + Date.now(),
-		headers: {
-			"X-Requested-With": "XMLHttpRequest"
-		},
-		xhr: () => new XMLHttpRequest(),
-		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-		context: null,
-		statusCode: {},
-		username: null,
-		password: null
-	}, settings);
-
-	// determine datatype
-	if (!settings.dataType && /\.js($|\?)/.test(settings.url)) {
-		settings.dataType = "script";
-	}
-
-	let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
-		script, data;
-
-	// add data to query string
-	if (settings.data) {
-		if (typeof settings.data === "string" || settings.data instanceof FormData) {
-			data = settings.data;
-		} else {
-			data = $.param(settings.data);
-		}
-	}
-	if (data && settings.method === "GET") {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + data;
-	}
-
-	// add cache buster
-	if (settings.cache || (settings.cache === null && sync)) {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
-	}
-
-	// fetch script
-	if (sync || settings.crossDomain) {
-		script = document.createElement("script");
-		if (settings.scriptCharset) {
-			script.charset = settings.scriptCharset;
-		}
-
-		// add callback parameter
-		if (settings.dataType === "jsonp") {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
-		}
-
-		// setup event callbacks
-		$.each({
-			load: "success",
-			error: "error"
-		}, (key, value) => {
-			script.addEventListener(key, () => {
-				let response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
-				[settings[value], settings.complete].forEach(callback => {
-					if (callback) {
-						callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
-					}
-				});
-			}, {once: true});
-		});
-
-		script.src = settings.url;
-		script.async = settings.async;
-		document.head.appendChild(script);
-
-	// make xhr request
-	} else {
-		const xhr = settings.xhr(),
-			callback = (xhr, status) => {
-				let response = xhr.responseText;
-
-				// parse JSON
-				if (["json", null, undefined].indexOf(settings.dataType) > -1) {
-					try {
-						response = JSON.parse(response);
-					} catch (e) {
-						// do nothing
-					}
-				}
-
-				// run callbacks
-				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(callback => {
-					if (callback) {
-						const success = [settings.statusCode[xhr.status], settings["success"]].indexOf(callback) > -1;
-						callback.apply(settings.context, success ? [response, status, xhr] : [xhr, status]);
-					}
-				});
-			};
-
-		// callbacks
-		xhr.onload = () => {
-			const types = {
-				200: "success",
-				204: "nocontent",
-				304: "notmodified"
-			};
-			callback(xhr, types[xhr.status] || "error");
-		};
-		xhr.ontimeout = () => {
-			callback(xhr, "timeout");
-		};
-		xhr.onabort = () => {
-			callback(xhr, "abort");
-		};
-
-		xhr.open(settings.method, settings.url, settings.async, settings.username, settings.password);
-
-		// add headers
-		if (settings.contentType) {
-			settings.headers["Content-Type"] = settings.contentType;
-		}
-		$.each(settings.headers, (key, value) => {
-			xhr.setRequestHeader(key, value);
-		});
-
-		// send request
-		xhr.send(settings.method === "GET" ? null : data);
-		return xhr;
-	}
-};
-
-["get", "post"].forEach(name => {
-	$[name] = (url, data, success, type) => {
-		const isFunc = $.isFunction(data);
-		let settings = typeof(url) === "object" ? url : {
-			url: url,
-			data: isFunc ? {} : data,
-			success: isFunc ? data : success,
-			dataType: isFunc ? success : type
-		};
-		settings.method = name.toUpperCase();
-		return $.ajax(settings);
-	};
-});
-
-$.getScript = (url, success) => $.ajax({
-	url: url,
-	dataType: "script",
-	success: success
-});
-
-$.fn.load = function (url, data, success) {
-	if (this[0]) {
-
-		// get selector from URL
-		url = url.split(" ", 2);
-		const uri = url[0],
-			selector = url[1];
-
-		// check for data
-		if ($.isFunction(data)) {
-			success = data;
-			data = undefined;
-		}
-
-		// make AJAX request
-		$.ajax(uri, {
-			data: data,
-			type: data instanceof Object ? "POST" : "GET",
-			success: (response, status, xhr) => {
-
-				// if a selector is specified, find it in the returned document
-				let html = "",
-					i = this.length;
-
-				// refine by selector if supplied
-				if (selector) {
-					$(response).filter(selector).each((key, obj) => {
-						html += obj.outerHTML;
-					});
-				} else {
-					html = response;
-				}
-
-				// set HTML to nodes in collection
-				while (i--) {
-					this[i].innerHTML = html;
-
-					// fire success callback on nodes
-					if (success) {
-						success.call(this[i], response, status, xhr);
-					}
-				}
-			}
-		});
-	}
-	return this;
-};
-
-var getVal = (obj, val, current) => {
-	let i = obj.length,
-		values = [],
-		funcVal = $.isFunction(val),
-		funcCurrent = $.isFunction(current);
-	while (i--) {
-		values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
-	}
-	return values;
-}
-
-$.map = (obj, callback) => {
-	const keys = Object.keys(obj),
-		len = keys.length;
-	let arr = [],
-		i = 0,
-		result;
-
-	for (; i < len; i++) {
-		result = callback.call(window, obj[keys[i]], keys[i]);
-		if (![null, undefined].indexOf(result) > -1) {
-			arr.push(result);
-		}
-	}
-	return arr;
-};
-
-$.fn.val = function (value) {
-
-	// set value
-	if (value !== undefined) {
-		let i = this.length,
-			values = getVal(this, value, obj => obj.val());
-
-		while (i--) {
-
-			// multi-select control
-			if (this[i].multiple) {
-				values[i] = $.map($.isArray(values[i]) ? values[i] : [values[i]], item => String(item)); // convert to string
-				$("option", this[i]).each((key, obj) => {
-					obj.selected = values[i].indexOf(String(obj.value)) > -1;
-				});
-
-			// any other form control
-			} else if (this[i].type !== "radio") {
-				this[i].value = String(values[i]);
-
-			// radio control
-			} else if (String(this[i].value) === String(values[i])) {
-				this[i].checked = true;
-			}
-		}
-		return this;
-
-	// read value from first node
-	} else if (this[0]) {
-
-		// get multiple values
-		if (this[0].multiple) {
-			let values = [];
-			$("option", this[0]).each((key, obj) => {
-				if (obj.selected) {
-					values.push(String(obj.value));
-				}
-			});
-			return values;
-
-		// get single value
-		} else if (this[0].type !== "checkbox" || this[0].checked) {
-			return String(this[0].value);
-		}
-	}
-};
-
-$.fn.serialize = function () {
-	const selector = "input[name]:not([type=file]):not([type=submit]):not([type=radio]):not([type=checkbox]),input[name]:checked,textarea[name],select[name]",
-		add = (name, value, params) => {
-			let match;
-
-			if ((match = name.match(/([^\[]*)\[([^\]]*)\](.*)/)) !== null) {
-				name = match[1];
-				let arr = add(match[2] + match[3], value, params[name] || {});
-				value = arr;
-			}
-
-			if (name !== "") {
-				params[name] = value;
-			} else {
-				if (!$.isArray(params)) {
-					params = [];
-				}
-				params = params.concat($.isArray(value) ? value : [value]);
-			}
-			return params;
-		};
-	let obj = this.filter(selector);
-
-	if (!obj.length) {
-		obj = $(selector, this);
-	}
-
-	let params = {};
-
-	// process values
-	obj.each((key, obj) => {
-		const value = $(obj).val();
-		if (!obj.disabled && value !== undefined) {
-			params = add(obj.getAttribute("name"), value, params);
-		}
-	});
-	return $.param(params);
-};
-
 ["addClass", "removeClass", "toggleClass"].forEach(name => {
 	$.fn[name] = function (cls) {
 
@@ -737,14 +748,17 @@ var setCss = (dabby, props, value) => {
 	return dabby;
 }
 
+var camelise = prop => prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
+
 $.fn.css = function (props, value) {
 
 	// set the values
 	if (value !== undefined || $.isPlainObject(props)) {
 		return setCss(this, props, value);
+	}
 
 	// retrieve value from first property
-	} else if (this[0]) {
+	if (this[0]) {
 		let name = props,
 			i,
 			style = getComputedStyle(this[0], ""),
@@ -757,7 +771,7 @@ $.fn.css = function (props, value) {
 		}
 		i = props.length;
 		while (i--) {
-			output[props[i]] = style.getPropertyValue(dasherise(props[i]));
+			output[props[i]] = style[camelise(props[i])];
 			if (ret) {
 				return output[props[i]];
 			}
@@ -765,8 +779,6 @@ $.fn.css = function (props, value) {
 		return output;
 	}
 };
-
-var camelise = prop => prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
 
 $.fn.data = function (name, data) {
 
@@ -788,9 +800,10 @@ $.fn.data = function (name, data) {
 			});
 		}
 		return this;
+	}
 
 	// get value
-	} else if (this[0] && this[0].dataset) {
+	if (this[0] && this[0].dataset) {
 		let parse = value => {
 			try {
 				return JSON.parse(value);
@@ -806,13 +819,12 @@ $.fn.data = function (name, data) {
 				arr[key] = parse(value);
 			});
 			return arr;
+		}
 
 		// retrieve specific property
-		} else {
-			name = camelise(name);
-			if (this[0].dataset.hasOwnProperty(name)) {
-				return parse(this[0].dataset[name]);
-			}
+		name = camelise(name);
+		if (this[0].dataset.hasOwnProperty(name)) {
+			return parse(this[0].dataset[name]);
 		}
 	}
 };
@@ -873,9 +885,10 @@ $.fn.prop = function (prop, value) {
 			}
 		});
 		return this;
+	}
 
 	// get
-	} else if (this[0]) {
+	if (this[0]) {
 		return this[0][getProp(prop)];
 	}
 };
@@ -895,7 +908,7 @@ $.fn.removeProp = function (prop) {
 		let i = this.length,
 			values = ["block", "none"];
 		while (i--) {
-			this[i].style.display = values[n] || (getComputedStyle(this[i]).getPropertyValue("display") === "none" ? "block" : "none");
+			this[i].style.display = values[n] || (getComputedStyle(this[i])["display"] === "none" ? "block" : "none");
 		}
 		return this;
 	};
@@ -929,7 +942,7 @@ $.fn.offset = function (coords) {
 
 			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
 				let style = getComputedStyle(this[i]);
-				pos = style.getPropertyValue("position");
+				pos = style["position"];
 
 				// set position relative if static
 				if (pos === "static") {
@@ -937,8 +950,8 @@ $.fn.offset = function (coords) {
 				}
 
 				// add current offset
-				itemCoords.top += parseFloat(style.getPropertyValue("top")) || 0;
-				itemCoords.left += parseFloat(style.getPropertyValue("left")) || 0;
+				itemCoords.top += parseFloat(style["top"]) || 0;
+				itemCoords.left += parseFloat(style["left"]) || 0;
 
 				// remove parent offset and viewport scroll
 				if (pos !== "fixed") {
@@ -952,9 +965,10 @@ $.fn.offset = function (coords) {
 			}
 		}
 		return this;
+	}
 
 	// get
-	} else if (this[0]) {
+	if (this[0]) {
 		pos = this[0].style.position === "fixed";
 		rect = this[0].getBoundingClientRect();
 		return {
@@ -992,9 +1006,10 @@ $.fn.position = function () {
 				}
 			}
 			return this;
+		}
 
 		// get
-		} else if (this[0]) {
+		if (this[0]) {
 			if ($.isWindow(this[0])) {
 				item = item === "scrollTop" ? "pageYOffset" : "pageXOffset";
 			}
@@ -1011,9 +1026,9 @@ $.fn.position = function () {
 			suffix;
 
 		while (i--) {
-			suffix = props[i] === "border" ? "-width" : "";
-			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-left" : "-top") + suffix)) || 0;
-			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
+			suffix = props[i] === "border" ? "Width" : "";
+			value += parseFloat(style[props[i] + (wh === "width" ? "Left" : "Top") + suffix]) || 0;
+			value += parseFloat(style[props[i] + (wh === "width" ? "Right" : "Bottom") + suffix]) || 0;
 		}
 		return value;
 	};
@@ -1041,7 +1056,7 @@ $.fn.position = function () {
 					// convert to px if other unit
 					if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
 						this[i].style[wh] = values[i];
-						values[i] = style.getPropertyValue(wh);
+						values[i] = style[wh];
 					}
 
 					// take off px
@@ -1057,17 +1072,19 @@ $.fn.position = function () {
 				this[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
 			}
 			return this;
+		}
 
 		// get value
-		} else if (this[0]) {
+		if (this[0]) {
 			whu = wh === "width" ? "Width" : "Height";
 
 			// document
 			if (this[0].nodeType === Node.DOCUMENT_NODE) {
 				return this[0].documentElement["scroll" + whu];
+			}
 
 			// element
-			} else if (!$.isWindow(this[0])) {
+			if (!$.isWindow(this[0])) {
 				param = io === "outer" ? "offset" : "client";
 				value = this[0][param + whu];
 
@@ -1077,13 +1094,13 @@ $.fn.position = function () {
 					value += getAdditionalLength(style, wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
 				}
 				return value;
+			}
 
 			// window
-			} else if (io === "inner") {
+			if (io === "inner") {
 				return this[0].document.documentElement["client" + whu];
-			} else {
-				return this[0]["inner" + whu];
 			}
+			return this[0]["inner" + whu];
 		}
 	};
 });
@@ -1178,9 +1195,10 @@ $.fn.html = function (html) {
 			this[i].innerHTML = values[i];
 		}
 		return this;
+	}
 
 	// get
-	} else if (this[0]) {
+	if (this[0]) {
 		return this[0].innerHTML;
 	}
 };

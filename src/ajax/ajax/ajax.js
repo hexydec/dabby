@@ -16,7 +16,7 @@ $.ajax = (url, settings) => {
 	}
 
 	// set default settings
-	settings = $.extend({
+	settings = Object.assign({
 		method: "GET",
 		cache: null, // start will null so we can see if explicitly set
 		data: null,
@@ -38,11 +38,12 @@ $.ajax = (url, settings) => {
 	}, settings);
 
 	// determine datatype
-	if (!settings.dataType && /\.js($|\?)/.test(settings.url)) {
+	if (!settings.dataType && settings.url.split("?")[0].split(".").pop() === "js") {
 		settings.dataType = "script";
 	}
 
 	let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
+		join = settings.url.indexOf("?") > -1 ? "&" : "?",
 		script, data;
 
 	// add data to query string
@@ -54,12 +55,14 @@ $.ajax = (url, settings) => {
 		}
 	}
 	if (data && settings.method === "GET") {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + data;
+		settings.url += join + data;
+		join = "&";
 	}
 
 	// add cache buster
 	if (settings.cache || (settings.cache === null && sync)) {
-		settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + "_=" + (+new Date());
+		settings.url += join + "_=" + (+new Date());
+		join = "&";
 	}
 
 	// fetch script
@@ -71,7 +74,7 @@ $.ajax = (url, settings) => {
 
 		// add callback parameter
 		if (settings.dataType === "jsonp") {
-			settings.url += (settings.url.indexOf("?") > -1 ? "&" : "?") + settings.jsonp + "=" + settings.jsonpCallback;
+			settings.url += join + settings.jsonp + "=" + settings.jsonpCallback;
 		}
 
 		// setup event callbacks
@@ -80,7 +83,7 @@ $.ajax = (url, settings) => {
 			error: "error"
 		}, (key, value) => {
 			script.addEventListener(key, () => {
-				let response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
+				const response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
 				[settings[value], settings.complete].forEach(callback => {
 					if (callback) {
 						callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
@@ -97,8 +100,7 @@ $.ajax = (url, settings) => {
 	} else {
 		const xhr = settings.xhr(),
 			callback = (xhr, status) => {
-				let response = xhr.responseText,
-					callbacks = [];
+				let response = xhr.responseText;
 
 				// parse JSON
 				if (["json", null, undefined].indexOf(settings.dataType) > -1) {
@@ -110,10 +112,9 @@ $.ajax = (url, settings) => {
 				}
 
 				// run callbacks
-				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach(callback => {
+				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach((callback, i) => {
 					if (callback) {
-						const success = [settings.statusCode[xhr.status], settings["success"]].indexOf(callback) > -1;
-						callback.apply(settings.context, success ? [response, status, xhr] : [xhr, status]);
+						callback.apply(settings.context, i < 2 ? [response, status, xhr] : [xhr, status]);
 					}
 				});
 			};

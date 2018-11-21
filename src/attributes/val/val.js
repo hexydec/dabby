@@ -13,29 +13,30 @@ $.fn.val = function (value) {
 
 		while (i--) {
 
-			// multi-select control
-			if (this[i].multiple) {
-				values[i] = $.map($.isArray(values[i]) ? values[i] : [values[i]], item => String(item)); // convert to string
+			// string value, just set to value attribute
+			if (!$.isArray(values[i])) {
+				this[i].value = values[i];
+
+			// array on select, set matching values to selected
+			} else if (this[i].type === "select-multiple") {
+				values[i] = values[i].map(val => String(val));
 				$("option", this[i]).each((key, obj) => {
-					obj.selected = values[i].indexOf(String(obj.value)) > -1;
+					obj.selected = values[i].indexOf(obj.value) > -1;
 				});
 
-			// any other form control
-			} else if (this[i].type !== "radio") {
-				this[i].value = String(values[i]);
-
-			// radio control
-			} else if (String(this[i].value) === String(values[i])) {
-				this[i].checked = true;
+			// set the checked attribute for radios and checkbox
+			} else {
+				this[i].checked = values[i].indexOf(this[i].value) > -1;
 			}
 		}
 		return this;
+	}
 
 	// read value from first node
-	} else if (this[0]) {
+	if (this[0]) {
 
 		// get multiple values
-		if (this[0].multiple) {
+		if (this[0].type === "select-multiple") {
 			let values = [];
 			$("option", this[0]).each((key, obj) => {
 				if (obj.selected) {
@@ -43,9 +44,10 @@ $.fn.val = function (value) {
 				}
 			});
 			return values;
+		}
 
 		// get single value
-		} else if (this[0].type !== "checkbox" || this[0].checked) {
+		if (this[0].type !== "checkbox" || this[0].checked) {
 			return String(this[0].value);
 		}
 	}

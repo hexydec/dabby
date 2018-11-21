@@ -5,7 +5,7 @@ import $ from "../../core/core.js";
 		let i = this.length,
 			values = ["block", "none"];
 		while (i--) {
-			this[i].style.display = values[n] || (getComputedStyle(this[i]).getPropertyValue("display") === "none" ? "block" : "none");
+			this[i].style.display = values[n] || (getComputedStyle(this[i])["display"] === "none" ? "block" : "none");
 		}
 		return this;
 	};

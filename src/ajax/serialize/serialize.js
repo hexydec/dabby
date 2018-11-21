@@ -38,7 +38,7 @@ $.fn.serialize = function () {
 	obj.each((key, obj) => {
 		const value = $(obj).val();
 		if (!obj.disabled && value !== undefined) {
-			params = add(obj.getAttribute("name"), value, params);
+			params = add(obj.name, value, params);
 		}
 	});
 	return $.param(params);

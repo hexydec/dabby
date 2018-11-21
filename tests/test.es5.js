@@ -416,8 +416,7 @@
     text.val("new value");
     assert.equal(text.val(), "new value", "Can set and read value from textarea");
     assert.equal(radio.val(), "radio1", "Can retrieve value of radio box");
-    assert.equal(radio.val("radio2"), radio, "Can set value of radio box");
-    console.log(radio);
+    assert.equal(radio.val(["radio2"]), radio, "Can set value of radio box");
     assert.equal(radio.filter(":checked").val(), "radio2", "Can get value of radio box");
   });
   QUnit.module("Core"); // add mouseevent support
@@ -722,9 +721,7 @@
   });
 
   var $$1 = function dabby(selector, context) {
-    var nodes = [],
-        match; // if no selector, return empty colletion
-
+    // if no selector, return empty colletion
     if (this instanceof dabby) {
       selector = Array.from(selector).filter(function (node) {
         return [1, 9, 11].indexOf(node.nodeType) > -1 || $$1.isWindow(node);
@@ -732,12 +729,20 @@
 
       this.length = selector.length;
       Object.assign(this, selector);
-      return this; // gather nodes
-    } else if (selector) {
-      // $ collection
-      if (selector instanceof dabby) {
-        return selector; // single node
-      } else if (selector.nodeType || $$1.isWindow(selector)) {
+      return this;
+    } // $ collection
+
+
+    if (selector instanceof dabby) {
+      return selector;
+    }
+
+    var nodes = [],
+        match; // gather nodes
+
+    if (selector) {
+      // single node
+      if (selector.nodeType || $$1.isWindow(selector)) {
         nodes = [selector]; // ready function
       } else if ($$1.isFunction(selector)) {
         if (document.readyState !== "loading") {
@@ -757,7 +762,7 @@
           nodes = nodes.concat(Array.from(obj.querySelectorAll(selector)));
         }); // create a single node and attach properties
       } else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
-        nodes.push(document.createElement(match[1])); // context is CSS attributes
+        nodes = [document.createElement(match[1])]; // context is CSS attributes
 
         if (context instanceof Object) {
           $$1(nodes).attr(context);
@@ -794,180 +799,14 @@
     return this;
   };
 
-  $$1.isFunction = function (func) {
-    return func && func.constructor === Function;
-  };
-
-  $$1.fn.add = function (nodes, context) {
-    nodes = $$1(nodes, context);
-    var len = this.length,
-        i = nodes.length;
-    this.length += i;
-
-    while (i--) {
-      this[i + len] = nodes[i];
-    }
-
-    return this;
-  };
-
-  ["parent", "parents", "parentsUntil"].forEach(function (func) {
-    $$1.fn[func] = function (selector, filter) {
-      var all = func.indexOf("s") > -1,
-          until = func.indexOf("U") > -1;
-      var nodes = [],
-          i = this.length,
-          parent;
-
-      while (i--) {
-        parent = this[i].parentNode;
-
-        while (parent && parent.nodeType === Node.ELEMENT_NODE) {
-          nodes.push(parent);
-
-          if (!all || until && filterNodes(parent, selector).length) {
-            break;
-          } else {
-            parent = parent.parentNode;
-          }
-        }
-      }
-
-      if (selector) {
-        nodes = filterNodes(nodes, selector);
-      }
-
-      return $$1(nodes);
-    };
-  });
-  ["filter", "not", "is"].forEach(function (name) {
-    $$1.fn[name] = function (selector) {
-      var nodes = filterNodes(this, selector, name === "not");
-      return name === "is" ? !!nodes.length : $$1(nodes);
-    };
-  });
-
-  $$1.fn.get = function (i) {
-    return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
-  }; // add and remove event handlers
-
-
-  ["on", "one"].forEach(function (name) {
-    $$1.fn[name] = function (events, selector, data, callback) {
-      var i = this.length;
-      events = events.split(" "); // sort out args
-
-      if ($$1.isFunction(selector)) {
-        callback = selector;
-        selector = undefined;
-      } else if ($$1.isFunction(data)) {
-        callback = data;
-        data = undefined;
-      } // attach event
-
-
-      while (i--) {
-        var e = events.length; // record the original function
-
-        if (!this[i].events) {
-          this[i].events = [];
-        }
-
-        var fn = function fn(evt) {
-          // delegate function
-          var target = [this];
-
-          if (selector) {
-            var t = $$1(evt.target);
-            target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
-          }
-
-          if (target) {
-            if (data) {
-              // set data to event object
-              evt.data = data;
-            }
-
-            for (var _i = 0, len = target.length; _i < len; _i++) {
-              if (callback.call(target[_i], evt, evt.args) === false) {
-                evt.preventDefault();
-                evt.stopPropagation();
-              }
-            }
-          }
-        };
-
-        this[i].events.push({
-          events: events,
-          callback: callback,
-          selector: selector,
-          func: fn,
-          once: name === "one"
-        }); // trigger
-
-        while (e--) {
-          this[i].addEventListener(events[e], fn, {
-            once: name === "one",
-            capture: !!selector
-          });
-        }
-      }
-
-      return this;
-    };
-  });
-  var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
-
-  $$1.fn.attr = function (prop, value) {
-    var _this = this;
-
-    var isObj = typeof prop !== "string",
-        i,
-        obj = {}; // set properties
-
-    if (isObj || value || value === null) {
-      i = this.length; // normalise to object
-
-      if (!isObj) {
-        obj[prop] = value;
-        prop = obj;
-      }
-
-      while (i--) {
-        $$1.each(prop, function (key, val) {
-          if (events.indexOf(key) > -1) {
-            $$1(_this[i]).on(key, val);
-          } else if (key === "style") {
-            _this[i].style.cssText = val;
-          } else if (key === "class") {
-            _this[i].className = val;
-          } else if (key === "text") {
-            _this[i].textContent = val;
-          } else if (value === null) {
-            _this[i].removeAttribute(key);
-          } else {
-            _this[i].setAttribute(key, val);
-          }
-        });
-      }
-
-      return this; // retrieve properties
-    } else if (this[0]) {
-      if (prop === "style") {
-        return this[0].style.cssText;
-      }
-
-      if (prop === "class") {
-        return this[0].className;
-      }
-
-      return this[0].getAttribute(prop);
-    }
-  };
-
   $$1.isWindow = function (obj) {
     return obj !== null && obj === obj.window;
   };
+
+  $$1.isFunction = function (func) {
+    return func && func.constructor === Function;
+  }; //import "../attributes/attr/attr.js"; // must add attr yourself if you want this functionality, as it could make your build smaller
+
 
   var filterNodes = function filterNodes(dabby, filter, context, not) {
     var func,
@@ -1545,7 +1384,7 @@
       assert.equal($.isFunction(func), i < 2, "Input is" + (i < 2 ? "" : " not") + " function");
     });
   });
-  QUnit.module("Utilities", function (hooks) {
+  QUnit.module("Utils", function (hooks) {
     QUnit.test("$.isPlainObject", function (assert) {
       assert.equal($.isPlainObject(document.createElement('div')), false, "Host object is not plain");
       assert.equal($.isPlainObject(null), false, "NULL is not plain");

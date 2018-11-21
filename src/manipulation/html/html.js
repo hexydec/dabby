@@ -11,9 +11,10 @@ $.fn.html = function (html) {
 			this[i].innerHTML = values[i];
 		}
 		return this;
+	}
 
 	// get
-	} else if (this[0]) {
+	if (this[0]) {
 		return this[0].innerHTML;
 	}
 };

@@ -10,9 +10,9 @@ import "../../utils/iswindow/iswindow.js";
 			suffix;
 
 		while (i--) {
-			suffix = props[i] === "border" ? "-width" : "";
-			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-left" : "-top") + suffix)) || 0;
-			value += parseFloat(style.getPropertyValue(props[i] + (wh === "width" ? "-right" : "-bottom") + suffix)) || 0;
+			suffix = props[i] === "border" ? "Width" : "";
+			value += parseFloat(style[props[i] + (wh === "width" ? "Left" : "Top") + suffix]) || 0;
+			value += parseFloat(style[props[i] + (wh === "width" ? "Right" : "Bottom") + suffix]) || 0;
 		}
 		return value;
 	};
@@ -40,7 +40,7 @@ import "../../utils/iswindow/iswindow.js";
 					// convert to px if other unit
 					if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
 						this[i].style[wh] = values[i];
-						values[i] = style.getPropertyValue(wh);
+						values[i] = style[wh];
 					}
 
 					// take off px
@@ -56,17 +56,19 @@ import "../../utils/iswindow/iswindow.js";
 				this[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
 			}
 			return this;
+		}
 
 		// get value
-		} else if (this[0]) {
+		if (this[0]) {
 			whu = wh === "width" ? "Width" : "Height";
 
 			// document
 			if (this[0].nodeType === Node.DOCUMENT_NODE) {
 				return this[0].documentElement["scroll" + whu];
+			}
 
 			// element
-			} else if (!$.isWindow(this[0])) {
+			if (!$.isWindow(this[0])) {
 				param = io === "outer" ? "offset" : "client";
 				value = this[0][param + whu];
 
@@ -76,13 +78,13 @@ import "../../utils/iswindow/iswindow.js";
 					value += getAdditionalLength(style, wh, [io ? "margin" : "padding"]) * (io ? 1 : -1); // add margin, minus padding
 				}
 				return value;
+			}
 
 			// window
-			} else if (io === "inner") {
+			if (io === "inner") {
 				return this[0].document.documentElement["client" + whu];
-			} else {
-				return this[0]["inner" + whu];
 			}
+			return this[0]["inner" + whu];
 		}
 	};
 });

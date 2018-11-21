@@ -1,7 +1,4 @@
 const $ = function dabby(selector, context) {
-	let nodes = [],
-		match,
-		len = 0;
 
 	// if no selector, return empty colletion
 	if (this instanceof dabby) {
@@ -9,16 +6,21 @@ const $ = function dabby(selector, context) {
 		this.length = selector.length;
 		Object.assign(this, selector);
 		return this;
+	}
+
+	// $ collection
+	if (selector instanceof dabby) {
+		return selector;
+	}
+
+	let nodes = [],
+		match;
 
 	// gather nodes
-	} else if (selector) {
-
-		// $ collection
-		if (selector instanceof dabby) {
-			return selector;
+	if (selector) {
 
 		// single node
-		} else if (selector.nodeType || $.isWindow(selector)) {
+		if (selector.nodeType || $.isWindow(selector)) {
 			nodes = [selector];
 
 		// ready function
@@ -41,7 +43,7 @@ const $ = function dabby(selector, context) {
 
 		// create a single node and attach properties
 		} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
-			nodes.push(document.createElement(match[1]));
+			nodes = [document.createElement(match[1])];
 
 			// context is CSS attributes
 			if (context instanceof Object) {

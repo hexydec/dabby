@@ -18,7 +18,7 @@ $.fn.offset = function (coords) {
 
 			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
 				let style = getComputedStyle(this[i]);
-				pos = style.getPropertyValue("position");
+				pos = style["position"];
 
 				// set position relative if static
 				if (pos === "static") {
@@ -26,8 +26,8 @@ $.fn.offset = function (coords) {
 				}
 
 				// add current offset
-				itemCoords.top += parseFloat(style.getPropertyValue("top")) || 0;
-				itemCoords.left += parseFloat(style.getPropertyValue("left")) || 0;
+				itemCoords.top += parseFloat(style["top"]) || 0;
+				itemCoords.left += parseFloat(style["left"]) || 0;
 
 				// remove parent offset and viewport scroll
 				if (pos !== "fixed") {
@@ -41,9 +41,10 @@ $.fn.offset = function (coords) {
 			}
 		}
 		return this;
+	}
 
 	// get
-	} else if (this[0]) {
+	if (this[0]) {
 		pos = this[0].style.position === "fixed";
 		rect = this[0].getBoundingClientRect();
 		return {

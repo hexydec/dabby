@@ -34,7 +34,6 @@ $.extend = (...arrs) => {
 			return target;
 		}
 		return merge.apply(null, arrs.slice(1));
-	} else {
-		return Object.assign.apply(null, arrs);
 	}
+	return Object.assign.apply(null, arrs);
 };

@@ -21,9 +21,10 @@ $.fn.data = function (name, data) {
 			});
 		}
 		return this;
+	}
 
 	// get value
-	} else if (this[0] && this[0].dataset) {
+	if (this[0] && this[0].dataset) {
 		let parse = value => {
 			try {
 				return JSON.parse(value);
@@ -39,13 +40,12 @@ $.fn.data = function (name, data) {
 				arr[key] = parse(value);
 			});
 			return arr;
+		}
 
 		// retrieve specific property
-		} else {
-			name = camelise(name);
-			if (this[0].dataset.hasOwnProperty(name)) {
-				return parse(this[0].dataset[name]);
-			}
+		name = camelise(name);
+		if (this[0].dataset.hasOwnProperty(name)) {
+			return parse(this[0].dataset[name]);
 		}
 	}
 };
