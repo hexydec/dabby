@@ -1057,7 +1057,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           values = ["block", "none"];
 
       while (i--) {
-        this[i].style.display = values[n] || (getComputedStyle(this[i])["display"] === "none" ? "block" : "none");
+        this[i].style.display = values[n] || (getComputedStyle(this[i]).display === "none" ? "block" : "none");
       }
 
       return this;
@@ -1094,15 +1094,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
           var style = getComputedStyle(this[i]);
-          pos = style["position"]; // set position relative if static
+          pos = style.position; // set position relative if static
 
           if (pos === "static") {
             this[i].style.position = "relative";
           } // add current offset
 
 
-          itemCoords.top += parseFloat(style["top"]) || 0;
-          itemCoords.left += parseFloat(style["left"]) || 0; // remove parent offset and viewport scroll
+          itemCoords.top += parseFloat(style.top) || 0;
+          itemCoords.left += parseFloat(style.left) || 0; // remove parent offset and viewport scroll
 
           if (pos !== "fixed") {
             itemCoords.top -= doc.scrollTop + rect.top;

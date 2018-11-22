@@ -906,7 +906,7 @@ $.fn.removeProp = function (prop) {
 		let i = this.length,
 			values = ["block", "none"];
 		while (i--) {
-			this[i].style.display = values[n] || (getComputedStyle(this[i])["display"] === "none" ? "block" : "none");
+			this[i].style.display = values[n] || (getComputedStyle(this[i]).display === "none" ? "block" : "none");
 		}
 		return this;
 	};
@@ -940,7 +940,7 @@ $.fn.offset = function (coords) {
 
 			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
 				let style = getComputedStyle(this[i]);
-				pos = style["position"];
+				pos = style.position;
 
 				// set position relative if static
 				if (pos === "static") {
@@ -948,8 +948,8 @@ $.fn.offset = function (coords) {
 				}
 
 				// add current offset
-				itemCoords.top += parseFloat(style["top"]) || 0;
-				itemCoords.left += parseFloat(style["left"]) || 0;
+				itemCoords.top += parseFloat(style.top) || 0;
+				itemCoords.left += parseFloat(style.left) || 0;
 
 				// remove parent offset and viewport scroll
 				if (pos !== "fixed") {
