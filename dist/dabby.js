@@ -716,7 +716,7 @@ $.fn.attr = function (prop, value) {
 	};
 });
 
-var dasherise = prop => prop.replace(/[A-Z]/g, letter => "-" + letter.toLowerCase());
+var camelise = prop => prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
 
 var setCss = (dabby, props, value) => {
 
@@ -728,25 +728,25 @@ var setCss = (dabby, props, value) => {
 	}
 
 	// prepare values
-	let values = [];
+	let values = {};
 	$.each(props, (i, prop) => {
-		values[i] = getVal(dabby, prop, obj => obj.style[i]);
+		values[camelise(i)] = getVal(dabby, prop, obj => obj.style[i]);
 	});
+	console.log(values);
 
 	// set properties
 	$.each(values, (key, val) => {
 		let i = dabby.length;
 		while (i--) {
-			if (!isNaN(val)) {
-				val += "px";
+			if (!isNaN(val[i])) {
+				val[i] += "px";
 			}
-			dabby[i].style[value === "" ? "removeProperty" : "setProperty"](dasherise(key), val);
+			dabby[i].style[key] = val[i];
+			console.log(dabby[i], key, val[i]);
 		}
 	});
 	return dabby;
 }
-
-var camelise = prop => prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
 
 $.fn.css = function (props, value) {
 

@@ -895,22 +895,24 @@
     } // prepare values
 
 
-    var values = [];
+    var values = {};
     $$1.each(props, function (i, prop) {
-      values[i] = getVal(dabby, prop, function (obj) {
+      values[camelise(i)] = getVal(dabby, prop, function (obj) {
         return obj.style[i];
       });
-    }); // set properties
+    });
+    console.log(values); // set properties
 
     $$1.each(values, function (key, val) {
       var i = dabby.length;
 
       while (i--) {
-        if (!isNaN(val)) {
-          val += "px";
+        if (!isNaN(val[i])) {
+          val[i] += "px";
         }
 
-        dabby[i].style[value === "" ? "removeProperty" : "setProperty"](dasherise(key), val);
+        dabby[i].style[key] = val[i];
+        console.log(dabby[i], key, val[i]);
       }
     });
     return dabby;
