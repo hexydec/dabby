@@ -69,7 +69,7 @@ import "./traversal/siblings/siblings.js";
 // utilities
 import "./utils/each/each.js";
 import "./utils/extend/extend.js";
-import "./utils/isarray/isarray.js";
+//import "./utils/isarray/isarray.js";
 import "./utils/isfunction/isfunction.js";
 import "./utils/isplainobject/isplainobject.js";
 import "./utils/iswindow/iswindow.js";

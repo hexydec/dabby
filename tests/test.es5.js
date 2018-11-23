@@ -1,3 +1,5 @@
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 (function ($) {
   'use strict';
 
@@ -864,14 +866,33 @@
     assert.deepEqual(filterNodes(obj, ".class2, .class3", true), filtered.get());
   });
 
+  $$1.isPlainObject = function (obj) {
+    // Basic check for Type object that's not null
+    if (_typeof(obj) === "object" && obj !== null) {
+      // If Object.getPrototypeOf supported, use it
+      if (typeof Object.getPrototypeOf == 'function') {
+        var proto = Object.getPrototypeOf(obj);
+        return proto === Object.prototype || proto === null;
+      } // Otherwise, use internal class
+      // This should be reliable as if getPrototypeOf not supported, is pre-ES5
+
+
+      return Object.prototype.toString.call(obj) === "[object Object]";
+    } // Not an object
+
+
+    return false;
+  };
+
   var getVal = function getVal(obj, val, current) {
     var i = obj.length,
         values = [],
         funcVal = $$1.isFunction(val),
+        objVal = funcVal ? 0 : $$1.isPlainObject(val),
         funcCurrent = $$1.isFunction(current);
 
     while (i--) {
-      values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
+      values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : objVal ? Object.create(val) : val;
     }
 
     return values;
@@ -1368,17 +1389,6 @@
     }, "$.extend deep merge");
   });
   QUnit.module("Utils");
-  QUnit.test("$.isArray", function (assert) {
-    var arr = [],
-        obj = {};
-    assert.ok($.isArray(arr), "Returns true when array");
-    arr.push("test");
-    assert.ok($.isArray(arr), "Returns true when array");
-    assert.ok(!$.isArray(obj), "Returns false when not array");
-    obj.test = "test";
-    assert.ok(!$.isArray(obj), "Returns false when not array");
-  });
-  QUnit.module("Utils");
   QUnit.test("$.isFunction", function (assert) {
     [function () {}, $.isFunction, window, document, document.getElementsByClassName("test")[0], "hi", 5, 3.14, {}].forEach(function (func, i) {
       assert.equal($.isFunction(func), i < 2, "Input is" + (i < 2 ? "" : " not") + " function");
@@ -1439,5 +1449,6 @@
   // traversal
   //import "./traversal/closest/test.js";
   // utilities
+  //import "./utils/isarray/test.js";
 })($);
 //# sourceMappingURL=test.es5.js.map

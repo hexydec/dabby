@@ -434,9 +434,10 @@ var getVal = (obj, val, current) => {
 	let i = obj.length,
 		values = [],
 		funcVal = $.isFunction(val),
+		objVal = funcVal ? 0 : $.isPlainObject(val),
 		funcCurrent = $.isFunction(current);
 	while (i--) {
-		values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
+		values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : (objVal ? Object.create(val) : val);
 	}
 	return values;
 }
@@ -922,18 +923,42 @@ $.fn.map = function (callback) {
 };
 
 $.fn.offset = function (coords) {
-	const doc = document.documentElement;
-	let rect,
-		i = this.length,
-		pos;
 
 	// set
 	if (coords) {
-		const values = getVal(this, coords, obj => obj.offset()); // copy the object
-		while (i--) {
-			// if coords is callback, generate value
 
-			rect = this[i].getBoundingClientRect();
+		// prepare values
+		let values = getVal(this, coords, obj => obj.offset()), // copy the object
+			i = this.length;
+		while (i--) {
+
+			// set position to relative if not positioned
+			let pos = getComputedStyle(this[i]).position;
+			if (pos === "static") {
+				values[i].position = pos = "relative";
+			}
+
+			// take off offset parent position
+			const parent = this[i][pos === "relative" ? "parentNode" : "offsetParent"];
+			$.each($(parent).offset(), (key, val) => values[i][key] -= val);
+
+			// relative add inner offset
+			if (pos === "relative") {
+				const style = getComputedStyle(parent);
+				values[i].top -= parseFloat(style.paddingTop) + parseFloat(style.borderTopWidth);
+				values[i].left -= parseFloat(style.paddingLeft) + parseFloat(style.borderLeftWidth);
+			}
+		}
+
+		// update values in one hit to prevent thrashing
+		i = this.length;
+		while (i--) {
+			$.each(values[i], (key, val) => this[i].style[key] = val + (isNaN(val) ? "" : "px"));
+		}
+
+
+			// if coords is callback, generate value
+			/*rect = this[i].getBoundingClientRect();
 			const itemCoords = Object.create(values[i]); // copy the object
 
 			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
@@ -958,15 +983,16 @@ $.fn.offset = function (coords) {
 				// set offset
 				this[i].style.top = itemCoords.top + "px";
 				this[i].style.left = itemCoords.left + "px";
-			}
-		}
+			}*/
+		//}
 		return this;
 	}
 
 	// get
 	if (this[0]) {
-		pos = this[0].style.position === "fixed";
-		rect = this[0].getBoundingClientRect();
+		const doc = document.documentElement,
+			pos = this[0].style.position === "fixed",
+			rect = this[0].getBoundingClientRect();
 		return {
 			top: rect.top + (pos ? 0 : doc.scrollTop),
 			left: rect.left + (pos ? 0 : doc.scrollLeft)
@@ -1503,8 +1529,6 @@ $.fn.siblings = function (selector) {
 	return $(selector ? filterNodes(nodes, selector) : nodes);
 };
 
-$.isArray = arr => Array.isArray(arr);
-
 // ajax
 // attributes
 // core
@@ -1513,5 +1537,6 @@ $.isArray = arr => Array.isArray(arr);
 // manipulation
 // traversal
 // utilities
+//import "./utils/isarray/isarray.js";
 
 export default $;

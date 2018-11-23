@@ -528,10 +528,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var i = obj.length,
         values = [],
         funcVal = $.isFunction(val),
+        objVal = funcVal ? 0 : $.isPlainObject(val),
         funcCurrent = $.isFunction(current);
 
     while (i--) {
-      values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : val;
+      values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : objVal ? Object.create(val) : val;
     }
 
     return values;
@@ -1071,51 +1072,85 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.offset = function (coords) {
-    var doc = document.documentElement;
-    var rect,
-        i = this.length,
-        pos; // set
+    var _this6 = this;
 
+    // set
     if (coords) {
-      var values = getVal(this, coords, function (obj) {
-        return obj.offset();
-      }); // copy the object
+      var _ret3 = function () {
+        // prepare values
+        var values = getVal(_this6, coords, function (obj) {
+          return obj.offset();
+        }),
+            // copy the object
+        i = _this6.length;
 
-      while (i--) {
-        // if coords is callback, generate value
-        rect = this[i].getBoundingClientRect();
-        var itemCoords = Object.create(values[i]); // copy the object
-
-        if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
-          var style = getComputedStyle(this[i]);
-          pos = style.position; // set position relative if static
+        while (i--) {
+          // set position to relative if not positioned
+          var pos = getComputedStyle(_this6[i]).position;
 
           if (pos === "static") {
-            this[i].style.position = "relative";
-          } // add current offset
+            values[i].position = pos = "relative";
+          } // take off offset parent position
 
 
-          itemCoords.top += parseFloat(style.top) || 0;
-          itemCoords.left += parseFloat(style.left) || 0; // remove parent offset and viewport scroll
+          var parent = _this6[i][pos === "relative" ? "parentNode" : "offsetParent"];
+          $.each($(parent).offset(), function (key, val) {
+            return values[i][key] -= val;
+          }); // relative add inner offset
 
-          if (pos !== "fixed") {
-            itemCoords.top -= doc.scrollTop + rect.top;
-            itemCoords.left -= doc.scrollLeft + rect.left;
-          } // set offset
+          if (pos === "relative") {
+            var style = getComputedStyle(parent);
+            values[i].top -= parseFloat(style.paddingTop) + parseFloat(style.borderTopWidth);
+            values[i].left -= parseFloat(style.paddingLeft) + parseFloat(style.borderLeftWidth);
+          }
+        } // update values in one hit to prevent thrashing
 
 
-          this[i].style.top = itemCoords.top + "px";
-          this[i].style.left = itemCoords.left + "px";
-        }
-      }
+        i = _this6.length;
 
-      return this;
+        while (i--) {
+          $.each(values[i], function (key, val) {
+            return _this6[i].style[key] = val + (isNaN(val) ? "" : "px");
+          });
+        } // if coords is callback, generate value
+
+        /*rect = this[i].getBoundingClientRect();
+        const itemCoords = Object.create(values[i]); // copy the object
+        		if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
+        	let style = getComputedStyle(this[i]);
+        	pos = style.position;
+        			// set position relative if static
+        	if (pos === "static") {
+        		this[i].style.position = "relative";
+        	}
+        			// add current offset
+        	itemCoords.top += parseFloat(style.top) || 0;
+        	itemCoords.left += parseFloat(style.left) || 0;
+        			// remove parent offset and viewport scroll
+        	if (pos !== "fixed") {
+        		itemCoords.top -= doc.scrollTop + rect.top;
+        		itemCoords.left -= doc.scrollLeft + rect.left;
+        	}
+        			// set offset
+        	this[i].style.top = itemCoords.top + "px";
+        	this[i].style.left = itemCoords.left + "px";
+        }*/
+        //}
+
+
+        return {
+          v: _this6
+        };
+      }();
+
+      if (_typeof(_ret3) === "object") return _ret3.v;
     } // get
 
 
     if (this[0]) {
-      pos = this[0].style.position === "fixed";
-      rect = this[0].getBoundingClientRect();
+      var doc = document.documentElement,
+          pos = this[0].style.position === "fixed",
+          rect = this[0].getBoundingClientRect();
       return {
         top: rect.top + (pos ? 0 : doc.scrollTop),
         left: rect.left + (pos ? 0 : doc.scrollLeft)
@@ -1171,7 +1206,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
   ["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(function (dim) {
     $.fn[dim] = function (val) {
-      var _this6 = this;
+      var _this7 = this;
 
       var valtype = _typeof(val),
           wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
@@ -1189,8 +1224,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           style; // set value
 
       if (val !== undefined && valtype !== "boolean") {
-        var _ret3 = function () {
-          var values = getVal(_this6, val, function (obj) {
+        var _ret4 = function () {
+          var values = getVal(_this7, val, function (obj) {
             return obj[dim];
           });
 
@@ -1198,7 +1233,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             // add additional lengths
             if (io) {
               // fetch current style and build properties
-              style = getComputedStyle(_this6[i]);
+              style = getComputedStyle(_this7[i]);
               props = ["padding" + first, "padding" + second];
 
               if (io === "outer") {
@@ -1208,7 +1243,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
               if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
-                _this6[i].style[wh] = values[i];
+                _this7[i].style[wh] = values[i];
                 props.push(wh);
                 values[i] = 0; // reset to 0
               } // add values
@@ -1219,15 +1254,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               });
             }
 
-            _this6[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
+            _this7[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
           }
 
           return {
-            v: _this6
+            v: _this7
           };
         }();
 
-        if (_typeof(_ret3) === "object") return _ret3.v;
+        if (_typeof(_ret4) === "object") return _ret4.v;
       } // get value
 
 
@@ -1294,7 +1329,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }); // add and remove event handlers
 
   $.fn.off = function (events, selector, data, callback) {
-    var _this7 = this;
+    var _this8 = this;
 
     var i = this.length;
     events = events.split(" "); // sort out args
@@ -1315,20 +1350,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var e = events.length;
 
           while (e--) {
-            _this7[i].events.forEach(function (evt, n) {
+            _this8[i].events.forEach(function (evt, n) {
               var index = evt.events.indexOf(events[e]);
 
               if (index !== -1 && (!callback || evt.callback === callback) && (!selector || evt.selector === selector)) {
-                _this7[i].removeEventListener(events[e], evt.func, {
+                _this8[i].removeEventListener(events[e], evt.func, {
                   once: evt.once,
                   capture: !!evt.selector
                 }); // must pass same arguments
 
 
-                _this7[i].events[n].events.splice(index, 1);
+                _this8[i].events[n].events.splice(index, 1);
 
-                if (!_this7[i].events[n].events.length) {
-                  _this7[i].events.splice(n, 1);
+                if (!_this8[i].events[n].events.length) {
+                  _this8[i].events.splice(n, 1);
                 }
               }
             });
@@ -1700,24 +1735,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   $.fn.siblings = function (selector) {
-    var _this8 = this;
+    var _this9 = this;
 
     var i = this.length,
         nodes = [];
 
     while (i--) {
       Array.from(this[i].parentNode.children).forEach(function (child) {
-        if (child !== _this8[i]) {
+        if (child !== _this9[i]) {
           nodes.push(child);
         }
       });
     }
 
     return $(selector ? filterNodes(nodes, selector) : nodes);
-  };
-
-  $.isArray = function (arr) {
-    return Array.isArray(arr);
   }; // ajax
   // attributes
   // core
@@ -1726,6 +1757,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   // manipulation
   // traversal
   // utilities
+  //import "./utils/isarray/isarray.js";
 
 
   return $;
