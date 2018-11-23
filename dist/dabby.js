@@ -732,7 +732,6 @@ var setCss = (dabby, props, value) => {
 	$.each(props, (i, prop) => {
 		values[camelise(i)] = getVal(dabby, prop, obj => obj.style[i]);
 	});
-	console.log(values);
 
 	// set properties
 	$.each(values, (key, val) => {
@@ -742,7 +741,6 @@ var setCss = (dabby, props, value) => {
 				val[i] += "px";
 			}
 			dabby[i].style[key] = val[i];
-			console.log(dabby[i], key, val[i]);
 		}
 	});
 	return dabby;

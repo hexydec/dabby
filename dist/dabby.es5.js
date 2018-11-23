@@ -858,8 +858,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       values[camelise(i)] = getVal(dabby, prop, function (obj) {
         return obj.style[i];
       });
-    });
-    console.log(values); // set properties
+    }); // set properties
 
     $.each(values, function (key, val) {
       var i = dabby.length;
@@ -870,7 +869,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
 
         dabby[i].style[key] = val[i];
-        console.log(dabby[i], key, val[i]);
       }
     });
     return dabby;

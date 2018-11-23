@@ -900,8 +900,7 @@
       values[camelise(i)] = getVal(dabby, prop, function (obj) {
         return obj.style[i];
       });
-    });
-    console.log(values); // set properties
+    }); // set properties
 
     $$1.each(values, function (key, val) {
       var i = dabby.length;
@@ -912,7 +911,6 @@
         }
 
         dabby[i].style[key] = val[i];
-        console.log(dabby[i], key, val[i]);
       }
     });
     return dabby;
