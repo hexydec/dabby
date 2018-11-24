@@ -1,20 +1,18 @@
 import $ from "../../core/core.js";
 
 $.fn.index = function (selector) {
-	let index = -1;
 
 	if (this[0]) {
 		let nodes,
 			subject = this[0],
-			type = typeof selector,
 			i;
 
 		// if no selector, match against first elements siblings
-		if (type === "undefined") {
+		if (selector === undefined) {
 			nodes = this[0].parentNode.children;
 
 		// if selector is string, match first node in current collection against resulting collection
-		} else if (type === "string") {
+		} else if (typeof selector === "string") {
 			nodes = $(selector);
 
 		// if element or collection match the element or first node against current collection
@@ -30,5 +28,5 @@ $.fn.index = function (selector) {
 			}
 		}
 	}
-	return index;
+	return -1;
 };

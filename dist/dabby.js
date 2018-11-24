@@ -94,7 +94,7 @@ $.isPlainObject = obj => {
 	if (typeof obj === "object" && obj !== null) {
 
 		// If Object.getPrototypeOf supported, use it
-	    if (typeof Object.getPrototypeOf == 'function') {
+	    if (typeof Object.getPrototypeOf === 'function') {
 			let proto = Object.getPrototypeOf(obj);
 			return proto === Object.prototype || proto === null;
 	    }
@@ -120,19 +120,17 @@ $.extend = (...arrs) => {
 				if ($.isPlainObject(target) && $.isPlainObject(source)) {
 
 					// loop through each property
-					const keys = Object.keys(source),
-						len = keys.length;
-					for (let i = 0; i < len; i++) {
+					$.each(source, (i, val) => {
 
 						// merge recursively if source is object, if target is not object, overwrite
-						if ($.isPlainObject(source[keys[i]])) {
-							target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
+						if ($.isPlainObject(val)) {
+							target[i] = $.isPlainObject(target[i]) ? merge(target[i], val) : val;
 
 						// when source property is value just overwrite
 						} else {
-							target[keys[i]] = source[keys[i]];
+							target[i] = val;
 						}
-					}
+					});
 				}
 
 				// merge next source
@@ -347,7 +345,7 @@ var filterNodes = (dabby, filter, context, not) => {
 		context = null;
 	}
 
-	// function
+	// custom filter function
 	if ($.isFunction(filter)) {
 		func = filter;
 
@@ -355,13 +353,13 @@ var filterNodes = (dabby, filter, context, not) => {
 	} else {
 
 		// normalise filters
-		if (typeof(filter) === "string") {
+		if (typeof filter === "string") {
 			filter = [filter];
 		} else {
 			filter = Array.from($(filter, context));
 		}
 
-		// filter function
+		// default filter function
 		func = (n, node) => {
 			let i = filter.length;
 			while (i--) {
@@ -372,7 +370,7 @@ var filterNodes = (dabby, filter, context, not) => {
 			return false;
 		};
 	}
-	return nodes.filter((item, i) => func.call(item, i, item) !== Boolean(not), nodes);
+	return nodes.filter((item, i) => func.call(item, i, item) === !not, nodes);
 }
 
 ["filter", "not", "is"].forEach(name => {
@@ -443,18 +441,13 @@ var getVal = (obj, val, current) => {
 }
 
 $.map = (obj, callback) => {
-	const keys = Object.keys(obj),
-		len = keys.length;
-	let arr = [],
-		i = 0,
-		result;
-
-	for (; i < len; i++) {
-		result = callback.call(window, obj[keys[i]], keys[i]);
+	let arr = [];
+	$.each(obj, (i, item) => {
+		const result = callback.call(window, item, i);
 		if (![null, undefined].indexOf(result) > -1) {
 			arr.push(result);
 		}
-	}
+	});
 	return arr;
 };
 
@@ -577,10 +570,7 @@ $.fn.add = function (nodes, context) {
 				}
 			}
 		}
-		if (selector) {
-			nodes = filterNodes(nodes, selector);
-		}
-		return $(nodes);
+		return $(selector ? filterNodes(nodes, selector) : nodes);
 	};
 });
 
@@ -591,11 +581,9 @@ $.fn.get = function (i) {
 // add and remove event handlers
 ["on", "one"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
-		let i = this.length;
-
-		events = events.split(" ");
 
 		// sort out args
+		events = events.split(" ");
 		if ($.isFunction(selector)) {
 			callback = selector;
 			selector = undefined;
@@ -605,6 +593,7 @@ $.fn.get = function (i) {
 		}
 
 		// attach event
+		let i = this.length;
 		while (i--) {
 			let e = events.length;
 
@@ -619,9 +608,7 @@ $.fn.get = function (i) {
 					target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
 				}
 				if (target) {
-					if (data) { // set data to event object
-						evt.data = data;
-					}
+					evt.data = data; // set data to event object
 					for (let i = 0, len = target.length; i < len; i++) {
 						if (callback.call(target[i], evt, evt.args) === false) {
 							evt.preventDefault();
@@ -717,7 +704,7 @@ $.fn.attr = function (prop, value) {
 	};
 });
 
-var camelise = prop => prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
+var camelise = prop => prop.replace(/-([\w])/g, (text, letter) => letter.toUpperCase()); // matches underscore too but you shouldn't do that anyway
 
 var setCss = (dabby, props, value) => {
 
@@ -738,10 +725,7 @@ var setCss = (dabby, props, value) => {
 	$.each(values, (key, val) => {
 		let i = dabby.length;
 		while (i--) {
-			if (!isNaN(val[i])) {
-				val[i] += "px";
-			}
-			dabby[i].style[key] = val[i];
+			dabby[i].style[key] = val[i] + (isNaN(val[i]) ? "" : "px");
 		}
 	});
 	return dabby;
@@ -912,8 +896,8 @@ $.fn.removeProp = function (prop) {
 });
 
 $.fn.map = function (callback) {
-	const len = this.length;
-	let values = [],
+	let len = this.length,
+		values = [],
 		i = 0;
 
 	for (; i < len; i++) {
@@ -930,6 +914,7 @@ $.fn.offset = function (coords) {
 		// prepare values
 		let values = getVal(this, coords, obj => obj.offset()), // copy the object
 			i = this.length;
+
 		while (i--) {
 
 			// set position to relative if not positioned
@@ -955,36 +940,6 @@ $.fn.offset = function (coords) {
 		while (i--) {
 			$.each(values[i], (key, val) => this[i].style[key] = val + (isNaN(val) ? "" : "px"));
 		}
-
-
-			// if coords is callback, generate value
-			/*rect = this[i].getBoundingClientRect();
-			const itemCoords = Object.create(values[i]); // copy the object
-
-			if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
-				let style = getComputedStyle(this[i]);
-				pos = style.position;
-
-				// set position relative if static
-				if (pos === "static") {
-					this[i].style.position = "relative";
-				}
-
-				// add current offset
-				itemCoords.top += parseFloat(style.top) || 0;
-				itemCoords.left += parseFloat(style.left) || 0;
-
-				// remove parent offset and viewport scroll
-				if (pos !== "fixed") {
-					itemCoords.top -= doc.scrollTop + rect.top;
-					itemCoords.left -= doc.scrollLeft + rect.left;
-				}
-
-				// set offset
-				this[i].style.top = itemCoords.top + "px";
-				this[i].style.left = itemCoords.left + "px";
-			}*/
-		//}
 		return this;
 	}
 
@@ -1012,12 +967,14 @@ $.fn.position = function () {
 
 ["scrollLeft", "scrollTop"].forEach(item => {
 	$.fn[item] = function (pos) {
+		const top = item === "scrollTop";
 
 		// set
 		if (pos !== undefined) {
 			let i = this.length,
-				tl = item.indexOf("Top") > -1 ? "top" : "left",
+				tl = top ? "top" : "left",
 				values = getVal(this, pos, obj => obj[item]);
+			
 			while (i--) {
 				if ($.isWindow(this[i])) {
 					let obj = {};
@@ -1033,7 +990,7 @@ $.fn.position = function () {
 		// get
 		if (this[0]) {
 			if ($.isWindow(this[0])) {
-				item = item === "scrollTop" ? "pageYOffset" : "pageXOffset";
+				item = top ? "pageYOffset" : "pageXOffset";
 			}
 			return this[0][item];
 		}
@@ -1043,34 +1000,33 @@ $.fn.position = function () {
 ["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
 
 	$.fn[dim] = function (val) {
-		const valtype = typeof(val),
-			wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height", // width or height
+		const width = dim.indexOf("d") > -1,
+			wh = width ? "width" : "height", // width or height
+			whu = width ? "Width" : "Height", // with uppercase letter
 			io = dim.indexOf("inner") > -1 ? "inner" : (dim.indexOf("outer") > -1 ? "outer" : ""), // inner outer or neither
-			first = wh === "width" ? "Left" : "Top", // first dimension
-			second = wh === "width" ? "Right" : "Bottom"; // second dimension
-		let i = this.length,
-			value,
-			props,
-			style;
+			pos = [
+				width ? "Left" : "Top", // first dimension
+				width ? "Right" : "Bottom" // second dimension
+			];
 
 		// set value
-		if (val !== undefined && valtype !== "boolean") {
-			const values = getVal(this, val, obj => obj[dim]);
+		if (val !== undefined && typeof(val) !== "boolean") {
+			let values = getVal(this, val, obj => obj[dim]),
+				i = this.length,
+				props = [],
+				style;
 			while (i--) {
 
 				// add additional lengths
 				if (io) {
 
 					// fetch current style and build properties
-					style = getComputedStyle(this[i]);
-					props = [
-						"padding" + first,
-						"padding" + second
-					];
-					if (io === "outer") {
-						props.push("border" + first + "Width");
-						props.push("border" + second + "Width");
-					}
+					pos.forEach(item => {
+						props.push("padding" + item);
+						if (io === "outer") {
+							props.push("border" + item + "Width");
+						}
+					});
 
 					// set width to convert to a px value
 					if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
@@ -1080,6 +1036,7 @@ $.fn.position = function () {
 					}
 
 					// add values
+					style = getComputedStyle(this[i]);
 					props.forEach(val => values[i] -= parseFloat(style[val]));
 				}
 				this[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
@@ -1089,8 +1046,6 @@ $.fn.position = function () {
 
 		// get value
 		if (this[0]) {
-			let whu = wh === "width" ? "Width" : "Height",
-				param;
 
 			// document
 			if (this[0].nodeType === Node.DOCUMENT_NODE) {
@@ -1099,14 +1054,12 @@ $.fn.position = function () {
 
 			// element
 			if (!$.isWindow(this[0])) {
-				value = this[0][(io === "outer" ? "offset" : "client") + whu];
+				let value = this[0][(io === "outer" ? "offset" : "client") + whu];
 
 				// add padding on, or if outer and margins requested, add margins on
 				if (io === "" || (io === "outer" && val === true)) {
-					style = getComputedStyle(this[0]);
-					param = io ? "margin" : "padding";
-					props = [param + first, param + second];
-					props.forEach(val => value += parseFloat(style[val]) * (io ? 1 : -1));
+					const style = getComputedStyle(this[0]);
+					pos.forEach(item => value += parseFloat(style[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
 				}
 				return value;
 			}
@@ -1122,17 +1075,13 @@ $.fn.position = function () {
 });
 
 $.fn.trigger = function (name, data) {
-	const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
 	let i = this.length;
-
-	// copy extra data to event object
-	if (data) {
-		evt.args = data;
-	}
 	while (i--) {
 		if ($.isFunction(this[i][name])) {
 			this[i][name]();
 		} else {
+			const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
+			evt.args = data;
 			this[i].dispatchEvent(evt);
 		}
 	}
@@ -1147,11 +1096,9 @@ events.forEach(event => {
 
 // add and remove event handlers
 $.fn.off = function (events, selector, data, callback) {
-	let i = this.length;
-
-	events = events.split(" ");
 
 	// sort out args
+	events = events.split(" ");
 	if ($.isFunction(selector)) {
 		callback = selector;
 		selector = undefined;
@@ -1161,6 +1108,7 @@ $.fn.off = function (events, selector, data, callback) {
 	}
 
 	// attach event
+	let i = this.length;
 	while (i--) {
 
 		// find the original function
@@ -1226,8 +1174,9 @@ $.each({
 	after: "afterEnd"
 }, (name, pos) => {
 	$.fn[name] = function (html) {
-		const pre = ["before", "prepend"].indexOf(name) > -1;
-		let arr = [];
+		let pre = ["before", "prepend"].indexOf(name) > -1,
+			arr = [],
+			i = this.length;
 
 		if ($.isFunction(html)) {
 			arr = getVal(this, html, obj => obj.innerHTML);
@@ -1236,13 +1185,12 @@ $.each({
 		} else {
 			const elems = $();
 			$.each(arguments, (i, arg) => elems.add(arg));
-			let i = this.length;
 			while (i--) {
 				arr[i] = i ? elems.clone() : elems;
 			}
 		}
 
-		let i = this.length;
+		i = this.length;
 		while (i--) {
 			let backwards = arr[i].length, // for counting down
 				forwards = -1; // for counting up
@@ -1293,13 +1241,12 @@ $.each({
 		const all = name === "replaceAll",
 			source = all ? $(html) : this;
 		let target = all ? this : html,
-			isFunc = $.isFunction(target);
+			isFunc = $.isFunction(target),
+			i = source.length;
 
 		if (!isFunc) {
 			target = $(target);
 		}
-
-		let i = source.length;
 
 		while (i--) {
 			let n = target.length,
@@ -1324,28 +1271,29 @@ $.fn.slice = function (start, end) {
 $.fn.text = function (text) {
 	let i = this.length,
 		output = [];
-	if (text === undefined) {
-		while (i--) {
-			output[i] = this[i].textContent;
-		}
-		return output.join(" ");
-	} else {
+
+	// set
+	if (text !== undefined) {
 		const values = getVal(this, text, obj => obj.textContent);
 		while (i--) {
 			this[i].textContent = values[i];
 		}
 		return this;
 	}
+
+	// get
+	while (i--) {
+		output[i] = this[i].textContent;
+	}
+	return output.join(" ");
 };
 
 $.fn.unwrap = function (selector) {
 	this.parent(selector).not("body").each((key, obj) => {
-		const parent = obj.parentNode;
-
 		$(obj.children).each((i, node) => {
-			parent.insertBefore(node, obj);
+			obj.parentNode.insertBefore(node, obj);
 		});
-		parent.removeChild(obj);
+		obj.parentNode.removeChild(obj);
 	});
 	return this;
 };
@@ -1359,7 +1307,7 @@ $.fn.wrapAll = function (html) {
 		// set variables
 		let len = this.length,
 			i = 0,
-			node = $(html).get(0).cloneNode(true);
+			node = $(html)[0].cloneNode(true);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);
@@ -1396,10 +1344,7 @@ $.fn.children = function (selector) {
 	}
 
 	// filter nodes by selector
-	if (selector) {
-		nodes = filterNodes(nodes, selector);
-	}
-	return $(nodes);
+	return $(selector ? filterNodes(nodes, selector) : nodes);
 };
 
 $.fn.closest = function (selector, context) {
@@ -1424,8 +1369,7 @@ $.fn.closest = function (selector, context) {
 };
 
 $.fn.eq = function (i) {
-	const key = i < 0 ? i + this.length : i;
-	return $(this[key] || null);
+	return $(this[i < 0 ? i + this.length : i]);
 };
 
 $.fn.find = function (selector) {
@@ -1441,20 +1385,18 @@ $.fn.has = function (selector) {
 };
 
 $.fn.index = function (selector) {
-	let index = -1;
 
 	if (this[0]) {
 		let nodes,
 			subject = this[0],
-			type = typeof selector,
 			i;
 
 		// if no selector, match against first elements siblings
-		if (type === "undefined") {
+		if (selector === undefined) {
 			nodes = this[0].parentNode.children;
 
 		// if selector is string, match first node in current collection against resulting collection
-		} else if (type === "string") {
+		} else if (typeof selector === "string") {
 			nodes = $(selector);
 
 		// if element or collection match the element or first node against current collection
@@ -1470,7 +1412,7 @@ $.fn.index = function (selector) {
 			}
 		}
 	}
-	return index;
+	return -1;
 };
 
 $.fn.last = function () {
@@ -1479,9 +1421,9 @@ $.fn.last = function () {
 
 ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(func => {
 	$.fn[func] = function (selector, filter) {
-		const next = func.indexOf("next") > -1,
-			all = func.indexOf("All") > -1,
-			until = func.indexOf("Until") > -1,
+		const next = func.indexOf("x") > -1,
+			all = func.indexOf("A") > -1,
+			until = func.indexOf("U") > -1,
 			method = next ? "nextElementSibling" : "previousElementSibling";
 		let nodes = [],
 			i = this.length,
@@ -1505,13 +1447,8 @@ $.fn.last = function () {
 			selector = filter;
 		}
 
-		// filter siblings by selector
-		if (selector) {
-			nodes = filterNodes(nodes, selector);
-		}
-
 		// return new collection
-		return $(nodes);
+		return $(selector ? filterNodes(nodes, selector) : nodes);
 	};
 });
 

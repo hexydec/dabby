@@ -20,9 +20,6 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
 				}
 			}
 		}
-		if (selector) {
-			nodes = filterNodes(nodes, selector);
-		}
-		return $(nodes);
+		return $(selector ? filterNodes(nodes, selector) : nodes);
 	}
 });

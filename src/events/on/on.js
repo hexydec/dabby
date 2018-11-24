@@ -8,11 +8,9 @@ import "../../core/get/get.js";
 // add and remove event handlers
 ["on", "one"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
-		let i = this.length;
-
-		events = events.split(" ");
 
 		// sort out args
+		events = events.split(" ");
 		if ($.isFunction(selector)) {
 			callback = selector;
 			selector = undefined;
@@ -22,6 +20,7 @@ import "../../core/get/get.js";
 		}
 
 		// attach event
+		let i = this.length;
 		while (i--) {
 			let e = events.length;
 
@@ -36,9 +35,7 @@ import "../../core/get/get.js";
 					target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
 				}
 				if (target) {
-					if (data) { // set data to event object
-						evt.data = data;
-					}
+					evt.data = data; // set data to event object
 					for (let i = 0, len = target.length; i < len; i++) {
 						if (callback.call(target[i], evt, evt.args) === false) {
 							evt.preventDefault();

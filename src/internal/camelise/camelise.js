@@ -1,1 +1,1 @@
-export default prop => prop.replace(/-([a-z])/gi, (text, letter) => letter.toUpperCase());
+export default prop => prop.replace(/-([\w])/g, (text, letter) => letter.toUpperCase()); // matches underscore too but you shouldn't do that anyway

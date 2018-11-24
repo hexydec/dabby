@@ -10,7 +10,7 @@ $.fn.wrapAll = function (html) {
 		// set variables
 		let len = this.length,
 			i = 0,
-			node = $(html).get(0).cloneNode(true);
+			node = $(html)[0].cloneNode(true);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);

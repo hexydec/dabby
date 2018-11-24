@@ -10,8 +10,5 @@ $.fn.children = function (selector) {
 	}
 
 	// filter nodes by selector
-	if (selector) {
-		nodes = filterNodes(nodes, selector);
-	}
-	return $(nodes);
+	return $(selector ? filterNodes(nodes, selector) : nodes);
 };

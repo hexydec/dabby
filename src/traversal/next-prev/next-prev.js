@@ -3,9 +3,9 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
 
 ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(func => {
 	$.fn[func] = function (selector, filter) {
-		const next = func.indexOf("next") > -1,
-			all = func.indexOf("All") > -1,
-			until = func.indexOf("Until") > -1,
+		const next = func.indexOf("x") > -1,
+			all = func.indexOf("A") > -1,
+			until = func.indexOf("U") > -1,
 			method = next ? "nextElementSibling" : "previousElementSibling";
 		let nodes = [],
 			i = this.length,
@@ -29,12 +29,7 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
 			selector = filter;
 		}
 
-		// filter siblings by selector
-		if (selector) {
-			nodes = filterNodes(nodes, selector);
-		}
-
 		// return new collection
-		return $(nodes);
+		return $(selector ? filterNodes(nodes, selector) : nodes);
 	};
 });

@@ -1,8 +1,8 @@
 import $ from "../../core/core.js";
 
 $.fn.map = function (callback) {
-	const len = this.length;
-	let values = [],
+	let len = this.length,
+		values = [],
 		i = 0;
 
 	for (; i < len; i++) {

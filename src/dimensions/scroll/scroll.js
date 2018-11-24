@@ -4,12 +4,14 @@ import "../../utils/iswindow/iswindow.js";
 
 ["scrollLeft", "scrollTop"].forEach(item => {
 	$.fn[item] = function (pos) {
+		const top = item === "scrollTop";
 
 		// set
 		if (pos !== undefined) {
 			let i = this.length,
-				tl = item.indexOf("Top") > -1 ? "top" : "left",
+				tl = top ? "top" : "left",
 				values = getVal(this, pos, obj => obj[item]);
+			
 			while (i--) {
 				if ($.isWindow(this[i])) {
 					let obj = {};
@@ -25,7 +27,7 @@ import "../../utils/iswindow/iswindow.js";
 		// get
 		if (this[0]) {
 			if ($.isWindow(this[0])) {
-				item = item === "scrollTop" ? "pageYOffset" : "pageXOffset";
+				item = top ? "pageYOffset" : "pageXOffset";
 			}
 			return this[0][item];
 		}

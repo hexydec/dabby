@@ -6,7 +6,7 @@ $.isPlainObject = obj => {
 	if (typeof obj === "object" && obj !== null) {
 
 		// If Object.getPrototypeOf supported, use it
-	    if (typeof Object.getPrototypeOf == 'function') {
+	    if (typeof Object.getPrototypeOf === 'function') {
 			let proto = Object.getPrototypeOf(obj);
 			return proto === Object.prototype || proto === null;
 	    }

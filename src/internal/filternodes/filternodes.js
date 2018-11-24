@@ -11,7 +11,7 @@ export default (dabby, filter, context, not) => {
 		context = null;
 	}
 
-	// function
+	// custom filter function
 	if ($.isFunction(filter)) {
 		func = filter;
 
@@ -19,13 +19,13 @@ export default (dabby, filter, context, not) => {
 	} else {
 
 		// normalise filters
-		if (typeof(filter) === "string") {
+		if (typeof filter === "string") {
 			filter = [filter];
 		} else {
 			filter = Array.from($(filter, context));
 		}
 
-		// filter function
+		// default filter function
 		func = (n, node) => {
 			let i = filter.length;
 			while (i--) {
@@ -36,5 +36,5 @@ export default (dabby, filter, context, not) => {
 			return false;
 		};
 	}
-	return nodes.filter((item, i) => func.call(item, i, item) !== Boolean(not), nodes);
+	return nodes.filter((item, i) => func.call(item, i, item) === !not, nodes);
 }

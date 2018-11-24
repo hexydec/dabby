@@ -3,11 +3,9 @@ import "../../utils/isfunction/isfunction.js";
 
 // add and remove event handlers
 $.fn.off = function (events, selector, data, callback) {
-	let i = this.length;
-
-	events = events.split(" ");
 
 	// sort out args
+	events = events.split(" ");
 	if ($.isFunction(selector)) {
 		callback = selector;
 		selector = undefined;
@@ -17,6 +15,7 @@ $.fn.off = function (events, selector, data, callback) {
 	}
 
 	// attach event
+	let i = this.length;
 	while (i--) {
 
 		// find the original function

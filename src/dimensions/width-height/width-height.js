@@ -5,34 +5,33 @@ import "../../utils/iswindow/iswindow.js";
 ["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
 
 	$.fn[dim] = function (val) {
-		const valtype = typeof(val),
-			wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height", // width or height
+		const width = dim.indexOf("d") > -1,
+			wh = width ? "width" : "height", // width or height
+			whu = width ? "Width" : "Height", // with uppercase letter
 			io = dim.indexOf("inner") > -1 ? "inner" : (dim.indexOf("outer") > -1 ? "outer" : ""), // inner outer or neither
-			first = wh === "width" ? "Left" : "Top", // first dimension
-			second = wh === "width" ? "Right" : "Bottom"; // second dimension
-		let i = this.length,
-			value,
-			props,
-			style;
+			pos = [
+				width ? "Left" : "Top", // first dimension
+				width ? "Right" : "Bottom" // second dimension
+			];
 
 		// set value
-		if (val !== undefined && valtype !== "boolean") {
-			const values = getVal(this, val, obj => obj[dim]);
+		if (val !== undefined && typeof(val) !== "boolean") {
+			let values = getVal(this, val, obj => obj[dim]),
+				i = this.length,
+				props = [],
+				style;
 			while (i--) {
 
 				// add additional lengths
 				if (io) {
 
 					// fetch current style and build properties
-					style = getComputedStyle(this[i]);
-					props = [
-						"padding" + first,
-						"padding" + second
-					];
-					if (io === "outer") {
-						props.push("border" + first + "Width");
-						props.push("border" + second + "Width");
-					}
+					pos.forEach(item => {
+						props.push("padding" + item);
+						if (io === "outer") {
+							props.push("border" + item + "Width");
+						}
+					});
 
 					// set width to convert to a px value
 					if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
@@ -42,6 +41,7 @@ import "../../utils/iswindow/iswindow.js";
 					}
 
 					// add values
+					style = getComputedStyle(this[i]);
 					props.forEach(val => values[i] -= parseFloat(style[val]));
 				}
 				this[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
@@ -51,8 +51,6 @@ import "../../utils/iswindow/iswindow.js";
 
 		// get value
 		if (this[0]) {
-			let whu = wh === "width" ? "Width" : "Height",
-				param;
 
 			// document
 			if (this[0].nodeType === Node.DOCUMENT_NODE) {
@@ -61,14 +59,12 @@ import "../../utils/iswindow/iswindow.js";
 
 			// element
 			if (!$.isWindow(this[0])) {
-				value = this[0][(io === "outer" ? "offset" : "client") + whu];
+				let value = this[0][(io === "outer" ? "offset" : "client") + whu];
 
 				// add padding on, or if outer and margins requested, add margins on
 				if (io === "" || (io === "outer" && val === true)) {
-					style = getComputedStyle(this[0]);
-					param = io ? "margin" : "padding";
-					props = [param + first, param + second];
-					props.forEach(val => value += parseFloat(style[val]) * (io ? 1 : -1));
+					const style = getComputedStyle(this[0]);
+					pos.forEach(item => value += parseFloat(style[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
 				}
 				return value;
 			}

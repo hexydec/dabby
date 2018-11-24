@@ -2,17 +2,13 @@ import $ from "../../core/core.js";
 import "../../utils/isfunction/isfunction.js";
 
 $.fn.trigger = function (name, data) {
-	const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
 	let i = this.length;
-
-	// copy extra data to event object
-	if (data) {
-		evt.args = data;
-	}
 	while (i--) {
 		if ($.isFunction(this[i][name])) {
 			this[i][name]();
 		} else {
+			const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
+			evt.args = data;
 			this[i].dispatchEvent(evt);
 		}
 	}

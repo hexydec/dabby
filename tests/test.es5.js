@@ -699,10 +699,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   var camelise = function camelise(prop) {
-    return prop.replace(/-([a-z])/gi, function (text, letter) {
+    return prop.replace(/-([\w])/g, function (text, letter) {
       return letter.toUpperCase();
     });
-  };
+  }; // matches underscore too but you shouldn't do that anyway
+
 
   QUnit.module("Internal");
   QUnit.test("camelise", function (assert) {
@@ -817,7 +818,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (typeof context === "boolean") {
       not = context;
       context = null;
-    } // function
+    } // custom filter function
 
 
     if ($$1.isFunction(filter)) {
@@ -828,7 +829,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         filter = [filter];
       } else {
         filter = Array.from($$1(filter, context));
-      } // filter function
+      } // default filter function
 
 
       func = function func(n, node) {
@@ -845,7 +846,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     return nodes.filter(function (item, i) {
-      return func.call(item, i, item) !== Boolean(not);
+      return func.call(item, i, item) === !not;
     }, nodes);
   };
 
@@ -870,7 +871,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // Basic check for Type object that's not null
     if (_typeof(obj) === "object" && obj !== null) {
       // If Object.getPrototypeOf supported, use it
-      if (typeof Object.getPrototypeOf == 'function') {
+      if (typeof Object.getPrototypeOf === 'function') {
         var proto = Object.getPrototypeOf(obj);
         return proto === Object.prototype || proto === null;
       } // Otherwise, use internal class
@@ -927,11 +928,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var i = dabby.length;
 
       while (i--) {
-        if (!isNaN(val[i])) {
-          val[i] += "px";
-        }
-
-        dabby[i].style[key] = val[i];
+        dabby[i].style[key] = val[i] + (isNaN(val[i]) ? "" : "px");
       }
     });
     return dabby;

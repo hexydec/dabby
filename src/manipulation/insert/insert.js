@@ -11,8 +11,9 @@ $.each({
 	after: "afterEnd"
 }, (name, pos) => {
 	$.fn[name] = function (html) {
-		const pre = ["before", "prepend"].indexOf(name) > -1;
-		let arr = [];
+		let pre = ["before", "prepend"].indexOf(name) > -1,
+			arr = [],
+			i = this.length;
 
 		if ($.isFunction(html)) {
 			arr = getVal(this, html, obj => obj.innerHTML);
@@ -21,13 +22,12 @@ $.each({
 		} else {
 			const elems = $();
 			$.each(arguments, (i, arg) => elems.add(arg));
-			let i = this.length;
 			while (i--) {
 				arr[i] = i ? elems.clone() : elems;
 			}
 		}
 
-		let i = this.length;
+		i = this.length;
 		while (i--) {
 			let backwards = arr[i].length, // for counting down
 				forwards = -1; // for counting up

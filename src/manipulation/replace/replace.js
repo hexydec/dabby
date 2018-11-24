@@ -7,13 +7,12 @@ import getVal from "../../internal/getval/getval.js";
 		const all = name === "replaceAll",
 			source = all ? $(html) : this;
 		let target = all ? this : html,
-			isFunc = $.isFunction(target);
+			isFunc = $.isFunction(target),
+			i = source.length;
 
 		if (!isFunc) {
 			target = $(target);
 		}
-
-		let i = source.length;
 
 		while (i--) {
 			let n = target.length,

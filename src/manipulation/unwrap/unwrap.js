@@ -5,12 +5,10 @@ import "../../core/each/each.js";
 
 $.fn.unwrap = function (selector) {
 	this.parent(selector).not("body").each((key, obj) => {
-		const parent = obj.parentNode;
-
 		$(obj.children).each((i, node) => {
-			parent.insertBefore(node, obj);
+			obj.parentNode.insertBefore(node, obj);
 		});
-		parent.removeChild(obj);
+		obj.parentNode.removeChild(obj);
 	});
 	return this;
 };

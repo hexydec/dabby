@@ -13,19 +13,17 @@ $.extend = (...arrs) => {
 				if ($.isPlainObject(target) && $.isPlainObject(source)) {
 
 					// loop through each property
-					const keys = Object.keys(source),
-						len = keys.length;
-					for (let i = 0; i < len; i++) {
+					$.each(source, (i, val) => {
 
 						// merge recursively if source is object, if target is not object, overwrite
-						if ($.isPlainObject(source[keys[i]])) {
-							target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]];
+						if ($.isPlainObject(val)) {
+							target[i] = $.isPlainObject(target[i]) ? merge(target[i], val) : val;
 
 						// when source property is value just overwrite
 						} else {
-							target[keys[i]] = source[keys[i]];
+							target[i] = val;
 						}
-					}
+					});
 				}
 
 				// merge next source

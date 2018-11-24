@@ -174,7 +174,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // Basic check for Type object that's not null
     if (_typeof(obj) === "object" && obj !== null) {
       // If Object.getPrototypeOf supported, use it
-      if (typeof Object.getPrototypeOf == 'function') {
+      if (typeof Object.getPrototypeOf === 'function') {
         var proto = Object.getPrototypeOf(obj);
         return proto === Object.prototype || proto === null;
       } // Otherwise, use internal class
@@ -206,17 +206,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
           if ($.isPlainObject(target) && $.isPlainObject(source)) {
             // loop through each property
-            var keys = Object.keys(source),
-                len = keys.length;
-
-            for (var i = 0; i < len; i++) {
+            $.each(source, function (i, val) {
               // merge recursively if source is object, if target is not object, overwrite
-              if ($.isPlainObject(source[keys[i]])) {
-                target[keys[i]] = $.isPlainObject(target[keys[i]]) ? merge(target[keys[i]], source[keys[i]]) : source[keys[i]]; // when source property is value just overwrite
+              if ($.isPlainObject(val)) {
+                target[i] = $.isPlainObject(target[i]) ? merge(target[i], val) : val; // when source property is value just overwrite
               } else {
-                target[keys[i]] = source[keys[i]];
+                target[i] = val;
               }
-            }
+            });
           } // merge next source
 
 
@@ -439,7 +436,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (typeof context === "boolean") {
       not = context;
       context = null;
-    } // function
+    } // custom filter function
 
 
     if ($.isFunction(filter)) {
@@ -450,7 +447,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         filter = [filter];
       } else {
         filter = Array.from($(filter, context));
-      } // filter function
+      } // default filter function
 
 
       func = function func(n, node) {
@@ -467,7 +464,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     return nodes.filter(function (item, i) {
-      return func.call(item, i, item) !== Boolean(not);
+      return func.call(item, i, item) === !not;
     }, nodes);
   };
 
@@ -539,20 +536,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.map = function (obj, callback) {
-    var keys = Object.keys(obj),
-        len = keys.length;
-    var arr = [],
-        i = 0,
-        result;
-
-    for (; i < len; i++) {
-      result = callback.call(window, obj[keys[i]], keys[i]);
+    var arr = [];
+    $.each(obj, function (i, item) {
+      var result = callback.call(window, item, i);
 
       if (![null, undefined].indexOf(result) > -1) {
         arr.push(result);
       }
-    }
-
+    });
     return arr;
   };
 
@@ -688,11 +679,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
       }
 
-      if (selector) {
-        nodes = filterNodes(nodes, selector);
-      }
-
-      return $(nodes);
+      return $(selector ? filterNodes(nodes, selector) : nodes);
     };
   });
 
@@ -703,8 +690,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   ["on", "one"].forEach(function (name) {
     $.fn[name] = function (events, selector, data, callback) {
-      var i = this.length;
-      events = events.split(" "); // sort out args
+      // sort out args
+      events = events.split(" ");
 
       if ($.isFunction(selector)) {
         callback = selector;
@@ -714,6 +701,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         data = undefined;
       } // attach event
 
+
+      var i = this.length;
 
       while (i--) {
         var e = events.length; // record the original function
@@ -732,10 +721,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
 
           if (target) {
-            if (data) {
-              // set data to event object
-              evt.data = data;
-            }
+            evt.data = data; // set data to event object
 
             for (var _i = 0, len = target.length; _i < len; _i++) {
               if (callback.call(target[_i], evt, evt.args) === false) {
@@ -840,10 +826,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   var camelise = function camelise(prop) {
-    return prop.replace(/-([a-z])/gi, function (text, letter) {
+    return prop.replace(/-([\w])/g, function (text, letter) {
       return letter.toUpperCase();
     });
-  };
+  }; // matches underscore too but you shouldn't do that anyway
+
 
   var setCss = function setCss(dabby, props, value) {
     // normalise props
@@ -865,11 +852,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var i = dabby.length;
 
       while (i--) {
-        if (!isNaN(val[i])) {
-          val[i] += "px";
-        }
-
-        dabby[i].style[key] = val[i];
+        dabby[i].style[key] = val[i] + (isNaN(val[i]) ? "" : "px");
       }
     });
     return dabby;
@@ -1060,8 +1043,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   $.fn.map = function (callback) {
-    var len = this.length;
-    var values = [],
+    var len = this.length,
+        values = [],
         i = 0;
 
     for (; i < len; i++) {
@@ -1112,31 +1095,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           $.each(values[i], function (key, val) {
             return _this6[i].style[key] = val + (isNaN(val) ? "" : "px");
           });
-        } // if coords is callback, generate value
-
-        /*rect = this[i].getBoundingClientRect();
-        const itemCoords = Object.create(values[i]); // copy the object
-        		if (itemCoords.top !== undefined && itemCoords.left !== undefined) {
-        	let style = getComputedStyle(this[i]);
-        	pos = style.position;
-        			// set position relative if static
-        	if (pos === "static") {
-        		this[i].style.position = "relative";
-        	}
-        			// add current offset
-        	itemCoords.top += parseFloat(style.top) || 0;
-        	itemCoords.left += parseFloat(style.left) || 0;
-        			// remove parent offset and viewport scroll
-        	if (pos !== "fixed") {
-        		itemCoords.top -= doc.scrollTop + rect.top;
-        		itemCoords.left -= doc.scrollLeft + rect.left;
-        	}
-        			// set offset
-        	this[i].style.top = itemCoords.top + "px";
-        	this[i].style.left = itemCoords.left + "px";
-        }*/
-        //}
-
+        }
 
         return {
           v: _this6
@@ -1173,10 +1132,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   ["scrollLeft", "scrollTop"].forEach(function (item) {
     $.fn[item] = function (pos) {
-      // set
+      var top = item === "scrollTop"; // set
+
       if (pos !== undefined) {
         var i = this.length,
-            tl = item.indexOf("Top") > -1 ? "top" : "left",
+            tl = top ? "top" : "left",
             values = getVal(this, pos, function (obj) {
           return obj[item];
         });
@@ -1197,7 +1157,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (this[0]) {
         if ($.isWindow(this[0])) {
-          item = item === "scrollTop" ? "pageYOffset" : "pageXOffset";
+          item = top ? "pageYOffset" : "pageXOffset";
         }
 
         return this[0][item];
@@ -1208,39 +1168,37 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $.fn[dim] = function (val) {
       var _this7 = this;
 
-      var valtype = _typeof(val),
-          wh = dim.toLowerCase().indexOf("width") > -1 ? "width" : "height",
+      var width = dim.indexOf("d") > -1,
+          wh = width ? "width" : "height",
           // width or height
+      whu = width ? "Width" : "Height",
+          // with uppercase letter
       io = dim.indexOf("inner") > -1 ? "inner" : dim.indexOf("outer") > -1 ? "outer" : "",
           // inner outer or neither
-      first = wh === "width" ? "Left" : "Top",
-          // first dimension
-      second = wh === "width" ? "Right" : "Bottom"; // second dimension
+      pos = [width ? "Left" : "Top", // first dimension
+      width ? "Right" : "Bottom" // second dimension
+      ]; // set value
 
-
-      var i = this.length,
-          value,
-          props,
-          style; // set value
-
-      if (val !== undefined && valtype !== "boolean") {
+      if (val !== undefined && typeof val !== "boolean") {
         var _ret4 = function () {
           var values = getVal(_this7, val, function (obj) {
             return obj[dim];
-          });
+          }),
+              i = _this7.length,
+              props = [],
+              style;
 
           while (i--) {
             // add additional lengths
             if (io) {
               // fetch current style and build properties
-              style = getComputedStyle(_this7[i]);
-              props = ["padding" + first, "padding" + second];
+              pos.forEach(function (item) {
+                props.push("padding" + item);
 
-              if (io === "outer") {
-                props.push("border" + first + "Width");
-                props.push("border" + second + "Width");
-              } // set width to convert to a px value
-
+                if (io === "outer") {
+                  props.push("border" + item + "Width");
+                }
+              }); // set width to convert to a px value
 
               if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
                 _this7[i].style[wh] = values[i];
@@ -1249,6 +1207,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               } // add values
 
 
+              style = getComputedStyle(_this7[i]);
               props.forEach(function (val) {
                 return values[i] -= parseFloat(style[val]);
               });
@@ -1267,23 +1226,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
       if (this[0]) {
-        var whu = wh === "width" ? "Width" : "Height",
-            param; // document
-
+        // document
         if (this[0].nodeType === Node.DOCUMENT_NODE) {
           return this[0].documentElement["scroll" + whu];
         } // element
 
 
         if (!$.isWindow(this[0])) {
-          value = this[0][(io === "outer" ? "offset" : "client") + whu]; // add padding on, or if outer and margins requested, add margins on
+          var value = this[0][(io === "outer" ? "offset" : "client") + whu]; // add padding on, or if outer and margins requested, add margins on
 
           if (io === "" || io === "outer" && val === true) {
-            style = getComputedStyle(this[0]);
-            param = io ? "margin" : "padding";
-            props = [param + first, param + second];
-            props.forEach(function (val) {
-              return value += parseFloat(style[val]) * (io ? 1 : -1);
+            var style = getComputedStyle(this[0]);
+            pos.forEach(function (item) {
+              return value += parseFloat(style[(io ? "margin" : "padding") + item]) * (io ? 1 : -1);
             });
           }
 
@@ -1301,20 +1256,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
 
   $.fn.trigger = function (name, data) {
-    var evt = new CustomEvent(name, {
-      bubbles: true,
-      cancelable: true
-    });
-    var i = this.length; // copy extra data to event object
-
-    if (data) {
-      evt.args = data;
-    }
+    var i = this.length;
 
     while (i--) {
       if ($.isFunction(this[i][name])) {
         this[i][name]();
       } else {
+        var evt = new CustomEvent(name, {
+          bubbles: true,
+          cancelable: true
+        });
+        evt.args = data;
         this[i].dispatchEvent(evt);
       }
     }
@@ -1331,8 +1283,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   $.fn.off = function (events, selector, data, callback) {
     var _this8 = this;
 
-    var i = this.length;
-    events = events.split(" "); // sort out args
+    // sort out args
+    events = events.split(" ");
 
     if ($.isFunction(selector)) {
       callback = selector;
@@ -1342,6 +1294,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       data = undefined;
     } // attach event
 
+
+    var i = this.length;
 
     while (i--) {
       // find the original function
@@ -1426,8 +1380,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     after: "afterEnd"
   }, function (name, pos) {
     $.fn[name] = function (html) {
-      var pre = ["before", "prepend"].indexOf(name) > -1;
-      var arr = [];
+      var pre = ["before", "prepend"].indexOf(name) > -1,
+          arr = [],
+          i = this.length;
 
       if ($.isFunction(html)) {
         arr = getVal(this, html, function (obj) {
@@ -1438,14 +1393,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         $.each(arguments, function (i, arg) {
           return elems.add(arg);
         });
-        var _i2 = this.length;
 
-        while (_i2--) {
-          arr[_i2] = _i2 ? elems.clone() : elems;
+        while (i--) {
+          arr[i] = i ? elems.clone() : elems;
         }
       }
 
-      var i = this.length;
+      i = this.length;
 
       while (i--) {
         var backwards = arr[i].length,
@@ -1498,13 +1452,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var all = name === "replaceAll",
           source = all ? $(html) : this;
       var target = all ? this : html,
-          isFunc = $.isFunction(target);
+          isFunc = $.isFunction(target),
+          i = source.length;
 
       if (!isFunc) {
         target = $(target);
       }
-
-      var i = source.length;
 
       while (i--) {
         var n = target.length,
@@ -1531,15 +1484,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   $.fn.text = function (text) {
     var i = this.length,
-        output = [];
+        output = []; // set
 
-    if (text === undefined) {
-      while (i--) {
-        output[i] = this[i].textContent;
-      }
-
-      return output.join(" ");
-    } else {
+    if (text !== undefined) {
       var values = getVal(this, text, function (obj) {
         return obj.textContent;
       });
@@ -1549,16 +1496,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
 
       return this;
+    } // get
+
+
+    while (i--) {
+      output[i] = this[i].textContent;
     }
+
+    return output.join(" ");
   };
 
   $.fn.unwrap = function (selector) {
     this.parent(selector).not("body").each(function (key, obj) {
-      var parent = obj.parentNode;
       $(obj.children).each(function (i, node) {
-        parent.insertBefore(node, obj);
+        obj.parentNode.insertBefore(node, obj);
       });
-      parent.removeChild(obj);
+      obj.parentNode.removeChild(obj);
     });
     return this;
   };
@@ -1572,7 +1525,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       var len = this.length,
           i = 0,
-          node = $(html).get(0).cloneNode(true); // insert clone into parent
+          node = $(html)[0].cloneNode(true); // insert clone into parent
 
       this[0].parentNode.insertBefore(node, null); // find innermost child of node
 
@@ -1609,11 +1562,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     } // filter nodes by selector
 
 
-    if (selector) {
-      nodes = filterNodes(nodes, selector);
-    }
-
-    return $(nodes);
+    return $(selector ? filterNodes(nodes, selector) : nodes);
   };
 
   $.fn.closest = function (selector, context) {
@@ -1642,8 +1591,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.eq = function (i) {
-    var key = i < 0 ? i + this.length : i;
-    return $(this[key] || null);
+    return $(this[i < 0 ? i + this.length : i]);
   };
 
   $.fn.find = function (selector) {
@@ -1661,18 +1609,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   $.fn.index = function (selector) {
-    var index = -1;
-
     if (this[0]) {
       var nodes,
           subject = this[0],
-          type = _typeof(selector),
           i; // if no selector, match against first elements siblings
 
-
-      if (type === "undefined") {
+      if (selector === undefined) {
         nodes = this[0].parentNode.children; // if selector is string, match first node in current collection against resulting collection
-      } else if (type === "string") {
+      } else if (typeof selector === "string") {
         nodes = $(selector); // if element or collection match the element or first node against current collection
       } else {
         nodes = this;
@@ -1688,7 +1632,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
     }
 
-    return index;
+    return -1;
   };
 
   $.fn.last = function () {
@@ -1697,9 +1641,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
     $.fn[func] = function (selector, filter) {
-      var next = func.indexOf("next") > -1,
-          all = func.indexOf("All") > -1,
-          until = func.indexOf("Until") > -1,
+      var next = func.indexOf("x") > -1,
+          all = func.indexOf("A") > -1,
+          until = func.indexOf("U") > -1,
           method = next ? "nextElementSibling" : "previousElementSibling";
       var nodes = [],
           i = this.length,
@@ -1722,15 +1666,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (until) {
         selector = filter;
-      } // filter siblings by selector
-
-
-      if (selector) {
-        nodes = filterNodes(nodes, selector);
       } // return new collection
 
 
-      return $(nodes);
+      return $(selector ? filterNodes(nodes, selector) : nodes);
     };
   });
 
