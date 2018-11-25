@@ -540,8 +540,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $.each(obj, function (i, item) {
       var result = callback.call(window, item, i);
 
-      if (![null, undefined].indexOf(result) > -1) {
-        arr.push(result);
+      if ([null, undefined].indexOf(result) === -1) {
+        arr = arr.concat(Array.isArray(result) ? result : [result]);
       }
     });
     return arr;

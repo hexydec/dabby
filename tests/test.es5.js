@@ -1302,14 +1302,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     test.innerHTML = "";
   });
   QUnit.module("Utils");
-  QUnit.test("$.fn.each", function (assert) {
-    var main = document.getElementsByClassName("main")[0],
-        h1 = document.getElementsByClassName("heading")[0],
-        output = [];
-    $(".main, .heading").each(function () {
-      output.push(this.tagName.toLowerCase());
+  QUnit.test("$.each", function (assert) {
+    var arr = [1, 2, 3, 4],
+        obj = {
+      no1: 1,
+      no2: 2,
+      no3: 3,
+      no4: 4
+    },
+        output = [],
+        result = [2, 4, 6, 8]; // test array
+
+    $.each(arr, function (i, item) {
+      output.push(item * 2);
     });
-    assert.deepEqual(output, ["div", "h1"]);
+    assert.deepEqual(result, output, "Can run a function on an array"); // test array
+
+    output = [];
+    $.each(obj, function (i, item) {
+      output.push(item * 2);
+    });
+    assert.deepEqual(result, output, "Can run a function on an object");
   });
   QUnit.module("Utils");
   QUnit.test("$.extend", function (assert) {
@@ -1417,20 +1430,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
   QUnit.module("Utils");
   QUnit.test("$.map", function (assert) {
-    var arr = ["foo", "bar"],
-        output = [],
+    var arr = ["foo", "bar", ["foo2", "bar2"]],
         obj = {
       foo: "foo",
-      bar: "bar"
-    };
+      bar: "bar",
+      arr: ["foo2", "bar2"]
+    },
+        result = ["foo", "bar", "foo2", "bar2"],
+        output = [];
     output = $.map(arr, function (item) {
       return item;
     });
-    assert.deepEqual(arr, output, "$.map array");
+    assert.deepEqual(result, output, "$.map array");
     output = $.map(obj, function (item, index) {
       return item;
     });
-    assert.deepEqual(arr, output, "$.map object");
+    assert.deepEqual(result, output, "$.map object");
   }); // ajax
   // attributes
   //import "./attributes/removeprop/test.js";
