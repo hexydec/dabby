@@ -799,11 +799,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   $$1.fn = $$1.prototype;
 
   $$1.each = function (obj, callback) {
-    var keys = Object.keys(obj),
+    var isArr = Array.isArray(obj),
+        keys = Object.keys(obj),
         len = keys.length;
 
     for (var i = 0; i < len; i++) {
-      if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
+      if (callback.call(obj[keys[i]], isArr ? parseInt(keys[i]) : keys[i], obj[keys[i]]) === false) {
         break; // stop if callback returns false
       }
     }
@@ -1325,18 +1326,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       no4: 4
     },
         output = [],
-        result = [2, 4, 6, 8]; // test array
-
-    $.each(arr, function (i, item) {
-      output.push(item * 2);
-    });
-    assert.deepEqual(result, output, "Can run a function on an array"); // test array
+        result = [2, 4, 6, 8],
+        numeric = true; // test object
 
     output = [];
     $.each(obj, function (i, item) {
       output.push(item * 2);
     });
-    assert.deepEqual(result, output, "Can run a function on an object");
+    assert.deepEqual(result, output, "Can run a function on an object"); // test array
+
+    $.each(arr, function (i, item) {
+      output.push(item * 2);
+
+      if (typeof i !== "int") {
+        numeric = false;
+      }
+    });
+    assert.deepEqual(result, output, "Can run a function on an array");
+    assert.deepEqual(numeric, true, "Keys returned from array are numeric");
   });
   QUnit.module("Utils");
   QUnit.test("$.extend", function (assert) {

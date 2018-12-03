@@ -144,11 +144,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   $.fn = $.prototype;
 
   $.each = function (obj, callback) {
-    var keys = Object.keys(obj),
+    var isArr = Array.isArray(obj),
+        keys = Object.keys(obj),
         len = keys.length;
 
     for (var i = 0; i < len; i++) {
-      if (callback.call(obj[keys[i]], keys[i], obj[keys[i]]) === false) {
+      if (callback.call(obj[keys[i]], isArr ? parseInt(keys[i]) : keys[i], obj[keys[i]]) === false) {
         break; // stop if callback returns false
       }
     }
