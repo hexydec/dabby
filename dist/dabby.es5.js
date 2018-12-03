@@ -810,24 +810,29 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  ["addClass", "removeClass", "toggleClass"].forEach(function (name) {
-    $.fn[name] = function (cls) {
-      // remove "Class" from name for classList method
-      var func = name.substr(0, name.length - 5),
-          i = this.length,
+  var funcs = [];
+  ["removeClass", "addClass", "toggleClass"].forEach(function (func, f) {
+    // remove "Class" from name for classList method and remember
+    funcs.push(func.substr(0, func.length - 5)); // create function
+
+    $.fn[funcs[f]] = function (cls, state) {
+      var i = this.length,
           values = getVal(this, cls, function (obj) {
         return obj.className;
-      }); // manage classes on nodes
+      });
+
+      if (typeof state === "boolean") {
+        n = parseInt(state);
+      } // manage classes on nodes
+
 
       while (i--) {
         if (typeof values[i] === "string") {
           values[i] = values[i].split(" ");
         }
 
-        var len = values[i].length;
-
-        for (var n = 0; n < len; n++) {
-          this[i].classList[func](values[i][n]);
+        for (var _n = 0, len = values[i].length; _n < len; _n++) {
+          this[i].classList[funcs[f]](values[i][_n]);
         }
       }
 
@@ -1470,13 +1475,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
 
       while (i--) {
-        var n = target.length,
+        var _n2 = target.length,
             parent = source[i].parentNode;
 
-        while (n--) {
-          var replace = isFunc ? getVal(target[n], n, target[n]) : target[n];
+        while (_n2--) {
+          var replace = isFunc ? getVal(target[_n2], _n2, target[_n2]) : target[_n2];
 
-          if (n) {
+          if (_n2) {
             source[i].insertAdjacentElement("beforebegin", replace.cloneNode(true));
           } else {
             source[i] = parent.replaceChild(i ? replace.cloneNode(true) : replace, source[i]);

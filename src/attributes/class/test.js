@@ -53,6 +53,14 @@ QUnit.test("$.toggleClass", function (assert) {
 	main.toggleClass("test2 test3");
 	assert.equal(rmain.className, "testtemp test2 test3", "Can toggle multiple classes on");
 
+	// test state var
+	main.toggleClass("test2 test3 test4", true);
+	assert.equal(rmain.className, "testtemp test2 test3 test4", "Can toggle multiple classes on through state");
+	main.toggleClass("test5 test3 test4", false);
+	assert.equal(rmain.className, "testtemp test2", "Can toggle multiple classes off through state");
+	main.toggleClass("test3", 0);
+	assert.equal(rmain.className, "testtemp test2 test3", "Falsey value don't trigger specification of state");
+
 	// reset
 	test.innerHTML = "";
 });

@@ -258,7 +258,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     main.toggleClass("test1");
     assert.equal(rmain.className, "testtemp", "Can toggle class off");
     main.toggleClass("test2 test3");
-    assert.equal(rmain.className, "testtemp test2 test3", "Can toggle multiple classes on"); // reset
+    assert.equal(rmain.className, "testtemp test2 test3", "Can toggle multiple classes on"); // test state var
+
+    main.toggleClass("test2 test3 test4", true);
+    assert.equal(rmain.className, "testtemp test2 test3 test4", "Can toggle multiple classes on through state");
+    main.toggleClass("test5 test3 test4", false);
+    assert.equal(rmain.className, "testtemp test2", "Can toggle multiple classes off through state");
+    main.toggleClass("test3", 0);
+    assert.equal(rmain.className, "testtemp test2 test3", "Falsey value don't trigger specification of state"); // reset
 
     test.innerHTML = "";
   });
@@ -1329,16 +1336,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         result = [2, 4, 6, 8],
         numeric = true; // test object
 
-    output = [];
     $.each(obj, function (i, item) {
       output.push(item * 2);
     });
     assert.deepEqual(result, output, "Can run a function on an object"); // test array
 
+    output = [];
     $.each(arr, function (i, item) {
       output.push(item * 2);
 
-      if (typeof i !== "int") {
+      if (typeof i !== "number") {
         numeric = false;
       }
     });

@@ -10,16 +10,16 @@ QUnit.test("$.each", function (assert) {
 		numeric = true;
 
 	// test object
-	output = [];
 	$.each(obj, function (i, item) {
 		output.push(item * 2);
 	});
 	assert.deepEqual(result, output, "Can run a function on an object");
 
 	// test array
+	output = [];
 	$.each(arr, function (i, item) {
 		output.push(item * 2);
-		if (typeof i !== "int") {
+		if (typeof i !== "number") {
 			numeric = false;
 		}
 	});

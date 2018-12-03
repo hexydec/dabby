@@ -11,9 +11,9 @@ $(selector).addClass(function (index, currentClassName));
 $(selector).removeClass(className);
 $(selector).removeClass(classArray);
 $(selector).removeClass(function (index, currentClassName));
-$(selector).toggleClass(className);
-$(selector).toggleClass(classArray);
-$(selector).toggleClass(function (index, currentClassName));
+$(selector).toggleClass(className, state);
+$(selector).toggleClass(classArray, state);
+$(selector).toggleClass(function (index, currentClassName), state);
 ```
 
 #### className
@@ -27,6 +27,10 @@ An array of class names.
 #### function (index, currentClassName)
 
 A function that receives the index of the current item and the current class name(s) as a string, and returns either a space separated list of class names, or an array.
+
+#### state
+
+A boolean to force the toggle state on or off, or anything else to ignore
 
 ## Returns
 
