@@ -638,12 +638,10 @@ var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unloa
 
 $.fn.attr = function (prop, value) {
 	let isObj = typeof prop !== "string",
-		i,
 		obj = {};
 
 	// set properties
-	if (isObj || value || value === null) {
-		i = this.length;
+	if (isObj || value !== undefined) {
 
 		// normalise to object
 		if (!isObj) {
@@ -651,27 +649,36 @@ $.fn.attr = function (prop, value) {
 			prop = obj;
 		}
 
-		while (i--) {
-			$.each(prop, (key, val) => {
-				if (events.indexOf(key) > -1) {
-					$(this[i]).on(key, val);
-				} else if (key === "style") {
-					this[i].style.cssText = val;
-				} else if (key === "class") {
-					this[i].className = val;
-				} else if (key === "text") {
-					this[i].textContent = val;
-				} else if (value === null) {
-					this[i].removeAttribute(key);
-				} else {
-					this[i].setAttribute(key, val);
+		$.each(prop, (key, val) => {
+
+			// if event, hand it off to $.fn.on()
+			if (events.indexOf(key) > -1) {
+				this.on(key, val);
+
+			// process other values
+			} else {
+				let i = this.length,
+					values = getVal(this, val, obj => $(obj).attr(key));
+				while (i--) {
+					if (key === "style") {
+						this[i].style.cssText = values[i];
+					} else if (key === "class") {
+						this[i].className = values[i];
+					} else if (key === "text") {
+						this[i].textContent = values[i];
+					} else if (values[i] === null) {
+						this[i].removeAttribute(key);
+					} else {
+						this[i].setAttribute(key, values[i]);
+					}
 				}
-			});
-		}
+			}
+		});
 		return this;
+	}
 
 	// retrieve properties
-	} else if (this[0]) {
+	if (this[0]) {
 		if (prop === "style") {
 			return this[0].style.cssText;
 		}

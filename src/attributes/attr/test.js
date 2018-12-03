@@ -7,7 +7,8 @@ QUnit.test("$.fn.attr", function (assert) {
 	test.innerHTML = '<div class="testtemp"></div>';
 	var main = $(".testtemp"),
 		rmain = document.getElementsByClassName("testtemp")[0],
-		style = "padding-top: 10px;";
+		style = "padding-top: 10px;",
+		correct = true;
 
 	// set and get class
 	assert.deepEqual(main.attr("class", "testtemp testclass"), main, "Returns itself when setting class");
@@ -27,6 +28,18 @@ QUnit.test("$.fn.attr", function (assert) {
 	assert.equal(main.attr("itemprop"), "articleBody", "Can retrieve property");
 	main.attr("itemprop", null);
 	assert.equal(main.attr("itemprop"), undefined, "Can remove property");
+
+	// set attributes using a callback
+	test.innerHTML = '<div class="testtemp"></div><div class="testtemp"></div><div class="testtemp"></div>';
+	main = $(".testtemp");
+	assert.deepEqual(main.attr("data-test", function (i, el) {return "test-"+i;}), main, "Returns itself when setting attribute using callback");
+	main.each(function (i) {
+		if (this.getAttribute("data-test") !== "test-"+i) {
+			correct = false;
+			return false;
+		}
+	});
+	assert.equal(correct, true, "Can set property with callback");
 
 	// reset
 	test.innerHTML = "";

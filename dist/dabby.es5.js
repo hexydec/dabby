@@ -757,37 +757,46 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var _this3 = this;
 
     var isObj = typeof prop !== "string",
-        i,
         obj = {}; // set properties
 
-    if (isObj || value || value === null) {
-      i = this.length; // normalise to object
-
+    if (isObj || value !== undefined) {
+      // normalise to object
       if (!isObj) {
         obj[prop] = value;
         prop = obj;
       }
 
-      while (i--) {
-        $.each(prop, function (key, val) {
-          if (events.indexOf(key) > -1) {
-            $(_this3[i]).on(key, val);
-          } else if (key === "style") {
-            _this3[i].style.cssText = val;
-          } else if (key === "class") {
-            _this3[i].className = val;
-          } else if (key === "text") {
-            _this3[i].textContent = val;
-          } else if (value === null) {
-            _this3[i].removeAttribute(key);
-          } else {
-            _this3[i].setAttribute(key, val);
-          }
-        });
-      }
+      $.each(prop, function (key, val) {
+        // if event, hand it off to $.fn.on()
+        if (events.indexOf(key) > -1) {
+          _this3.on(key, val); // process other values
 
-      return this; // retrieve properties
-    } else if (this[0]) {
+        } else {
+          var i = _this3.length,
+              values = getVal(_this3, val, function (obj) {
+            return $(obj).attr(key);
+          });
+
+          while (i--) {
+            if (key === "style") {
+              _this3[i].style.cssText = values[i];
+            } else if (key === "class") {
+              _this3[i].className = values[i];
+            } else if (key === "text") {
+              _this3[i].textContent = values[i];
+            } else if (values[i] === null) {
+              _this3[i].removeAttribute(key);
+            } else {
+              _this3[i].setAttribute(key, values[i]);
+            }
+          }
+        }
+      });
+      return this;
+    } // retrieve properties
+
+
+    if (this[0]) {
       if (prop === "style") {
         return this[0].style.cssText;
       }
