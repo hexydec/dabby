@@ -822,7 +822,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }),
           key = f;
 
-      if (f === 2 && typeof state === "boolean") {
+      if (func === "toggleClass" && typeof state === "boolean") {
         key = 0 + state;
       } // manage classes on nodes
 
@@ -1011,7 +1011,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       } // retrieve values
 
 
-      var values = [];
+      var values = {};
       $.each(prop, function (key, val) {
         values[getProp(key)] = getVal(_this5, val, function (obj) {
           return obj[key];

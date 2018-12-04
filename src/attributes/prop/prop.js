@@ -17,7 +17,7 @@ $.fn.prop = function (prop, value) {
 		}
 
 		// retrieve values
-		let values = [];
+		let values = {};
 		$.each(prop, (key, val) => {
 			values[getProp(key)] = getVal(this, val, obj => obj[key]);
 		});

@@ -358,6 +358,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       checked: "checked"
     });
     assert.equal(obj.prop("checked"), true, "Can read boolean property");
+    obj.prop("checked", "");
+    assert.equal(obj.get(0).checked, false, "Can remove value from property");
     assert.equal(obj.prop("title"), "", "Unset property returns undefined");
   });
   QUnit.module("Attributes");

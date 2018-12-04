@@ -702,7 +702,7 @@ const funcs = [];
 			values = getVal(this, cls, obj => obj.className),
 			key = f;
 
-		if (f === 2 && typeof state === "boolean") {
+		if (func === "toggleClass" && typeof state === "boolean") {
 			key = 0 + state;
 		}
 
@@ -868,7 +868,7 @@ $.fn.prop = function (prop, value) {
 		}
 
 		// retrieve values
-		let values = [];
+		let values = {};
 		$.each(prop, (key, val) => {
 			values[getProp(key)] = getVal(this, val, obj => obj[key]);
 		});

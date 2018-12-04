@@ -13,7 +13,7 @@ const funcs = [];
 			values = getVal(this, cls, obj => obj.className),
 			key = f;
 
-		if (f === 2 && typeof state === "boolean") {
+		if (func === "toggleClass" && typeof state === "boolean") {
 			key = 0 + state;
 		}
 

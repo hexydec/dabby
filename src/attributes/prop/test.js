@@ -13,5 +13,7 @@ QUnit.test("$.fn.prop", function (assert) {
 	var obj = $("<input>", {type: "checkbox", name: "foo", value: "bar", checked: "checked"});
 
 	assert.equal(obj.prop("checked"), true, "Can read boolean property");
+	obj.prop("checked", "");
+	assert.equal(obj.get(0).checked, false, "Can remove value from property");
 	assert.equal(obj.prop("title"), "", "Unset property returns undefined");
 });
