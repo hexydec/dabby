@@ -2,6 +2,7 @@ import $ from "../../core/core.js";
 import "../../utils/each/each.js";
 import "../../utils/isfunction/isfunction.js";
 import "../../traversal/add/add.js";
+import "../clone/clone.js";
 import getVal from "../../internal/getval/getval.js";
 
 $.each({
