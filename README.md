@@ -4,8 +4,8 @@ A lightweight modular jQuery clone/alternative library built for modern browsers
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-16.4kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-6.00kb-brightgreen.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-16.6kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-6.07kb-brightgreen.svg)
 
 **This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
 
@@ -60,7 +60,7 @@ Dabby.js compiles to both ES6 and ES5 bundles, to support all browsers, include 
 
 Dabby.js is billed as a jQuery clone library, and as such tries to implement as much of the jQuery API as is feasible without getting away from being fast, small, and letting the browser do most of the work.
 
-[See the API documentation here](docs/api.md).
+[See the API documentation here](src/).
 
 ## Custom Builds
 
