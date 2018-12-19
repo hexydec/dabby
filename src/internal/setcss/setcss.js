@@ -22,7 +22,7 @@ export default (dabby, props, value) => {
 	$.each(values, (key, val) => {
 		let i = dabby.length;
 		while (i--) {
-			dabby[i].style[key] = val[i] + (isNaN(val[i]) ? "" : "px");
+			dabby[i].style[key] = val[i] + (!val[i] || isNaN(val[i]) ? "" : "px");
 		}
 	});
 	return dabby;

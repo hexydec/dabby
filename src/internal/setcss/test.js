@@ -5,8 +5,8 @@ import setCss from "./setcss.js";
 QUnit.module("Internal");
 
 QUnit.test("setCss", function (assert) {
-	var main = $(".main"),
-		rmain = document.getElementsByClassName("main")[0],
+	var main = $(".test"),
+		rmain = document.getElementsByClassName("test")[0],
 		props = {"border-left-color": "red", "border-left-style": "solid", "border-left-width": "1px"},
 		propsCC = {borderLeftColor: "red", borderLeftStyle: "solid", borderLeftWidth: "1px"},
 		output = {
@@ -32,4 +32,6 @@ QUnit.test("setCss", function (assert) {
 		return "green";
 	});
 	assert.equal(rmain.style.borderLeftColor, "green", "Can set CSS property through a callback function");
+	setCss(main, {borderLeftColor: "", borderLeftStyle: "", borderLeftWidth: ""});
+	assert.equal(rmain.style.cssText, "", "Can remove CSS properties");
 });

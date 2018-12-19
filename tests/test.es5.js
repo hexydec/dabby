@@ -993,7 +993,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var i = dabby.length;
 
       while (i--) {
-        dabby[i].style[key] = val[i] + (isNaN(val[i]) ? "" : "px");
+        dabby[i].style[key] = val[i] + (!val[i] || isNaN(val[i]) ? "" : "px");
       }
     });
     return dabby;
@@ -1001,8 +1001,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   QUnit.module("Internal");
   QUnit.test("setCss", function (assert) {
-    var main = $(".main"),
-        rmain = document.getElementsByClassName("main")[0],
+    var main = $(".test"),
+        rmain = document.getElementsByClassName("test")[0],
         props = {
       "border-left-color": "red",
       "border-left-style": "solid",
@@ -1035,6 +1035,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       return "green";
     });
     assert.equal(rmain.style.borderLeftColor, "green", "Can set CSS property through a callback function");
+    setCss(main, {
+      borderLeftColor: "",
+      borderLeftStyle: "",
+      borderLeftWidth: ""
+    });
+    assert.equal(rmain.style.cssText, "", "Can remove CSS properties");
   });
   QUnit.module("Manipulation");
   QUnit.test("$.fn.clone", function (assert) {
