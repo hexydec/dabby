@@ -1275,7 +1275,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var i = this.length;
 
     while (i--) {
-      if ($.isFunction(this[i][name])) {
+      // native submit event doesn't trigger event handlers
+      if (name !== "submit" && $.isFunction(this[i][name])) {
         this[i][name]();
       } else {
         var evt = new CustomEvent(name, {
