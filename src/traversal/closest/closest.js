@@ -10,7 +10,7 @@ $.fn.closest = function (selector, context) {
 	while (i--) {
 		parents = [];
 		node = this[i];
-		while (node) {
+		while (node && node.nodeType === Node.ELEMENT_NODE) {
 			parents.push(node);
 			node = node.parentNode;
 		}

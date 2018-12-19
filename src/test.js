@@ -62,7 +62,7 @@ import "./manipulation/wrapall/test.js";
 // traversal
 import "./traversal/add/test.js";
 import "./traversal/children/test.js";
-//import "./traversal/closest/test.js";
+import "./traversal/closest/test.js";
 import "./traversal/eq/test.js";
 import "./traversal/filter/test.js";
 import "./traversal/find/test.js";
@@ -77,7 +77,6 @@ import "./traversal/siblings/test.js";
 // utilities
 import "./utils/each/test.js";
 import "./utils/extend/test.js";
-//import "./utils/isarray/test.js";
 import "./utils/isfunction/test.js";
 import "./utils/isplainobject/test.js";
 import "./utils/iswindow/test.js";

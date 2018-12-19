@@ -12,14 +12,19 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
 		while (i--) {
 			parent = this[i].parentNode;
 			while (parent && parent.nodeType === Node.ELEMENT_NODE) {
-				nodes.push(parent);
-				if (!all || (until && filterNodes(parent, selector).length)) {
+				if (until && filterNodes(parent, selector).length) {
 					break;
-				} else {
-					parent = parent.parentNode;
 				}
+				nodes.push(parent);
+				if (!all) {
+					break;
+				}
+				parent = parent.parentNode;
 			}
 		}
-		return $(selector ? filterNodes(nodes, selector) : nodes);
+		if (!until) {
+			filter = selector;
+		}
+		return $(filter ? filterNodes(nodes, filter) : nodes);
 	}
 });

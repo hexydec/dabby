@@ -175,45 +175,49 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var date = test.querySelector("input[name=datetime]").value;
     assert.equal($(".testtemp").serialize(), "input=input&number=42&email=dave%40angel.com&datetime=" + encodeURIComponent(date) + "&checkbox-checked=checked&in%5B%5D=input1&in%5B%5D=input2&in%5B%5D=input3&radio=radio2&select=select2&multiselect%5B%5D=select2&multiselect%5B%5D=select3", "Can serialize a form");
   });
-  QUnit.module("Attributes");
-  QUnit.test("$.fn.attr", function (assert) {
+  QUnit.module("Attributes", function (hooks) {
     var test = document.getElementsByClassName("test")[0];
-    test.innerHTML = '<div class="testtemp"></div>';
-    var main = $(".testtemp"),
-        rmain = document.getElementsByClassName("testtemp")[0],
-        style = "padding-top: 10px;",
-        correct = true; // set and get class
-
-    assert.deepEqual(main.attr("class", "testtemp testclass"), main, "Returns itself when setting class");
-    assert.equal(rmain.className, "testtemp testclass", "Can set class");
-    assert.equal(main.attr("class"), "testtemp testclass", "Can retrieve class");
-    main.attr("class", "testtemp");
-    assert.equal(main.attr("class"), "testtemp", "Can remove class"); // set and get style
-
-    assert.deepEqual(main.attr("style", style), main, "Returns itself when setting style");
-    assert.equal(rmain.style.cssText, style, "Can set style");
-    assert.equal(main.attr("style"), style, "Can retrieve style"); // set and get attribute
-
-    assert.deepEqual(main.attr("itemprop", "articleBody"), main, "Returns itself when setting property");
-    assert.equal(rmain.getAttribute("itemprop"), "articleBody", "Can set property");
-    assert.equal(main.attr("itemprop"), "articleBody", "Can retrieve property");
-    main.attr("itemprop", null);
-    assert.equal(main.attr("itemprop"), undefined, "Can remove property"); // set attributes using a callback
-
-    test.innerHTML = '<div class="testtemp"></div><div class="testtemp"></div><div class="testtemp"></div>';
-    main = $(".testtemp");
-    assert.deepEqual(main.attr("data-test", function (i, el) {
-      return "test-" + i;
-    }), main, "Returns itself when setting attribute using callback");
-    main.each(function (i) {
-      if (this.getAttribute("data-test") !== "test-" + i) {
-        correct = false;
-        return false;
-      }
+    hooks.before(function () {
+      test.innerHTML = '<div class="testtemp"></div>';
     });
-    assert.equal(correct, true, "Can set property with callback"); // reset
+    QUnit.test("$.fn.attr", function (assert) {
+      var main = $(".testtemp"),
+          rmain = document.getElementsByClassName("testtemp")[0],
+          style = "padding-top: 10px;",
+          correct = true; // set and get class
 
-    test.innerHTML = "";
+      assert.deepEqual(main.attr("class", "testtemp testclass"), main, "Returns itself when setting class");
+      assert.equal(rmain.className, "testtemp testclass", "Can set class");
+      assert.equal(main.attr("class"), "testtemp testclass", "Can retrieve class");
+      main.attr("class", "testtemp");
+      assert.equal(main.attr("class"), "testtemp", "Can remove class"); // set and get style
+
+      assert.deepEqual(main.attr("style", style), main, "Returns itself when setting style");
+      assert.equal(rmain.style.cssText, style, "Can set style");
+      assert.equal(main.attr("style"), style, "Can retrieve style"); // set and get attribute
+
+      assert.deepEqual(main.attr("itemprop", "articleBody"), main, "Returns itself when setting property");
+      assert.equal(rmain.getAttribute("itemprop"), "articleBody", "Can set property");
+      assert.equal(main.attr("itemprop"), "articleBody", "Can retrieve property");
+      main.attr("itemprop", null);
+      assert.equal(main.attr("itemprop"), undefined, "Can remove property"); // set attributes using a callback
+
+      test.innerHTML = '<div class="testtemp"></div><div class="testtemp"></div><div class="testtemp"></div>';
+      main = $(".testtemp");
+      assert.deepEqual(main.attr("data-test", function (i, el) {
+        return "test-" + i;
+      }), main, "Returns itself when setting attribute using callback");
+      main.each(function (i) {
+        if (this.getAttribute("data-test") !== "test-" + i) {
+          correct = false;
+          return false;
+        }
+      });
+      assert.equal(correct, true, "Can set property with callback"); // reset
+    });
+    hooks.after(function () {
+      test.innerHTML = "";
+    });
   });
   QUnit.module("Attributes");
   QUnit.test("$.fn.addClass", function (assert) {
@@ -362,45 +366,46 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     assert.equal(obj.get(0).checked, false, "Can remove value from property");
     assert.equal(obj.prop("title"), "", "Unset property returns undefined");
   });
-  QUnit.module("Attributes");
-  QUnit.test("$.fn.show", function (assert) {
-    var test = document.getElementsByClassName("test")[0],
-        obj;
-    test.innerHTML = '<div class="testtemp"><div style="display: none;"></div><div style="display: none;"></div><div style="display: none;"><div style="display: none;"></div></div><div style="display: none;"><div style="display: none;"></div></div></div>';
-    obj = $(".testtemp div");
-    assert.deepEqual(obj.show(), obj, "Returns self on set");
-    var show = 0;
-    obj.get().forEach(function (item) {
-      show += item.style.display !== "none";
+  QUnit.module("Attributes", function (hooks) {
+    QUnit.test("$.fn.show", function (assert) {
+      var test = document.getElementsByClassName("test")[0],
+          obj;
+      test.innerHTML = '<div class="testtemp"><div style="display: none;"></div><div style="display: none;"></div><div style="display: none;"><div style="display: none;"></div></div><div style="display: none;"><div style="display: none;"></div></div></div>';
+      obj = $(".testtemp div");
+      assert.deepEqual(obj.show(), obj, "Returns self on set");
+      var show = 0;
+      obj.get().forEach(function (item) {
+        show += item.style.display !== "none";
+      });
+      assert.equal(obj.length, show, "Showed the requested elements");
     });
-    assert.equal(obj.length, show, "Showed the requested elements");
-  });
-  QUnit.test("$.fn.hide", function (assert) {
-    var test = document.getElementsByClassName("test")[0],
-        obj;
-    test.innerHTML = '<div class="testtemp"><div></div><div></div><div><div></div></div><div><div></div></div></div>';
-    obj = $(".testtemp div");
-    assert.deepEqual(obj.hide(), obj, "Returns self on set");
-    var hide = 0;
-    obj.get().forEach(function (item) {
-      hide += item.style.display === "none";
+    QUnit.test("$.fn.hide", function (assert) {
+      var test = document.getElementsByClassName("test")[0],
+          obj;
+      test.innerHTML = '<div class="testtemp"><div></div><div></div><div><div></div></div><div><div></div></div></div>';
+      obj = $(".testtemp div");
+      assert.deepEqual(obj.hide(), obj, "Returns self on set");
+      var hide = 0;
+      obj.get().forEach(function (item) {
+        hide += item.style.display === "none";
+      });
+      assert.equal(obj.length, hide, "Hid the requested elements");
     });
-    assert.equal(obj.length, hide, "Hid the requested elements");
-  });
-  QUnit.test("$.fn.toggle", function (assert) {
-    var test = document.getElementsByClassName("test")[0],
-        obj;
-    test.innerHTML = '<div class="testtemp"><div style="display: none;"></div><div style="display: inline-block;"></div><div style="display: flex;"><div></div></div><div style="display: none;"><div style="display: none;"></div></div></div>';
-    obj = $(".testtemp div");
-    assert.deepEqual(obj.toggle(), obj, "Returns self on set");
-    var show = 0,
-        hide = 0;
-    obj.get().forEach(function (item) {
-      hide += item.style.display === "none";
-      show += item.style.display !== "none";
+    QUnit.test("$.fn.toggle", function (assert) {
+      var test = document.getElementsByClassName("test")[0],
+          obj;
+      test.innerHTML = '<div class="testtemp"><div style="display: none;"></div><div style="display: inline-block;"></div><div style="display: flex;"><div></div></div><div style="display: none;"><div style="display: none;"></div></div></div>';
+      obj = $(".testtemp div");
+      assert.deepEqual(obj.toggle(), obj, "Returns self on set");
+      var show = 0,
+          hide = 0;
+      obj.get().forEach(function (item) {
+        hide += item.style.display === "none";
+        show += item.style.display !== "none";
+      });
+      assert.equal(3, show, "Showed the requested elements");
+      assert.equal(3, hide, "Hid the requested elements");
     });
-    assert.equal(3, show, "Showed the requested elements");
-    assert.equal(3, hide, "Hid the requested elements");
   });
   QUnit.module("Attributes");
   QUnit.test("$.fn.val", function (assert) {
@@ -923,13 +928,49 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return values;
   };
 
-  QUnit.module("Internal");
-  QUnit.test("getVal", function (assert) {
-    var obj = $(".test");
-    assert.deepEqual(getVal(obj, "test"), ["test"], "Can pass-through a value");
-    assert.deepEqual(getVal(obj, function (i) {
-      return this === obj[0] && !i ? "test" : false;
-    }), ["test"], "When passing function as value, variables and context is correct");
+  QUnit.module("Internal", function (hooks) {
+    var test = document.getElementsByClassName("test")[0];
+    hooks.before(function () {
+      test.innerHTML = '<div class="testtemp"></div><div class="testtemp2"></div><div class="testtemp3"></div>';
+    });
+    QUnit.test("getVal", function (assert) {
+      var obj = $(".test div");
+      assert.deepEqual(getVal(obj, "test"), ["test", "test", "test"], "Can pass-through a value");
+      assert.deepEqual(getVal(obj, function () {
+        return $(this).attr("class");
+      }), ["testtemp", "testtemp2", "testtemp3"], "Can use function as value");
+      assert.deepEqual(getVal(obj, function (i, current) {
+        return current;
+      }, function (obj) {
+        return obj.className;
+      }), ["testtemp", "testtemp2", "testtemp3"], "Can use function as value and return original value");
+      var clone = {
+        foo: "bar",
+        bar: "foo"
+      };
+      var val = getVal(obj, clone);
+      val.map(function (item, i) {
+        item.foo = "foo" + i;
+        return item;
+      });
+      assert.deepEqual(val, [{
+        foo: "foo0",
+        bar: "foo"
+      }, {
+        foo: "foo1",
+        bar: "foo"
+      }, {
+        foo: "foo2",
+        bar: "foo"
+      }], "Objects are cloned onto each output");
+      assert.deepEqual(clone, {
+        foo: "bar",
+        bar: "foo"
+      }, "Original object was not changed when object was copied to each val");
+    });
+    hooks.after(function () {
+      test.innerHTML = "";
+    });
   });
 
   var setCss = function setCss(dabby, props, value) {
@@ -1167,6 +1208,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     assert.deepEqual(obj.children(".testtemp").get(), $(".testtemp").get(), "Can get and filter child nodes");
     test.innerHTML = "";
   });
+  QUnit.module("Traversal", function (hooks) {
+    var test = document.getElementsByClassName("test")[0];
+    hooks.before(function () {
+      test.innerHTML = '<div class="testtemp"><div class="testtemp2"><div class="testtemp3">test</div></div></div>';
+    });
+    QUnit.test("$.fn.closest", function (assert) {
+      var obj = $(".testtemp3, .testtemp2, .testtemp");
+      assert.deepEqual(obj.closest(".test").get(), [test, test, test], "Can select parents until a particular node");
+    });
+    hooks.after(function () {
+      test.innerHTML = "";
+    });
+  });
   QUnit.module("Traversal");
   QUnit.test("$.fn.eq", function (assert) {
     var test = document.getElementsByClassName("test")[0],
@@ -1290,23 +1344,44 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     assert.ok(obj.is($(".testtemp")), "Returns true when node matches dabby collection");
     test.innerHTML = "";
   });
-  QUnit.module("Traversal");
-  QUnit.test("$.fn.parent/$.fn.parents", function (assert) {
+  QUnit.module("Traversal", function (hooks) {
     var test = document.getElementsByClassName("test")[0];
-    test.innerHTML = '<div class="testtemp"><div class="testtemp2"><div class="testtemp3">test</div></div></div>';
-    var obj = $(".testtemp3"),
-        parents = [],
-        parent = obj.get(0);
-    assert.deepEqual(obj.parent().get(), $(".testtemp2").get(), "Can select parent");
-    assert.deepEqual(obj.parent(".testtemp2").get(), $(".testtemp2").get(), "Can select parent with selector");
-    assert.deepEqual(obj.parent(".testtemp").get(), [], "Doesn't select parent when selector doesn't match");
+    hooks.before(function () {
+      test.innerHTML = '<div class="testtemp"><div class="testtemp2"><div class="testtemp3">test</div></div></div>';
+    });
+    QUnit.test("$.fn.parent", function (assert) {
+      var obj = $(".testtemp3");
+      assert.deepEqual(obj.parent().get(), $(".testtemp2").get(), "Can select parent");
+      assert.deepEqual(obj.parent(".testtemp2").get(), $(".testtemp2").get(), "Can select parent with selector");
+      assert.deepEqual(obj.parent(".testtemp").get(), [], "Doesn't select parent when selector doesn't match");
+    });
+    QUnit.test("$.fn.parents", function (assert) {
+      var obj = $(".testtemp3");
+      var parents = [],
+          parent = obj.get(0);
 
-    while (parent.parentNode && parent.parentNode.nodeType === Node.ELEMENT_NODE) {
-      parents.push(parent.parentNode);
-      parent = parent.parentNode;
-    }
+      while (parent.parentNode && parent.parentNode.nodeType === Node.ELEMENT_NODE) {
+        parents.push(parent.parentNode);
+        parent = parent.parentNode;
+      }
 
-    assert.deepEqual(obj.parents().get(), parents, "Can select parents");
+      assert.deepEqual(obj.parents().get(), parents, "Can select parents");
+    });
+    QUnit.test("$.fn.parentsUntil", function (assert) {
+      var obj = $(".testtemp3");
+      var parents = [],
+          parent = obj.get(0);
+
+      while (parent.parentNode && parent.parentNode.nodeType === Node.ELEMENT_NODE && parent.parentNode.className !== "test") {
+        parents.push(parent.parentNode);
+        parent = parent.parentNode;
+      }
+
+      assert.deepEqual(obj.parentsUntil(".test").get(), parents, "Can select parents until a particular node");
+    });
+    hooks.after(function () {
+      test.innerHTML = "";
+    });
   });
   QUnit.module("Traversal");
   QUnit.test("$.fn.siblings", function (assert) {
@@ -1489,8 +1564,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   //import "./internal/getprop/test.js";
   // manipulation
   // traversal
-  //import "./traversal/closest/test.js";
   // utilities
-  //import "./utils/isarray/test.js";
 })($);
 //# sourceMappingURL=test.es5.js.map

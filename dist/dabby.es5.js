@@ -1,6 +1,6 @@
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-/*! dabbyjs v0.9.6 by Will Earp - https://github.com/hexydec/dabby */
+/*! dabbyjs v0.9.7 by Will Earp - https://github.com/hexydec/dabby */
 (function (global, factory) {
   (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : global.$ = factory();
 })(this, function () {
@@ -670,17 +670,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         parent = this[i].parentNode;
 
         while (parent && parent.nodeType === Node.ELEMENT_NODE) {
+          if (until && filterNodes(parent, selector).length) {
+            break;
+          }
+
           nodes.push(parent);
 
-          if (!all || until && filterNodes(parent, selector).length) {
+          if (!all) {
             break;
-          } else {
-            parent = parent.parentNode;
           }
+
+          parent = parent.parentNode;
         }
       }
 
-      return $(selector ? filterNodes(nodes, selector) : nodes);
+      if (!until) {
+        filter = selector;
+      }
+
+      return $(filter ? filterNodes(nodes, filter) : nodes);
     };
   });
 
@@ -1592,7 +1600,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       parents = [];
       node = this[i];
 
-      while (node) {
+      while (node && node.nodeType === Node.ELEMENT_NODE) {
         parents.push(node);
         node = node.parentNode;
       }
