@@ -34,7 +34,8 @@ $.ajax = (url, settings) => {
 		context: null,
 		statusCode: {},
 		username: null,
-		password: null
+		password: null,
+		xhrFields: {}
 	}, settings);
 
 	// determine datatype
@@ -86,7 +87,7 @@ $.ajax = (url, settings) => {
 				const response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
 				[settings[value], settings.complete].forEach(callback => {
 					if (callback) {
-						callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
+						callback.apply(settings.context || settings, callback === settings.complete ? [null, value] : [response, value]);
 					}
 				});
 			}, {once: true});
@@ -99,7 +100,7 @@ $.ajax = (url, settings) => {
 	// make xhr request
 	} else {
 		const xhr = settings.xhr(),
-			callback = (xhr, status) => {
+			callback = (xhr, type, status) => {
 				let response = xhr.responseText;
 
 				// parse JSON
@@ -112,27 +113,29 @@ $.ajax = (url, settings) => {
 				}
 
 				// run callbacks
-				[settings.statusCode[xhr.status], settings[status], settings.complete].forEach((callback, i) => {
+				[settings.statusCode[xhr.status], settings[type], settings.complete].forEach((callback, i) => {
 					if (callback) {
-						callback.apply(settings.context, i < 2 ? [response, status, xhr] : [xhr, status]);
+						callback.apply(settings.context || settings, i < 2 ? [response, status, xhr] : [xhr, status]);
 					}
 				});
 			};
 
+		// XHR settings
+		settings.xhrFields.forEach((value, key) => xhr[key] = value);
+
 		// callbacks
 		xhr.onload = () => {
-			const types = {
-				200: "success",
-				204: "nocontent",
-				304: "notmodified"
-			};
-			callback(xhr, types[xhr.status] || "error");
+			const status = [200, 204, 304].indexOf(xhr.status) > -1 ? "success" : "error";
+			callback(xhr, status, status);
 		};
 		xhr.ontimeout = () => {
-			callback(xhr, "timeout");
+			callback(xhr, "error", "timeout");
 		};
 		xhr.onabort = () => {
-			callback(xhr, "abort");
+			callback(xhr, "error", "abort");
+		};
+		xhr.onerror = () => {
+			callback(xhr, "error", "error");
 		};
 
 		xhr.open(settings.method, settings.url, settings.async, settings.username, settings.password);
