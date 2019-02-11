@@ -36,9 +36,23 @@ $.fn.load = function (url, data, success) {
 					html = response;
 				}
 
+				const nodes = $(html).filter((i, item) => item.tagName.toLowerCase() === "script");
+
 				// set HTML to nodes in collection
 				while (i--) {
 					this[i].innerHTML = html;
+
+					// include any scripts as they won't execute with innerHTML
+					nodes.each((i, item) => {
+						const src = item.getAttribute("src"),
+							script = document.createElement("script");
+						if (src) {
+							script.src = src;
+						} else {
+							script.text = item.innerText;
+						}
+						document.head.appendChild(script);
+					});
 
 					// fire success callback on nodes
 					if (success) {

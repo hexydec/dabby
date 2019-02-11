@@ -505,11 +505,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             });
           } else {
             html = response;
-          } // set HTML to nodes in collection
+          }
 
+          var nodes = $(html).filter(function (i, item) {
+            return item.tagName.toLowerCase() === "script";
+          }); // set HTML to nodes in collection
 
           while (i--) {
-            _this[i].innerHTML = html; // fire success callback on nodes
+            _this[i].innerHTML = html; // include any scripts as they won't execute with innerHTML
+
+            nodes.each(function (i, item) {
+              var src = item.getAttribute("src"),
+                  script = document.createElement("script");
+
+              if (src) {
+                script.src = src;
+              } else {
+                script.text = item.innerText;
+              }
+
+              document.head.appendChild(script);
+            }); // fire success callback on nodes
 
             if (_success) {
               _success.call(_this[i], response, status, xhr);
