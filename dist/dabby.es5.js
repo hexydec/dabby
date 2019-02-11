@@ -292,7 +292,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       context: null,
       statusCode: {},
       username: null,
-      password: null
+      password: null,
+      xhrFields: {}
     }, settings); // determine datatype
 
     if (!settings.dataType && settings.url.split("?")[0].split(".").pop() === "js") {
@@ -345,7 +346,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
           [settings[value], settings.complete].forEach(function (callback) {
             if (callback) {
-              callback.apply(settings.context, callback === settings.complete ? [null, value] : [response, value]);
+              callback.apply(settings.context || settings, callback === settings.complete ? [null, value] : [response, value]);
             }
           });
         }, {
@@ -357,7 +358,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       document.head.appendChild(script); // make xhr request
     } else {
       var xhr = settings.xhr(),
-          callback = function callback(xhr, status) {
+          callback = function callback(xhr, type, status) {
         var response = xhr.responseText; // parse JSON
 
         if (["json", null, undefined].indexOf(settings.dataType) > -1) {
@@ -368,29 +369,33 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         } // run callbacks
 
 
-        [settings.statusCode[xhr.status], settings[status], settings.complete].forEach(function (callback, i) {
+        [settings.statusCode[xhr.status], settings[type], settings.complete].forEach(function (callback, i) {
           if (callback) {
-            callback.apply(settings.context, i < 2 ? [response, status, xhr] : [xhr, status]);
+            callback.apply(settings.context || settings, i < 2 ? [response, status, xhr] : [xhr, status]);
           }
         });
-      }; // callbacks
+      }; // XHR settings
 
+
+      settings.xhrFields.forEach(function (value, key) {
+        return xhr[key] = value;
+      }); // callbacks
 
       xhr.onload = function () {
-        var types = {
-          200: "success",
-          204: "nocontent",
-          304: "notmodified"
-        };
-        callback(xhr, types[xhr.status] || "error");
+        var status = [200, 204, 304].indexOf(xhr.status) > -1 ? "success" : "error";
+        callback(xhr, status, status);
       };
 
       xhr.ontimeout = function () {
-        callback(xhr, "timeout");
+        callback(xhr, "error", "timeout");
       };
 
       xhr.onabort = function () {
-        callback(xhr, "abort");
+        callback(xhr, "error", "abort");
+      };
+
+      xhr.onerror = function () {
+        callback(xhr, "error", "error");
       };
 
       xhr.open(settings.method, settings.url, settings.async, settings.username, settings.password); // add headers
