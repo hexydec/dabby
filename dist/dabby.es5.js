@@ -377,7 +377,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }; // XHR settings
 
 
-      settings.xhrFields.forEach(function (value, key) {
+      $.each(settings.xhrFields, function (key, value) {
         return xhr[key] = value;
       }); // callbacks
 

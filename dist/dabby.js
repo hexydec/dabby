@@ -286,7 +286,7 @@ $.ajax = (url, settings) => {
 			};
 
 		// XHR settings
-		settings.xhrFields.forEach((value, key) => xhr[key] = value);
+		$.each(settings.xhrFields, (key, value) => xhr[key] = value);
 
 		// callbacks
 		xhr.onload = () => {
