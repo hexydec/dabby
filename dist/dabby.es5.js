@@ -1201,11 +1201,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
       if (this[0]) {
+        var key = item;
+
         if ($.isWindow(this[0])) {
-          item = top ? "pageYOffset" : "pageXOffset";
+          key = top ? "pageYOffset" : "pageXOffset";
         }
 
-        return this[0][item];
+        return this[0][key];
       }
     };
   });

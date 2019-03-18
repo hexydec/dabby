@@ -1011,7 +1011,7 @@ $.fn.position = function () {
 			let i = this.length,
 				tl = top ? "top" : "left",
 				values = getVal(this, pos, obj => obj[item]);
-			
+
 			while (i--) {
 				if ($.isWindow(this[i])) {
 					let obj = {};
@@ -1026,10 +1026,11 @@ $.fn.position = function () {
 
 		// get
 		if (this[0]) {
+			let key = item;
 			if ($.isWindow(this[0])) {
-				item = top ? "pageYOffset" : "pageXOffset";
+				key = top ? "pageYOffset" : "pageXOffset";
 			}
-			return this[0][item];
+			return this[0][key];
 		}
 	};
 });
