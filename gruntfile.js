@@ -21,7 +21,7 @@ module.exports = function (grunt) {
 					format: "umd",
 					sourcemap: true,
 					banner: banner,
-					moduleName: "$"
+					name: "$"
 				},
 				src: "src/build.es5.js",
 				dest: "dist/dabby.es5.js"
@@ -57,7 +57,7 @@ module.exports = function (grunt) {
 				options: {
 					sourceMap: false,
 					presets: [
-						["minify", {mangle: {exclude: ["$"], topLevel: true}}]
+						["minify", {mangle: {exclude: ["$"], topLevel: true, comments: false}}]
 					]
 				}
 			},

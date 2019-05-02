@@ -2,7 +2,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 /*! dabbyjs v0.9.7 by Will Earp - https://github.com/hexydec/dabby */
 (function (global, factory) {
-  (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : global.$ = factory();
+  (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : (global = global || self, global.$ = factory());
 })(this, function () {
   'use strict';
 
@@ -168,8 +168,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   $.isFunction = function (func) {
     return func && func.constructor === Function;
-  }; //import "../attributes/attr/attr.js"; // must add attr yourself if you want this functionality, as it could make your build smaller
-
+  };
 
   $.isPlainObject = function (obj) {
     // Basic check for Type object that's not null
@@ -1314,7 +1313,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           cancelable: true
         });
         evt.args = data;
-        this[i].dispatchEvent(evt);
+        this[i].dispatchEvent(evt); // cancel submit event if default is prevented
+
+        if (evt.defaultPrevented) {
+          isFunc = false;
+        }
       } // trigger native event
 
 
@@ -1740,16 +1743,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     return $(selector ? filterNodes(nodes, selector) : nodes);
-  }; // ajax
-  // attributes
-  // core
-  // dimensions
-  // events
-  // manipulation
-  // traversal
-  // utilities
-  //import "./utils/isarray/isarray.js";
-
+  };
 
   return $;
 });

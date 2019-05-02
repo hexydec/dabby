@@ -24,22 +24,24 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "babel-preset-minify": "^0.4.3",
-    "grunt": "^1.0.3",
+    "grunt": "^1.0.4",
     "grunt-babel": "^8.0.0",
-    "grunt-contrib-qunit": "^2.0.0",
-    "grunt-contrib-uglify": "^3.2.1",
+    "grunt-contrib-qunit": "^3.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "^1.1.0",
-    "grunt-rollup": "^9.0.0",
-    "load-grunt-tasks": "^3.5.2",
+    "grunt-rollup": "^10.0.0",
+    "load-grunt-tasks": "^4.0.0",
     "qunitjs": "^2.4.1",
-    "rollup": "^0.66.1"
+    "rollup": "^1.10.1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hexydec/dabby.git"
   },
-  "dependencies": {}
+  "dependencies": {
+    "save": "^2.3.3"
+  }
 }

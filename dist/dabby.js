@@ -87,8 +87,6 @@ $.isWindow = obj => obj !== null && obj === obj.window;
 
 $.isFunction = func => func && func.constructor === Function;
 
-//import "../attributes/attr/attr.js"; // must add attr yourself if you want this functionality, as it could make your build smaller
-
 $.isPlainObject = obj => {
 
 	// Basic check for Type object that's not null
@@ -375,7 +373,7 @@ var filterNodes = (dabby, filter, context, not) => {
 		};
 	}
 	return nodes.filter((item, i) => func.call(item, i, item) === !not, nodes);
-}
+};
 
 ["filter", "not", "is"].forEach(name => {
 	$.fn[name] = function (selector) {
@@ -456,7 +454,7 @@ var getVal = (obj, val, current) => {
 		values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : (objVal ? Object.create(val) : val);
 	}
 	return values;
-}
+};
 
 $.map = (obj, callback) => {
 	let arr = [];
@@ -766,7 +764,7 @@ var setCss = (dabby, props, value) => {
 		}
 	});
 	return dabby;
-}
+};
 
 $.fn.css = function (props, value) {
 
@@ -874,7 +872,7 @@ var getProp = prop => {
 	};
 	prop = prop.toLowerCase();
 	return properties[prop] || prop;
-}
+};
 
 $.fn.prop = function (prop, value) {
 	const isObj = $.isPlainObject(prop);
@@ -1020,8 +1018,7 @@ $.fn.position = function () {
 				} else {
 					this[i][item] = values[i];
 				}
-			}
-			return this;
+			}			return this;
 		}
 
 		// get
@@ -1115,13 +1112,18 @@ $.fn.position = function () {
 $.fn.trigger = function (name, data) {
 	let i = this.length;
 	while (i--) {
-		const isFunc = $.isFunction(this[i][name]);
+		let isFunc = $.isFunction(this[i][name]);
 
 		// native submit event doesn't trigger event handlers
 		if (name == "submit" || !isFunc) {
 			const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
 			evt.args = data;
 			this[i].dispatchEvent(evt);
+
+			// cancel submit event if default is prevented
+			if (evt.defaultPrevented) {
+				isFunc = false;
+			}
 		}
 
 		// trigger native event
@@ -1266,7 +1268,7 @@ $.each({
 ["remove", "detach"].forEach(func => {
 	$.fn[func] = function (selector) {
 		let i = this.length,
-			nodes = [];
+			nodes = [];
 
 		// detach selected nodes
 		while (i--) {
@@ -1510,14 +1512,6 @@ $.fn.siblings = function (selector) {
 	return $(selector ? filterNodes(nodes, selector) : nodes);
 };
 
-// ajax
-// attributes
-// core
-// dimensions
-// events
-// manipulation
-// traversal
-// utilities
-//import "./utils/isarray/isarray.js";
-
 export default $;
+
+//# sourceMappingURL=dabby.js.map
