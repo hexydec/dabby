@@ -11,6 +11,7 @@ QUnit.test("$.fn.filter/$.fn.not", function (assert) {
 	assert.deepEqual(obj.filter(".testtemp2").get(), $(".testtemp2").get(), "Can filter nodes by selector");
 	assert.equal(obj.filter(function (i ,item) {return item.innerHTML == "test";}).get(0).innerHTML, "test", "Can filter nodes by callback");
 	assert.equal(obj.filter(function (i, item) {return item.innerHTML != "test";}).get().length, 2, "Can filter nodes by callback");
+	assert.equal(obj.filter(function () {return this.innerHTML != "test";}).get().length, 2, "Can filter nodes by callback using this");
 
 	assert.deepEqual(obj.not(".testtemp2").get(), $(".testtemp1,.testtemp3").get(), "Can negatively filter nodes by selector");
 	assert.equal(obj.not(function (i, item) {return item.innerHTML != "test";}).get(0).innerHTML, "test", "Can negatively filter nodes by callback");

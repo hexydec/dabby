@@ -1269,6 +1269,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     assert.equal(obj.filter(function (i, item) {
       return item.innerHTML != "test";
     }).get().length, 2, "Can filter nodes by callback");
+    assert.equal(obj.filter(function () {
+      return this.innerHTML != "test";
+    }).get().length, 2, "Can filter nodes by callback using this");
     assert.deepEqual(obj.not(".testtemp2").get(), $$1(".testtemp1,.testtemp3").get(), "Can negatively filter nodes by selector");
     assert.equal(obj.not(function (i, item) {
       return item.innerHTML != "test";
