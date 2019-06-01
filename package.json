@@ -1,6 +1,6 @@
 {
   "name": "dabbyjs",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "homepage": "https://hexydec.github.io/dabby",
   "author": "Will Earp <will@hexydec.com>",
   "description": "A lightweight modular jQuery clone library built for modern browsers",
