@@ -55,7 +55,7 @@ A callback that receives the index of the element in the collection, and the cur
 
 ## Returns
 
-An integer or float containing the requested dimension as a pixel unit, or if setting the dimension, a the input Dabby collection will be returned.
+An integer or float containing the requested dimension as a pixel unit, or if setting the dimension, the input Dabby collection will be returned.
 
 ## Example
 
