@@ -29,6 +29,18 @@ $(selector).width(value);
 $(selector).height(value);
 $(selector).width(function (index, currentValue) {});
 $(selector).height(function (index, currentValue) {});
+$(selector).innerWidth();
+$(selector).innerHeight();
+$(selector).innerWidth(value);
+$(selector).innerHeight(value);
+$(selector).innerWidth(function (index, currentValue) {});
+$(selector).innerHeight(function (index, currentValue) {});
+$(selector).outerWidth();
+$(selector).outerHeight();
+$(selector).outerWidth(value);
+$(selector).outerHeight(value);
+$(selector).outerWidth(function (index, currentValue) {});
+$(selector).outerHeight(function (index, currentValue) {});
 ```
 
 ### value
