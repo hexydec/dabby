@@ -417,7 +417,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         show += item.style.display !== "none";
       });
       assert.equal(3, show, "Showed the requested elements");
-      assert.equal(3, hide, "Hid the requested elements");
+      assert.equal(3, hide, "Hid the requested elements"); // check that the initial value is set back
+
+      var initial = ["none", "inline-block", "flex", "block", "none", "none"];
+      obj.toggle();
+      obj.get().forEach(function (item, i) {
+        assert.equal(item.style.display, initial[i]);
+      });
     });
   });
   QUnit.module("Attributes");
