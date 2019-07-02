@@ -4,6 +4,22 @@ Retrieve the width or height of the first element in a matched collection or set
 
 The width and height is defined as the inner size of the element excluding padding, border, and margin.
 
+# .innerWidth() / .innerHeight()
+
+Retrieve the inner width or inner height of the first element in a matched collection or set the inner width or inner height of every element in a collection.
+
+The inner width and inner height is defined as the inner size of the element including padding, but excluding border and margin.
+
+See .width() and .height() for usage.
+
+# .outerWidth() / .outerHeight()
+
+Retrieve the outer width or outer height of the first element in a matched collection or set the outer width or outer height of every element in a collection.
+
+The outer width and outer height is defined as the inner size of the element including padding and border, but excluding margin.
+
+See .width() and .height() for usage.
+
 ## Usage
 
 ```javascript
@@ -45,19 +61,3 @@ $(selector).width(function (index, currentValue) {
 ## Differences to jQuery
 
 Doesn't support relative units such as "+2px".
-
-# .innerWidth() / .innerHeight()
-
-Retrieve the inner width or inner height of the first element in a matched collection or set the inner width or inner height of every element in a collection.
-
-The inner width and inner height is defined as the inner size of the element including padding, but excluding border and margin.
-
-See .width() and .height() for usage.
-
-# ..outerWidth() / .outerHeight()
-
-Retrieve the outer width or outer height of the first element in a matched collection or set the outer width or outer height of every element in a collection.
-
-The outer width and outer height is defined as the inner size of the element including padding and border, but excluding margin.
-
-See .width() and .height() for usage.
