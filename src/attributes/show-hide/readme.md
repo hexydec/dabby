@@ -34,4 +34,4 @@ The input Dabby collection will be returned.
 
 ## Differences to jQuery
 
-None.
+jQuery supports extra arguments to each function to control animations. Dabby doesn't support animations, and therefor does not support these properties.
