@@ -1434,7 +1434,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
     QUnit.test("$.fn.prevAll", function (assert) {
       var obj = $$1(".testtemp4");
-      console.log($$1(".testtemp2, .testtemp3, .testtemp4").get(), obj.prevAll());
       assert.deepEqual($$1(".testtemp3").add(".testtemp2").add(".testtemp").get(), obj.prevAll().get(), "Can find all prev elements");
       assert.deepEqual($$1(".testtemp3").get(), obj.prevAll(".testtemp4, .testtemp3").get(), "Can find all prev elements filtered by a selector");
     });
