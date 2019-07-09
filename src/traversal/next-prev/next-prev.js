@@ -2,11 +2,11 @@ import $ from "../../core/core.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
 ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(func => {
+	const next = func.indexOf("x") > -1,
+		all = func.indexOf("A") > -1,
+		until = func.indexOf("U") > -1,
+		method = next ? "nextElementSibling" : "previousElementSibling";
 	$.fn[func] = function (selector, filter) {
-		const next = func.indexOf("x") > -1,
-			all = func.indexOf("A") > -1,
-			until = func.indexOf("U") > -1,
-			method = next ? "nextElementSibling" : "previousElementSibling";
 		let nodes = [],
 			i = this.length,
 			sibling;
@@ -16,7 +16,7 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
 			sibling = this[i][method];
 			while (sibling) {
 				nodes.push(sibling);
-				if (all || (until && filterNodes(sibling, selector).length)) {
+				if (!all || (until && filterNodes(sibling, selector).length)) {
 					break;
 				} else {
 					sibling = sibling[method];

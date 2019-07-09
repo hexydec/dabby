@@ -2,9 +2,10 @@ import $ from "../../core/core.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
 ["parent", "parents", "parentsUntil"].forEach(func => {
+	const all = func.indexOf("s") > -1,
+		until = func.indexOf("U") > -1;
+		
 	$.fn[func] = function (selector, filter) {
-		const all = func.indexOf("s") > -1,
-			until = func.indexOf("U") > -1;
 		let nodes = [],
 			i = this.length,
 			parent;

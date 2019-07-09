@@ -1,19 +1,14 @@
 import $ from "../../core/core.js";
-import "../../utils/each/each.js";
+import "../insert/insert.js";
 
 $.each({
-	insertBefore: "before",
 	prependTo: "prepend",
 	appendTo: "append",
+	insertBefore: "before",
 	insertAfter: "after"
 }, (name, func) => {
 	$.fn[name] = function (selector) {
-		let i = this.length,
-			obj = $(selector);
-
-		while (i--) {
-			obj[func](this[i]);
-		}
+		$(selector)[func](this);
 		return this;
 	};
 });

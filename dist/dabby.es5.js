@@ -665,23 +665,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return $.param(params);
   };
 
+  $.fn.get = function (i) {
+    return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
+  };
+
   $.fn.add = function (nodes, context) {
-    nodes = $(nodes, context);
-    var len = this.length,
-        i = nodes.length;
-    this.length += i;
-
-    while (i--) {
-      this[i + len] = nodes[i];
-    }
-
-    return this;
+    nodes = $(nodes, context).get();
+    return $(Array.from(this).concat(nodes));
   };
 
   ["parent", "parents", "parentsUntil"].forEach(function (func) {
+    var all = func.indexOf("s") > -1,
+        until = func.indexOf("U") > -1;
+
     $.fn[func] = function (selector, filter) {
-      var all = func.indexOf("s") > -1,
-          until = func.indexOf("U") > -1;
       var nodes = [],
           i = this.length,
           parent;
@@ -710,12 +707,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       return $(filter ? filterNodes(nodes, filter) : nodes);
     };
-  });
-
-  $.fn.get = function (i) {
-    return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
-  }; // add and remove event handlers
-
+  }); // add and remove event handlers
 
   ["on", "one"].forEach(function (name) {
     $.fn[name] = function (events, selector, data, callback) {
@@ -1449,36 +1441,37 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     append: "beforeEnd",
     after: "afterEnd"
   }, function (name, pos) {
-    $.fn[name] = function (html) {
-      var pre = ["before", "prepend"].indexOf(name) > -1,
-          arr = [],
-          i = this.length;
+    // function tracking variables
+    var pre = ["before", "prepend"].indexOf(name) > -1; // the function
 
-      if ($.isFunction(html)) {
-        arr = getVal(this, html, function (obj) {
-          return obj.innerHTML;
-        }); // multiple arguments containing nodes
-      } else {
-        var elems = $();
-        $.each(arguments, function (i, arg) {
-          return elems.add(arg);
-        });
+    $.fn[name] = function () {
+      var elems,
+          i = this.length,
+          len = i; // retireve nodes from function
 
-        while (i--) {
-          arr[i] = i ? elems.clone() : elems;
-        }
+      for (var _len3 = arguments.length, content = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        content[_key3] = arguments[_key3];
       }
 
-      i = this.length;
+      if ($.isFunction(content[0])) {
+        elems = $(getVal(this, content[0], function (obj) {
+          return obj.innerHTML;
+        })); // multiple arguments containing nodes
+      } else {
+        elems = content.reduce(function (dabby, item) {
+          return dabby.add(item);
+        }, $());
+      } // insert objects onto each element in collection
+
 
       while (i--) {
-        var backwards = arr[i].length,
+        var backwards = elems.length,
             // for counting down
         forwards = -1; // for counting up
 
-        while (pre ? backwards-- : ++forwards < backwards) {
+        while (pre ? ++forwards < backwards : backwards--) {
           // insert forwards or backwards?
-          this[i].insertAdjacentElement(pos, arr[i][pre ? backwards : forwards]);
+          this[i].insertAdjacentElement(pos, i === len - 1 ? elems[pre ? forwards : backwards] : elems[pre ? forwards : backwards].cloneNode(true));
         }
       }
 
@@ -1486,19 +1479,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     };
   });
   $.each({
-    insertBefore: "before",
     prependTo: "prepend",
     appendTo: "append",
+    insertBefore: "before",
     insertAfter: "after"
   }, function (name, func) {
     $.fn[name] = function (selector) {
-      var i = this.length,
-          obj = $(selector);
-
-      while (i--) {
-        obj[func](this[i]);
-      }
-
+      $(selector)[func](this);
       return this;
     };
   });
@@ -1710,11 +1697,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(function (func) {
+    var next = func.indexOf("x") > -1,
+        all = func.indexOf("A") > -1,
+        until = func.indexOf("U") > -1,
+        method = next ? "nextElementSibling" : "previousElementSibling";
+
     $.fn[func] = function (selector, filter) {
-      var next = func.indexOf("x") > -1,
-          all = func.indexOf("A") > -1,
-          until = func.indexOf("U") > -1,
-          method = next ? "nextElementSibling" : "previousElementSibling";
       var nodes = [],
           i = this.length,
           sibling; // look through each node and get siblings
@@ -1725,7 +1713,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         while (sibling) {
           nodes.push(sibling);
 
-          if (all || until && filterNodes(sibling, selector).length) {
+          if (!all || until && filterNodes(sibling, selector).length) {
             break;
           } else {
             sibling = sibling[method];

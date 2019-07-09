@@ -555,22 +555,20 @@ $.fn.serialize = function () {
 	return $.param(params);
 };
 
-$.fn.add = function (nodes, context) {
-	nodes = $(nodes, context);
-	let len = this.length,
-		i = nodes.length;
+$.fn.get = function (i) {
+	return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
+};
 
-	this.length += i;
-	while (i--) {
-		this[i + len] = nodes[i];
-	}
-	return this;
+$.fn.add = function (nodes, context) {
+	nodes = $(nodes, context).get();
+	return $(Array.from(this).concat(nodes));
 };
 
 ["parent", "parents", "parentsUntil"].forEach(func => {
+	const all = func.indexOf("s") > -1,
+		until = func.indexOf("U") > -1;
+		
 	$.fn[func] = function (selector, filter) {
-		const all = func.indexOf("s") > -1,
-			until = func.indexOf("U") > -1;
 		let nodes = [],
 			i = this.length,
 			parent;
@@ -594,10 +592,6 @@ $.fn.add = function (nodes, context) {
 		return $(filter ? filterNodes(nodes, filter) : nodes);
 	};
 });
-
-$.fn.get = function (i) {
-	return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
-};
 
 // add and remove event handlers
 ["on", "one"].forEach(name => {
@@ -1238,29 +1232,31 @@ $.each({
 	append: "beforeEnd",
 	after: "afterEnd"
 }, (name, pos) => {
-	$.fn[name] = function (html) {
-		let pre = ["before", "prepend"].indexOf(name) > -1,
-			arr = [],
-			i = this.length;
 
-		if ($.isFunction(html)) {
-			arr = getVal(this, html, obj => obj.innerHTML);
+	// function tracking variables
+	const pre = ["before", "prepend"].indexOf(name) > -1;
+
+	// the function
+	$.fn[name] = function (...content) {
+		let elems,
+			i = this.length,
+			len = i;
+
+		// retireve nodes from function
+		if ($.isFunction(content[0])) {
+			elems = $(getVal(this, content[0], obj => obj.innerHTML));
 
 		// multiple arguments containing nodes
 		} else {
-			const elems = $();
-			$.each(arguments, (i, arg) => elems.add(arg));
-			while (i--) {
-				arr[i] = i ? elems.clone() : elems;
-			}
+			elems = content.reduce((dabby, item) => dabby.add(item), $());
 		}
 
-		i = this.length;
+		// insert objects onto each element in collection
 		while (i--) {
-			let backwards = arr[i].length, // for counting down
+			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
-			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				this[i].insertAdjacentElement(pos, arr[i][pre ? backwards : forwards]);
+			while (pre ? ++forwards < backwards : backwards--) { // insert forwards or backwards?
+				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? forwards : backwards] : elems[pre ? forwards : backwards].cloneNode(true));
 			}
 		}
 		return this;
@@ -1268,18 +1264,13 @@ $.each({
 });
 
 $.each({
-	insertBefore: "before",
 	prependTo: "prepend",
 	appendTo: "append",
+	insertBefore: "before",
 	insertAfter: "after"
 }, (name, func) => {
 	$.fn[name] = function (selector) {
-		let i = this.length,
-			obj = $(selector);
-
-		while (i--) {
-			obj[func](this[i]);
-		}
+		$(selector)[func](this);
 		return this;
 	};
 });
@@ -1485,11 +1476,11 @@ $.fn.last = function () {
 };
 
 ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(func => {
+	const next = func.indexOf("x") > -1,
+		all = func.indexOf("A") > -1,
+		until = func.indexOf("U") > -1,
+		method = next ? "nextElementSibling" : "previousElementSibling";
 	$.fn[func] = function (selector, filter) {
-		const next = func.indexOf("x") > -1,
-			all = func.indexOf("A") > -1,
-			until = func.indexOf("U") > -1,
-			method = next ? "nextElementSibling" : "previousElementSibling";
 		let nodes = [],
 			i = this.length,
 			sibling;
@@ -1499,7 +1490,7 @@ $.fn.last = function () {
 			sibling = this[i][method];
 			while (sibling) {
 				nodes.push(sibling);
-				if (all || (until && filterNodes(sibling, selector).length)) {
+				if (!all || (until && filterNodes(sibling, selector).length)) {
 					break;
 				} else {
 					sibling = sibling[method];

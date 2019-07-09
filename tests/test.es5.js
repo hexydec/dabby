@@ -1093,16 +1093,50 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     test.innerHTML = "";
   });
-  QUnit.module("Manipulation");
-  QUnit.test("$.fn.prepend", function (assert) {
+  QUnit.module("Manipulation", function (hooks) {
     var test = document.getElementsByClassName("test")[0];
-    test.innerHTML = '<div class="testtemp"></div>';
-    var main = $$1(".testtemp"),
-        rmain = document.getElementsByClassName("testtemp")[0];
-    assert.deepEqual(main.prepend("<div>Test</div>"), main, "Returns itself when insert");
-    assert.equal(main.html(), "<div>Test</div>", "Can insert html"); // reset
-
-    test.innerHTML = "";
+    hooks.beforeEach(function () {
+      test.innerHTML = '<div class="testtemp"><div class="first">First</div></div>';
+    });
+    QUnit.test("$.fn.prepend", function (assert) {
+      var main = $$1(".testtemp");
+      assert.deepEqual(main.prepend("<div>Prepend</div>"), main, "Returns itself on prepend");
+      assert.equal(main.html(), '<div>Prepend</div><div class="first">First</div>', "Can prepend html");
+    });
+    QUnit.test("$.fn.append", function (assert) {
+      var main = $$1(".testtemp");
+      assert.deepEqual(main.append("<div>Append</div>"), main, "Returns itself on append");
+      assert.equal(main.html(), '<div class="first">First</div><div>Append</div>', "Can append html");
+    });
+    QUnit.test("$.fn.before", function (assert) {
+      var main = $$1(".testtemp"),
+          inner = $$1(".testtemp .first");
+      assert.deepEqual(inner.before("<div>Before</div>"), inner, "Returns itself on before");
+      assert.equal(main.html(), '<div>Before</div><div class="first">First</div>', "Can insert html before");
+    });
+    QUnit.test("$.fn.after", function (assert) {
+      var main = $$1(".testtemp"),
+          inner = $$1(".testtemp .first");
+      assert.deepEqual(inner.after('<div class="after">After</div>'), inner, "Returns itself on after");
+      assert.equal('<div class="first">First</div><div class="after">After</div>', main.html(), "Can insert html after");
+      $$1(".testtemp .after").after(inner);
+      assert.equal('<div class="after">After</div><div class="first">First</div>', main.html(), "Can move html with after");
+      inner.after('<div class="copy">Copy/Clone</div>');
+      assert.equal('<div class="after">After</div><div class="first">First</div><div class="copy">Copy/Clone</div>', main.html(), "Can insert html after");
+      $$1(".testtemp div").after('<div class="another">Another</div>', '<div class="another2">Another</div>');
+      assert.equal('<div class="after">After</div><div class="another">Another</div><div class="another2">Another</div><div class="first">First</div><div class="another">Another</div><div class="another2">Another</div><div class="copy">Copy/Clone</div><div class="another">Another</div><div class="another2">Another</div>', main.html(), "Can insert html after");
+      var copy = $$1(".testtemp .copy");
+      $$1(".testtemp .another").after(copy);
+      assert.equal('<div class="after">After</div><div class="another">Another</div><div class="copy">Copy/Clone</div><div class="another2">Another</div><div class="first">First</div><div class="another">Another</div><div class="copy">Copy/Clone</div><div class="another2">Another</div><div class="another">Another</div><div class="copy">Copy/Clone</div><div class="another2">Another</div>', main.html(), "Objects are cloned and moved correctly on after");
+      var same = [];
+      $$1(".testtemp .copy").each(function (i) {
+        same.push(this.isSameNode(copy[0]));
+      });
+      assert.deepEqual([false, false, true], same, "The correct nodes were cloned or moved");
+    });
+    hooks.after(function () {
+      test.innerHTML = "";
+    });
   });
   QUnit.module("Manipulation");
   QUnit.test("$.fn.insertTo", function (assert) {
@@ -1216,10 +1250,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   QUnit.module("Traversal");
   QUnit.test("$.fn.add", function (assert) {
     var test = document.getElementsByClassName("test")[0],
-        obj;
+        obj,
+        newobj;
     test.innerHTML = '<div class="testtemp">test</div><div class="testtemp2">test 2</div>';
     obj = $$1(".testtemp");
-    assert.deepEqual(obj.add(".testtemp2").get(), $$1(".testtemp, .testtemp2").get(), "Can add nodes");
+    newobj = obj.add(".testtemp2");
+    assert.deepEqual(newobj.get(), $$1(".testtemp, .testtemp2").get(), "Can add nodes");
+    assert.deepEqual(obj.get(), $$1(".testtemp").get(), "Original object remains");
     test.innerHTML = "";
   });
   QUnit.module("Traversal");

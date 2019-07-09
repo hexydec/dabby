@@ -1,8 +1,6 @@
 import $ from "../../core/core.js";
-import "../../utils/each/each.js";
 import "../../utils/isfunction/isfunction.js";
 import "../../traversal/add/add.js";
-import "../clone/clone.js";
 import getVal from "../../internal/getval/getval.js";
 
 $.each({
@@ -11,29 +9,31 @@ $.each({
 	append: "beforeEnd",
 	after: "afterEnd"
 }, (name, pos) => {
-	$.fn[name] = function (html) {
-		let pre = ["before", "prepend"].indexOf(name) > -1,
-			arr = [],
-			i = this.length;
 
-		if ($.isFunction(html)) {
-			arr = getVal(this, html, obj => obj.innerHTML);
+	// function tracking variables
+	const pre = ["before", "prepend"].indexOf(name) > -1;
+
+	// the function
+	$.fn[name] = function (...content) {
+		let elems,
+			i = this.length,
+			len = i;
+
+		// retireve nodes from function
+		if ($.isFunction(content[0])) {
+			elems = $(getVal(this, content[0], obj => obj.innerHTML));
 
 		// multiple arguments containing nodes
 		} else {
-			const elems = $();
-			$.each(arguments, (i, arg) => elems.add(arg));
-			while (i--) {
-				arr[i] = i ? elems.clone() : elems;
-			}
+			elems = content.reduce((dabby, item) => dabby.add(item), $());
 		}
 
-		i = this.length;
+		// insert objects onto each element in collection
 		while (i--) {
-			let backwards = arr[i].length, // for counting down
+			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
-			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				this[i].insertAdjacentElement(pos, arr[i][pre ? backwards : forwards]);
+			while (pre ? ++forwards < backwards : backwards--) { // insert forwards or backwards?
+				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? forwards : backwards] : elems[pre ? forwards : backwards].cloneNode(true));
 			}
 		}
 		return this;
