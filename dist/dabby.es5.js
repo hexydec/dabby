@@ -1703,21 +1703,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         method = next ? "nextElementSibling" : "previousElementSibling";
 
     $.fn[func] = function (selector, filter) {
-      var nodes = [],
-          i = this.length,
-          sibling; // look through each node and get siblings
+      var nodes = []; // look through each node and get siblings
 
-      while (i--) {
-        sibling = this[i][method];
+      for (var i = 0, len = this.length; i < len; i++) {
+        var sibling = this[i][method];
 
         while (sibling) {
-          nodes.push(sibling);
-
-          if (!all || until && filterNodes(sibling, selector).length) {
+          // end when we match until
+          if (until && filterNodes(sibling, selector).length) {
             break;
-          } else {
-            sibling = sibling[method];
+          } // add the node
+
+
+          nodes.push(sibling); // end when not finding all
+
+          if (!all && !until) {
+            break;
           }
+
+          sibling = sibling[method];
         }
       } // swap args for *Until methods
 

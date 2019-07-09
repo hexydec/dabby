@@ -1480,21 +1480,28 @@ $.fn.last = function () {
 		all = func.indexOf("A") > -1,
 		until = func.indexOf("U") > -1,
 		method = next ? "nextElementSibling" : "previousElementSibling";
+
 	$.fn[func] = function (selector, filter) {
-		let nodes = [],
-			i = this.length,
-			sibling;
+		let nodes = [];
 
 		// look through each node and get siblings
-		while (i--) {
-			sibling = this[i][method];
+		for (let i = 0, len = this.length; i < len; i++) {
+			let sibling = this[i][method];
 			while (sibling) {
-				nodes.push(sibling);
-				if (!all || (until && filterNodes(sibling, selector).length)) {
+
+				// end when we match until
+				if (until && filterNodes(sibling, selector).length) {
 					break;
-				} else {
-					sibling = sibling[method];
 				}
+
+				// add the node
+				nodes.push(sibling);
+
+				// end when not finding all
+				if (!all && !until) {
+					break;
+				}
+				sibling = sibling[method];
 			}
 		}
 

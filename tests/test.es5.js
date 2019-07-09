@@ -1397,16 +1397,50 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     assert.deepEqual($$1(".testtemp div").last().get(), [$$1(".testtemp").get(0).getElementsByClassName("findme")[1]]);
     assert.deepEqual($$1(".testtemp .class1").last().get(), [$$1(".testtemp").get(0).getElementsByClassName("class1")[1]]);
   });
-  QUnit.module("Traversal");
-  QUnit.test("$.fn.next/$.fn.prev", function (assert) {
-    var test = document.getElementsByClassName("test")[0],
-        obj;
-    test.innerHTML = '<div class="testtemp">test</div><div class="testtemp2">test 2</div>';
-    obj = $$1(".testtemp");
-    assert.deepEqual(obj.next().get(0), $$1(".testtemp2").get(0), "Returns true when node matches selector");
-    assert.ok(obj.is(document.getElementsByClassName("testtemp")[0]), "Returns true when node matches element");
-    assert.ok(obj.is($$1(".testtemp")), "Returns true when node matches dabby collection");
-    test.innerHTML = "";
+  QUnit.module("Traversal", function (hooks) {
+    var test = document.getElementsByClassName("test")[0];
+    hooks.before(function () {
+      test.innerHTML = '<div class="testtemp">test</div><div class="testtemp2">test 2</div><div class="testtemp3">test 3</div><div class="testtemp4">test 4</div>';
+    });
+    QUnit.test("$.fn.next", function (assert) {
+      var obj = $$1(".testtemp"),
+          next = $$1(".testtemp2").get(0);
+      assert.deepEqual(next, obj.next().get(0), "Can find next element");
+      assert.deepEqual(next, obj.next(".testtemp2").get(0), "Can find next element when matching a selector");
+      assert.equal(0, obj.next(".testtemp3").length, "Fails when selector doesn't match");
+      assert.deepEqual($$1(".testtemp2, .testtemp3, .testtemp4").get(), obj.nextAll().get(), "Returns true when node matches selector");
+    });
+    QUnit.test("$.fn.nextUntil", function (assert) {
+      var obj = $$1(".testtemp");
+      assert.deepEqual($$1(".testtemp2, .testtemp3").get(), obj.nextUntil(".testtemp4").get(), "Can find next element until");
+      assert.deepEqual($$1(".testtemp2").get(), obj.nextUntil(".testtemp4", ".testtemp2").get(), "Can find next element until");
+    });
+    QUnit.test("$.fn.nextAll", function (assert) {
+      var obj = $$1(".testtemp");
+      assert.deepEqual($$1(".testtemp2, .testtemp3, .testtemp4").get(), obj.nextAll().get(), "Can find all next elements");
+      assert.deepEqual($$1(".testtemp3").get(), obj.nextAll(".testtemp, .testtemp3").get(), "Can find all next elements filtered by a selector");
+    });
+    QUnit.test("$.fn.prev", function (assert) {
+      var obj = $$1(".testtemp4"),
+          prev = $$1(".testtemp3").get(0);
+      assert.deepEqual(prev, obj.prev().get(0), "Can find previous element");
+      assert.deepEqual(prev, obj.prev(".testtemp3").get(0), "Can find previous element when matching a selector");
+      assert.equal(0, obj.prev(".testtemp").length, "Fails when selector doesn't match");
+    });
+    QUnit.test("$.fn.prevUntil", function (assert) {
+      var obj = $$1(".testtemp4");
+      assert.deepEqual($$1(".testtemp3").add(".testtemp2").get(), obj.prevUntil(".testtemp").get(), "Can find prev element until");
+      assert.deepEqual($$1(".testtemp2").get(), obj.prevUntil(".testtemp4", ".testtemp2").get(), "Can find prev element until");
+    });
+    QUnit.test("$.fn.prevAll", function (assert) {
+      var obj = $$1(".testtemp4");
+      console.log($$1(".testtemp2, .testtemp3, .testtemp4").get(), obj.prevAll());
+      assert.deepEqual($$1(".testtemp3").add(".testtemp2").add(".testtemp").get(), obj.prevAll().get(), "Can find all prev elements");
+      assert.deepEqual($$1(".testtemp3").get(), obj.prevAll(".testtemp4, .testtemp3").get(), "Can find all prev elements filtered by a selector");
+    });
+    hooks.after(function () {
+      test.innerHTML = "";
+    });
   });
   QUnit.module("Traversal", function (hooks) {
     var test = document.getElementsByClassName("test")[0];
