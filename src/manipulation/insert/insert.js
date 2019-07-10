@@ -11,7 +11,7 @@ $.each({
 }, (name, pos) => {
 
 	// function tracking variables
-	const pre = ["before", "prepend"].indexOf(name) > -1;
+	const pre = ["prepend", "after"].indexOf(name) > -1;
 
 	// the function
 	$.fn[name] = function (...content) {
@@ -32,8 +32,8 @@ $.each({
 		while (i--) {
 			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
-			while (pre ? ++forwards < backwards : backwards--) { // insert forwards or backwards?
-				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? forwards : backwards] : elems[pre ? forwards : backwards].cloneNode(true));
+			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
+				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? backwards : forwards] : elems[pre ? backwards : forwards].cloneNode(true));
 			}
 		}
 		return this;

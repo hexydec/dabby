@@ -70,9 +70,6 @@ module.exports = function (grunt) {
 					sourceMap: true,
 					presets: [
 						["@babel/env", {
-							targets: {
-								"browsers": ["last 2 versions", "IE >= 11"]
-							},
 							useBuiltIns: false,
 							modules: false
 						}]

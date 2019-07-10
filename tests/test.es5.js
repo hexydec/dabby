@@ -1,5 +1,13 @@
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 (function ($$1) {
   'use strict';
 
@@ -249,7 +257,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     test.innerHTML = "";
   });
-  QUnit.test("$.removeClass", function (assert) {
+  QUnit.test("$.fn.removeClass", function (assert) {
     var test = document.getElementsByClassName("test")[0];
     test.innerHTML = '<div class="testtemp"></div>';
     var main = $$1(".testtemp"),
@@ -263,7 +271,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     test.innerHTML = "";
   });
-  QUnit.test("$.toggleClass", function (assert) {
+  QUnit.test("$.fn.toggleClass", function (assert) {
     var test = document.getElementsByClassName("test")[0];
     test.innerHTML = '<div class="testtemp"></div>';
     var main = $$1(".testtemp"),
@@ -343,7 +351,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       main.data("json", json);
       assert.deepEqual(main.data("json"), json, "Can set and get data as a plain object");
       assert.deepEqual(main.data(), {
-        var: "value",
+        "var": "value",
         json: json
       }, "Can retrieve all data from node");
     });
@@ -419,10 +427,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       assert.equal(3, show, "Showed the requested elements");
       assert.equal(3, hide, "Hid the requested elements"); // check that the initial value is set back
 
-      var initial = ["none", "inline-block", "flex", "block", "none", "none"];
+      var initial = ["none", "inline-block", "flex", "", "none", "none"];
       obj.toggle();
       obj.get().forEach(function (item, i) {
-        assert.equal(item.style.display, initial[i]);
+        assert.equal(initial[i], item.style.display);
       });
     });
   });
@@ -773,12 +781,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var $ = function dabby(selector, context) {
     // if no selector, return empty colletion
     if (this instanceof dabby) {
-      selector = Array.from(selector).filter(function (node) {
+      // build nodes into a set (Which only allows unique items), then filter only element, document, documentFragment and window
+      var _nodes = _toConsumableArray(new Set(Array.from(selector))).filter(function (node) {
         return [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node);
-      }); // only element, document, documentFragment and window
+      });
 
-      this.length = selector.length;
-      Object.assign(this, selector);
+      Object.assign(this, _nodes); // only unique nodes
+
+      this.length = _nodes.length;
       return this;
     } // $ collection
 
@@ -1102,17 +1112,53 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var main = $$1(".testtemp");
       assert.deepEqual(main.prepend("<div>Prepend</div>"), main, "Returns itself on prepend");
       assert.equal(main.html(), '<div>Prepend</div><div class="first">First</div>', "Can prepend html");
+      var list = $$1('<div class="second"></div><div class="third"></div><div class="forth"></div>');
+      main.prepend(list);
+      assert.equal('<div class="second"></div><div class="third"></div><div class="forth"></div><div>Prepend</div><div class="first">First</div>', main.html(), "Can prepend multiple nodes in the right order");
+      var copy = $$1(".testtemp .forth");
+      $$1(".testtemp .second, .testtemp .third").prepend(copy);
+      assert.equal('<div class="second"><div class="forth"></div></div><div class="third"><div class="forth"></div></div><div>Prepend</div><div class="first">First</div>', main.html(), "Objects are cloned and moved correctly on prepend");
+      var same = [];
+      $$1(".testtemp .forth").each(function (i) {
+        same.push(this.isSameNode(copy[0]));
+      });
+      assert.deepEqual([false, true], same, "The correct nodes were cloned or moved");
     });
     QUnit.test("$.fn.append", function (assert) {
       var main = $$1(".testtemp");
       assert.deepEqual(main.append("<div>Append</div>"), main, "Returns itself on append");
       assert.equal(main.html(), '<div class="first">First</div><div>Append</div>', "Can append html");
+      var list = $$1('<div class="second"></div><div class="third"></div><div class="forth"></div>');
+      main.append(list);
+      assert.equal('<div class="first">First</div><div>Append</div><div class="second"></div><div class="third"></div><div class="forth"></div>', main.html(), "Can prepend multiple nodes in the right order");
+      var copy = $$1(".testtemp .forth");
+      $$1(".testtemp .first, .testtemp .second").append(copy);
+      assert.equal('<div class="first">First<div class="forth"></div></div><div>Append</div><div class="second"><div class="forth"></div></div><div class="third"></div>', main.html(), "Objects are cloned and moved correctly on prepend");
+      var same = [];
+      $$1(".testtemp .forth").each(function (i) {
+        same.push(this.isSameNode(copy[0]));
+      });
+      assert.deepEqual([false, true], same, "The correct nodes were cloned or moved");
     });
     QUnit.test("$.fn.before", function (assert) {
       var main = $$1(".testtemp"),
           inner = $$1(".testtemp .first");
-      assert.deepEqual(inner.before("<div>Before</div>"), inner, "Returns itself on before");
-      assert.equal(main.html(), '<div>Before</div><div class="first">First</div>', "Can insert html before");
+      assert.deepEqual(inner.before('<div class="before">Before</div>'), inner, "Returns itself on before");
+      assert.equal('<div class="before">Before</div><div class="first">First</div>', main.html(), "Can insert html before");
+      $$1(".testtemp .before").before(inner);
+      assert.equal('<div class="first">First</div><div class="before">Before</div>', main.html(), "Can move html with before");
+      inner.before('<div class="copy">Copy/Clone</div>');
+      assert.equal('<div class="copy">Copy/Clone</div><div class="first">First</div><div class="before">Before</div>', main.html(), "Can insert html before");
+      $$1(".testtemp div").before('<div class="another">Another</div>', '<div class="another2">Another</div>');
+      assert.equal('<div class="another">Another</div><div class="another2">Another</div><div class="copy">Copy/Clone</div><div class="another">Another</div><div class="another2">Another</div><div class="first">First</div><div class="another">Another</div><div class="another2">Another</div><div class="before">Before</div>', main.html(), "Can insert multiple nodes before");
+      var copy = $$1(".testtemp .copy");
+      $$1(".testtemp .another").before(copy);
+      assert.equal('<div class="copy">Copy/Clone</div><div class="another">Another</div><div class="another2">Another</div><div class="copy">Copy/Clone</div><div class="another">Another</div><div class="another2">Another</div><div class="first">First</div><div class="copy">Copy/Clone</div><div class="another">Another</div><div class="another2">Another</div><div class="before">Before</div>', main.html(), "Objects are cloned and moved correctly on before");
+      var same = [];
+      $$1(".testtemp .copy").each(function (i) {
+        same.push(this.isSameNode(copy[0]));
+      });
+      assert.deepEqual([false, false, true], same, "The correct nodes were cloned or moved");
     });
     QUnit.test("$.fn.after", function (assert) {
       var main = $$1(".testtemp"),
@@ -1276,7 +1322,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
     QUnit.test("$.fn.closest", function (assert) {
       var obj = $$1(".testtemp3, .testtemp2, .testtemp");
-      assert.deepEqual(obj.closest(".test").get(), [test, test, test], "Can select parents until a particular node");
+      assert.deepEqual(obj.closest(".test").get(), [test], "Can select parents until a particular node"); // returns only unique nodes
     });
     hooks.after(function () {
       test.innerHTML = "";
@@ -1429,13 +1475,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
     QUnit.test("$.fn.prevUntil", function (assert) {
       var obj = $$1(".testtemp4");
-      assert.deepEqual($$1(".testtemp3").add(".testtemp2").get(), obj.prevUntil(".testtemp").get(), "Can find prev element until");
+      assert.deepEqual([$$1(".testtemp3").get(0), $$1(".testtemp2").get(0)], obj.prevUntil(".testtemp").get(), "Can find prev element until");
       assert.deepEqual($$1(".testtemp2").get(), obj.prevUntil(".testtemp4", ".testtemp2").get(), "Can find prev element until");
     });
     QUnit.test("$.fn.prevAll", function (assert) {
       var obj = $$1(".testtemp4");
-      assert.deepEqual($$1(".testtemp3").add(".testtemp2").add(".testtemp").get(), obj.prevAll().get(), "Can find all prev elements");
-      assert.deepEqual($$1(".testtemp3").get(), obj.prevAll(".testtemp4, .testtemp3").get(), "Can find all prev elements filtered by a selector");
+      assert.deepEqual([$$1(".testtemp3").get(0), $$1(".testtemp2").get(0), $$1(".testtemp").get(0)], obj.prevAll().get(), "Can find all prev elements");
+      assert.deepEqual([$$1(".testtemp3").get(0), $$1(".testtemp").get(0)], obj.prevAll(".testtemp4, .testtemp3, .testtemp").get(), "Can find all prev elements filtered by a selector");
     });
     hooks.after(function () {
       test.innerHTML = "";

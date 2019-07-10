@@ -4,9 +4,11 @@ const $ = function dabby(selector, context) {
 
 	// if no selector, return empty colletion
 	if (this instanceof dabby) {
-		selector = Array.from(selector).filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)); // only element, document, documentFragment and window
-		this.length = selector.length;
-		Object.assign(this, selector);
+
+		// build nodes into a set (Which only allows unique items), then filter only element, document, documentFragment and window
+		const nodes = [...new Set(Array.from(selector))].filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node));
+		Object.assign(this, nodes); // only unique nodes
+		this.length = nodes.length;
 		return this;
 	}
 
@@ -567,14 +569,13 @@ $.fn.add = function (nodes, context) {
 ["parent", "parents", "parentsUntil"].forEach(func => {
 	const all = func.indexOf("s") > -1,
 		until = func.indexOf("U") > -1;
-		
+
 	$.fn[func] = function (selector, filter) {
 		let nodes = [],
-			i = this.length,
-			parent;
+			i = this.length;
 
 		while (i--) {
-			parent = this[i].parentNode;
+			let parent = this[i].parentNode;
 			while (parent && parent.nodeType === Node.ELEMENT_NODE) {
 				if (until && filterNodes(parent, selector).length) {
 					break;
@@ -913,31 +914,46 @@ $.fn.removeProp = function (prop) {
 	return this;
 };
 
-["show", "hide", "toggle"].forEach((func, n) => {
+// store for current values
+const display = [],
+	obj = [],
+	defaults = [],
+	values = ["none", "block"];
 
-	// store for current values
-	const display = [],
-		obj = [],
-		values = ["block", "none"];
+["hide", "show", "toggle"].forEach((func, n) => {
 
 	// attach function
-	$.fn[func] = function () {
+	$.fn[func] = function (show) {
+
+		// for toggle they can set the show value
+		if (n === 2 && typeof show !== "undefined") {
+			n = parseInt(show);
+		}
+
+		// loop through each node
 		let i = this.length;
 		while (i--) {
-			const current = getComputedStyle(this[i]).display,
-				item = obj.indexOf(this[i]);
-			let value = values[n] || (current === "none" ? "block" : "none");
+			let item = obj.indexOf(this[i]),
+				current = item > -1 && n < 2 ? null : getComputedStyle(this[i]).display;
 
-			// show the item, if value cached, use that
-			if (value !== "none" && item > -1) {
-				value = display[item];
-
-			// hide the item, cache the current value
-			} else if (value === "none" && item === -1 && current !== "none") {
+			// cache the initial value of the current
+			if (item === -1) {
+				item = obj.length;
 				obj.push(this[i]);
 				display.push(current);
+				defaults.push(this[i].style.display);
 			}
-			this[i].style.display = value;
+
+			// determine if we are going to show or hide
+			let value = values[n] || (current === "none" ? "block" : "none");
+
+			// if show update the block value to the initial if it was not "none"
+			if (value !== "none" && display[item] !== "none") {
+				value = display[item];
+			}
+
+			// update the value, use the default if setting back to initial
+			this[i].style.display = value === display[item] ? defaults[item] : value;
 		}
 		return this;
 	};
@@ -1234,7 +1250,7 @@ $.each({
 }, (name, pos) => {
 
 	// function tracking variables
-	const pre = ["before", "prepend"].indexOf(name) > -1;
+	const pre = ["prepend", "after"].indexOf(name) > -1;
 
 	// the function
 	$.fn[name] = function (...content) {
@@ -1255,8 +1271,8 @@ $.each({
 		while (i--) {
 			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
-			while (pre ? ++forwards < backwards : backwards--) { // insert forwards or backwards?
-				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? forwards : backwards] : elems[pre ? forwards : backwards].cloneNode(true));
+			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
+				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? backwards : forwards] : elems[pre ? backwards : forwards].cloneNode(true));
 			}
 		}
 		return this;
@@ -1405,20 +1421,16 @@ $.fn.children = function (selector) {
 
 $.fn.closest = function (selector, context) {
 	let i = this.length,
-		nodes = [],
-		parents,
-		node;
+		nodes = [];
 
 	while (i--) {
-		parents = [];
-		node = this[i];
+		let node = this[i];
 		while (node && node.nodeType === Node.ELEMENT_NODE) {
-			parents.push(node);
+			if (filterNodes(node, selector, context).length) {
+				nodes.unshift(node);
+				break;
+			}
 			node = node.parentNode;
-		}
-		parents = filterNodes(parents, selector, context);
-		if (parents[0]) {
-			nodes.push(parents[0]);
 		}
 	}
 	return $(nodes);

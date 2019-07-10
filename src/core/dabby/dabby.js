@@ -2,9 +2,11 @@ const $ = function dabby(selector, context) {
 
 	// if no selector, return empty colletion
 	if (this instanceof dabby) {
-		selector = Array.from(selector).filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)) // only element, document, documentFragment and window
-		this.length = selector.length;
-		Object.assign(this, selector);
+
+		// build nodes into a set (Which only allows unique items), then filter only element, document, documentFragment and window
+		const nodes = [...new Set(Array.from(selector))].filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node));
+		Object.assign(this, nodes); // only unique nodes
+		this.length = nodes.length;
 		return this;
 	}
 

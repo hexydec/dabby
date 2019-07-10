@@ -25,8 +25,12 @@ The display property is set as an inline property, if a CSS rule sets the proper
 ```javascript
 $(selector).show();
 $(selector).hide();
-$(selector).toggle();
+$(selector).toggle(display);
 ```
+
+### display
+
+Sets the display value of the operation, equivalent to using `$.fn.show()` or `$.fn.hide()`.
 
 ## Returns
 

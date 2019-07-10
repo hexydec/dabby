@@ -3,7 +3,7 @@
   "version": "0.9.8",
   "homepage": "https://hexydec.github.io/dabby",
   "author": "Will Earp <will@hexydec.com>",
-  "description": "A lightweight modular jQuery clone library built for modern browsers",
+  "description": "A lightweight modular ES6 jQuery clone library built for modern browsers",
   "keywords": [
     "util",
     "functional",
@@ -23,6 +23,9 @@
   "scripts": {
     "test": "grunt test"
   },
+  "browserslist": [
+    "defaults"
+  ],
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",

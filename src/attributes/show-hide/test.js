@@ -46,10 +46,10 @@ QUnit.module("Attributes", hooks => {
 		assert.equal(3, hide, "Hid the requested elements");
 
 		// check that the initial value is set back
-		const initial = ["none", "inline-block", "flex", "block", "none", "none"];
+		const initial = ["none", "inline-block", "flex", "", "none", "none"];
 		obj.toggle();
 		obj.get().forEach((item, i) => {
-			assert.equal(item.style.display, initial[i]);
+			assert.equal(initial[i], item.style.display);
 		});
 	});
 });

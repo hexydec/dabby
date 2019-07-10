@@ -41,14 +41,14 @@ QUnit.module("Traversal", function (hooks) {
 
 	QUnit.test("$.fn.prevUntil", function (assert) {
 		const obj = $(".testtemp4");
-		assert.deepEqual($(".testtemp3").add(".testtemp2").get(), obj.prevUntil(".testtemp").get(), "Can find prev element until");
+		assert.deepEqual([$(".testtemp3").get(0), $(".testtemp2").get(0)], obj.prevUntil(".testtemp").get(), "Can find prev element until");
 		assert.deepEqual($(".testtemp2").get(), obj.prevUntil(".testtemp4", ".testtemp2").get(), "Can find prev element until");
 	});
 
 	QUnit.test("$.fn.prevAll", function (assert) {
 		const obj = $(".testtemp4");
-		assert.deepEqual($(".testtemp3").add(".testtemp2").add(".testtemp").get(), obj.prevAll().get(), "Can find all prev elements");
-		assert.deepEqual($(".testtemp3").get(), obj.prevAll(".testtemp4, .testtemp3").get(), "Can find all prev elements filtered by a selector");
+		assert.deepEqual([$(".testtemp3").get(0), $(".testtemp2").get(0), $(".testtemp").get(0)], obj.prevAll().get(), "Can find all prev elements");
+		assert.deepEqual([$(".testtemp3").get(0), $(".testtemp").get(0)], obj.prevAll(".testtemp4, .testtemp3, .testtemp").get(), "Can find all prev elements filtered by a selector");
 	});
 
 	hooks.after(() => {
