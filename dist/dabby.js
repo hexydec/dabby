@@ -4,9 +4,11 @@ const $ = function dabby(selector, context) {
 
 	// if no selector, return empty colletion
 	if (this instanceof dabby) {
-		selector = Array.from(selector).filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node)); // only element, document, documentFragment and window
-		this.length = selector.length;
-		Object.assign(this, selector);
+
+		// build nodes into a set (Which only allows unique items), then filter only element, document, documentFragment and window
+		const nodes = [...new Set(Array.from(selector))].filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node));
+		Object.assign(this, nodes); // only unique nodes
+		this.length = nodes.length;
 		return this;
 	}
 
@@ -555,28 +557,25 @@ $.fn.serialize = function () {
 	return $.param(params);
 };
 
-$.fn.add = function (nodes, context) {
-	nodes = $(nodes, context);
-	let len = this.length,
-		i = nodes.length;
+$.fn.get = function (i) {
+	return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
+};
 
-	this.length += i;
-	while (i--) {
-		this[i + len] = nodes[i];
-	}
-	return this;
+$.fn.add = function (nodes, context) {
+	nodes = $(nodes, context).get();
+	return $(Array.from(this).concat(nodes));
 };
 
 ["parent", "parents", "parentsUntil"].forEach(func => {
+	const all = func.indexOf("s") > -1,
+		until = func.indexOf("U") > -1;
+
 	$.fn[func] = function (selector, filter) {
-		const all = func.indexOf("s") > -1,
-			until = func.indexOf("U") > -1;
 		let nodes = [],
-			i = this.length,
-			parent;
+			i = this.length;
 
 		while (i--) {
-			parent = this[i].parentNode;
+			let parent = this[i].parentNode;
 			while (parent && parent.nodeType === Node.ELEMENT_NODE) {
 				if (until && filterNodes(parent, selector).length) {
 					break;
@@ -594,10 +593,6 @@ $.fn.add = function (nodes, context) {
 		return $(filter ? filterNodes(nodes, filter) : nodes);
 	};
 });
-
-$.fn.get = function (i) {
-	return i === undefined ? Array.from(this) : this[i >= 0 ? i : i + this.length];
-};
 
 // add and remove event handlers
 ["on", "one"].forEach(name => {
@@ -919,12 +914,46 @@ $.fn.removeProp = function (prop) {
 	return this;
 };
 
-["show", "hide", "toggle"].forEach((func, n) => {
-	$.fn[func] = function () {
-		let i = this.length,
-			values = ["block", "none"];
+// store for current values
+const display = [],
+	obj = [],
+	defaults = [],
+	values = ["none", "block"];
+
+["hide", "show", "toggle"].forEach((func, n) => {
+
+	// attach function
+	$.fn[func] = function (show) {
+
+		// for toggle they can set the show value
+		if (n === 2 && typeof show !== "undefined") {
+			n = parseInt(show);
+		}
+
+		// loop through each node
+		let i = this.length;
 		while (i--) {
-			this[i].style.display = values[n] || (getComputedStyle(this[i]).display === "none" ? "block" : "none");
+			let item = obj.indexOf(this[i]),
+				current = item > -1 && n < 2 ? null : getComputedStyle(this[i]).display;
+
+			// cache the initial value of the current
+			if (item === -1) {
+				item = obj.length;
+				obj.push(this[i]);
+				display.push(current);
+				defaults.push(this[i].style.display);
+			}
+
+			// determine if we are going to show or hide
+			let value = values[n] || (current === "none" ? "block" : "none");
+
+			// if show update the block value to the initial if it was not "none"
+			if (value !== "none" && display[item] !== "none") {
+				value = display[item];
+			}
+
+			// update the value, use the default if setting back to initial
+			this[i].style.display = value === display[item] ? defaults[item] : value;
 		}
 		return this;
 	};
@@ -1219,29 +1248,31 @@ $.each({
 	append: "beforeEnd",
 	after: "afterEnd"
 }, (name, pos) => {
-	$.fn[name] = function (html) {
-		let pre = ["before", "prepend"].indexOf(name) > -1,
-			arr = [],
-			i = this.length;
 
-		if ($.isFunction(html)) {
-			arr = getVal(this, html, obj => obj.innerHTML);
+	// function tracking variables
+	const pre = ["prepend", "after"].indexOf(name) > -1;
+
+	// the function
+	$.fn[name] = function (...content) {
+		let elems,
+			i = this.length,
+			len = i;
+
+		// retireve nodes from function
+		if ($.isFunction(content[0])) {
+			elems = $(getVal(this, content[0], obj => obj.innerHTML));
 
 		// multiple arguments containing nodes
 		} else {
-			const elems = $();
-			$.each(arguments, (i, arg) => elems.add(arg));
-			while (i--) {
-				arr[i] = i ? elems.clone() : elems;
-			}
+			elems = content.reduce((dabby, item) => dabby.add(item), $());
 		}
 
-		i = this.length;
+		// insert objects onto each element in collection
 		while (i--) {
-			let backwards = arr[i].length, // for counting down
+			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				this[i].insertAdjacentElement(pos, arr[i][pre ? backwards : forwards]);
+				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? backwards : forwards] : elems[pre ? backwards : forwards].cloneNode(true));
 			}
 		}
 		return this;
@@ -1249,18 +1280,13 @@ $.each({
 });
 
 $.each({
-	insertBefore: "before",
 	prependTo: "prepend",
 	appendTo: "append",
+	insertBefore: "before",
 	insertAfter: "after"
 }, (name, func) => {
 	$.fn[name] = function (selector) {
-		let i = this.length,
-			obj = $(selector);
-
-		while (i--) {
-			obj[func](this[i]);
-		}
+		$(selector)[func](this);
 		return this;
 	};
 });
@@ -1395,20 +1421,16 @@ $.fn.children = function (selector) {
 
 $.fn.closest = function (selector, context) {
 	let i = this.length,
-		nodes = [],
-		parents,
-		node;
+		nodes = [];
 
 	while (i--) {
-		parents = [];
-		node = this[i];
+		let node = this[i];
 		while (node && node.nodeType === Node.ELEMENT_NODE) {
-			parents.push(node);
+			if (filterNodes(node, selector, context).length) {
+				nodes.unshift(node);
+				break;
+			}
 			node = node.parentNode;
-		}
-		parents = filterNodes(parents, selector, context);
-		if (parents[0]) {
-			nodes.push(parents[0]);
 		}
 	}
 	return $(nodes);
@@ -1466,25 +1488,32 @@ $.fn.last = function () {
 };
 
 ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(func => {
+	const next = func.indexOf("x") > -1,
+		all = func.indexOf("A") > -1,
+		until = func.indexOf("U") > -1,
+		method = next ? "nextElementSibling" : "previousElementSibling";
+
 	$.fn[func] = function (selector, filter) {
-		const next = func.indexOf("x") > -1,
-			all = func.indexOf("A") > -1,
-			until = func.indexOf("U") > -1,
-			method = next ? "nextElementSibling" : "previousElementSibling";
-		let nodes = [],
-			i = this.length,
-			sibling;
+		let nodes = [];
 
 		// look through each node and get siblings
-		while (i--) {
-			sibling = this[i][method];
+		for (let i = 0, len = this.length; i < len; i++) {
+			let sibling = this[i][method];
 			while (sibling) {
-				nodes.push(sibling);
-				if (all || (until && filterNodes(sibling, selector).length)) {
+
+				// end when we match until
+				if (until && filterNodes(sibling, selector).length) {
 					break;
-				} else {
-					sibling = sibling[method];
 				}
+
+				// add the node
+				nodes.push(sibling);
+
+				// end when not finding all
+				if (!all && !until) {
+					break;
+				}
+				sibling = sibling[method];
 			}
 		}
 

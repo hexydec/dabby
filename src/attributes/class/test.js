@@ -21,7 +21,7 @@ QUnit.test("$.fn.addClass", function (assert) {
 	test.innerHTML = "";
 });
 
-QUnit.test("$.removeClass", function (assert) {
+QUnit.test("$.fn.removeClass", function (assert) {
 	var test = document.getElementsByClassName("test")[0];
 	test.innerHTML = '<div class="testtemp"></div>';
 	var main = $(".testtemp"),
@@ -38,7 +38,7 @@ QUnit.test("$.removeClass", function (assert) {
 	test.innerHTML = "";
 });
 
-QUnit.test("$.toggleClass", function (assert) {
+QUnit.test("$.fn.toggleClass", function (assert) {
 	var test = document.getElementsByClassName("test")[0];
 	test.innerHTML = '<div class="testtemp"></div>';
 	var main = $(".testtemp"),
