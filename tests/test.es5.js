@@ -70,6 +70,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         assert.ok(dabbyScriptSuccess, "Javascript file included successfully");
         done();
       }
+    });
+    var action = $$1("impossible").attr("action");
+    $$1.ajax(action, {
+      success: function success(response) {
+        console.log(response);
+      }
     }); // jsonp
 
     /*$.ajax("../tests/assets/jsonp.js", {dataType: "jsonp", success: function (response, status) {

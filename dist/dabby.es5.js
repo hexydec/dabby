@@ -281,6 +281,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
     settings = Object.assign({
+      url: location.pathname,
       method: "GET",
       cache: null,
       // start will null so we can see if explicitly set
@@ -621,7 +622,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var _values = [];
         $("option", this[0]).each(function (key, obj) {
           if (obj.selected) {
-            _values.push(String(obj.value));
+            _values.push("" + obj.value);
           }
         });
         return _values;
@@ -629,7 +630,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
       if (this[0].type !== "checkbox" || this[0].checked) {
-        return String(this[0].value);
+        return "" + this[0].value;
       }
     }
   };

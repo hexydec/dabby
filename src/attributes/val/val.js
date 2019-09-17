@@ -39,7 +39,7 @@ $.fn.val = function (value) {
 			let values = [];
 			$("option", this[0]).each((key, obj) => {
 				if (obj.selected) {
-					values.push(String(obj.value));
+					values.push("" + obj.value);
 				}
 			});
 			return values;
@@ -47,7 +47,7 @@ $.fn.val = function (value) {
 
 		// get single value
 		if (this[0].type !== "checkbox" || this[0].checked) {
-			return String(this[0].value);
+			return "" + this[0].value;
 		}
 	}
 };

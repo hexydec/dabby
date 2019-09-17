@@ -203,6 +203,11 @@ $.ajax = (url, settings) => {
 		xhrFields: {}
 	}, settings);
 
+	// set to itself
+	if (settings.url == null) { // double equals as also captures undefined
+		settings.url = location.href;
+	}
+
 	// determine datatype
 	if (!settings.dataType && settings.url.split("?")[0].split(".").pop() === "js") {
 		settings.dataType = "script";
@@ -462,7 +467,7 @@ $.map = (obj, callback) => {
 	let arr = [];
 	$.each(obj, (i, item) => {
 		const result = callback.call(window, item, i);
-		if ([null, undefined].indexOf(result) === -1) {
+		if (result != null) { // double equals to capture undefined also
 			arr = arr.concat(Array.isArray(result) ? result : [result]);
 		}
 	});
@@ -505,7 +510,7 @@ $.fn.val = function (value) {
 			let values = [];
 			$("option", this[0]).each((key, obj) => {
 				if (obj.selected) {
-					values.push(String(obj.value));
+					values.push("" + obj.value);
 				}
 			});
 			return values;
@@ -513,7 +518,7 @@ $.fn.val = function (value) {
 
 		// get single value
 		if (this[0].type !== "checkbox" || this[0].checked) {
-			return String(this[0].value);
+			return "" + this[0].value;
 		}
 	}
 };
@@ -926,7 +931,7 @@ const display = [],
 	$.fn[func] = function (show) {
 
 		// for toggle they can set the show value
-		if (n === 2 && typeof show !== "undefined") {
+		if (n === 2 && show !== undefined) {
 			n = parseInt(show);
 		}
 
@@ -1074,7 +1079,7 @@ $.fn.position = function () {
 			];
 
 		// set value
-		if (val !== undefined && typeof(val) !== "boolean") {
+		if (val !== undefined && typeof val !== "boolean") {
 			let values = getVal(this, val, obj => obj[dim]),
 				i = this.length,
 				props = [],

@@ -3,7 +3,7 @@ import $ from "../../../dist/dabby.js";
 QUnit.module("Ajax");
 
 QUnit.test("$.ajax", function (assert) {
-	assert.expect(15);
+	assert.expect(17);
 	var done = assert.async(8);
 	$.ajax("../tests/assets/sample.html", {success: function (response, status) {
 		assert.equal(status, "success", "Can make an AJAX request");
@@ -51,6 +51,12 @@ QUnit.test("$.ajax", function (assert) {
 		assert.equal(status, "success", "Can include a javascript file");
 		assert.ok(dabbyScriptSuccess, "Javascript file included successfully");
 		done();
+	}});
+
+	var action = $("impossible").attr("action");
+	$.ajax(action, {success: function (response, status) {
+		assert.equal(status, "success", "Can fetch file when settings.url not set");
+		assert.ok(response.indexOf("<title>Dabby.js Test Page</title>") > -1, "Current URL is fetched when settings.url is not set");
 	}});
 
 	// jsonp
