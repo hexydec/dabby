@@ -38,6 +38,11 @@ $.ajax = (url, settings) => {
 		xhrFields: {}
 	}, settings);
 
+	// set to itself
+	if (settings.url == null) { // double equals as also captures undefined
+		settings.url = location.href;
+	}
+
 	// determine datatype
 	if (!settings.dataType && settings.url.split("?")[0].split(".").pop() === "js") {
 		settings.dataType = "script";

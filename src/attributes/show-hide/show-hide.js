@@ -12,7 +12,7 @@ const display = [],
 	$.fn[func] = function (show) {
 
 		// for toggle they can set the show value
-		if (n === 2 && typeof show !== "undefined") {
+		if (n === 2 && show !== undefined) {
 			n = parseInt(show);
 		}
 

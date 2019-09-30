@@ -70,6 +70,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         assert.ok(dabbyScriptSuccess, "Javascript file included successfully");
         done();
       }
+    });
+    var action = $$1("impossible").attr("action");
+    $$1.ajax(action, {
+      success: function success(response) {
+        console.log(response);
+      }
     }); // jsonp
 
     /*$.ajax("../tests/assets/jsonp.js", {dataType: "jsonp", success: function (response, status) {
@@ -455,6 +461,17 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       type: "radio",
       name: "radio",
       value: "radio2"
+    })),
+        select = $$1("<select>").append($$1("<option>", {
+      text: "Select item"
+    })).append($$1("<option>", {
+      value: 1,
+      text: "Item 1"
+    })).append($$1("<option>", {
+      value: 2,
+      text: "Item 2"
+    })).append($$1("<option>", {
+      text: "3"
     }));
     assert.equal(obj.val(), "test", "Can read value");
     assert.deepEqual(obj.val("new value"), obj, "Returns self when setting value");
@@ -474,7 +491,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     assert.equal(text.val(), "new value", "Can set and read value from textarea");
     assert.equal(radio.val(), "radio1", "Can retrieve value of radio box");
     assert.equal(radio.val(["radio2"]), radio, "Can set value of radio box");
-    assert.equal(radio.filter(":checked").val(), "radio2", "Can get value of radio box");
+    assert.equal(radio.filter(":checked").val(), "radio2", "Can retrieve value of radio box");
+    assert.equal("Select item", select.val(), "Can retrieve value of select box");
+    select.val(2);
+    assert.equal("2", select.val(), "Can set value of select box");
+    select.val(3);
+    assert.equal("3", select.val(), "Can set value of select box that has no value attribute");
   });
   QUnit.module("Core"); // add mouseevent support
 
