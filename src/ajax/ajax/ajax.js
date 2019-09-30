@@ -18,7 +18,7 @@ $.ajax = (url, settings) => {
 	// set default settings
 	settings = Object.assign({
 		method: "GET",
-		cache: null, // start will null so we can see if explicitly set
+		cache: null, // start with null so we can see if explicitly set
 		data: null,
 		dataType: null, // only changes behavior with json, jsonp, script
 		async: true,

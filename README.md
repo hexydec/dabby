@@ -84,3 +84,7 @@ If the issue still persists, you can create an issue for it in the tracker.
 If you find an issue with dabby.js, please create an issue in the tracker, fork the code, fix the issue, then create a pull request, and I will evaluate your submission.
 
 Also look at the [To Do list](docs/todo.md) and the [coding style guide](docs/codestyle.md).
+
+## Licence
+
+The MIT License (MIT). Please see [License File](LICENCE) for more information.

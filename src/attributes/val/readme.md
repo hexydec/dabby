@@ -22,7 +22,7 @@ A callback that receives the index of the element in the collection, and the cur
 
 ## Returns
 
-The original Dabby collection when setting, or the current value when getting, or undefined if the collection is empty.
+The original Dabby collection when setting the value, or the current value when getting, or undefined if the collection is empty.
 
 ## Example
 
