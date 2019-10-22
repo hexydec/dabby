@@ -6,7 +6,7 @@ import "../../utils/each/each.js";
 $.ajax = (url, settings) => {
 
 	// normalise args
-	if (typeof url === "object") {
+	if (url !== null && typeof url === "object") {
 		settings = url;
 	} else {
 		if (typeof settings !== "object") {
