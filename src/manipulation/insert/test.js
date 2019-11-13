@@ -101,6 +101,13 @@ QUnit.module("Manipulation", function (hooks) {
 			same.push(this.isSameNode(copy[0]));
 		});
 		assert.deepEqual([false, false, true], same, "The correct nodes were cloned or moved");
+
+		// test inserting with function on multiple elements
+		test.innerHTML = '<div class="testtemp"><div class="first">First</div><div class="second">Second</div></div>';
+		$(".test div").after(function () {
+			return $("<span>", {"class": "after"});
+		});
+		assert.equal('<div class="testtemp"><div class="first">First</div><span class="after"></span><div class="second">Second</div><span class="after"></span></div><span class="after"></span>', test.innerHTML, "Can insert multiple nodes using a callback");
 	});
 
 	hooks.after(() => {

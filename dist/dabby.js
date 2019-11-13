@@ -171,7 +171,7 @@ $.param = obj => {
 $.ajax = (url, settings) => {
 
 	// normalise args
-	if (typeof url === "object") {
+	if (url !== null && typeof url === "object") {
 		settings = url;
 	} else {
 		if (typeof settings !== "object") {
@@ -183,7 +183,7 @@ $.ajax = (url, settings) => {
 	// set default settings
 	settings = Object.assign({
 		method: "GET",
-		cache: null, // start will null so we can see if explicitly set
+		cache: null, // start with null so we can see if explicitly set
 		data: null,
 		dataType: null, // only changes behavior with json, jsonp, script
 		async: true,
@@ -1261,19 +1261,23 @@ $.each({
 	$.fn[name] = function (...content) {
 		let elems,
 			i = this.length,
-			len = i;
-
-		// retireve nodes from function
-		if ($.isFunction(content[0])) {
-			elems = $(getVal(this, content[0], obj => obj.innerHTML));
+			len = i,
+			isFunc = $.isFunction(content[0]);
 
 		// multiple arguments containing nodes
-		} else {
+		if (!isFunc) {
 			elems = content.reduce((dabby, item) => dabby.add(item), $());
 		}
 
 		// insert objects onto each element in collection
 		while (i--) {
+
+			// retrieve nodes from function
+			if (isFunc) {
+				elems = getVal([this[i]], content[0], obj => obj.innerHTML).reduce((dabby, item) => dabby.add(item), $()); // getVal() returns an array so the items need merging into a collection
+			}
+
+			// insert nodes
 			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?

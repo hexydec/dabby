@@ -14,7 +14,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   $$1 = $$1 && $$1.hasOwnProperty('default') ? $$1['default'] : $$1;
   QUnit.module("Ajax");
   QUnit.test("$.ajax", function (assert) {
-    assert.expect(15);
+    assert.expect(17);
     var done = assert.async(8);
     $$1.ajax("../tests/assets/sample.html", {
       success: function success(response, status) {
@@ -73,8 +73,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     });
     var action = $$1("impossible").attr("action");
     $$1.ajax(action, {
-      success: function success(response) {
-        console.log(response);
+      success: function success(response, status) {
+        assert.equal(status, "success", "Can fetch file when settings.url not set");
+        assert.ok(response.indexOf("<title>Dabby.js Test Page</title>") > -1, "Current URL is fetched when settings.url is not set");
       }
     }); // jsonp
 
@@ -1200,7 +1201,15 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       $$1(".testtemp .copy").each(function (i) {
         same.push(this.isSameNode(copy[0]));
       });
-      assert.deepEqual([false, false, true], same, "The correct nodes were cloned or moved");
+      assert.deepEqual([false, false, true], same, "The correct nodes were cloned or moved"); // test inserting with function on multiple elements
+
+      test.innerHTML = '<div class="testtemp"><div class="first">First</div><div class="second">Second</div></div>';
+      $$1(".test div").after(function () {
+        return $$1("<span>", {
+          "class": "after"
+        });
+      });
+      assert.equal('<div class="testtemp"><div class="first">First</div><span class="after"></span><div class="second">Second</div><span class="after"></span></div><span class="after"></span>', test.innerHTML, "Can insert multiple nodes using a callback");
     });
     hooks.after(function () {
       test.innerHTML = "";

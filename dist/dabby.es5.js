@@ -269,7 +269,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   $.ajax = function (url, settings) {
     // normalise args
-    if (_typeof(url) === "object") {
+    if (url !== null && _typeof(url) === "object") {
       settings = url;
     } else {
       if (_typeof(settings) !== "object") {
@@ -281,10 +281,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
     settings = Object.assign({
-      url: location.pathname,
       method: "GET",
       cache: null,
-      // start will null so we can see if explicitly set
+      // start with null so we can see if explicitly set
       data: null,
       dataType: null,
       // only changes behavior with json, jsonp, script
@@ -305,7 +304,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       username: null,
       password: null,
       xhrFields: {}
-    }, settings); // determine datatype
+    }, settings); // set to itself
+
+    if (settings.url == null) {
+      // double equals as also captures undefined
+      settings.url = location.href;
+    } // determine datatype
+
 
     if (!settings.dataType && settings.url.split("?")[0].split(".").pop() === "js") {
       settings.dataType = "script";
@@ -573,7 +578,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $.each(obj, function (i, item) {
       var result = callback.call(window, item, i);
 
-      if ([null, undefined].indexOf(result) === -1) {
+      if (result != null) {
+        // double equals to capture undefined also
         arr = arr.concat(Array.isArray(result) ? result : [result]);
       }
     });
@@ -1085,7 +1091,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // attach function
     $.fn[func] = function (show) {
       // for toggle they can set the show value
-      if (n === 2 && typeof show !== "undefined") {
+      if (n === 2 && show !== undefined) {
         n = parseInt(show);
       } // loop through each node
 
@@ -1470,19 +1476,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var pre = ["prepend", "after"].indexOf(name) > -1; // the function
 
     $.fn[name] = function () {
-      var elems,
-          i = this.length,
-          len = i; // retireve nodes from function
-
       for (var _len3 = arguments.length, content = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
         content[_key3] = arguments[_key3];
       }
 
-      if ($.isFunction(content[0])) {
-        elems = $(getVal(this, content[0], function (obj) {
-          return obj.innerHTML;
-        })); // multiple arguments containing nodes
-      } else {
+      var elems,
+          i = this.length,
+          len = i,
+          isFunc = $.isFunction(content[0]); // multiple arguments containing nodes
+
+      if (!isFunc) {
         elems = content.reduce(function (dabby, item) {
           return dabby.add(item);
         }, $());
@@ -1490,6 +1493,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
       while (i--) {
+        // retrieve nodes from function
+        if (isFunc) {
+          elems = getVal([this[i]], content[0], function (obj) {
+            return obj.innerHTML;
+          }).reduce(function (dabby, item) {
+            return dabby.add(item);
+          }, $()); // getVal() returns an array so the items need merging into a collection
+        } // insert nodes
+
+
         var backwards = elems.length,
             // for counting down
         forwards = -1; // for counting up
