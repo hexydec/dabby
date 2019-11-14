@@ -941,7 +941,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   $.isPlainObject = function (obj) {
     // Basic check for Type object that's not null
-    if (_typeof(obj) === "object" && obj !== null) {
+    if (obj !== null && _typeof(obj) === "object") {
       // If Object.getPrototypeOf supported, use it
       if (typeof Object.getPrototypeOf === 'function') {
         var proto = Object.getPrototypeOf(obj);

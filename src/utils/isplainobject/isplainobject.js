@@ -3,7 +3,7 @@ import $ from "../../core/core.js";
 $.isPlainObject = obj => {
 
 	// Basic check for Type object that's not null
-	if (typeof obj === "object" && obj !== null) {
+	if (obj !== null && typeof obj === "object") {
 
 		// If Object.getPrototypeOf supported, use it
 	    if (typeof Object.getPrototypeOf === 'function') {
