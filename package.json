@@ -45,6 +45,6 @@
     "url": "git+https://github.com/hexydec/dabby.git"
   },
   "dependencies": {
-    "save": "^2.3.3"
+    "save": "^2.4.0"
   }
 }
