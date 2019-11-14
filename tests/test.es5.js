@@ -1,13 +1,5 @@
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
 (function ($$1) {
   'use strict';
 
@@ -474,9 +466,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     })).append($$1("<option>", {
       text: "3"
     }));
-    assert.equal(obj.val(), "test", "Can read value");
-    assert.deepEqual(obj.val("new value"), obj, "Returns self when setting value");
-    assert.equal(obj.val(), "new value", "Can set value");
+    assert.equal("test", obj.val(), "Can read value");
+    assert.deepEqual(obj, obj.val("new value"), "Returns self when setting value");
+    assert.equal("new value", obj.val(), "Can set value");
     multi.multiple = true;
 
     for (; i < 10; i += 1) {
@@ -489,15 +481,15 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     obj = $$1(multi).val([1, 3, 5]);
     assert.deepEqual(obj.val(), ["1", "3", "5"], "Can set and read multiple values");
     text.val("new value");
-    assert.equal(text.val(), "new value", "Can set and read value from textarea");
-    assert.equal(radio.val(), "radio1", "Can retrieve value of radio box");
-    assert.equal(radio.val(["radio2"]), radio, "Can set value of radio box");
-    assert.equal(radio.filter(":checked").val(), "radio2", "Can retrieve value of radio box");
-    assert.equal("Select item", select.val(), "Can retrieve value of select box");
+    assert.equal("new value", text.val(), "Can set and read value from textarea");
+    assert.equal("radio1", radio.val(), "Can retrieve value of radio box");
+    assert.equal(radio, radio.val(["radio2"]), "Can set value of radio box");
+    assert.equal("radio2", radio.filter(":checked").val(), "Can retrieve value of radio box");
+    assert.equal(select.val(), "Select item", "Can retrieve value of select box");
     select.val(2);
-    assert.equal("2", select.val(), "Can set value of select box");
+    assert.equal(select.val(), "2", "Can set value of select box");
     select.val(3);
-    assert.equal("3", select.val(), "Can set value of select box that has no value attribute");
+    assert.equal(select.val(), "3", "Can set value of select box that has no value attribute");
   });
   QUnit.module("Core"); // add mouseevent support
 
@@ -804,9 +796,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   var $ = function dabby(selector, context) {
     // if no selector, return empty colletion
     if (this instanceof dabby) {
-      // build nodes into a set (Which only allows unique items), then filter only element, document, documentFragment and window
-      var _nodes = _toConsumableArray(new Set(Array.from(selector))).filter(function (node) {
-        return [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node);
+      // check node is unique, then filter only element, document, documentFragment and window
+      var _nodes = Array.from(selector).filter(function (node, i, self) {
+        return self.indexOf(node) === i && ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node));
       });
 
       Object.assign(this, _nodes); // only unique nodes
@@ -967,13 +959,16 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
   var getVal = function getVal(obj, val, current) {
     var i = obj.length,
-        values = [],
-        funcVal = $.isFunction(val),
-        objVal = funcVal ? 0 : $.isPlainObject(val),
-        funcCurrent = $.isFunction(current);
+        values = [];
 
-    while (i--) {
-      values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : objVal ? Object.create(val) : val;
+    if (i) {
+      var funcVal = $.isFunction(val),
+          objVal = funcVal ? 0 : $.isPlainObject(val),
+          funcCurrent = $.isFunction(current);
+
+      while (i--) {
+        values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : objVal ? Object.create(val) : val;
+      }
     }
 
     return values;

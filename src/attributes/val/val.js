@@ -11,21 +11,22 @@ $.fn.val = function (value) {
 			values = getVal(this, value, obj => obj.val());
 
 		while (i--) {
-
-			// string value, just set to value attribute
-			if (!Array.isArray(values[i])) {
-				this[i].value = values[i];
+			const isArr = Array.isArray(values[i]);
 
 			// array on select, set matching values to selected
-			} else if (this[i].type === "select-multiple") {
-				values[i] = values[i].map(val => String(val));
+			if (this[i].type.indexOf("select") > -1) {
+				values[i] = (isArr ? values[i] : [values[i]]).map(val => "" + val);
 				$("option", this[i]).each((key, obj) => {
-					obj.selected = values[i].indexOf(obj.value) > -1;
+					obj.selected = values[i].indexOf(obj.value || obj.text) > -1;
 				});
 
 			// set the checked attribute for radios and checkbox
-			} else {
+			} else if (isArr) {
 				this[i].checked = values[i].indexOf(this[i].value) > -1;
+
+			// string value, just set to value attribute
+			} else {
+				this[i].value = values[i];
 			}
 		}
 		return this;

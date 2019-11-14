@@ -1,5 +1,7 @@
 import $ from "../../core/core.js";
 import getVal from "../../utils/isfunction/isfunction.js";
+import "../../traversal/eq/eq.js";
+import "../../manipulation/clone/clone.js";
 
 $.fn.wrapAll = function (html) {
 	if (this[0]) {
@@ -10,7 +12,7 @@ $.fn.wrapAll = function (html) {
 		// set variables
 		let len = this.length,
 			i = 0,
-			node = $(html)[0].cloneNode(true);
+			node = $(html).eq(0).clone(true).get(0);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);

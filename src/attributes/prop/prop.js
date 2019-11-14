@@ -9,26 +9,26 @@ $.fn.prop = function (prop, value) {
 	// set
 	if (value !== undefined || isObj) {
 
-		// normalise values
-		if (!isObj) {
-			const tmp = {};
-			tmp[prop] = value;
-			prop = tmp;
-		}
+		// only work if there are nodes to work on
+		if (this.length) {
 
-		// retrieve values
-		let values = {};
-		$.each(prop, (key, val) => {
-			values[getProp(key)] = getVal(this, val, obj => obj[key]);
-		});
-
-		// set properties
-		$.each(values, (key, val) => {
-			let i = this.length;
-			while (i--) {
-				this[i][key] = val[i];
+			// normalise values
+			if (!isObj) {
+				const tmp = {};
+				tmp[prop] = value;
+				prop = tmp;
 			}
-		});
+
+			// set properties
+			$.each(prop, (key, val) => {
+				val = getVal(this, val, obj => obj[key]);
+				key = getProp(key); // do after
+				let i = this.length;
+				while (i--) {
+					this[i][key] = val[i];
+				}
+			});
+		}
 		return this;
 	}
 

@@ -2,6 +2,7 @@ import $ from "../../core/core.js";
 import "../../utils/isfunction/isfunction.js";
 import "../../traversal/add/add.js";
 import getVal from "../../internal/getval/getval.js";
+import "../../manipulation/clone/clone.js";
 
 $.each({
 	before: "beforeBegin",
@@ -37,7 +38,7 @@ $.each({
 			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? backwards : forwards] : elems[pre ? backwards : forwards].cloneNode(true));
+				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? backwards : forwards] : elems.eq(pre ? backwards : forwards).clone(true)[0]);
 			}
 		}
 		return this;

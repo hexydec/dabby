@@ -17,9 +17,9 @@ QUnit.test("$.fn.val", function (assert) {
 			.append($("<option>", {value: 2, text: "Item 2"}))
 			.append($("<option>", {text: "3"}));
 
-	assert.equal(obj.val(), "test", "Can read value");
-	assert.deepEqual(obj.val("new value"), obj, "Returns self when setting value");
-	assert.equal(obj.val(), "new value", "Can set value");
+	assert.equal("test", obj.val(), "Can read value");
+	assert.deepEqual(obj, obj.val("new value"), "Returns self when setting value");
+	assert.equal("new value", obj.val(), "Can set value");
 
 	multi.multiple = true;
 	for (; i < 10; i += 1) {
@@ -33,15 +33,15 @@ QUnit.test("$.fn.val", function (assert) {
 	assert.deepEqual(obj.val(), ["1","3","5"], "Can set and read multiple values");
 
 	text.val("new value");
-	assert.equal(text.val(), "new value", "Can set and read value from textarea");
+	assert.equal("new value", text.val(), "Can set and read value from textarea");
 
-	assert.equal(radio.val(), "radio1", "Can retrieve value of radio box");
-	assert.equal(radio.val(["radio2"]), radio, "Can set value of radio box");
-	assert.equal(radio.filter(":checked").val(), "radio2", "Can retrieve value of radio box");
+	assert.equal("radio1", radio.val(), "Can retrieve value of radio box");
+	assert.equal(radio, radio.val(["radio2"]), "Can set value of radio box");
+	assert.equal("radio2", radio.filter(":checked").val(), "Can retrieve value of radio box");
 
-	assert.equal("Select item", select.val(), "Can retrieve value of select box");
+	assert.equal(select.val(), "Select item", "Can retrieve value of select box");
 	select.val(2);
-	assert.equal("2", select.val(), "Can set value of select box");
+	assert.equal(select.val(), "2", "Can set value of select box");
 	select.val(3);
-	assert.equal("3", select.val(), "Can set value of select box that has no value attribute");
+	assert.equal(select.val(), "3", "Can set value of select box that has no value attribute");
 });

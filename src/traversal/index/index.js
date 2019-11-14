@@ -1,7 +1,6 @@
 import $ from "../../core/core.js";
 
 $.fn.index = function (selector) {
-
 	if (this[0]) {
 		let nodes,
 			subject = this[0],

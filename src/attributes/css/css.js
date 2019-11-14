@@ -18,10 +18,13 @@ $.fn.css = function (props, value) {
 			output = {},
 			ret = false;
 
+		// requested single value, normalise to array
 		if (typeof name === "string") {
 			props = [name];
 			ret = true;
 		}
+
+		// gather values
 		i = props.length;
 		while (i--) {
 			output[props[i]] = style[camelise(props[i])];

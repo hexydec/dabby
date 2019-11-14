@@ -9,21 +9,23 @@ const funcs = [];
 
 	// create function
 	$.fn[func] = function (cls, state) {
-		let i = this.length,
-			values = getVal(this, cls, obj => obj.className),
-			key = f;
+		if (this.length) {
+			let i = this.length,
+				values = getVal(this, cls, obj => obj.className),
+				key = f;
 
-		if (func === "toggleClass" && typeof state === "boolean") {
-			key = 0 + state;
-		}
-
-		// manage classes on nodes
-		while (i--) {
-			if (typeof values[i] === "string") {
-				values[i] = values[i].split(" ");
+			if (func === "toggleClass" && typeof state === "boolean") {
+				key = 0 + state;
 			}
-			for (let n = 0, len = values[i].length; n < len; n++) {
-				this[i].classList[funcs[key]](values[i][n]);
+
+			// manage classes on nodes
+			while (i--) {
+				if (typeof values[i] === "string") {
+					values[i] = values[i].split(" ");
+				}
+				for (let n = 0, len = values[i].length; n < len; n++) {
+					this[i].classList[funcs[key]](values[i][n]);
+				}
 			}
 		}
 		return this;

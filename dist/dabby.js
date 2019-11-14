@@ -5,8 +5,10 @@ const $ = function dabby(selector, context) {
 	// if no selector, return empty colletion
 	if (this instanceof dabby) {
 
-		// build nodes into a set (Which only allows unique items), then filter only element, document, documentFragment and window
-		const nodes = [...new Set(Array.from(selector))].filter(node => [1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node));
+		// check node is unique, then filter only element, document, documentFragment and window
+		const nodes = Array.from(selector).filter(
+			(node, i, self) => self.indexOf(node) === i && ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node))
+		);
 		Object.assign(this, nodes); // only unique nodes
 		this.length = nodes.length;
 		return this;
@@ -453,12 +455,14 @@ $.fn.load = function (url, data, success) {
 
 var getVal = (obj, val, current) => {
 	let i = obj.length,
-		values = [],
-		funcVal = $.isFunction(val),
-		objVal = funcVal ? 0 : $.isPlainObject(val),
-		funcCurrent = $.isFunction(current);
-	while (i--) {
-		values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : (objVal ? Object.create(val) : val);
+		values = [];
+	if (i) {
+		const funcVal = $.isFunction(val),
+			objVal = funcVal ? 0 : $.isPlainObject(val),
+			funcCurrent = $.isFunction(current);
+		while (i--) {
+			values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : (objVal ? Object.create(val) : val);
+		}
 	}
 	return values;
 };
@@ -483,20 +487,20 @@ $.fn.val = function (value) {
 
 		while (i--) {
 
-			// string value, just set to value attribute
-			if (!Array.isArray(values[i])) {
-				this[i].value = values[i];
-
 			// array on select, set matching values to selected
-			} else if (this[i].type === "select-multiple") {
-				values[i] = values[i].map(val => String(val));
+			if (this[i].type.indexOf("select") > -1) {
+				values[i] = (Array.isArray(values[i]) ? values[i] : [values[i]]).map(val => "" + val);
 				$("option", this[i]).each((key, obj) => {
-					obj.selected = values[i].indexOf(obj.value) > -1;
+					obj.selected = values[i].indexOf(obj.value || obj.text) > -1;
 				});
 
 			// set the checked attribute for radios and checkbox
-			} else {
+			} else if (["checkbox", "radio"].indexOf(this[i].type) > -1) {
 				this[i].checked = values[i].indexOf(this[i].value) > -1;
+
+			// string value, just set to value attribute
+			} else {
+				this[i].value = values[i];
 			}
 		}
 		return this;
@@ -602,53 +606,54 @@ $.fn.add = function (nodes, context) {
 // add and remove event handlers
 ["on", "one"].forEach(name => {
 	$.fn[name] = function (events, selector, data, callback) {
+		if (this.length) {
 
-		// sort out args
-		events = events.split(" ");
-		if ($.isFunction(selector)) {
-			callback = selector;
-			selector = undefined;
-		} else if ($.isFunction(data)) {
-			callback = data;
-			data = undefined;
-		}
-
-		// attach event
-		let i = this.length;
-		while (i--) {
-			let e = events.length;
-
-			// record the original function
-			if (!this[i].events) {
-				this[i].events = [];
+			// sort out args
+			if (!Array.isArray(events)) {
+				events = events.split(" ");
 			}
-			let fn = function (evt) { // delegate function
-				let target = [this];
-				if (selector) {
-					let t = $(evt.target);
-					target = t.add(t.parents()).filter(selector).get(); // is the selector in the targets parents?
-				}
-				if (target) {
-					evt.data = data; // set data to event object
-					for (let i = 0, len = target.length; i < len; i++) {
-						if (callback.call(target[i], evt, evt.args) === false) {
-							evt.preventDefault();
-							evt.stopPropagation();
-						}
-					}
-				}
-			};
-			this[i].events.push({
-				events: events,
-				callback: callback,
-				selector: selector,
-				func: fn,
-				once: name === "one"
-			});
+			if ($.isFunction(selector)) {
+				callback = selector;
+				selector = undefined;
+			} else if ($.isFunction(data)) {
+				callback = data;
+				data = undefined;
+			}
 
-			// trigger
-			while (e--) {
-				this[i].addEventListener(events[e], fn, {once: name === "one", capture: !!selector});
+			// attach event
+			let i = this.length;
+			while (i--) {
+
+				// record the original function
+				if (!this[i].events) {
+					this[i].events = [];
+				}
+				let event = {
+					events: events,
+					selector: selector,
+					data: data,
+					callback: callback,
+					func: evt => { // delegate function
+						const target = selector ? $(selector, evt.currentTarget).filter(evt.target).get() : [evt.currentTarget];
+						if (target.length) {
+							evt.data = data; // set data to event object
+							for (let n = 0, len = target.length; n < len; n++) {
+								if (callback.call(target[n], evt, evt.args) === false) {
+									evt.preventDefault();
+									evt.stopPropagation();
+								}
+							}
+						}
+					},
+					once: name === "one"
+				};
+				this[i].events.push(event);
+
+				// trigger
+				let e = events.length;
+				while (e--) {
+					this[i].addEventListener(events[e], event.func, {once: name === "one", capture: !!selector});
+				}
 			}
 		}
 		return this;
@@ -658,48 +663,48 @@ $.fn.add = function (nodes, context) {
 var events = ["focusin", "focusout", "focus", "blur", "resize", "scroll", "unload", "click", "dblclick", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "mouseenter", "mouseleave", "contextmenu", "change", "select", "keydown", "keypress", "keyup", "error", "submit"];
 
 $.fn.attr = function (prop, value) {
-	let isObj = typeof prop !== "string",
-		obj = {};
+	if (this.length) {
+		let isObj = typeof prop !== "string",
+			obj = {};
 
-	// set properties
-	if (isObj || value !== undefined) {
+		// set properties
+		if (isObj || value !== undefined) {
 
-		// normalise to object
-		if (!isObj) {
-			obj[prop] = value;
-			prop = obj;
-		}
+			// normalise to object
+			if (!isObj) {
+				obj[prop] = value;
+				prop = obj;
+			}
 
-		$.each(prop, (key, val) => {
+			$.each(prop, (key, val) => {
 
-			// if event, hand it off to $.fn.on()
-			if (events.indexOf(key) > -1) {
-				this.on(key, val);
+				// if event, hand it off to $.fn.on()
+				if (events.indexOf(key) > -1) {
+					this.on(key, val);
 
-			// process other values
-			} else {
-				let i = this.length,
-					values = getVal(this, val, obj => $(obj).attr(key));
-				while (i--) {
-					if (key === "style") {
-						this[i].style.cssText = values[i];
-					} else if (key === "class") {
-						this[i].className = values[i];
-					} else if (key === "text") {
-						this[i].textContent = values[i];
-					} else if (values[i] === null) {
-						this[i].removeAttribute(key);
-					} else {
-						this[i].setAttribute(key, values[i]);
+				// process other values
+				} else {
+					let i = this.length,
+						values = getVal(this, val, obj => $(obj).attr(key));
+					while (i--) {
+						if (key === "style") {
+							this[i].style.cssText = values[i];
+						} else if (key === "class") {
+							this[i].className = values[i];
+						} else if (key === "text") {
+							this[i].textContent = values[i];
+						} else if (values[i] === null) {
+							this[i].removeAttribute(key);
+						} else {
+							this[i].setAttribute(key, values[i]);
+						}
 					}
 				}
-			}
-		});
-		return this;
-	}
+			});
+			return this;
+		}
 
-	// retrieve properties
-	if (this[0]) {
+		// retrieve properties
 		if (prop === "style") {
 			return this[0].style.cssText;
 		}
@@ -718,21 +723,23 @@ const funcs = [];
 
 	// create function
 	$.fn[func] = function (cls, state) {
-		let i = this.length,
-			values = getVal(this, cls, obj => obj.className),
-			key = f;
+		if (this.length) {
+			let i = this.length,
+				values = getVal(this, cls, obj => obj.className),
+				key = f;
 
-		if (func === "toggleClass" && typeof state === "boolean") {
-			key = 0 + state;
-		}
-
-		// manage classes on nodes
-		while (i--) {
-			if (typeof values[i] === "string") {
-				values[i] = values[i].split(" ");
+			if (func === "toggleClass" && typeof state === "boolean") {
+				key = 0 + state;
 			}
-			for (let n = 0, len = values[i].length; n < len; n++) {
-				this[i].classList[funcs[key]](values[i][n]);
+
+			// manage classes on nodes
+			while (i--) {
+				if (typeof values[i] === "string") {
+					values[i] = values[i].split(" ");
+				}
+				for (let n = 0, len = values[i].length; n < len; n++) {
+					this[i].classList[funcs[key]](values[i][n]);
+				}
 			}
 		}
 		return this;
@@ -774,17 +781,20 @@ $.fn.css = function (props, value) {
 	}
 
 	// retrieve value from first property
-	if (this[0]) {
+	if (this.length) {
 		let name = props,
 			i,
 			style = getComputedStyle(this[0], ""),
 			output = {},
 			ret = false;
 
+		// requested single value, normalise to array
 		if (typeof name === "string") {
 			props = [name];
 			ret = true;
 		}
+
+		// gather values
 		i = props.length;
 		while (i--) {
 			output[props[i]] = style[camelise(props[i])];
@@ -880,26 +890,26 @@ $.fn.prop = function (prop, value) {
 	// set
 	if (value !== undefined || isObj) {
 
-		// normalise values
-		if (!isObj) {
-			const tmp = {};
-			tmp[prop] = value;
-			prop = tmp;
-		}
+		// only work if there are nodes to work on
+		if (this.length) {
 
-		// retrieve values
-		let values = {};
-		$.each(prop, (key, val) => {
-			values[getProp(key)] = getVal(this, val, obj => obj[key]);
-		});
-
-		// set properties
-		$.each(values, (key, val) => {
-			let i = this.length;
-			while (i--) {
-				this[i][key] = val[i];
+			// normalise values
+			if (!isObj) {
+				const tmp = {};
+				tmp[prop] = value;
+				prop = tmp;
 			}
-		});
+
+			// set properties
+			$.each(prop, (key, val) => {
+				val = getVal(this, val, obj => obj[key]);
+				key = getProp(key); // do after
+				let i = this.length;
+				while (i--) {
+					this[i][key] = val[i];
+				}
+			});
+		}
 		return this;
 	}
 
@@ -1176,47 +1186,83 @@ events.forEach(event => {
 
 // add and remove event handlers
 $.fn.off = function (events, selector, data, callback) {
+	if (this.length) {
 
-	// sort out args
-	events = events.split(" ");
-	if ($.isFunction(selector)) {
-		callback = selector;
-		selector = undefined;
-	} else if ($.isFunction(data)) {
-		callback = data;
-		data = undefined;
-	}
+		// sort out args
+		events = events.split(" ");
+		if ($.isFunction(selector)) {
+			callback = selector;
+			selector = undefined;
+		} else if ($.isFunction(data)) {
+			callback = data;
+			data = undefined;
+		}
 
-	// attach event
-	let i = this.length;
-	while (i--) {
+		// attach event
+		let i = this.length;
+		while (i--) {
 
-		// find the original function
-		if (this[i].events.length) {
-			let e = events.length;
-			while (e--) {
-				this[i].events.forEach((evt, n) => {
-					const index = evt.events.indexOf(events[e]);
-					if (index !== -1 && (!callback || evt.callback === callback) && (!selector || evt.selector === selector)) {
-						this[i].removeEventListener(events[e], evt.func, {once: evt.once, capture: !!evt.selector}); // must pass same arguments
-						this[i].events[n].events.splice(index, 1);
-						if (!this[i].events[n].events.length) {
-							this[i].events.splice(n, 1);
+			// find the original function
+			if (this[i].events.length) {
+				let e = events.length;
+				while (e--) {
+					this[i].events.forEach((evt, n) => {
+						const index = evt.events.indexOf(events[e]);
+						if (index !== -1 && (!callback || evt.callback === callback) && (!selector || evt.selector === selector)) {
+							this[i].removeEventListener(events[e], evt.func, {once: evt.once, capture: !!evt.selector}); // must pass same arguments
+							this[i].events[n].events.splice(index, 1);
+							if (!this[i].events[n].events.length) {
+								this[i].events.splice(n, 1);
+							}
 						}
-					}
-				});
+					});
+				}
 			}
 		}
 	}
 	return this;
 };
 
-$.fn.clone = function () {
-	let nodes = [],
-		i = this.length;
+const copy = (from, to) => {
 
+	// copy data
+	Object.assign(to.dataset, from.dataset);
+
+	// copy events
+	if (from.events) {
+		from.events.forEach(e => {
+			$(to).on(e.events, e.selector, e.data, e.callback);
+		});
+	}
+};
+
+$.fn.clone = function (withDataAndEvents = false, deepWithDataAndEvents = null) {
+
+	// default for arg 2 is the same as arg 1
+	if (deepWithDataAndEvents === null) {
+		deepWithDataAndEvents = withDataAndEvents;
+	}
+
+	// clone nodes
+	let i = this.length,
+		nodes = [];
 	while (i--) {
 		nodes[i] = this[i].cloneNode(true);
+
+		// copy data and events for the new node
+		if (withDataAndEvents) {
+			copy(this[i], nodes[i]);
+		}
+
+		// copy data and events for the new node's children
+		if (deepWithDataAndEvents) {
+			const from = this[i].querySelectorAll("*"),
+				to = nodes[i].querySelectorAll("*");
+			let n = from.length;
+			while (n--) {
+				copy(from[n], to[n]);
+			}
+		}
 	}
 	return $(nodes);
 };
@@ -1281,7 +1327,7 @@ $.each({
 			let backwards = elems.length, // for counting down
 				forwards = -1; // for counting up
 			while (pre ? backwards-- : ++forwards < backwards) { // insert forwards or backwards?
-				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? backwards : forwards] : elems[pre ? backwards : forwards].cloneNode(true));
+				this[i].insertAdjacentElement(pos, i === len-1 ? elems[pre ? backwards : forwards] : elems.eq(pre ? backwards : forwards).clone(true)[0]);
 			}
 		}
 		return this;
@@ -1335,9 +1381,9 @@ $.each({
 			while (n--) {
 				const replace = isFunc ? getVal(target[n], n, target[n]) : target[n];
 				if (n) {
-					source[i].insertAdjacentElement("beforebegin", replace.cloneNode(true));
+					source[i].insertAdjacentElement("beforebegin", $(replace).clone(true).get(0));
 				} else {
-					source[i] = parent.replaceChild(i ? replace.cloneNode(true) : replace, source[i]);
+					source[i] = parent.replaceChild(i ? $(replace).clone(true).get(0) : replace, source[i]);
 				}
 			}
 		}
@@ -1379,6 +1425,10 @@ $.fn.unwrap = function (selector) {
 	return this;
 };
 
+$.fn.eq = function (i) {
+	return $(this[i < 0 ? i + this.length : i]);
+};
+
 $.fn.wrapAll = function (html) {
 	if (this[0]) {
 		if ($.isFunction(html)) {
@@ -1388,7 +1438,7 @@ $.fn.wrapAll = function (html) {
 		// set variables
 		let len = this.length,
 			i = 0,
-			node = $(html)[0].cloneNode(true);
+			node = $(html).eq(0).clone(true).get(0);
 
 		// insert clone into parent
 		this[0].parentNode.insertBefore(node, null);
@@ -1445,10 +1495,6 @@ $.fn.closest = function (selector, context) {
 	return $(nodes);
 };
 
-$.fn.eq = function (i) {
-	return $(this[i < 0 ? i + this.length : i]);
-};
-
 $.fn.find = function (selector) {
 	return $(selector, this);
 };
@@ -1462,7 +1508,6 @@ $.fn.has = function (selector) {
 };
 
 $.fn.index = function (selector) {
-
 	if (this[0]) {
 		let nodes,
 			subject = this[0],
