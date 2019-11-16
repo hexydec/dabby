@@ -956,6 +956,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     return false;
   };
+  /**
+   * compiles values for each object passed to it
+   *
+   * @param {array|object} obj An array or interatable object from which to generate values
+   * @param {mixed} val Can be a static primitive value, object, or function, objects will be cloned, functions will generate a value per item
+   * @param {mixed} current The current value or a callback to retrieve the current value
+   * @return {array} An array of values corresponding to each obj
+   */
+
 
   var getVal = function getVal(obj, val, current) {
     var i = obj.length,
@@ -967,7 +976,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           funcCurrent = $.isFunction(current);
 
       while (i--) {
-        values[i] = funcVal ? val.call(obj[i], i, funcCurrent ? current(obj[i]) : current) : objVal ? Object.create(val) : val;
+        if (funcVal) {
+          values[i] = val.call(obj[i], i, funcCurrent ? current(obj[i]) : current);
+        } else if (objVal) {
+          values[i] = Object.create(val);
+        } else {
+          values[i] = val;
+        }
       }
     }
 
