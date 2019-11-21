@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dabby.js Benchmark</title>
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<style>
+			body {
+				font-family: Segoe UI, Verdana, Arial, Helvetica, sans-serif;
+			}
+			.main {
+				max-width: 960px;
+				margin: 0 auto;
+			}
+			.heading {
+				font-weight: normal;
+			}
+			.logo {
+				vertical-align: top;
+				margin-right: 20px;
+			}
+			.benchmark {
+				width: 100%;
+				padding: 0;
+				border: 0;
+				margin: 0;
+				border-collapse: separate;
+				border-spacing: 0;
+				text-align: left;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main">
+			<h1 class="heading"><img src="../tests/dabby.js.svg" alt="Dabby.js" width="190" class="logo" />Benchmark Suite</h1>
+			<div class="test"></div>
+			<table class="benchmark">
+				<thead>
+					<tr class="benchmark__headerrow">
+						<th>Test</th>
+					</tr>
+				</thead>
+				<tbody class="benchmark__tests">
+
+				</tbody>
+			</table>
+			<button class="run">Run Benchmark</button>
+		</div>
+		<script src="../node_modules/lodash/lodash.js"></script>
+		<script src="../node_modules/platform/platform.js"></script>
+		<script src="../node_modules/benchmark/benchmark.js"></script>
+		<script src="suite.js" type="module"></script>
+	</body>
+</html>

@@ -2,6 +2,7 @@ module.exports = function (grunt) {
 	require("load-grunt-tasks")(grunt);
 	var banner = "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby */\n";
 	var path = require('path');
+	console.log(path.resolve(__dirname, "dist/dabby.js"));
 
 	// Project configuration.
 	grunt.initConfig({
@@ -31,8 +32,7 @@ module.exports = function (grunt) {
 					format: "es",
 					external: [
 						path.resolve(__dirname, "dist/dabby.js")
-					],
-					//globals: {[path.resolve(__dirname, "dist/dabby.js")]: "$"}
+					]
 				},
 				src: "src/test.js",
 				dest: "tests/test.js"
@@ -47,6 +47,21 @@ module.exports = function (grunt) {
 				},
 				src: "src/test.js",
 				dest: "tests/test.es5.js"
+			},
+			benchmark: {
+				options: {
+					format: "es",
+					external: [
+						"dabby",
+						"jQuery"
+					],
+					paths: {
+						dabby: "../dist/dabby.js",
+						jQuery: "../node_modules/jquery/dist/jquery.js"
+					}
+				},
+				src: "benchmark/src/index.js",
+				dest: "benchmark/suite.js"
 			}
 		},
 		babel: {
@@ -90,12 +105,16 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			main: {
-				files: ["src/**/*.js", "!src/**/test.js", "gruntfile.js", "package.json"],
+				files: ["src/**/*.js", "!src/**/test.js", "!src/**/benchmark.js", "gruntfile.js", "package.json"],
 				tasks: ["rollup:es6"]
 			},
 			test: {
 				files: ["gruntfile.js", "package.json", "src/test.js", "src/**/test.js", "src/internal/**/*.js"],
 				tasks: ["rollup:test"]
+			},
+			benchmark: {
+				files: ["gruntfile.js", "package.json", "src/benchmark.js", "src/**/benchmark.js"],
+				tasks: ["rollup:benchmark"]
 			}
 		}
 	});
