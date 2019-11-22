@@ -6,3 +6,6 @@ node_modules
 /tests/test.es5.js
 /tests/test.es5.js.map
 /dist
+/benchmark/suite.js
+/tests/test.js.map
+/tests/internals.js.map

@@ -6,7 +6,15 @@ export default $ => {
 			},
 			fn: () => {
 				$(".test").attr("style");
+			}
+		},
+		"attr#write-attr": {
+			cycle: () => {
+				$(".test").attr("style", "");
 			},
+			fn: () => {
+				$(".test").attr("style", "border:1px solid red");
+			}
 		}
 	}
 };

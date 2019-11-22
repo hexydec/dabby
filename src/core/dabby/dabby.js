@@ -13,13 +13,15 @@ const $ = function dabby(selector, context) {
 				if (selector[0] !== "<") {
 
 					// find nodes
-					if (!context) {
+					if (!context || context.length === 0) {
 						context = document;
 					} else if (typeof context === "string") {
 						context = document.querySelector(context);
 					} else if (context.length && !context.nodeType) {
 						context = context[0];
 					}
+
+					// if the context exists, filter
 					nodes = context.querySelectorAll(selector);
 
 				// create a single node and attach properties
