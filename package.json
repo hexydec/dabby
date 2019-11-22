@@ -27,7 +27,10 @@
     "defaults"
   ],
   "files": [
-    "dist/*.js"
+    "dist/*.js",
+	"src/**/*.js",
+	"!src/**/test.js",
+	"!src/**/benchmark.js"
   ],
   "devDependencies": {
     "@babel/core": "^7.7.2",
