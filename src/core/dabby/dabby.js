@@ -33,7 +33,7 @@ const $ = function dabby(selector, context) {
 
 				// parse HTML into nodes
 				} else {
-					nodes = $.parseHTML(selector, context && context.nodeType ? context.ownerDocument || context : document, true);
+					nodes = $.parseHTML(selector, context || document, true);
 				}
 
 			// $ collection
