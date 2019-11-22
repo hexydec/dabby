@@ -1,29 +1,29 @@
 export default $ => {
 	return {
-		'init#select-tag': () => {
+		'dabby#select-tag': () => {
 			$("div");
 		},
-		'init#select-class': () => {
+		'dabby#select-class': () => {
 			$(".test");
 		},
-		'init#select-id': () => {
+		'dabby#select-id': () => {
 			$("#test");
 		},
-		'init#select-complex': () => {
+		'dabby#select-complex': () => {
 			$("body #test div");
 		},
-		'init#create-node': () => {
+		'dabby#create-node': () => {
 			$("<div>");
 		},
-		'init#create-attr': () => {
+		'dabby#create-attr': () => {
 			$("<div>", {"class": "test-attr"});
 		},
-		'init#create-event': () => {
+		'dabby#create-event': () => {
 			$("<div>", {
 				click: function () {alert("clicked");}
 			});
 		},
-		'init#create-html': () => {
+		'dabby#create-html': () => {
 			$('<div class="test"><a href="https://github.com/hexydec/dabbyjs">Github</a></div>');
 		}
 	};

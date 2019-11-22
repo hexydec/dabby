@@ -808,7 +808,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               context = document;
             } else if (typeof context === "string") {
               context = document.querySelector(context);
-            } else if (context.length) {
+            } else if (context.length && !context.nodeType) {
               context = context[0];
             }
 
@@ -821,9 +821,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             } // parse HTML into nodes
 
           } else {
-            var obj = document.implementation.createHTMLDocument("");
-            obj.body.innerHTML = selector;
-            nodes = obj.body.children;
+            nodes = $.parseHTML(selector, context && context.nodeType ? context.ownerDocument || context : document, true);
           } // $ collection
 
         } else if (selector instanceof dabby) {
@@ -895,6 +893,43 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   $.isFunction = function (func) {
     return func && func.constructor === Function;
+  };
+
+  $.parseHTML = function (html, context) {
+    var runscripts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+    // sort out args
+    if (typeof context === "boolean") {
+      runscripts = context;
+      context = null;
+    } // prepare context
+
+
+    if (!context) {
+      context = document.implementation.createHTMLDocument("");
+    } // create a vessel to parse HTML into
+
+
+    var obj = context.createElement("div");
+    obj.innerHTML = html; // run scripts
+
+    if (runscripts && html.indexOf("<script") > -1) {
+      Array.from(obj.querySelectorAll("script")).forEach(function (item) {
+        var src = item.getAttribute("src"),
+            script = context.createElement("script");
+
+        if (src) {
+          script.src = src;
+        } else {
+          script.text = item.innerText;
+        }
+
+        context.head.appendChild(script);
+      });
+    } // extract nodes
+
+
+    return Array.from(obj.children);
   };
 
   var filterNodes = function filterNodes(dabby, filter, context, not) {

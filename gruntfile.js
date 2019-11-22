@@ -60,7 +60,7 @@ module.exports = function (grunt) {
 						jQuery: "../node_modules/jquery/dist/jquery.js"
 					}
 				},
-				src: "benchmark/src/index.js",
+				src: "src/benchmark.js",
 				dest: "benchmark/suite.js"
 			}
 		},

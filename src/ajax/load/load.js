@@ -2,6 +2,7 @@ import $ from "../../core/core.js";
 import "../../utils/isfunction/isfunction.js";
 import "../ajax/ajax.js";
 import "../../traversal/filter/filter.js";
+import "../../utils/parsehtml/parsehtml.js";
 
 $.fn.load = function (url, data, success) {
 	if (this[0]) {
@@ -29,33 +30,17 @@ $.fn.load = function (url, data, success) {
 
 				// refine by selector if supplied
 				if (selector) {
-					$(response).filter(selector).each((key, obj) => {
-						html += obj.outerHTML;
-					});
+					html = $(response, this[0].ownerDocument).filter(selector);
 				} else {
 					html = response;
 				}
 
-				const nodes = $(html).filter((i, item) => item.tagName.toLowerCase() === "script");
-
 				// set HTML to nodes in collection
-				while (i--) {
-					this[i].innerHTML = html;
-
-					// include any scripts as they won't execute with innerHTML
-					nodes.each((i, item) => {
-						const src = item.getAttribute("src"),
-							script = document.createElement("script");
-						if (src) {
-							script.src = src;
-						} else {
-							script.text = item.innerText;
-						}
-						document.head.appendChild(script);
-					});
+				this.append(html);
 
 					// fire success callback on nodes
-					if (success) {
+				if (success) {
+					while (i--) {
 						success.call(this[i], response, status, xhr);
 					}
 				}

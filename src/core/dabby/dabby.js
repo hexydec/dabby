@@ -17,7 +17,7 @@ const $ = function dabby(selector, context) {
 						context = document;
 					} else if (typeof context === "string") {
 						context = document.querySelector(context);
-					} else if (context.length) {
+					} else if (context.length && !context.nodeType) {
 						context = context[0];
 					}
 					nodes = context.querySelectorAll(selector);
@@ -33,9 +33,7 @@ const $ = function dabby(selector, context) {
 
 				// parse HTML into nodes
 				} else {
-					const obj = document.implementation.createHTMLDocument("");
-					obj.body.innerHTML = selector;
-					nodes = obj.body.children;
+					nodes = $.parseHTML(selector, context && context.nodeType ? context.ownerDocument || context : document, true);
 				}
 
 			// $ collection
