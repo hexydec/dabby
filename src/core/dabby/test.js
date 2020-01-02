@@ -55,4 +55,7 @@ QUnit.test("$.fn.init", function (assert) {
 	assert.ok(triggered, "Can create HTML objects and attached events");
 
 	assert.equal($(html).get(0).outerHTML, html, "Can create HTML nodes");
+
+	// empty node
+	assert.deepEqual($(".something-that-doesnt-exist").get(), [], "Returns empty collection when selection isn't available");
 });

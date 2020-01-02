@@ -1,5 +1,5 @@
 const $ = function dabby(selector, context) {
-	if (this) {
+	if (this instanceof dabby) {
 		let nodes = [],
 			match;
 
@@ -12,7 +12,7 @@ const $ = function dabby(selector, context) {
 				// CSS selector
 				if (selector[0] !== "<") {
 
-					// find nodes
+					// normalise context
 					if (!context) {
 						context = [document];
 					} else if (typeof context === "string") {
