@@ -13,6 +13,5 @@ export default prop => {
 		"frameborder": "frameBorder",
 		"contenteditable": "contentEditable"
 	};
-	prop = prop.toLowerCase();
-	return properties[prop] || prop;
+	return properties[prop.toLowerCase()] || prop;
 }

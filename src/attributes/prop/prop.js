@@ -10,7 +10,7 @@ $.fn.prop = function (prop, value) {
 	if (value !== undefined || isObj) {
 
 		// only work if there are nodes to work on
-		if (this.length) {
+		if (this[0]) {
 
 			// normalise values
 			if (!isObj) {
