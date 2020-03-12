@@ -58,4 +58,10 @@ QUnit.test("$.fn.init", function (assert) {
 
 	// empty node
 	assert.deepEqual($(".something-that-doesnt-exist").get(), [], "Returns empty collection when selection isn't available");
+
+	// test filtering by many nodes
+	test.innerHTML = '<table><tr><td>test 1</td></tr><tr><td>test 2</td></tr><tr><td>test 3</td></tr></table>';
+	assert.equal($("td", test.querySelectorAll("tr")).length, 3, "Can refine selection by multiple contexts sent as a node collection");
+	obj = $("tr", test);
+	assert.equal($("td", obj).length, 3, "Can refine selection by multiple contexts wrapped in a dabby object");
 });

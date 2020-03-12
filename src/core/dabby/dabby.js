@@ -23,7 +23,10 @@ const $ = function dabby(selector, context) {
 
 					// if the context exists, filter
 					if (context.length) {
-						nodes = context[0].querySelectorAll(selector);
+						let i = context.length;
+						while (i--) {
+							nodes = Array.from(context[i].querySelectorAll(selector)).concat(nodes);
+						}
 					}
 
 				// create a single node and attach properties
