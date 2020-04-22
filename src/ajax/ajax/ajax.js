@@ -23,7 +23,7 @@ $.ajax = (url, settings) => {
 		dataType: null, // only changes behavior with json, jsonp, script
 		async: true,
 		crossDomain: false,
-		scriptCharset: null,
+		scriptAttrs: {},
 		jsonp: "callback",
 		jsonpCallback: "dabby" + Date.now(),
 		headers: {
@@ -74,9 +74,9 @@ $.ajax = (url, settings) => {
 	// fetch script
 	if (sync || settings.crossDomain) {
 		script = document.createElement("script");
-		if (settings.scriptCharset) {
-			script.charset = settings.scriptCharset;
-		}
+		$.each(settings.scriptAttrs, (key, item) => {
+			script.setAttribute(key, item);
+		});
 
 		// add callback parameter
 		if (settings.dataType === "jsonp") {
