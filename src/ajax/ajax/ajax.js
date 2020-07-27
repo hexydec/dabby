@@ -30,7 +30,7 @@ $.ajax = (url, settings) => {
 			"X-Requested-With": "XMLHttpRequest"
 		},
 		xhr: () => new XMLHttpRequest(),
-		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		contentType: null,
 		context: null,
 		statusCode: {},
 		username: null,
