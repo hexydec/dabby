@@ -58,6 +58,45 @@ QUnit.module("Events", function (hooks) {
 		obj.off(name);
 		obj.trigger(name);
 		assert.equal(triggered, 2, "Events are removed from the correct object by event name");
+
+		// test adding multiple events
+		triggered = 0;
+		obj.on("test.trigger1 test.trigger2 test.trigger3", func);
+		obj.trigger("test.trigger1");
+		obj.trigger("test.trigger2");
+		obj.trigger("test.trigger3");
+		assert.equal(triggered, 3, "Multiple event can be specified");
+
+		// remove multiple events
+		obj.off("test.trigger1 test.trigger2 test.trigger3", func);
+		obj.trigger("test.trigger1");
+		obj.trigger("test.trigger2");
+		obj.trigger("test.trigger3");
+		assert.equal(triggered, 3, "Can remove multiple events");
+
+		// test adding multiple events as an object
+		triggered = 0;
+		obj.on({"test.trigger1 test.trigger2": func, "test.trigger3": func});
+		obj.trigger("test.trigger1");
+		obj.trigger("test.trigger2");
+		obj.trigger("test.trigger3");
+		assert.equal(triggered, 3, "Can add multiple event as an object");
+
+		// test removing multiple events as an object
+		obj.off({"test.trigger1 test.trigger2": func, "test.trigger3": func});
+		obj.trigger("test.trigger1");
+		obj.trigger("test.trigger2");
+		obj.trigger("test.trigger3");
+		assert.equal(triggered, 3, "Can remove multiple event as an object");
+
+		// remove all events
+		triggered = 0;
+		obj.on("test.trigger1 test.trigger2 test.trigger3", func);
+		obj.off();
+		obj.trigger("test.trigger1");
+		obj.trigger("test.trigger2");
+		obj.trigger("test.trigger3");
+		assert.equal(triggered, 0, "Can remove all events at once");
 	});
 
 	hooks.after(function () {

@@ -1,58 +1,56 @@
 {
-  "name": "dabbyjs",
-  "version": "0.9.11",
-  "homepage": "https://hexydec.github.io/dabby",
-  "author": "Will Earp <will@hexydec.com>",
-  "description": "A lightweight modular ES6 jQuery clone library built for modern browsers",
-  "keywords": [
-    "util",
-    "functional",
-    "jquery",
-    "client",
-    "browser",
-    "selector",
-    "alternative",
-    "javascript"
-  ],
-  "contributors": [],
-  "main": "dist/dabby.min.js",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hexydec/dabby/issues"
-  },
-  "scripts": {
-    "test": "grunt test"
-  },
-  "browserslist": [
-    "defaults"
-  ],
-  "files": [
-    "dist/*.js",
-	"src/**/*.js"
-  ],
-  "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/preset-env": "^7.7.1",
-    "babel-preset-minify": "^0.4.3",
-    "benchmark": "^2.1.4",
-    "grunt": "^1.0.4",
-    "grunt-babel": "^8.0.0",
-    "grunt-contrib-qunit": "^3.1.0",
-    "grunt-contrib-uglify": "^4.0.1",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-rollup": "^10.0.0",
-    "load-grunt-tasks": "^4.0.0",
-    "lodash": "^4.17.15",
-    "platform": "^1.3.5",
-    "qunitjs": "^2.4.1",
-    "rollup": "^1.27.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hexydec/dabby.git"
-  },
-  "dependencies": {
-    "jquery": "^3.4.1",
-    "save": "^2.4.0"
-  }
+	"name": "dabbyjs",
+	"version": "0.9.12",
+	"homepage": "https://hexydec.github.io/dabby",
+	"author": "Will Earp <will@hexydec.com>",
+	"description": "A lightweight modular ES6 jQuery clone library built for modern browsers",
+	"keywords": [
+		"util",
+		"functional",
+		"jquery",
+		"client",
+		"browser",
+		"selector",
+		"alternative",
+		"javascript"
+	],
+	"contributors": [],
+	"main": "dist/dabby.min.js",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/hexydec/dabby/issues"
+	},
+	"scripts": {
+		"test": "grunt test"
+	},
+	"browserslist": [
+		"defaults"
+	],
+	"files": [
+		"dist/*.js",
+		"src/**/*.js"
+	],
+	"devDependencies": {
+		"@babel/core": "^7.11.6",
+		"@babel/preset-env": "^7.11.5",
+		"babel-preset-minify": "^0.5.1",
+		"benchmark": "^2.1.4",
+		"grunt": "^1.3.0",
+		"grunt-babel": "^8.0.0",
+		"grunt-contrib-qunit": "^4.0.0",
+		"grunt-contrib-uglify": "^5.0.0",
+		"grunt-contrib-watch": "^1.1.0",
+		"grunt-rollup": "^11.4.0",
+		"load-grunt-tasks": "^5.1.0",
+		"lodash": "^4.17.20",
+		"platform": "^1.3.6",
+		"qunitjs": "^2.4.1",
+		"rollup": "^2.28.2",
+		"jquery": "^3.5.1",
+		"save": "^2.4.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hexydec/dabby.git"
+	}
 }

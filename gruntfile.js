@@ -72,8 +72,9 @@ module.exports = function (grunt) {
 				options: {
 					sourceMap: false,
 					presets: [
-						["minify", {mangle: {exclude: ["$"], topLevel: true, comments: false}}]
-					]
+						["minify", {mangle: {exclude: ["$"], topLevel: true}}]
+					],
+					comments: false
 				}
 			},
 			es5: {
