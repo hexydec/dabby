@@ -2,6 +2,7 @@ import $ from "../../core/core.js";
 import "../../utils/extend/extend.js";
 import "../param/param.js";
 import "../../utils/each/each.js";
+import "../../utils/isplainobject/isplainobject.js";
 
 $.ajax = (url, settings) => {
 
@@ -52,17 +53,15 @@ $.ajax = (url, settings) => {
 		join = settings.url.indexOf("?") > -1 ? "&" : "?",
 		script, data;
 
-	// add data to query string
+	// process data add data to query string for GET requests
 	if (settings.data) {
-		if (typeof settings.data === "string" || settings.data instanceof FormData) {
-			data = settings.data;
-		} else {
-			data = $.param(settings.data);
+		data = $.isPlainObject(settings.data) ? $.param(settings.data) : settings.data;
+
+		if (settings.method === "GET") {
+			settings.url += join + data;
+			join = "&";
+			data = null;
 		}
-	}
-	if (data && settings.method === "GET") {
-		settings.url += join + data;
-		join = "&";
 	}
 
 	// add cache buster
@@ -146,6 +145,9 @@ $.ajax = (url, settings) => {
 		xhr.open(settings.method, settings.url, settings.async, settings.username, settings.password);
 
 		// add headers
+		if (typeof data === "string" && !settings.contentType) {
+			settings.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+		}
 		if (settings.contentType) {
 			settings.headers["Content-Type"] = settings.contentType;
 		}
@@ -154,7 +156,7 @@ $.ajax = (url, settings) => {
 		});
 
 		// send request
-		xhr.send(settings.method === "GET" ? null : data);
+		xhr.send(data);
 		return xhr;
 	}
 };
