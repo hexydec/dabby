@@ -4,7 +4,7 @@ A lightweight modular jQuery clone/alternative library built for modern browsers
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-17.8kb-brightgreen.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-17.9kb-brightgreen.svg)
 ![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-6.50kb-brightgreen.svg)
 
 **This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
@@ -21,7 +21,7 @@ Dabby.js is a jQuery alternative designed to be as simple and streamlined as pos
 
 ## I'm sold, how do I get started?
 
-Want to get started quickly? [Download the ES6 bundle here](https://raw.githubusercontent.com/hexydec/dabby/master/dist/dabby.min.js). There is also an [ES5 Bundle](https://raw.githubusercontent.com/hexydec/dabby/master/dist/dabby.es5.min.js).
+Want to get started quickly? [Download the latest release here](https://github.com/hexydec/dabby/releases).
 
 Want build the bundle yourself? Make sure the following software is installed:
 
@@ -38,7 +38,7 @@ $ npm install
 $ grunt
 ```
 
-Then swap jQuery out for dabby.js. It does support AMD modules and CommonJS, so if your project does too, have a fiddle with your build to achieve this.
+Then swap jQuery out for dabby.js in your project. It does support AMD modules and CommonJS, so if your project does too, have a fiddle with your build to achieve this.
 
 Next you should probably audit and refactor your code to update anything that Dabby.js will definitely not support, like custom pseudo selectors. Ajax calls will probably need checking over too (Promises are not supported).
 
