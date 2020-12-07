@@ -5,16 +5,16 @@ Unbinds event handlers previously bound through [$.on()](../on/readme.md).
 ## Usage
 
 ```javascript
-$.off(events[, selector][, handler]); // unbind events as a string
-$.off(events[, selector]); // unbind events as an object
-$.off(); // unbind all events
+$(selector).off(events[, delegate][, handler]); // unbind events as a string
+$(selector).off(events[, delegate]); // unbind events as an object
+$(selector).off(); // unbind all events
 ```
 
 ### events
 
 A string containing a space separated list of events to unbind, or a plain object where the key is a space separated list of events to unbind and the value is the event handler.
 
-### selector
+### delegate
 
 A string specifying a selector the event to unbind is delegated to.
 

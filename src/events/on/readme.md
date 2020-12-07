@@ -5,15 +5,15 @@ Bind event callbacks to DOM nodes.
 ## Usage
 
 ```javascript
-$.on(events[, selector][, data], handler);
-$.on(events[, selector][, data]);
+$(selector).on(events[, delegate][, data], handler);
+$(selector).on(events[, delegate][, data]);
 ```
 
 ### events
 
 A string containing a space separated list of events to bind to, or a plain object where the key is a space separated list of events to bind to and the value is the event handler.
 
-### selector
+### delegate
 
 A string specifying a selector to delegate the event to.
 

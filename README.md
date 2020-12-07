@@ -4,8 +4,8 @@ A lightweight modular jQuery clone/alternative library built for modern browsers
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-17.9kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-6.50kb-brightgreen.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-18.1kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-6.56kb-brightgreen.svg)
 
 **This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
 
@@ -15,7 +15,7 @@ jQuery is a great library, the API is simple yet expressive, but with advancemen
 
 Wouldn't it be good to have a simpler jQuery like library that is modular?
 
-Dabby.js is a jQuery alternative designed to be as simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (>6kb minified and Gzipped), you can also build it as part of your project and only include the bits you are actually using.
+Dabby.js is a jQuery alternative designed to be as simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (<10kb minified and Gzipped), you can also build it as part of your project and only include the bits you are actually using.
 
 [Find out more about the project here.](docs/about.md)
 
@@ -23,7 +23,7 @@ Dabby.js is a jQuery alternative designed to be as simple and streamlined as pos
 
 Want to get started quickly? [Download the latest release here](https://github.com/hexydec/dabby/releases).
 
-Want build the bundle yourself? Make sure the following software is installed:
+Want to build the bundle yourself? Make sure the following software is installed:
 
 - Git
 - [NodeJS](http://nodejs.org/)
@@ -75,7 +75,7 @@ You can either do this in each module you need dabby.js in, or build a file that
 
 ## Troubleshooting
 
-You can always swap dabby.js out for jQuery to see if the issue is with your code or dabby.js. It is a very young library which hadn't yet had much testing, so expect bugs.
+You can always swap dabby.js out for jQuery to see if the issue is with your code or dabby.js. It is a very young library which hasn't been tested as much as jQuery, so expect bugs. But this library is being used in production of most of my own websites.
 
 If the issue still persists, you can create an issue for it in the tracker.
 

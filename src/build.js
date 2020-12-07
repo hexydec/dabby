@@ -36,6 +36,7 @@ import "./events/named/named.js";
 import "./events/on/on.js";
 import "./events/off/off.js";
 import "./events/trigger/trigger.js";
+import "./events/triggerhandler/triggerhandler.js";
 
 // manipulation
 import "./manipulation/clone/clone.js";

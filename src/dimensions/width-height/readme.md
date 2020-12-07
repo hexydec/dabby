@@ -60,12 +60,13 @@ An integer or float containing the requested dimension as a pixel unit, or if se
 ## Example
 
 ```javascript
-const width = $(selector).width(); // 800
-$(selector).width(600); // => dabby
-$(selector).width("50%"); // => dabby
-$(selector).width("4cm"); // => dabby
-$(selector).width("50%"); // => dabby
-$(selector).width(function (index, currentValue) {
+const obj = $("div"), // cache collection
+	width = obj.width(); // 800
+obj.width(600); // => dabby
+obj.width("50%"); // => dabby
+obj.width("4cm"); // => dabby
+obj.width("50%"); // => dabby
+obj.width((index, currentValue) => {
 	return currentValue + 20;
 }); // => dabby
 ```
