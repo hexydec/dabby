@@ -46,7 +46,6 @@ import "./manipulation/insert/insert.js";
 import "./manipulation/insertto/insertto.js";
 import "./manipulation/remove/remove.js";
 import "./manipulation/replace/replace.js";
-import "./manipulation/slice/slice.js";
 import "./manipulation/text/text.js";
 import "./manipulation/unwrap/unwrap.js";
 import "./manipulation/wrap/wrap.js";
@@ -66,6 +65,7 @@ import "./traversal/last/last.js";
 import "./traversal/next-prev/next-prev.js";
 import "./traversal/parents/parents.js";
 import "./traversal/siblings/siblings.js";
+import "./traversal/slice/slice.js";
 
 // utilities
 import "./utils/each/each.js";

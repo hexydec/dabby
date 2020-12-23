@@ -2,7 +2,6 @@ module.exports = function (grunt) {
 	require("load-grunt-tasks")(grunt);
 	var banner = "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby */\n";
 	var path = require('path');
-	console.log(path.resolve(__dirname, "dist/dabby.js"));
 
 	// Project configuration.
 	grunt.initConfig({
