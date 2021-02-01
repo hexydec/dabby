@@ -8,8 +8,9 @@ const copy = (from, to) => {
 
 	// copy events
 	if (from.events) {
+		const toObj = $(to);
 		from.events.forEach(e => {
-			$(to).on(e.events, e.selector, e.data, e.callback);
+			toObj.on(e.event, e.selector, e.data, e.callback);
 		});
 	}
 };
