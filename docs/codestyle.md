@@ -12,12 +12,12 @@ If you wish to contribute to the project, please follow our style guide:
 - Use tabs not spaces for indenting code.
 - Do not write control loops or ifs on one line.
 - Use a double line to divide sections of code, with preceding comment
-	- ```
-		lastline = true;
+	-```
+	lastline = true;
 
-		// next block
-		var newline = "here";
-	```
+	// next block
+	var newline = "here";
+```
 
 ### Handling nodes internally
 

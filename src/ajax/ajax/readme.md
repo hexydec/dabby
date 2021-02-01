@@ -5,7 +5,7 @@ Make Asynchronous HTTP (AJAX) requests.
 ## Usage
 
 ```javascript
-$.ajax(url, [settings]); // => xhr
+$.ajax(url[, settings]); // => xhr
 $.ajax(settings); // => xhr
 ```
 

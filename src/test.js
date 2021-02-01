@@ -53,7 +53,6 @@ import "./manipulation/insert/test.js";
 import "./manipulation/insertto/test.js";
 import "./manipulation/remove/test.js";
 import "./manipulation/replace/test.js";
-import "./manipulation/slice/test.js";
 import "./manipulation/text/test.js";
 import "./manipulation/unwrap/test.js";
 import "./manipulation/wrap/test.js";
@@ -73,6 +72,7 @@ import "./traversal/last/test.js";
 import "./traversal/next-prev/test.js";
 import "./traversal/parents/test.js";
 import "./traversal/siblings/test.js";
+import "./traversal/slice/test.js";
 
 // utilities
 import "./utils/each/test.js";

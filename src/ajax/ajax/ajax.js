@@ -105,14 +105,19 @@ $.ajax = (url, settings) => {
 	} else {
 		const xhr = settings.xhr(),
 			callback = (xhr, type, status) => {
-				let response = xhr.responseText;
+				let response;
+				if (xhr.responseType === "blob") {
+					response = xhr.response;
+				} else {
+					response = xhr.responseText;
 
-				// parse JSON
-				if (["json", null, undefined].indexOf(settings.dataType) > -1) {
-					try {
-						response = JSON.parse(response);
-					} catch (e) {
-						// do nothing
+					// parse JSON
+					if (["json", null, undefined].indexOf(settings.dataType) > -1) {
+						try {
+							response = JSON.parse(response);
+						} catch (e) {
+							// do nothing
+						}
 					}
 				}
 

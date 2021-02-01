@@ -2,7 +2,6 @@ module.exports = function (grunt) {
 	require("load-grunt-tasks")(grunt);
 	var banner = "/*! <%= pkg.name %> v<%= pkg.version %> by Will Earp - https://github.com/hexydec/dabby */\n";
 	var path = require('path');
-	console.log(path.resolve(__dirname, "dist/dabby.js"));
 
 	// Project configuration.
 	grunt.initConfig({
@@ -72,8 +71,9 @@ module.exports = function (grunt) {
 				options: {
 					sourceMap: false,
 					presets: [
-						["minify", {mangle: {exclude: ["$"], topLevel: true, comments: false}}]
-					]
+						["minify", {mangle: {exclude: ["$"], topLevel: true}}]
+					],
+					comments: false
 				}
 			},
 			es5: {
