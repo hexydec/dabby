@@ -50,7 +50,11 @@ import "../../utils/each/each.js";
 							func: evt => { // delegate function
 								const target = selector ? $(selector, evt.currentTarget).filter(evt.target).get() : [evt.currentTarget];
 								if (target.length) {
-									evt.data = data; // set data to event object
+									if (evt.data === undefined) {
+										evt.data = data; // set data to event object
+									} else {
+										evt._data = data; // fallback as sometime the property is not writable
+									}
 									for (let n = 0, len = target.length; n < len; n++) {
 										if (func.call(target[n], evt, evt.args) === false) {
 											evt.preventDefault();

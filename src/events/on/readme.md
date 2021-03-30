@@ -67,4 +67,4 @@ $("a").on({
 
 ## Differences to jQuery
 
-Doesn't suport the jQuery.Event object.
+Doesn't suport the jQuery.Event object. When the data property is passed, depending on the type of event, the data property of the event object may already be set and unwritable. In this case the data is available to the callback as event._data.
