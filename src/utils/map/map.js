@@ -1,13 +1,15 @@
 import $ from "../../core/core.js";
-import "../each/each.js";
 
 $.map = (obj, callback) => {
-	let arr = [];
-	$.each(obj, (i, item) => {
-		const result = callback.call(window, item, i);
+	const keys = Object.keys(obj),
+		len = keys.length,
+		arr = [];
+
+	for (let i = 0; i < len; i++) {
+		const result = callback.call(window, obj[keys[i]], keys[i]);
 		if (result != null) { // double equals to capture undefined also
-			arr = arr.concat(Array.isArray(result) ? result : [result]);
+			arr.push(result);
 		}
-	});
+	}
 	return arr;
 };
