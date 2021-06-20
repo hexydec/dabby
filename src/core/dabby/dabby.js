@@ -1,4 +1,7 @@
-const $ = function dabby(selector, context) {
+import proxy from "../../internal/proxy/proxy.js";
+
+// proxy dabby to make sure once properties are set, they cannot be overwritten
+const $ = proxy(function dabby(selector, context) {
 	if (this instanceof dabby) {
 		let nodes = [],
 			match;
@@ -84,9 +87,9 @@ const $ = function dabby(selector, context) {
 	} else {
 		return new dabby(selector, context);
 	}
-};
+});
 
-// alias functions
-$.fn = $.prototype;
+// proxy the prototype to $.fn to prevent methods from being overwritten
+$.fn = proxy($.prototype, ["length"], true);
 
 export default $;
