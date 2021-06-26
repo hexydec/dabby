@@ -2,7 +2,7 @@ import $ from "../../core/core.js";
 import "../isplainobject/isplainobject.js";
 import isObj from "../../internal/isobj/isobj.js";
 
-$.extend = $.prototype.extend = (...arrs) => {
+$.extend = $.fn.extend = function (...arrs) {
 
 	// deep copy
 	if (arrs[0] === true) {

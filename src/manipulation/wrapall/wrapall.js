@@ -1,5 +1,5 @@
 import $ from "../../core/core.js";
-import getVal from "../../utils/isfunction/isfunction.js";
+import "../../utils/isfunction/isfunction.js";
 import "../../traversal/eq/eq.js";
 import "../../manipulation/clone/clone.js";
 

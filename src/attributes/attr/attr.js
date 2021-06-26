@@ -28,16 +28,22 @@ $.fn.attr = function (prop, value) {
 				let i = this.length,
 					values = getVal(this, val, obj => $(obj).attr(key));
 				while (i--) {
-					if (key === "style") {
-						this[i].style.cssText = values[i];
-					} else if (key === "class") {
-						this[i].className = values[i];
-					} else if (key === "text") {
-						this[i].textContent = values[i];
-					} else if (values[i] === null) {
-						this[i].removeAttribute(key);
-					} else {
-						this[i].setAttribute(key, values[i]);
+					switch (key) {
+						case  "style":
+							this[i].style.cssText = values[i];
+							break;
+						case "class":
+							this[i].className = values[i];
+							break;
+						case "text":
+							this[i].textContent = values[i];
+							break;
+						default:
+							if (values[i] === null) {
+								this[i].removeAttribute(key);
+							} else {
+								this[i].setAttribute(key, values[i]);
+							}
 					}
 				}
 			}
