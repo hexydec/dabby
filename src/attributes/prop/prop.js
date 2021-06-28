@@ -1,5 +1,6 @@
 import $ from "../../core/core.js";
 import "../../utils/isplainobject/isplainobject.js";
+import "../../utils/each/each.js";
 import getProp from "../../internal/getprop/getprop.js";
 import getVal from "../../internal/getval/getval.js";
 

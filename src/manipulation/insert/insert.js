@@ -1,8 +1,9 @@
 import $ from "../../core/core.js";
 import "../../utils/isfunction/isfunction.js";
 import "../../traversal/add/add.js";
-import getVal from "../../internal/getval/getval.js";
+import "../../utils/each/each.js";
 import "../../manipulation/clone/clone.js";
+import getVal from "../../internal/getval/getval.js";
 
 $.each({
 	before: "beforeBegin",

@@ -1,5 +1,6 @@
 import $ from "../../core/core.js";
 import "../insert/insert.js";
+import "../../utils/each/each.js";
 
 $.each({
 	prependTo: "prepend",

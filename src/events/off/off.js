@@ -1,6 +1,7 @@
 import $ from "../../core/core.js";
 import "../../utils/isfunction/isfunction.js";
 import "../../utils/isplainobject/isplainobject.js";
+import "../../utils/each/each.js";
 
 // add and remove event handlers
 $.fn.off = function (events, selector, callback) {

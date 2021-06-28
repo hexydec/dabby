@@ -1,4 +1,5 @@
 import $ from "../../core/core.js";
+import "../../utils/each/each.js";
 import camelise from "../../internal/camelise/camelise.js";
 
 $.fn.data = function (name, data) {
