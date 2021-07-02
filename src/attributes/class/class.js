@@ -5,7 +5,7 @@ const funcs = [];
 ["removeClass", "addClass", "toggleClass"].forEach((func, f) => {
 
 	// remove "Class" from name for classList method and remember
-	funcs.push(func.substr(0, func.length - 5));
+	funcs.push(func.slice(0, -5));
 
 	// create function
 	$.fn[func] = function (cls, state) {
