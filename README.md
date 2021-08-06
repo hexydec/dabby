@@ -67,7 +67,8 @@ Dabby.js is billed as a jQuery clone library, and as such tries to implement as 
 As Dabby.js is built in ES6, you can include just the parts you need in your project (If you are using ES6 modules). Include the core library like this, methods can be imported without a variable:
 
 ```javascript
-include $ from "/src/core/core.js"; // update to reference where you have the project stored
+include $ from "/src/core/dabby/dabby.js"; // update to reference where you have the project stored
+include "/src/attributes/attr/attr.js"; // if you need to create elements with attributes like $("<element>", {some: "attributes"}), include this
 include "/src/traversal/filter/filter.js"; // I need $.fn.is(), which is written with $.fn.filter() and $.fn.not()
 ```
 
