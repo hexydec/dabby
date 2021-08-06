@@ -1,5 +1,6 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
+import "../../core/get/get.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 
 export default (dabby, filter, context, not) => {
 	let func,
@@ -12,7 +13,7 @@ export default (dabby, filter, context, not) => {
 	}
 
 	// custom filter function
-	if ($.isFunction(filter)) {
+	if (isFunction(filter)) {
 		func = filter;
 
 	// nodes
@@ -22,7 +23,7 @@ export default (dabby, filter, context, not) => {
 		if (typeof filter === "string") {
 			filter = [filter];
 		} else {
-			filter = Array.from($(filter, context));
+			filter = $(filter, context).get();
 		}
 
 		// default filter function

@@ -1,3 +1,4 @@
 import $ from "../../core/core.js";
+import isWindow from "../../internal/iswindow/iswindow.js";
 
-$.isWindow = obj => obj !== null && obj === obj.window;
+$.isWindow = isWindow;

@@ -1,12 +1,12 @@
 import $ from "../../core/core.js";
-import "../../utils/isplainobject/isplainobject.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import setCss from "../../internal/setcss/setcss.js";
 import camelise from "../../internal/camelise/camelise.js";
 
 $.fn.css = function (props, value) {
 
 	// set the values
-	if (value !== undefined || $.isPlainObject(props)) {
+	if (value !== undefined || isPlainObject(props)) {
 		return setCss(this, props, value);
 	}
 

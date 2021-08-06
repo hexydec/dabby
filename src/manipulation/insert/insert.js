@@ -1,5 +1,5 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 import "../../traversal/add/add.js";
 import "../../utils/each/each.js";
 import "../../manipulation/clone/clone.js";
@@ -20,7 +20,7 @@ $.each({
 		let elems,
 			i = this.length,
 			len = i,
-			isFunc = $.isFunction(content[0]);
+			isFunc = isFunction(content[0]);
 
 		// multiple arguments containing nodes
 		if (!isFunc) {

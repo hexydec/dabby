@@ -1,6 +1,6 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
-import "../../utils/isplainobject/isplainobject.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import "../../traversal/add/add.js";
 import "../../traversal/parents/parents.js";
 import "../../traversal/filter/filter.js";
@@ -13,16 +13,16 @@ import "../../utils/each/each.js";
 		if (this.length) {
 
 			// sort out args
-			if ($.isFunction(selector)) {
+			if (isFunction(selector)) {
 				callback = selector;
 				selector = undefined;
-			} else if ($.isFunction(data)) {
+			} else if (isFunction(data)) {
 				callback = data;
 				data = undefined;
 			}
 
 			// stadardise as plain object
-			if (!$.isPlainObject(events)) {
+			if (!isPlainObject(events)) {
 				const evt = events;
 				events = {};
 				events[evt] = callback;

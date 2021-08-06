@@ -1,6 +1,6 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
-import "../../utils/isplainobject/isplainobject.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import "../../utils/each/each.js";
 
 // add and remove event handlers
@@ -8,13 +8,13 @@ $.fn.off = function (events, selector, callback) {
 	if (this.length) {
 
 		// sort out args
-		if ($.isFunction(selector)) {
+		if (isFunction(selector)) {
 			callback = selector;
 			selector = undefined;
 		}
 
 		// stadardise as plain object
-		if (events && !$.isPlainObject(events)) {
+		if (events && !isPlainObject(events)) {
 			const evt = events;
 			events = {};
 			events[evt] = callback;

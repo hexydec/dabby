@@ -1,3 +1,4 @@
 import $ from "../../core/core.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 
-$.isFunction = func => func && func.constructor === Function;
+$.isFunction = isFunction;

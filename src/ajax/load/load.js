@@ -1,8 +1,7 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 import "../ajax/ajax.js";
 import "../../traversal/filter/filter.js";
-import "../../utils/parsehtml/parsehtml.js";
 
 $.fn.load = function (url, data, success) {
 	if (this[0]) {
@@ -13,7 +12,7 @@ $.fn.load = function (url, data, success) {
 			selector = url[1];
 
 		// check for data
-		if ($.isFunction(data)) {
+		if (isFunction(data)) {
 			success = data;
 			data = undefined;
 		}

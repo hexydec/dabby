@@ -1,5 +1,5 @@
 import $ from "../../core/core.js";
-import "../isplainobject/isplainobject.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import isObj from "../../internal/isobj/isobj.js";
 
 $.extend = $.fn.extend = function (...arrs) {
@@ -19,7 +19,7 @@ $.extend = $.fn.extend = function (...arrs) {
 				// only allow own properties and don't merge prototypes
 				if (prop !== "__proto__" && arrs[1][prop] !== arrs[2][prop]) {
 					const isArr = Array.isArray(arrs[2][prop]);
-					if (isArr || $.isPlainObject(arrs[2][prop])) { // only deep merge plain objects and arrays
+					if (isArr || isPlainObject(arrs[2][prop])) { // only deep merge plain objects and arrays
 						arrs[1][prop] = $.extend(
 							true,
 							Array.isArray(arrs[1][prop]) === isArr ? arrs[1][prop] : (isArr ? [] : {}), // if types do not match, make an empty object

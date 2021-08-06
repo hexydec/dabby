@@ -1,11 +1,11 @@
 import $ from "../../core/core.js";
-import "../../utils/isplainobject/isplainobject.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import "../../utils/each/each.js";
 import getProp from "../../internal/getprop/getprop.js";
 import getVal from "../../internal/getval/getval.js";
 
 $.fn.prop = function (prop, value) {
-	const isObj = $.isPlainObject(prop);
+	const isObj = isPlainObject(prop);
 
 	// set
 	if (value !== undefined || isObj) {

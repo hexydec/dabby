@@ -1,11 +1,11 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 import "../../traversal/eq/eq.js";
 import "../../manipulation/clone/clone.js";
 
 $.fn.wrapAll = function (html) {
 	if (this[0]) {
-		if ($.isFunction(html)) {
+		if (isFunction(html)) {
 			html = html.call(this[0]);
 		}
 

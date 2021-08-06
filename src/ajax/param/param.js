@@ -1,5 +1,5 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 import "../../utils/each/each.js";
 
 $.param = obj => {
@@ -11,7 +11,7 @@ $.param = obj => {
 					params = add(`${key}[${isArr ? "" : i}]`, val, params);
 				});
 			} else {
-				if ($.isFunction(value)) {
+				if (isFunction(value)) {
 					value = value();
 				}
 				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value === null ? "" : value));

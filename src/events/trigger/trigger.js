@@ -1,10 +1,10 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 
 $.fn.trigger = function (name, data) {
 	let i = this.length;
 	while (i--) {
-		let isFunc = $.isFunction(this[i][name]);
+		let isFunc = isFunction(this[i][name]);
 
 		// native submit event doesn't trigger event handlers
 		if (name == "submit" || !isFunc) {

@@ -2,7 +2,7 @@ import $ from "../../core/core.js";
 import "../../utils/extend/extend.js";
 import "../param/param.js";
 import "../../utils/each/each.js";
-import "../../utils/isplainobject/isplainobject.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 
 $.ajax = (url, settings) => {
 
@@ -55,7 +55,7 @@ $.ajax = (url, settings) => {
 
 	// process data add data to query string for GET requests
 	if (settings.data) {
-		data = $.isPlainObject(settings.data) ? $.param(settings.data) : settings.data;
+		data = isPlainObject(settings.data) ? $.param(settings.data) : settings.data;
 
 		if (settings.method === "GET") {
 			settings.url += join + data;

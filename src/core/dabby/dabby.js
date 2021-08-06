@@ -1,4 +1,8 @@
 import proxy from "../../internal/proxy/proxy.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
+import isWindow from "../../internal/iswindow/iswindow.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
+import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
 // proxy dabby to make sure once properties are set, they cannot be overwritten
 const $ = proxy(function dabby(selector, context) {
@@ -28,7 +32,7 @@ const $ = proxy(function dabby(selector, context) {
 					if (context.length) {
 						let i = context.length;
 						while (i--) {
-							nodes = Array.from(context[i].querySelectorAll(selector)).concat(nodes);
+							nodes = [...context[i].querySelectorAll(selector)].concat(nodes);
 						}
 					}
 
@@ -36,14 +40,14 @@ const $ = proxy(function dabby(selector, context) {
 				} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
 					nodes = [document.createElement(match[1])];
 
-					// context is CSS attributes
-					if ($.isPlainObject(context)) {
+					// context is CSS attributes, import /src/attributes/attr/attr.js to use
+					if (isPlainObject(context)) {
 						$(nodes).attr(context);
 					}
 
 				// parse HTML into nodes
 				} else {
-					nodes = $.parseHTML(selector, context || document, true);
+					nodes = parseHTML(selector, context || document, true);
 				}
 
 			// $ collection
@@ -56,11 +60,11 @@ const $ = proxy(function dabby(selector, context) {
 					nodes = [selector];
 				}
 
-			} else if ($.isWindow(selector)) {
+			} else if (isWindow(selector)) {
 				nodes = [selector];
 
 			// ready function
-			} else if ($.isFunction(selector)) {
+			} else if (isFunction(selector)) {
 				if (document.readyState !== "loading") {
 					selector.call(document, $);
 				} else {
@@ -72,7 +76,7 @@ const $ = proxy(function dabby(selector, context) {
 
 				// check node is unique, then filter only element, document, documentFragment and window
 				nodes = Array.from(selector).filter(
-					(node, i, self) => self.indexOf(node) === i && ([1, 9, 11].indexOf(node.nodeType) > -1 || $.isWindow(node))
+					(node, i, self) => self.indexOf(node) === i && ([1, 9, 11].indexOf(node.nodeType) > -1 || isWindow(node))
 				)
 			}
 		}

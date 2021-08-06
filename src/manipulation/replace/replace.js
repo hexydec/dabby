@@ -1,5 +1,5 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
 import getVal from "../../internal/getval/getval.js";
 import "../../manipulation/clone/clone.js";
 
@@ -8,7 +8,7 @@ import "../../manipulation/clone/clone.js";
 		const all = name === "replaceAll",
 			source = all ? $(html) : this;
 		let target = all ? this : html,
-			isFunc = $.isFunction(target),
+			isFunc = isFunction(target),
 			i = source.length;
 
 		if (!isFunc) {

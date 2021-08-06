@@ -1,6 +1,6 @@
 import $ from "../../core/core.js";
 import getVal from "../../internal/getval/getval.js";
-import "../../utils/iswindow/iswindow.js";
+import isWindow from "../../internal/iswindow/iswindow.js";
 
 ["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
 
@@ -58,7 +58,7 @@ import "../../utils/iswindow/iswindow.js";
 			}
 
 			// element
-			if (!$.isWindow(this[0])) {
+			if (!isWindow(this[0])) {
 				let value = this[0][(io === "outer" ? "offset" : "client") + whu];
 
 				// add padding on, or if outer and margins requested, add margins on

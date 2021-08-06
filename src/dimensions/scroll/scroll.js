@@ -1,6 +1,6 @@
 import $ from "../../core/core.js";
 import getVal from "../../internal/getval/getval.js";
-import "../../utils/iswindow/iswindow.js";
+import isWindow from "../../internal/iswindow/iswindow.js";
 
 ["scrollLeft", "scrollTop"].forEach(item => {
 	$.fn[item] = function (pos) {
@@ -13,7 +13,7 @@ import "../../utils/iswindow/iswindow.js";
 				values = getVal(this, pos, obj => obj[item]);
 
 			while (i--) {
-				if ($.isWindow(this[i])) {
+				if (isWindow(this[i])) {
 					let obj = {};
 					obj[tl] = values[i];
 					this[i].scroll(obj);
@@ -27,7 +27,7 @@ import "../../utils/iswindow/iswindow.js";
 		// get
 		if (this[0]) {
 			let key = item;
-			if ($.isWindow(this[0])) {
+			if (isWindow(this[0])) {
 				key = top ? "pageYOffset" : "pageXOffset";
 			}
 			return this[0][key];

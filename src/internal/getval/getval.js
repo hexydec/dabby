@@ -1,6 +1,6 @@
 import $ from "../../core/core.js";
-import "../../utils/isfunction/isfunction.js";
-import "../../utils/isplainobject/isplainobject.js";
+import isFunction from "../../internal/isfunction/isfunction.js";
+import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 
 /**
  * compiles values for each object passed to it
@@ -18,9 +18,9 @@ export default (obj, val, current) => {
 	if (i) {
 
 		// chek what types of data we are dealing with
-		const funcVal = $.isFunction(val),
-			objVal = funcVal ? 0 : $.isPlainObject(val),
-			funcCurrent = $.isFunction(current);
+		const funcVal = isFunction(val),
+			objVal = funcVal ? 0 : isPlainObject(val),
+			funcCurrent = isFunction(current);
 
 		// generate calues
 		while (i--) {
