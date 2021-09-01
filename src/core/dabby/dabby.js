@@ -24,7 +24,7 @@ const $ = proxy(function dabby(selector, context) {
 						context = [document];
 					} else if (typeof context === "string") {
 						context = [document.querySelector(context)];
-					} else if (context.nodeType) {
+					} else if (context instanceof Node) {
 						context = [context];
 					}
 
@@ -55,10 +55,8 @@ const $ = proxy(function dabby(selector, context) {
 				return selector;
 
 			// single node
-			} else if (selector.nodeType) {
-				if ([1, 9, 11].indexOf(selector.nodeType) > -1) {
-					nodes = [selector];
-				}
+			} else if (selector instanceof Node) {
+				nodes = [selector];
 
 			} else if (isWindow(selector)) {
 				nodes = [selector];
