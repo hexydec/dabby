@@ -25,7 +25,7 @@ $.fn.off = function (events, selector, callback) {
 		while (i--) {
 
 			// find the original function
-			if (this[i].events.length) {
+			if (this[i].events && this[i].events.length) {
 
 				// remove selected events
 				if (events) {
