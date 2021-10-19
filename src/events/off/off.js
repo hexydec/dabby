@@ -14,7 +14,7 @@ $.fn.off = function (events, selector, callback) {
 		}
 
 		// stadardise as plain object
-		if (events && !isPlainObject(events)) {
+		if (events && typeof events === "string") {
 			const evt = events;
 			events = {};
 			events[evt] = callback;
@@ -26,12 +26,12 @@ $.fn.off = function (events, selector, callback) {
 
 			// find the original function
 			if (this[i].events && this[i].events.length) {
+				Array.from(this[i].events).forEach((evt, n) => {
 
-				// remove selected events
-				if (events) {
-					$.each(events, (evt, func) => {
-						evt.split(" ").forEach(e => {
-							this[i].events.forEach((evt, n) => {
+					// remove selected events
+					if (events) {
+						$.each(events, (list, func) => {
+							list.split(" ").forEach(e => {
 								if (evt.event.indexOf(e) > -1 && (!func || evt.callback === func) && (!selector || evt.selector === selector)) {
 
 									// remove event listerer
@@ -42,19 +42,17 @@ $.fn.off = function (events, selector, callback) {
 								}
 							});
 						});
-					});
 
-				// remove all events
-				} else {
-					this[i].events.forEach((evt, n) => {
+					// remove all events
+					} else {
 
 						// remove event listerer
 						this[i].removeEventListener(evt.event, evt.func, {capture: !!evt.selector}); // must pass same arguments
 
 						// remove all events from events list
-						this[i].events = [];
-					});
-				}
+						this[i].events = []; // this wipes all early in the loop, but it saves having to test for this if again
+					}
+				});
 			}
 		}
 	}

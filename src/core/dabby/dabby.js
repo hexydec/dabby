@@ -20,20 +20,10 @@ const $ = proxy(function dabby(selector, context) {
 				if (selector[0] !== "<") {
 
 					// normalise context
-					if (!context) {
-						context = [document];
-					} else if (typeof context === "string") {
-						context = [document.querySelector(context)];
-					} else if (context instanceof Node) {
-						context = [context];
-					}
-
-					// if the context exists, filter
-					if (context.length) {
-						let i = context.length;
-						while (i--) {
-							nodes = [...context[i].querySelectorAll(selector)].concat(nodes);
-						}
+					const obj = $(context || document);
+					let i = obj.length;
+					while (i--) {
+						nodes = [...obj[i].querySelectorAll(selector)].concat(nodes);
 					}
 
 				// create a single node and attach properties
