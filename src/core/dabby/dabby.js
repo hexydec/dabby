@@ -40,9 +40,9 @@ const $ = proxy(function dabby(selector, context) {
 					nodes = parseHTML(selector, context || document, true);
 				}
 
-			// $ collection
+			// $ collection - copy nodes to new object
 			} else if (selector instanceof dabby) {
-				return selector;
+				nodes = Array.from(selector);
 
 			// single node
 			} else if (selector instanceof Node) {
@@ -69,9 +69,16 @@ const $ = proxy(function dabby(selector, context) {
 			}
 		}
 
-		// assign nodes to object
+		// create a getter for the length so it can't be edited from outside
 		let i = nodes.length;
-		this.length = i;
+		Object.defineProperty(this, "length", {
+			get length() {
+				return this.length;
+			},
+			value: i
+		});
+
+		// assign nodes to object
 		while (i--) {
 			this[i] = nodes[i];
 		}
@@ -82,6 +89,6 @@ const $ = proxy(function dabby(selector, context) {
 });
 
 // proxy the prototype to $.fn to prevent methods from being overwritten
-$.fn = proxy($.prototype, ["length"], true);
+$.fn = proxy($.prototype);
 
 export default $;
