@@ -1,7 +1,7 @@
 import $ from "../../core/core.js";
 import "../../utils/each/each.js";
 import getVal from "../getval/getval.js";
-import camelise from "../camelise/camelise.js";
+import dasherise from "../dasherise/dasherise.js";
 
 export default (dabby, props, value) => {
 
@@ -15,14 +15,15 @@ export default (dabby, props, value) => {
 	// prepare values
 	let values = {};
 	$.each(props, (i, prop) => {
-		values[camelise(i)] = getVal(dabby, prop, obj => obj.style[i]);
+		i = dasherise(i);
+		values[i] = getVal(dabby, prop, obj => obj.style.getPropertyValue(i));
 	});
 
 	// set properties
 	$.each(values, (key, val) => {
 		let i = dabby.length;
 		while (i--) {
-			dabby[i].style[key] = val[i] + (!val[i] || isNaN(val[i]) ? "" : "px");
+			dabby[i].style.setProperty(key, val[i] + (!val[i] || isNaN(val[i]) ? "" : "px"));
 		}
 	});
 	return dabby;

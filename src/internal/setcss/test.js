@@ -34,5 +34,5 @@ QUnit.test("setCss", function (assert) {
 	setCss(main, {borderLeftColor: "", borderLeftStyle: "", borderLeftWidth: ""});
 	assert.equal(rmain.style.cssText, "", "Can remove CSS properties");
 	setCss(main, {"--css-variable": "test"});
-	assert.equal(rmain.style["--css-variable"], "test", "Can set CSS variable");
+	assert.equal(rmain.style.getPropertyValue("--css-variable"), "test", "Can set CSS variable");
 });

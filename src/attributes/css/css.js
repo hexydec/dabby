@@ -1,7 +1,7 @@
 import $ from "../../core/core.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import setCss from "../../internal/setcss/setcss.js";
-import camelise from "../../internal/camelise/camelise.js";
+import dasherise from "../../internal/dasherise/dasherise.js";
 
 $.fn.css = function (props, value) {
 
@@ -27,7 +27,7 @@ $.fn.css = function (props, value) {
 		// gather values
 		i = props.length;
 		while (i--) {
-			output[props[i]] = style[camelise(props[i])];
+			output[props[i]] = style.getPropertyValue(dasherise(props[i]));
 			if (ret) {
 				return output[props[i]];
 			}
