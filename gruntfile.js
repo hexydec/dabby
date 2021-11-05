@@ -66,14 +66,10 @@ module.exports = function (grunt) {
 		babel: {
 			es6: {
 				files: {
-					"dist/dabby.min.js": "dist/dabby.js"
+					"dist/dabby.js": "dist/dabby.js"
 				},
 				options: {
-					sourceMap: false,
-					presets: [
-						["minify", {mangle: {exclude: ["$"], topLevel: true}}]
-					],
-					comments: false
+					sourceMap: true
 				}
 			},
 			es5: {
@@ -92,9 +88,31 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		terser: {
+			options: {
+				toplevel: true,
+				mangle: {
+					reserved: ["$"],
+				}
+			},
+			es6: {
+				ecma: 2015,
+				mangle: {
+					module: true
+				},
+				files: {
+					"dist/dabby.min.js": "dist/dabby.js"
+				}
+			},
+			es5: {
+				ecma: 5,
+				files: {
+					"dist/dabby.es5.min.js": "dist/dabby.es5.js"
+				}
+			}
+		},
 		uglify: {
 			options: {
-				banner: banner,
 				report: "gzip"
 			},
 			minified: {
@@ -118,5 +136,5 @@ module.exports = function (grunt) {
 			}
 		}
 	});
-	grunt.registerTask("default", ["rollup", "babel", "uglify"]);
+	grunt.registerTask("default", ["rollup", "babel", "terser"]);
 };

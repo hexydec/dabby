@@ -33,21 +33,17 @@
 	"devDependencies": {
 		"@babel/core": "^7.15.0",
 		"@babel/preset-env": "^7.15.0",
-		"babel-preset-minify": "^0.5.1",
 		"benchmark": "^2.1.4",
 		"grunt": "^1.4.1",
 		"grunt-babel": "^8.0.0",
 		"grunt-contrib-qunit": "^4.0.0",
-		"grunt-contrib-uglify": "^5.0.1",
 		"grunt-contrib-watch": "^1.1.0",
 		"grunt-rollup": "^11.5.0",
-		"jquery": "^3.6.0",
+		"grunt-terser": "^2.0.0",
 		"load-grunt-tasks": "^5.1.0",
-		"lodash": "^4.17.21",
-		"platform": "^1.3.6",
 		"qunit": "^2.17.2",
 		"rollup": "^2.56.3",
-		"save": "^2.4.0"
+		"terser": "^5.9.0"
 	},
 	"repository": {
 		"type": "git",
