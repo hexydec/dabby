@@ -1,9 +1,9 @@
 import $ from "../../core/core.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
-["filter", "not", "is"].forEach(name => {
-	$.fn[name] = function (selector) {
-		const nodes = filterNodes(this, selector, name === "not");
-		return name === "is" ? !!nodes.length : $(nodes);
+["is", "filter", "not"].forEach((func, f) => {
+	$.fn[func] = function (selector) {
+		const nodes = filterNodes(this, selector, f > 1); // "not"
+		return f ? $(nodes) : !!nodes.length; // not "is" : "is"
 	};
 });

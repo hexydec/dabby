@@ -20,17 +20,13 @@ export default (dabby, filter, context, not) => {
 	} else {
 
 		// normalise filters
-		if (typeof filter === "string") {
-			filter = [filter];
-		} else {
-			filter = $(filter, context).get();
-		}
+		filter = typeof filter === "string" ? [filter] : $(filter, context).get();
 
 		// default filter function
 		func = (n, node) => {
 			let i = filter.length;
 			while (i--) {
-				if (typeof(filter[i]) === "string" && node.matches ? node.matches(filter[i]) : node === filter[i]) {
+				if (typeof filter[i] === "string" ? node.matches(filter[i]) : node === filter[i]) {
 					return true;
 				}
 			}

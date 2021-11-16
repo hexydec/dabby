@@ -1,6 +1,6 @@
 {
 	"name": "dabbyjs",
-	"version": "0.9.14",
+	"version": "0.9.15",
 	"homepage": "https://hexydec.github.io/dabby",
 	"author": "Will Earp <will@hexydec.com>",
 	"description": "A lightweight modular ES6 jQuery clone library built for modern browsers",
@@ -31,19 +31,18 @@
 		"src/**/*.js"
 	],
 	"devDependencies": {
-		"@babel/core": "^7.15.0",
-		"@babel/preset-env": "^7.15.0",
+		"@babel/core": "^7.16.0",
+		"@babel/preset-env": "^7.16.0",
 		"benchmark": "^2.1.4",
 		"grunt": "^1.4.1",
 		"grunt-babel": "^8.0.0",
-		"grunt-contrib-qunit": "^4.0.0",
 		"grunt-contrib-watch": "^1.1.0",
 		"grunt-rollup": "^11.5.0",
 		"grunt-terser": "^2.0.0",
 		"load-grunt-tasks": "^5.1.0",
 		"qunit": "^2.17.2",
-		"rollup": "^2.56.3",
-		"terser": "^5.9.0"
+		"rollup": "^2.60.0",
+		"terser": "^5.10.0"
 	},
 	"repository": {
 		"type": "git",

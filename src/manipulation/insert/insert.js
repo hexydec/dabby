@@ -13,7 +13,7 @@ $.each({
 }, (name, pos) => {
 
 	// function tracking variables
-	const pre = ["prepend", "after"].indexOf(name) > -1;
+	const pre = ["prepend", "after"].includes(name);
 
 	// the function
 	$.fn[name] = function (...content) {

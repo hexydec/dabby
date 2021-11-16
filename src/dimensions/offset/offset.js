@@ -8,7 +8,7 @@ $.fn.offset = function (coords) {
 	if (coords) {
 
 		// prepare values
-		let values = getVal(this, coords, obj => obj.offset()), // copy the object
+		let values = getVal(this, coords, obj => $(obj).offset()), // copy the object
 			i = this.length;
 
 		while (i--) {

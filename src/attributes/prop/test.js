@@ -9,6 +9,8 @@ QUnit.test("$.fn.prop", function (assert) {
 	assert.equal(obj.get(0).title, "test", "Can set property");
 	assert.equal(obj.prop("title"), "test", "Can read property");
 	assert.equal(obj.prop("tabindex"), 1, "Can read property");
+	obj.prop("tabIndex", (i, current) => current + 1);
+	assert.equal(obj.prop("tabindex"), 2, "Can read property set via callback");
 
 	var obj = $("<input>", {type: "checkbox", name: "foo", value: "bar", checked: "checked"});
 

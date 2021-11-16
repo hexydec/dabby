@@ -44,4 +44,8 @@ QUnit.test("$.fn.val", function (assert) {
 	assert.equal(select.val(), "2", "Can set value of select box");
 	select.val(3);
 	assert.equal(select.val(), "3", "Can set value of select box that has no value attribute");
+	select.val((i, current) => {
+		return current - 1;
+	});
+	assert.equal(select.val(), "2", "Can set value of select box from a callback");
 });

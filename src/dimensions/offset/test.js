@@ -35,6 +35,15 @@ QUnit.test("$.fn.offset", function (assert) {
 	offset.left = parseFloat(offset.left.toFixed(1));
 	assert.deepEqual(offset, coords, "Can set and retrieve coordinates");
 
+	// set coords through a callback
+	obj.offset((i, current) => {
+		return {
+			top: current.top + 100,
+			left: current.left + 100
+		};
+	});
+	assert.deepEqual({top: 200, left: 200}, obj.offset(), "Can set and retrieve coordinates through a callback");
+
 	// reset
 	//test.innerHTML = "";
 });

@@ -1,1 +1,1 @@
-export default obj => obj !== null && obj === obj.window;
+export default obj => obj != null && obj === obj.window;

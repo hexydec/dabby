@@ -3,11 +3,10 @@ import isFunction from "../../internal/isfunction/isfunction.js";
 import getVal from "../../internal/getval/getval.js";
 import "../../manipulation/clone/clone.js";
 
-["replaceWith", "replaceAll"].forEach(name => {
-	$.fn[name] = function (html) {
-		const all = name === "replaceAll",
-			source = all ? $(html) : this;
-		let target = all ? this : html,
+["replaceWith", "replaceAll"].forEach((func, f) => {
+	$.fn[func] = function (html) {
+		let source = f ? $(html) : this,
+			target = f ? this : html,
 			isFunc = isFunction(target),
 			i = source.length;
 

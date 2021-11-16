@@ -24,7 +24,7 @@ export default $ => {
 			});
 		},
 		'dabby#create-html': () => {
-			$('<div class="test"><a href="https://github.com/hexydec/dabbyjs">Github</a></div>');
+			$('<div class="test"><a href="https://github.com/hexydec/dabby">Github</a></div>');
 		}
 	};
 };

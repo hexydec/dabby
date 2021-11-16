@@ -1,7 +1,7 @@
 import $ from "../../core/core.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
-["remove", "detach"].forEach(func => {
+["remove", "detach"].forEach((func, f) => {
 	$.fn[func] = function (selector) {
 		let i = this.length,
 			nodes = [],
@@ -15,6 +15,6 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
 		}
 
 		// create a new dabby object to return
-		return func === "detach" ? $(nodes) : this;
+		return f ? $(nodes) : this;
 	};
 });

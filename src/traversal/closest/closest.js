@@ -7,7 +7,7 @@ $.fn.closest = function (selector, context) {
 
 	while (i--) {
 		let node = this[i];
-		while (node && node.nodeType === Node.ELEMENT_NODE) {
+		while (node && node.nodeType === 1) { // Node.ELEMENT_NODE
 			if (filterNodes(node, selector, context).length) {
 				nodes.unshift(node);
 				break;

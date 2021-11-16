@@ -1,1 +1,1 @@
-export default func => func && func.constructor === Function;
+export default func => typeof func === "function";

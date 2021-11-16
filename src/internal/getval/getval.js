@@ -17,12 +17,12 @@ export default (obj, val, current) => {
 	// only do something if there is something to do
 	if (i) {
 
-		// chek what types of data we are dealing with
+		// check what types of data we are dealing with
 		const funcVal = isFunction(val),
 			objVal = funcVal ? 0 : isPlainObject(val),
 			funcCurrent = isFunction(current);
 
-		// generate calues
+		// generate values
 		while (i--) {
 
 			// generate the value from a function

@@ -20,7 +20,7 @@ $.fn.attr = function (prop, value) {
 		$.each(prop, (key, val) => {
 
 			// if event, hand it off to $.fn.on()
-			if (events.indexOf(key) > -1) {
+			if (events.includes(key)) {
 				this.on(key, val);
 
 			// process other values
@@ -49,7 +49,10 @@ $.fn.attr = function (prop, value) {
 			}
 		});
 		return this;
-	} else if (this.length) {
+	}
+
+	// read attr
+	if (this[0]) {
 
 		// retrieve properties
 		if (prop === "style") {

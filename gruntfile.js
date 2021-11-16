@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 					banner: banner,
 					name: "$"
 				},
-				src: "src/build.es5.js",
+				src: "src/build.js",
 				dest: "dist/dabby.es5.js"
 			},
 			test: {
@@ -106,16 +106,6 @@ module.exports = function (grunt) {
 			},
 			es5: {
 				ecma: 5,
-				files: {
-					"dist/dabby.es5.min.js": "dist/dabby.es5.js"
-				}
-			}
-		},
-		uglify: {
-			options: {
-				report: "gzip"
-			},
-			minified: {
 				files: {
 					"dist/dabby.es5.min.js": "dist/dabby.es5.js"
 				}

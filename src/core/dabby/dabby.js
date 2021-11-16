@@ -20,10 +20,10 @@ const $ = proxy(function dabby(selector, context) {
 				if (selector[0] !== "<") {
 
 					// normalise context
-					const obj = $(context || document);
-					let i = obj.length;
+					let obj = context ? $(context) : [document],
+						i = obj.length;
 					while (i--) {
-						nodes = [...obj[i].querySelectorAll(selector)].concat(nodes);
+						nodes = Array.from(obj[i].querySelectorAll(selector)).concat(nodes);
 					}
 
 				// create a single node and attach properties
@@ -31,7 +31,7 @@ const $ = proxy(function dabby(selector, context) {
 					nodes = [document.createElement(match[1])];
 
 					// context is CSS attributes, import /src/attributes/attr/attr.js to use
-					if (isPlainObject(context)) {
+					if (context && isPlainObject(context)) {
 						$(nodes).attr(context);
 					}
 
@@ -64,7 +64,7 @@ const $ = proxy(function dabby(selector, context) {
 
 				// check node is unique, then filter only element, document, documentFragment and window
 				nodes = Array.from(selector).filter(
-					(node, i, self) => self.indexOf(node) === i && ([1, 9, 11].indexOf(node.nodeType) > -1 || isWindow(node))
+					(node, i, self) => self.indexOf(node) === i && ([1, 9, 11].includes(node.nodeType) || isWindow(node))
 				)
 			}
 		}

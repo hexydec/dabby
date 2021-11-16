@@ -1,14 +1,15 @@
 import $ from "../../core/core.js";
 
 $.map = (obj, callback) => {
-	const keys = Object.keys(obj),
+	let keys = Object.keys(obj),
 		len = keys.length,
-		arr = [];
+		arr = [],
+		i = 0;
 
-	for (let i = 0; i < len; i++) {
+	for (; i < len; i++) {
 		const result = callback.call(window, obj[keys[i]], keys[i]);
 		if (result != null) { // double equals to capture undefined also
-			arr.push(result);
+			arr = arr.concat(Array.isArray(result) ? result : [result]);
 		}
 	}
 	return arr;

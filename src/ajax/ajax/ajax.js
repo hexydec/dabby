@@ -49,8 +49,8 @@ $.ajax = (url, settings) => {
 		settings.dataType = "script";
 	}
 
-	let sync = ["script", "jsonp"].indexOf(settings.dataType) > -1,
-		join = settings.url.indexOf("?") > -1 ? "&" : "?",
+	let sync = ["script", "jsonp"].includes(settings.dataType),
+		join = settings.url.includes("?") ? "&" : "?",
 		script, data;
 
 	// process data add data to query string for GET requests
@@ -112,7 +112,7 @@ $.ajax = (url, settings) => {
 					response = xhr.responseText;
 
 					// parse JSON
-					if (["json", null, undefined].indexOf(settings.dataType) > -1) {
+					if (["json", null, undefined].includes(settings.dataType)) {
 						try {
 							response = JSON.parse(response);
 						} catch (e) {
@@ -134,7 +134,7 @@ $.ajax = (url, settings) => {
 
 		// callbacks
 		xhr.onload = () => {
-			const status = [200, 204, 304].indexOf(xhr.status) > -1 ? "success" : "error";
+			const status = [200, 204, 304].includes(xhr.status) ? "success" : "error";
 			callback(xhr, status, status);
 		};
 		xhr.ontimeout = () => {

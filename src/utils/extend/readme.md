@@ -1,4 +1,4 @@
-# .extend()
+# $.extend()
 
 Extend one or more objects/arrays into the first object. Can perform either a shallow or deep copy.
 
@@ -76,4 +76,4 @@ Any `__proto__` property from the objects being merged will not be copied to pre
 
 ## Differences to jQuery
 
-None
+None.

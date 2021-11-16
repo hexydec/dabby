@@ -149,6 +149,6 @@ The library supports the following methods:
 | [$.each()](utilities/each/)						| Apply a callback function to an array or object			|
 | [$.extend()](utilities/extend/)					| Extend an array with one or more arrays					|
 | [$.isFunction()](utilities/isfunction/)			| Determine whether the input is an function				|
-| [$.isPlainObject()](utilities/isplainobject/)	| Determine whether the input is an plain object			|
+| [$.isPlainObject()](utilities/isplainobject/)		| Determine whether the input is an plain object			|
 | [$.isWindow()](utilities/iswindow/)				| Determine whether the input node/object is the window		|
-| [$.map()](utilities/map/)						| Map a callback function onto each item in an array/object	|
+| [$.map()](utilities/map/)							| Map a callback function onto each item in an array/object	|

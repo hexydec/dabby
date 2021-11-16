@@ -16,7 +16,7 @@ export default (html, context, runscripts = false) => {
 	obj.innerHTML = html;
 
 	// run scripts
-	if (runscripts && html.indexOf("<script") > -1) {
+	if (runscripts && html.includes("<script")) {
 		obj.querySelectorAll("script").forEach(item => {
 			const src = item.getAttribute("src"),
 				script = context.createElement("script");

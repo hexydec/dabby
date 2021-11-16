@@ -8,21 +8,21 @@ $.fn.val = function (value) {
 	// set value
 	if (value !== undefined) {
 		let i = this.length,
-			values = getVal(this, value, obj => obj.val());
+			values = getVal(this, value, obj => $(obj).val());
 
 		while (i--) {
 			const isArr = Array.isArray(values[i]);
 
 			// array on select, set matching values to selected
-			if (this[i].type.indexOf("select") > -1) {
+			if (this[i].type.includes("select")) {
 				values[i] = (isArr ? values[i] : [values[i]]).map(val => "" + val);
 				$("option", this[i]).each((key, obj) => {
-					obj.selected = values[i].indexOf(obj.value || obj.text) > -1;
+					obj.selected = values[i].includes(obj.value || obj.text);
 				});
 
 			// set the checked attribute for radios and checkbox
 			} else if (isArr) {
-				this[i].checked = values[i].indexOf(this[i].value) > -1;
+				this[i].checked = values[i].includes(this[i].value);
 
 			// string value, just set to value attribute
 			} else {

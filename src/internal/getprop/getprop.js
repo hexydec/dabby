@@ -1,5 +1,5 @@
 export default prop => {
-	let properties = {
+	const properties = {
 		"for": "htmlFor",
 		"class": "className",
 		"tabindex": "tabIndex",
@@ -13,5 +13,6 @@ export default prop => {
 		"frameborder": "frameBorder",
 		"contenteditable": "contentEditable"
 	};
-	return properties[prop.toLowerCase()] || prop;
+	prop = prop.toLowerCase();
+	return properties[prop] || prop;
 }

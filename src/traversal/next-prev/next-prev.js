@@ -1,17 +1,18 @@
 import $ from "../../core/core.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
-["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach(func => {
-	const next = func.indexOf("x") > -1,
-		all = func.indexOf("A") > -1,
-		until = func.indexOf("U") > -1,
-		method = next ? "nextElementSibling" : "previousElementSibling";
+["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach((func, f) => {
+	const all = f % 3 === 1,
+		until = f % 3 > 1,
+		method = (f < 3 ? "next" : "previous") + "ElementSibling";
 
 	$.fn[func] = function (selector, filter) {
-		let nodes = [];
+		let nodes = [],
+			i = 0,
+			len = this.length;
 
 		// look through each node and get siblings
-		for (let i = 0, len = this.length; i < len; i++) {
+		for (; i < len; i++) {
 			let sibling = this[i][method];
 			while (sibling) {
 
@@ -24,7 +25,7 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
 				nodes.push(sibling);
 
 				// end when not finding all
-				if (!all && !until) {
+				if (f % 3 === 0) {
 					break;
 				}
 				sibling = sibling[method];

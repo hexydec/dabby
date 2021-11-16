@@ -22,8 +22,8 @@ $.fn.prop = function (prop, value) {
 
 			// set properties
 			$.each(prop, (key, val) => {
+				key = getProp(key);
 				val = getVal(this, val, obj => obj[key]);
-				key = getProp(key); // do after
 				let i = this.length;
 				while (i--) {
 					this[i][key] = val[i];

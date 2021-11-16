@@ -9,12 +9,12 @@ const funcs = [];
 
 	// create function
 	$.fn[func] = function (cls, state) {
-		if (this.length) {
+		if (this[0]) {
 			let i = this.length,
 				values = getVal(this, cls, obj => obj.className),
 				key = f;
 
-			if (func === "toggleClass" && typeof state === "boolean") {
+			if (f > 1 && typeof state === "boolean") {
 				key = 0 + state;
 			}
 

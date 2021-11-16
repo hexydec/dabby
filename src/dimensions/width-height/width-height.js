@@ -2,17 +2,16 @@ import $ from "../../core/core.js";
 import getVal from "../../internal/getval/getval.js";
 import isWindow from "../../internal/iswindow/iswindow.js";
 
-["width", "height", "innerWidth", "innerHeight", "outerWidth", "outerHeight"].forEach(dim => {
+["width", "innerWidth", "outerWidth", "height", "innerHeight", "outerHeight"].forEach((dim, i) => {
 
 	$.fn[dim] = function (val) {
-		const width = dim.indexOf("d") > -1,
+		const width = i < 3,
 			wh = width ? "width" : "height", // width or height
 			whu = width ? "Width" : "Height", // with uppercase letter
-			io = dim.indexOf("inner") > -1 ? "inner" : (dim.indexOf("outer") > -1 ? "outer" : ""), // inner outer or neither
-			pos = [
-				width ? "Left" : "Top", // first dimension
-				width ? "Right" : "Bottom" // second dimension
-			];
+			inner = i % 3 === 1,
+			outer = i % 3 === 2,
+			io = inner || outer,
+			pos = width ? ["Left", "Right"] : ["Top", "Bottom"];
 
 		// set value
 		if (val !== undefined && typeof val !== "boolean") {
@@ -28,13 +27,13 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 					// fetch current style and build properties
 					pos.forEach(item => {
 						props.push("padding" + item);
-						if (io === "outer") {
+						if (outer) {
 							props.push("border" + item + "Width");
 						}
 					});
 
 					// set width to convert to a px value
-					if (isNaN(values[i]) && values[i].indexOf("px") === -1) {
+					if (isNaN(values[i]) && !values[i].includes("px")) {
 						this[i].style[wh] = values[i];
 						props.push(wh);
 						values[i] = 0; // reset to 0
@@ -53,16 +52,16 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 		if (this[0]) {
 
 			// document
-			if (this[0].nodeType === Node.DOCUMENT_NODE) {
+			if (this[0].nodeType === 9) { // Node.DOCUMENT_NODE (document)
 				return this[0].documentElement["scroll" + whu];
 			}
 
 			// element
 			if (!isWindow(this[0])) {
-				let value = this[0][(io === "outer" ? "offset" : "client") + whu];
+				let value = this[0][(outer ? "offset" : "client") + whu];
 
 				// add padding on, or if outer and margins requested, add margins on
-				if (io === "" || (io === "outer" && val === true)) {
+				if (!io || (outer && val === true)) {
 					const style = getComputedStyle(this[0]);
 					pos.forEach(item => value += parseFloat(style[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
 				}
@@ -70,7 +69,7 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 			}
 
 			// window
-			if (io === "inner") {
+			if (inner) {
 				return this[0].document.documentElement["client" + whu];
 			}
 
