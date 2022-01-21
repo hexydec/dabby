@@ -25,35 +25,33 @@ $.fn.off = function (events, selector, callback) {
 		while (i--) {
 
 			// find the original function
-			if (this[i].events && this[i].events.length) {
-				Array.from(this[i].events).forEach((evt, n) => {
+			(this[i].events || []).forEach((evt, n) => {
 
-					// remove selected events
-					if (events) {
-						$.each(events, (list, func) => {
-							list.split(" ").forEach(e => {
-								if (evt.event.includes(e) && (!func || evt.callback.toString() === func.toString()) && (!selector || evt.selector === selector)) {
+				// remove selected events
+				if (events) {
+					$.each(events, (list, func) => {
+						list.split(" ").forEach(e => {
+							if (evt.event.includes(e) && (!func || evt.callback.toString() === func.toString()) && (!selector || evt.selector === selector)) {
 
-									// remove event listerer
-									this[i].removeEventListener(e, evt.func, {capture: !!evt.selector}); // must pass same arguments
+								// remove event listerer
+								this[i].removeEventListener(e, evt.func, {capture: !!evt.selector}); // must pass same arguments
 
-									// remove event from events list
-									this[i].events.splice(n, 1);
-								}
-							});
+								// remove event from events list
+								this[i].events.splice(n, 1);
+							}
 						});
+					});
 
-					// remove all events
-					} else {
+				// remove all events
+				} else {
 
-						// remove event listerer
-						this[i].removeEventListener(evt.event, evt.func, {capture: !!evt.selector}); // must pass same arguments
+					// remove event listerer
+					this[i].removeEventListener(evt.event, evt.func, {capture: !!evt.selector}); // must pass same arguments
 
-						// remove all events from events list
-						this[i].events = []; // this wipes all early in the loop, but it saves having to test for this if again
-					}
-				});
-			}
+					// remove all events from events list
+					this[i].events = []; // this wipes all early in the loop, but it saves having to test for this if again
+				}
+			});
 		}
 	}
 	return this;
