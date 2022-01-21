@@ -32,7 +32,7 @@ $.fn.off = function (events, selector, callback) {
 					if (events) {
 						$.each(events, (list, func) => {
 							list.split(" ").forEach(e => {
-								if (evt.event.includes(e) && (!func || evt.callback === func) && (!selector || evt.selector === selector)) {
+								if (evt.event.includes(e) && (!func || evt.callback.toString() === func.toString()) && (!selector || evt.selector === selector)) {
 
 									// remove event listerer
 									this[i].removeEventListener(e, evt.func, {capture: !!evt.selector}); // must pass same arguments
