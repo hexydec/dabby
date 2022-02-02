@@ -6,7 +6,7 @@ $.fn.siblings = function (selector) {
 		nodes = [];
 
 	while (i--) {
-		Array.from(this[i].parentNode.children).forEach(child => {
+		[...this[i].parentNode.children].forEach(child => {
 			if (child !== this[i]) {
 				nodes.push(child);
 			}

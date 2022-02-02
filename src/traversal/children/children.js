@@ -6,7 +6,7 @@ $.fn.children = function (selector) {
 		i = this.length;
 
 	while (i--) {
-		nodes = nodes.concat(Array.from(this[i].children));
+		nodes = [...nodes, ...this[i].children];
 	}
 
 	// filter nodes by selector

@@ -17,7 +17,7 @@ $.ajax = (url, settings) => {
 	}
 
 	// set default settings
-	settings = Object.assign({
+	settings = {
 		method: "GET",
 		cache: null, // start with null so we can see if explicitly set
 		data: null,
@@ -36,8 +36,9 @@ $.ajax = (url, settings) => {
 		statusCode: {},
 		username: null,
 		password: null,
-		xhrFields: {}
-	}, settings);
+		xhrFields: {},
+		...settings
+	};
 
 	// set to itself
 	if (settings.url == null) { // double equals as also captures undefined

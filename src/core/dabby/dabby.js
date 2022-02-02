@@ -23,7 +23,7 @@ const $ = proxy(function dabby(selector, context) {
 					let obj = context ? $(context) : [document],
 						i = obj.length;
 					while (i--) {
-						nodes = Array.from(obj[i].querySelectorAll(selector)).concat(nodes);
+						nodes = [...obj[i].querySelectorAll(selector), ...nodes];
 					}
 
 				// create a single node and attach properties
@@ -44,11 +44,8 @@ const $ = proxy(function dabby(selector, context) {
 			} else if (selector instanceof dabby) {
 				nodes = Array.from(selector);
 
-			// single node
-			} else if (selector instanceof Node) {
-				nodes = [selector];
-
-			} else if (isWindow(selector)) {
+			// single node or Window
+			} else if (selector instanceof Node || isWindow(selector)) {
 				nodes = [selector];
 
 			// ready function

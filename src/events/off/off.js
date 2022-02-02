@@ -24,21 +24,27 @@ $.fn.off = function (events, selector, callback) {
 		let i = this.length;
 		while (i--) {
 
+			// track how many items in the array we are offset by
+			let offset = 0;
+
 			// find the original function
-			(this[i].events || []).forEach((evt, n) => {
+			Array.from(this[i].events || []).forEach((evt, n) => { // must be a copy, as we are editing the array we are looping through
 
 				// remove selected events
 				if (events) {
 					$.each(events, (list, func) => {
-						list.split(" ").forEach(e => {
-							if (evt.event.includes(e) && (!func || evt.callback.toString() === func.toString()) && (!selector || evt.selector === selector)) {
+						list.split(" ").some(e => {
+							if (evt.event.includes(e) && (!selector || evt.selector === selector) && (!func || evt.callback.toString() === func.toString())) {
 
 								// remove event listerer
 								this[i].removeEventListener(e, evt.func, {capture: !!evt.selector}); // must pass same arguments
 
 								// remove event from events list
-								this[i].events.splice(n, 1);
+								this[i].events.splice(n - offset, 1);
+								offset++;
+								return true;
 							}
+							return false;
 						});
 					});
 

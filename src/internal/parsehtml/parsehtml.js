@@ -30,5 +30,5 @@ export default (html, context, runscripts = false) => {
 	}
 
 	// extract nodes
-	return Array.from(obj.children);
+	return [...obj.children];
 };
