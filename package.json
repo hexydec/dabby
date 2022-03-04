@@ -14,7 +14,9 @@
 		"alternative",
 		"javascript"
 	],
-	"contributors": [],
+	"contributors": [
+		"Matt Rosser <mattthehat2007@aol.com>"
+	],
 	"main": "dist/dabby.min.js",
 	"license": "MIT",
 	"bugs": {
