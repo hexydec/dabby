@@ -1,12 +1,13 @@
-import proxy from "../../internal/proxy/proxy.js";
+// import proxy from "../../internal/proxy/proxy.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import isWindow from "../../internal/iswindow/iswindow.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
 // proxy dabby to make sure once properties are set, they cannot be overwritten
-const $ = proxy(function dabby(selector, context) {
-	if (this instanceof dabby) {
+class dabby {
+
+	constructor (selector, context) {
 		let nodes = [],
 			match;
 
@@ -79,13 +80,12 @@ const $ = proxy(function dabby(selector, context) {
 		while (i--) {
 			this[i] = nodes[i];
 		}
-		return this;
-	} else {
-		return new dabby(selector, context);
 	}
-});
+}
 
-// proxy the prototype to $.fn to prevent methods from being overwritten
-$.fn = proxy($.prototype);
+const $ = (selector, context) => {
+	return new dabby(selector, context);
+};
+$.fn = dabby.prototype;
 
 export default $;
