@@ -15,7 +15,7 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 
 		// set value
 		if (val !== undefined && typeof val !== "boolean") {
-			let values = getVal(this, val, obj => obj[dim]),
+			let values = getVal(this, val, obj => $(obj)[dim]()),
 				i = this.length,
 				props = [],
 				style;
