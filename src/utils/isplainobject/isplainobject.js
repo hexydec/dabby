@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
-import isPlainObject from "../../internal/isplainobject/isplainobject.js";
-
+import $ from "../../core/dabby/dabby";
+import isPlainObject from "../../internal/isplainobject/isplainobject";
 $.isPlainObject = isPlainObject;
+//# sourceMappingURL=isplainobject.js.map

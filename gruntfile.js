@@ -6,6 +6,11 @@ module.exports = function (grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
+		ts: {
+			default : {
+				tsconfig: './tsconfig.json'
+			}
+		},
 		rollup: {
 			es6: {
 				options: {
@@ -126,5 +131,5 @@ module.exports = function (grunt) {
 			}
 		}
 	});
-	grunt.registerTask("default", ["rollup", "babel", "terser"]);
+	grunt.registerTask("default", ["ts", "rollup", "babel", "terser"]);
 };
