@@ -2,6 +2,12 @@ import $ from "../../core/core.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 
+
+type GetValObj = {
+	[key: string]: any;
+	length: number;
+}
+
 /**
  * compiles values for each object passed to it
  *
@@ -10,7 +16,7 @@ import isPlainObject from "../../internal/isplainobject/isplainobject.js";
  * @param {mixed} current The current value or a callback to retrieve the current value
  * @return {array} An array of values corresponding to each obj
  */
-export default (obj, val, current) => {
+export default (obj: ArrayLike<GetValObj>, val: any, current: any) => {
 	let i = obj.length,
 		values = [];
 
