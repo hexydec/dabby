@@ -7,9 +7,20 @@ import "../../traversal/filter/filter.js";
 import "../../core/get/get.js";
 import "../../utils/each/each.js";
 
+export type DabbyEvent = {
+	event: string;
+	selector: any;
+	data: any;
+	callback: {
+		call: (arg0: any, arg1: any, arg2: any) => boolean;
+	};
+	func: (evt: any) => void;
+	once: boolean;
+}
+
 // add and remove event handlers
 ["on", "one"].forEach(name => {
-	$.fn[name] = function (events: { [x: number]: any; }, selector: any, data: any, callback: Function) {
+	$.fn[name] = function (events: any, selector: any, data: any, callback: Function) {
 		if (this.length) {
 
 			// sort out args
@@ -42,12 +53,12 @@ import "../../utils/each/each.js";
 					evt.split(" ").forEach(e => {
 
 						// record event
-						const event = {
+						const event: DabbyEvent = {
 							event: e,
 							selector: selector,
 							data: data,
 							callback: func,
-							func: evt => { // delegate function
+							func: (evt: any) => { // delegate function
 								const target = selector ? $(selector, evt.currentTarget).filter(evt.target).get() : [evt.currentTarget];
 								if (target.length) {
 									if (evt.data === undefined) {

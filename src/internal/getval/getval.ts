@@ -16,7 +16,7 @@ type GetValObj = {
  * @param {mixed} current The current value or a callback to retrieve the current value
  * @return {array} An array of values corresponding to each obj
  */
-export default (obj: ArrayLike<GetValObj>, val: any, current: any) => {
+export default (obj: ArrayLike<GetValObj>, val: any, current?: any) => {
 	let i = obj.length,
 		values = [];
 

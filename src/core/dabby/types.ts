@@ -20,6 +20,7 @@ export interface DabbyObject {
     fn?: (obj: any) => Dabby;
     length: number;
     attr?: any;
+    nodeType?: number;
 }
 
 export type DabbyConstructor = {

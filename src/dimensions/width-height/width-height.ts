@@ -2,6 +2,7 @@ import $ from "../../core/core.js";
 import getVal from "../../internal/getval/getval.js";
 import isWindow from "../../internal/iswindow/iswindow.js";
 
+
 ["width", "innerWidth", "outerWidth", "height", "innerHeight", "outerHeight"].forEach((dim, i) => {
 
 	$.fn[dim] = function (val: boolean) {
@@ -15,9 +16,9 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 
 		// set value
 		if (val !== undefined && typeof val !== "boolean") {
-			let values = getVal(this, val, (obj: any) => $(obj)[dim]()),
+			let values: any[] = getVal(this, val, (obj: any) => $(obj)[dim]()),
 				i = this.length,
-				props = [],
+				props: string[] = [],
 				style: CSSStyleDeclaration;
 			while (i--) {
 
@@ -41,7 +42,7 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 
 					// add values
 					style = getComputedStyle(this[i]);
-					props.forEach(val => values[i] -= parseFloat(style[val]));
+					props.forEach((val: any) => values[i] -= parseFloat(style[val]));
 				}
 				this[i].style[wh] = values[i] + (isNaN(values[i]) ? "" : "px");
 			}
@@ -63,17 +64,21 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 				// add padding on, or if outer and margins requested, add margins on
 				if (!io || (outer && val === true)) {
 					const style = getComputedStyle(this[0]);
-					pos.forEach(item => value += parseFloat(style[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
+					// https://github.com/Microsoft/TypeScript/issues/17827 ↓↓↓↓
+					pos.forEach((item: any) => value += parseFloat((<any>style)[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
 				}
 				return value;
 			}
 
 			// window
 			if (inner) {
-				return this[0].document.documentElement["client" + whu];
+				// https://github.com/Microsoft/TypeScript/issues/17827 ↓↓↓↓
+				return (<any>this[0]).document.documentElement["client" + whu];
 			}
-
-			return this[0]["inner" + whu];
+			// https://github.com/Microsoft/TypeScript/issues/17827 ↓↓↓↓
+			return (<any>this[0])["inner" + whu];
 		}
 	};
 });
+
+
