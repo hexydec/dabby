@@ -31,8 +31,8 @@
 		"src/**/*.js"
 	],
 	"devDependencies": {
-		"@babel/core": "^7.18.2",
-		"@babel/preset-env": "^7.18.2",
+		"@babel/core": "^7.18.13",
+		"@babel/preset-env": "^7.18.10",
 		"benchmark": "^2.1.4",
 		"grunt": "^1.5.3",
 		"grunt-babel": "^8.0.0",
@@ -41,12 +41,11 @@
 		"grunt-terser": "^2.0.0",
 		"load-grunt-tasks": "^5.1.0",
 		"qunit": "^2.19.1",
-		"rollup": "^2.75.6",
-		"terser": "^5.14.0"
+		"rollup": "^2.79.0",
+		"terser": "^5.15.0"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/hexydec/dabby.git"
-	},
-	"dependencies": {}
+	}
 }

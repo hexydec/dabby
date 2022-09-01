@@ -14,7 +14,7 @@ A string containing a Javascript event.
 
 ### data
 
-An array or object containing any additional data to pass to the receiving event handlers.
+An array containing any additional data to pass to the receiving event handlers. When using $.fn.on(), each item in the array will be passed as an additional parameter.
 
 ## Returns
 
@@ -30,9 +30,11 @@ obj.trigger("click"); // trigger a click event
 obj.on("click", e => alert(e.type)).trigger("click"); // alert("click")
 
 // use custom data
-obj.on("click", (e, data) => console.log(e.type, data)).trigger("click");
+obj.on("click", (e, param1 param2) => console.log(e.type, param1, param2)).trigger("click", ["foo", "bar"]); // "click", "foo", "bar"
 ```
 
 ## Differences to jQuery
 
-Doesn't suport the jQuery.Event object.
+The native event is used instead of the proprietory jQuery.event object.
+
+The `data` parameter only supports an array to be passed to it, not an object which jQuery also allows.

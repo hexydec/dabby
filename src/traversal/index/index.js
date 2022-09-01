@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 
 $.fn.index = function (selector) {
 	if (this[0]) {

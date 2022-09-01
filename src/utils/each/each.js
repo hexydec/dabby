@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 
 $.each = (obj, callback) => {
 	const isArr = Array.isArray(obj) || obj.length !== undefined,

@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
 import isWindow from "../../internal/iswindow/iswindow.js";
 

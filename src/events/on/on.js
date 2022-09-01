@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import "../../traversal/add/add.js";
@@ -56,7 +56,8 @@ import "../../utils/each/each.js";
 										evt._data = data; // fallback as sometime the property is not writable
 									}
 									for (let n = 0, len = target.length; n < len; n++) {
-										if (func.call(target[n], evt, evt.args) === false) {
+										const args = evt.details || [];
+										if (func.call(target[n], evt, ...args) === false) {
 											evt.preventDefault();
 											evt.stopPropagation();
 										}

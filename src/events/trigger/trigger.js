@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 
 $.fn.trigger = function (name, data) {
@@ -8,8 +8,7 @@ $.fn.trigger = function (name, data) {
 
 		// native submit event doesn't trigger event handlers
 		if (name == "submit" || !isFunc) {
-			const evt = new CustomEvent(name, {bubbles: true, cancelable: true});
-			evt.args = data;
+			const evt = new CustomEvent(name, {bubbles: true, cancelable: true, detail: data});
 			this[i].dispatchEvent(evt);
 
 			// cancel submit event if default is prevented

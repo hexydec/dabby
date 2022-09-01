@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import getProp from "../../internal/getprop/getprop.js";
 
 $.fn.removeProp = function (prop) {

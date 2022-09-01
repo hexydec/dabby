@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import "../../utils/each/each.js";
 import getProp from "../../internal/getprop/getprop.js";

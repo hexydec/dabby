@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import setCss from "../../internal/setcss/setcss.js";
 import dasherise from "../../internal/dasherise/dasherise.js";
