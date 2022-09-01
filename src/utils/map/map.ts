@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 
 type MapObject = {
 	[key: string]: any;

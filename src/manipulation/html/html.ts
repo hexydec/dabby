@@ -1,4 +1,4 @@
-import $ from "../../core/core";
+import $ from "../../core/dabby/dabby";
 import getVal from "../../internal/getval/getval";
 
 $.fn.html = function (html: string) {

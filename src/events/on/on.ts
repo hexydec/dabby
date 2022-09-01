@@ -1,11 +1,11 @@
-import $ from "../../core/core.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
-import isPlainObject from "../../internal/isplainobject/isplainobject.js";
+import $ from "../../core/dabby/dabby";
+import isFunction from "../../internal/isfunction/isfunction";
 import "../../traversal/add/add.js";
 import "../../traversal/parents/parents.js";
 import "../../traversal/filter/filter.js";
 import "../../core/get/get.js";
 import "../../utils/each/each.js";
+import {PlainObject} from "../../core/dabby/types";
 
 export type DabbyEvent = {
 	event: string;
@@ -20,7 +20,7 @@ export type DabbyEvent = {
 
 // add and remove event handlers
 ["on", "one"].forEach(name => {
-	$.fn[name] = function (events: any, selector: any, data: any, callback: Function) {
+	$.fn[name] = function (events: PlainObject|string, selector: Function|string, data?: any, callback?: Function) {
 		if (this.length) {
 
 			// sort out args
@@ -33,7 +33,7 @@ export type DabbyEvent = {
 			}
 
 			// stadardise as plain object
-			if (!isPlainObject(events)) {
+			if (typeof events === "string") {
 				const evt = events;
 				events = {};
 				events[evt] = callback;
@@ -67,7 +67,7 @@ export type DabbyEvent = {
 										evt._data = data; // fallback as sometime the property is not writable
 									}
 									for (let n = 0, len = target.length; n < len; n++) {
-										if (func.call(target[n], evt, evt.args) === false) {
+										if (func.call(target[n], evt, evt.detail.args) === false) {
 											evt.preventDefault();
 											evt.stopPropagation();
 										}

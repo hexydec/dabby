@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 import "../../utils/each/each.js";
 
 $.fn.each = function (callback) {

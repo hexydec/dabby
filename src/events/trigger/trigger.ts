@@ -1,21 +1,16 @@
-import $ from "../../core/core.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
+import $ from "../../core/dabby/dabby";
+import isFunction from "../../internal/isfunction/isfunction";
 
-type DabbyCustomEvent = CustomEvent<unknown> & {args: any}
-
-
-
-$.fn.trigger = function (name: string, data: any[] | object) {
+$.fn.trigger = function (name: string, data: any) {
 	let i = this.length;
 	while (i--) {
+
+		// check if the event requested is a native function
 		let isFunc = isFunction(this[i][name]);
 
 		// native submit event doesn't trigger event handlers
-		if (name == "submit" || !isFunc) {
-			const evt = new CustomEvent(name, {bubbles: true, cancelable: true}) as DabbyCustomEvent;
-
-			
-			evt.args = data;
+		if (name === "submit" || !isFunc) {
+			const evt = new CustomEvent(name, {bubbles: true, cancelable: true, detail: {args: data}});
 			this[i].dispatchEvent(evt);
 
 			// cancel submit event if default is prevented

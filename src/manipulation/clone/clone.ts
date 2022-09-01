@@ -1,4 +1,4 @@
-import $ from "../../core/core";
+import $ from "../../core/dabby/dabby";
 import "../../events/on/on";
 import { DabbyEvent } from "../../events/on/on";
 

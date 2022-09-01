@@ -1,4 +1,4 @@
-import $ from "../../core/core";
+import $ from "../../core/dabby/dabby";
 import { Selector } from "../../core/dabby/types";
 import filterNodes from "../../internal/filternodes/filternodes";
 

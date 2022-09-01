@@ -1,4 +1,4 @@
-import $ from "../../core/core";
+import $ from "../../core/dabby/dabby";
 import { DabbyNode, DabbyObject, Selector } from "../../core/dabby/types";
 import "../../core/get/get";
 import isFunction from "../../internal/isfunction/isfunction";

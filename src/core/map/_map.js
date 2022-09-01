@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 
 $.fn.map = function (callback) {
 	let len = this.length,

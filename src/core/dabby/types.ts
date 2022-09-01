@@ -26,3 +26,7 @@ export interface DabbyObject {
 export type DabbyConstructor = {
     new(selector: Selector, context?: Selector): DabbyObject;
 };
+
+export type PlainObject = {
+	[index: string]: any
+};

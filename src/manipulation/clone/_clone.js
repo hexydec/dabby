@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 import "../../events/on/on.js";
 
 const copy = (from, to) => {

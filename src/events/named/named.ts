@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 import events from "../../internal/getevents/getevents";
 import "../on/on.js";
 import "../trigger/trigger.js";

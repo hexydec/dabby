@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 
 $.fn.triggerHandler = function (name: any, data: any) {
 	let ret;

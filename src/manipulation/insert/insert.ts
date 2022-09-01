@@ -1,4 +1,4 @@
-import $ from "../../core/core";
+import $ from "../../core/dabby/dabby";
 import isFunction from "../../internal/isfunction/isfunction";
 import "../../traversal/add/add";
 import "../../utils/each/each";

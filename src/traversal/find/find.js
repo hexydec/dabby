@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 
 $.fn.find = function (selector) {
 	return $(selector, this);

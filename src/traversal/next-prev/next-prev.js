@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
 ["next", "nextAll", "nextUntil", "prev", "prevAll", "prevUntil"].forEach((func, f) => {
