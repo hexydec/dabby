@@ -58,7 +58,7 @@ export type DabbyEvent = {
 							selector: selector,
 							data: data,
 							callback: func,
-							func: (evt: any) => { // delegate function
+							func: (evt: DabbyEvent) => { // delegate function
 								const target = selector ? $(selector, evt.currentTarget).filter(evt.target).get() : [evt.currentTarget];
 								if (target.length) {
 									if (evt.data === undefined) {
@@ -67,7 +67,8 @@ export type DabbyEvent = {
 										evt._data = data; // fallback as sometime the property is not writable
 									}
 									for (let n = 0, len = target.length; n < len; n++) {
-										if (func.call(target[n], evt, ...evt.detail) === false) {
+										const args: any[] = Array.isArray(evt.detail) ? evt.detail : [];
+										if (func.call(target[n], evt, ...args) === false) {
 											evt.preventDefault();
 											evt.stopPropagation();
 										}

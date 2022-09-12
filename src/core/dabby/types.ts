@@ -30,3 +30,8 @@ export type DabbyConstructor = {
 export type PlainObject = {
 	[index: string]: any
 };
+
+export type DabbyEvent = Event & CustomEvent & {
+	data?: any[],
+	_data?: any[]
+}
