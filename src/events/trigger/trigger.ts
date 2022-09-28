@@ -1,7 +1,8 @@
 import $ from "../../core/dabby/dabby";
+import { Dabby } from "../../core/dabby/types";
 import isFunction from "../../internal/isfunction/isfunction";
 
-$.fn.trigger = function (name: string, data: any[]) {
+$.fn.trigger = function (name: string, data: any[]) : Dabby {
 	let i = this.length;
 	while (i--) {
 

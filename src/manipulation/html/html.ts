@@ -1,12 +1,18 @@
 import $ from "../../core/dabby/dabby";
+import { Dabby } from "../../core/dabby/types";
 import getVal from "../../internal/getval/getval";
 
-$.fn.html = function (html: string) {
+type Html = {
+	() : string;
+	(html: string) : Dabby
+};
+
+$.fn.html: Html = function (html?: string) : Dabby | string {
 
 	// set
 	if (html !== undefined) {
 		let i = this.length,
-			values = getVal(this, html, (obj: HTMLElement) => obj.innerHTML);
+			values = getVal(this, html, (obj: Element) => obj.innerHTML);
 		while (i--) {
 			this[i].innerHTML = values[i];
 		}

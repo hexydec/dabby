@@ -1,11 +1,11 @@
 import $ from "../../core/dabby/dabby";
+import { DabbyNode, Dabby } from "../../core/dabby/types";
 import getVal from "../../internal/getval/getval.js";
 import isWindow from "../../internal/iswindow/iswindow.js";
 
-
 ["width", "innerWidth", "outerWidth", "height", "innerHeight", "outerHeight"].forEach((dim, i) => {
 
-	$.fn[dim] = function (val: boolean) {
+	$.fn[dim] = function (val: number | boolean | undefined) : Dabby | number {
 		const width = i < 3,
 			wh = width ? "width" : "height", // width or height
 			whu = width ? "Width" : "Height", // with uppercase letter
@@ -16,7 +16,7 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 
 		// set value
 		if (val !== undefined && typeof val !== "boolean") {
-			let values: any[] = getVal(this, val, (obj: any) => $(obj)[dim]()),
+			let values: any[] = getVal(this, val, (obj: DabbyNode & {[k:string]: number}) => $(obj)[dim]()),
 				i = this.length,
 				props: string[] = [],
 				style: CSSStyleDeclaration;
@@ -65,7 +65,7 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 				if (!io || (outer && val === true)) {
 					const style = getComputedStyle(this[0]);
 					// https://github.com/Microsoft/TypeScript/issues/17827 ↓↓↓↓
-					pos.forEach((item: any) => value += parseFloat((<any>style)[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
+					pos.forEach((item: number | string) => value += parseFloat((<any>style)[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
 				}
 				return value;
 			}

@@ -1,1 +1,1 @@
-export default (func: any): func is Function => typeof func === 'function';
+export default (func: any) : func is Function => typeof func === 'function';

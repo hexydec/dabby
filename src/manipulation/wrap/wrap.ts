@@ -1,8 +1,9 @@
 import $ from "../../core/dabby/dabby";
+import { Content } from "../../core/dabby/types";
 import getVal from "../../internal/getval/getval";
 import "../wrapall/wrapall";
 
-$.fn.wrap = function (html: string) {
+$.fn.wrap = function (html: Content) {
 	let i = this.length,
 		values = getVal(this, html);
 

@@ -1,14 +1,20 @@
 import $ from "../../core/dabby/dabby";
 import getVal from "../../internal/getval/getval.js";
 import "../../core/each/each.js";
+import { DabbyNode, Dabby, Int, Position } from "../../core/dabby/types";
 
-$.fn.offset = function (coords: any) {
+type OffsetCallback = (i: Int, coords: Position) => Position;
+
+$.fn.offset = function (coords: OffsetCallback | Position) : Dabby;
+$.fn.offset = function () : Position;
+
+$.fn.offset = function (coords: OffsetCallback | Position | undefined) : Dabby | Position {
 
 	// set
 	if (coords) {
 
 		// prepare values
-		let values = getVal(this, coords, (obj: any) => $(obj).offset()), // copy the object
+		let values = getVal(this, coords, (obj: DabbyNode) => $(obj).offset()), // copy the object
 			i = this.length;
 
 		while (i--) {

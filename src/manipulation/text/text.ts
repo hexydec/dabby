@@ -7,7 +7,7 @@ $.fn.text = function (text: string) {
 
 	// set
 	if (text !== undefined) {
-		const values = getVal(this, text, (obj: HTMLElement) => obj.textContent);
+		const values = getVal(this, text, (obj: Element) => obj.textContent);
 		while (i--) {
 			this[i].textContent = values[i];
 		}

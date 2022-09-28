@@ -2,9 +2,10 @@ import $ from "../../core/dabby/dabby";
 import isFunction from "../../internal/isfunction/isfunction";
 import getVal from "../../internal/getval/getval";
 import "../clone/clone.js";
+import { Content } from "../../core/dabby/types";
 
 ["replaceWith", "replaceAll"].forEach((func, f) => {
-	$.fn[func] = function (html: Document) {
+	$.fn[func] = function (html: Content) {
 		let source = f ? $(html) : this,
 			target = f ? this : html,
 			isFunc = isFunction(target),

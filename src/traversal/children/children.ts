@@ -1,8 +1,8 @@
 import $ from "../../core/dabby/dabby";
-import { Selector } from "../../core/dabby/types";
+import { Content, Dabby } from "../../core/dabby/types";
 import filterNodes from "../../internal/filternodes/filternodes";
 
-$.fn.children = function (selector: Selector) {
+$.fn.children = function (selector: Content) : Dabby {
 	let nodes: Element[] = [],
 		i = this.length;
 

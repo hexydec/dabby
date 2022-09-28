@@ -4,6 +4,7 @@ import "../../traversal/add/add";
 import "../../utils/each/each";
 import "../../manipulation/clone/clone";
 import getVal from "../../internal/getval/getval";
+import { Content } from "../../core/dabby/types";
 
 $.each({
 	before: "beforeBegin",
@@ -16,7 +17,7 @@ $.each({
 	const pre = ["prepend", "after"].includes(name);
 
 	// the function
-	$.fn[name] = function (...content: any[]) {
+	$.fn[name] = function (...content: Content[]) {
 		let elems,
 			i = this.length,
 			len = i,
@@ -32,7 +33,7 @@ $.each({
 
 			// retrieve nodes from function
 			if (isFunc) {
-				elems = getVal([this[i]], content[0], (obj: HTMLElement) => obj.innerHTML).reduce((dabby, item) => dabby.add(item), $()); // getVal() returns an array so the items need merging into a collection
+				elems = getVal([this[i]], content[0], (obj: Element) => obj.innerHTML).reduce((dabby, item) => dabby.add(item), $()); // getVal() returns an array so the items need merging into a collection
 			}
 
 			// insert nodes

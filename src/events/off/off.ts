@@ -1,17 +1,10 @@
 import $ from "../../core/dabby/dabby";
-import isFunction from "../../internal/isfunction/isfunction.js";
-import isPlainObject from "../../internal/isplainobject/isplainobject.js";
-import "../../utils/each/each.js";
-
-type EventObj = {
-	event: string;
-	selector: string;
-	func: Function;
-	callback: Function;
-}
+import { Content, DabbyEvent, Dabby } from "../../core/dabby/types";
+import isFunction from "../../internal/isfunction/isfunction";
+import "../../utils/each/each";
 
 // add and remove event handlers
-$.fn.off = function (events: { [x: string]: any; }, selector: any, callback: Function) {
+$.fn.off = function (events: { [x: string]: any; } | string, selector: Content | Function | undefined, callback: Function | undefined) : Dabby {
 	if (this.length) {
 
 		// sort out args
@@ -35,7 +28,7 @@ $.fn.off = function (events: { [x: string]: any; }, selector: any, callback: Fun
 			let offset = 0;
 
 			// find the original function
-			Array.from(this[i].events || []).forEach((evt:EventObj, n) => { // must be a copy, as we are editing the array we are looping through
+			Array.from(this[i].events || []).forEach((evt: DabbyEvent, n) => { // must be a copy, as we are editing the array we are looping through
 
 				// remove selected events
 				if (events) {

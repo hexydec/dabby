@@ -1,6 +1,6 @@
 import $ from "../../core/dabby/dabby";
 
-$.fn.map = function (callback: Function) {
+$.fn.map = function (callback: Function) : any[] {
 	let len = this.length,
 		values = [],
 		i = 0;

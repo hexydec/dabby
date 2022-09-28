@@ -1,9 +1,10 @@
 import $ from "../../core/dabby/dabby";
+import { Content } from "../../core/dabby/types";
 import "../../events/off/off.js";
 import filterNodes from "../../internal/filternodes/filternodes"
 
 ["detach", "remove"].forEach((func, f) => {
-	$.fn[func] = function (selector: string | any[]) {
+	$.fn[func] = function (selector: Content) {
 		let i = this.length,
 			nodes = [];
 

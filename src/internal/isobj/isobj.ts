@@ -1,1 +1,1 @@
-export default (obj: any) => obj != null && typeof obj === 'object';
+export default (obj: any) : obj is Object => obj != null && typeof obj === 'object';

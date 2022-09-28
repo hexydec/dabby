@@ -1,10 +1,11 @@
-export default (obj: any) => {
-    return new Proxy(obj, {
-        set: function (self, prop, value) {
-            return Object.defineProperty(self, prop, {
-                value: value,
-                writable: false,
-            });
-        },
-    });
+export default <T extends Object>(obj: T) : ProxyHandler<T> => {
+	return new Proxy(obj, {
+		set(self, prop, value) : boolean {
+			Object.defineProperty(self, prop, {
+				value: value,
+				writable: false
+			});
+			return true;
+		}
+	});
 };

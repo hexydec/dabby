@@ -5,22 +5,11 @@ import "../../traversal/parents/parents.js";
 import "../../traversal/filter/filter.js";
 import "../../core/get/get.js";
 import "../../utils/each/each.js";
-import {PlainObject} from "../../core/dabby/types";
-
-export type DabbyEvent = {
-	event: string;
-	selector: any;
-	data: any;
-	callback: {
-		call: (arg0: any, arg1: any, arg2: any) => boolean;
-	};
-	func: (evt: any) => void;
-	once: boolean;
-}
+import {DabbyEvent, Dabby, PlainObject} from "../../core/dabby/types";
 
 // add and remove event handlers
 ["on", "one"].forEach(name => {
-	$.fn[name] = function (events: PlainObject|string, selector: Function|string, data?: any, callback?: Function) {
+	$.fn[name] = function (events: PlainObject|string, selector: Function|string, data?: any, callback?: Function) : Dabby {
 		if (this.length) {
 
 			// sort out args
@@ -49,7 +38,7 @@ export type DabbyEvent = {
 				}
 
 				// loop through functions
-				$.each(events, (evt: string, func: { call: (arg0: any, arg1: any, arg2: any) => boolean; }) => {
+				$.each(events, (evt: string, func: { call: (evt: string, ...args: any[]) => boolean; }) => {
 					evt.split(" ").forEach(e => {
 
 						// record event
