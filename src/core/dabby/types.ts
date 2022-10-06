@@ -7,17 +7,18 @@ export type DabbyNode = Element | Document | DocumentFragment | Window;
 export interface Dabby extends Object {
 	new: (dabby: DabbyConstructor, selector: Selector, context?: Selector) => ArrayLike<Dabby>;
 	[index: number]: DabbyNode;
-	fn?: Object;
+	fn: Object;
 	length: number;
 	attr?: any;
 	nodeType?: number;
 };
-interface DabbyStatic {
-  readonly fn: Dabby
-}
 
+type Ready = ($?: Dabby) => any;
 export type DabbyConstructor = {
 	new(selector: Selector, context?: Selector): Dabby;
+	() : Dabby;
+	(selector: string, context?: Selector) : Dabby;
+	(selector: Ready) : Dabby;
 };
 
 export type PlainObject = {
