@@ -1,6 +1,6 @@
 import $ from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
-import isPlainObject from "../../internal/isplainobject/isplainobject.js";
+import isPassive from "../../internal/ispassive/ispassive.js";
 import "../../utils/each/each.js";
 
 // add and remove event handlers
@@ -37,7 +37,7 @@ $.fn.off = function (events, selector, callback) {
 							if (evt.event.includes(e) && (!selector || evt.selector === selector) && (!func || evt.callback.toString() === func.toString())) {
 
 								// remove event listerer
-								this[i].removeEventListener(e, evt.func, {capture: !!evt.selector}); // must pass same arguments
+								this[i].removeEventListener(e, evt.func, {capture: !!evt.selector, passive: isPassive(e)}); // must pass same arguments
 
 								// remove event from events list
 								this[i].events.splice(n - offset, 1);

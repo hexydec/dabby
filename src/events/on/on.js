@@ -1,6 +1,7 @@
 import $ from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
+import isPassive from "../../internal/ispassive/ispassive.js";
 import "../../traversal/add/add.js";
 import "../../traversal/parents/parents.js";
 import "../../traversal/filter/filter.js";
@@ -69,7 +70,7 @@ import "../../utils/each/each.js";
 						this[i].events.push(event);
 
 						// bind event
-						this[i].addEventListener(e, event.func, {once: name === "one", capture: !!selector});
+						this[i].addEventListener(e, event.func, {once: name === "one", capture: !!selector, passive: isPassive(e)});
 					});
 				});
 			}

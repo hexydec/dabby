@@ -1,0 +1,1 @@
+export default evt => ["wheel", "mousewheel", "touchstart", "touchmove"].includes(evt);
