@@ -17,7 +17,7 @@ $.ajax = (url, settings) => {
 	}
 
 	// set default settings
-	settings = {
+	settings = Object.assign({ // spread not supported in some older versions of iOS
 		method: "GET",
 		cache: null, // start with null so we can see if explicitly set
 		data: null,
@@ -36,9 +36,8 @@ $.ajax = (url, settings) => {
 		statusCode: {},
 		username: null,
 		password: null,
-		xhrFields: {},
-		...settings
-	};
+		xhrFields: {}
+	}, settings);
 
 	// set to itself
 	if (settings.url == null) { // double equals as also captures undefined
