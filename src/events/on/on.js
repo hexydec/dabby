@@ -49,7 +49,7 @@ import "../../utils/each/each.js";
 							data: data,
 							callback: func,
 							func: evt => { // delegate function
-								const target = selector ? $(selector, evt.currentTarget).filter(evt.target).get() : [evt.currentTarget];
+								const target = selector ? $(selector, evt.currentTarget).filter($(evt.target).parents().add(evt.target)).get() : [evt.currentTarget];
 								if (target.length) {
 									if (evt.data === undefined) {
 										evt.data = data; // set data to event object
@@ -57,7 +57,7 @@ import "../../utils/each/each.js";
 										evt._data = data; // fallback as sometime the property is not writable
 									}
 									for (let n = 0, len = target.length; n < len; n++) {
-										const args = evt.detail || [];
+										const args = Array.isArray(evt.detail) ? evt.detail : [];
 										if (func.call(target[n], evt, ...args) === false) {
 											evt.preventDefault();
 											evt.stopPropagation();
