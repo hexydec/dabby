@@ -57,7 +57,7 @@ import "../../utils/each/each.js";
 										evt._data = data; // fallback as sometime the property is not writable
 									}
 									for (let n = 0, len = target.length; n < len; n++) {
-										const args = evt.details || [];
+										const args = evt.detail || [];
 										if (func.call(target[n], evt, ...args) === false) {
 											evt.preventDefault();
 											evt.stopPropagation();

@@ -7,7 +7,7 @@ $.fn.trigger = function (name, data) {
 		let isFunc = isFunction(this[i][name]);
 
 		// native submit event doesn't trigger event handlers
-		if (name == "submit" || !isFunc) {
+		if (name === "submit" || !isFunc) {
 			const evt = new CustomEvent(name, {bubbles: true, cancelable: true, detail: data});
 			this[i].dispatchEvent(evt);
 
