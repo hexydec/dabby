@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import "../../utils/extend/extend.js";
 import "../param/param.js";
 import "../../utils/each/each.js";
@@ -17,7 +17,7 @@ $.ajax = (url, settings) => {
 	}
 
 	// set default settings
-	settings = {
+	settings = Object.assign({ // spread not supported in some older versions of iOS
 		method: "GET",
 		cache: null, // start with null so we can see if explicitly set
 		data: null,
@@ -36,9 +36,8 @@ $.ajax = (url, settings) => {
 		statusCode: {},
 		username: null,
 		password: null,
-		xhrFields: {},
-		...settings
-	};
+		xhrFields: {}
+	}, settings);
 
 	// set to itself
 	if (settings.url == null) { // double equals as also captures undefined

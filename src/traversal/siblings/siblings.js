@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
 $.fn.siblings = function (selector) {
