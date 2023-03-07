@@ -4,8 +4,15 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
-// proxy dabby to make sure once properties are set, they cannot be overwritten
-const $ = proxy(function dabby(selector, context) {
+/**
+ * The core Dabby function, generates an object containing DOM elements for manipulation
+ * 
+ * @class dabby
+ * @param {(string|Node|Node[]|Document|dabby)} selector - A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @param {(string|Node|Node[]|Document|dabby)} context - An object or selector to find `selector` within, A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @returns {dabby} A Dabby object containing the nodes requested with `selector`
+ */
+const $ = proxy(function dabby(selector, context) { // proxy dabby to make sure once properties are set, they cannot be overwritten
 	if (this instanceof dabby) {
 		let nodes = [],
 			match;
