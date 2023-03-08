@@ -6,7 +6,15 @@ import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
 /**
  * The core Dabby function, generates an object containing DOM elements for manipulation
- * 
+ * @module dabby
+ * @function $
+ * @constructs dabby
+ * @param {(string|Node|Node[]|Document|dabby)} selector - A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @param {(string|Node|Node[]|Document|dabby)} context - An object or selector to find `selector` within, A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @returns {dabby} A Dabby object containing the nodes requested with `selector`
+ */
+
+/**
  * @class dabby
  * @param {(string|Node|Node[]|Document|dabby)} selector - A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
  * @param {(string|Node|Node[]|Document|dabby)} context - An object or selector to find `selector` within, A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
