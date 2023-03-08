@@ -5,19 +5,24 @@ import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
 /**
+ * The inputs for a dabby selector - A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @typedef {(string|Node|Node[]|Document|dabby)} selector
+ */
+
+/**
  * The core Dabby function, generates an object containing DOM elements for manipulation
  * @module dabby
  * @function $
  * @constructs dabby
- * @param {(string|Node|Node[]|Document|dabby)} selector - A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
- * @param {(string|Node|Node[]|Document|dabby)} context - An object or selector to find `selector` within, A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @param {selector} selector - The selector or object(s) to store in the `dabby` object
+ * @param {selector} context - An object or selector to find `selector` within
  * @returns {dabby} A Dabby object containing the nodes requested with `selector`
  */
 
 /**
  * @class dabby
- * @param {(string|Node|Node[]|Document|dabby)} selector - A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
- * @param {(string|Node|Node[]|Document|dabby)} context - An object or selector to find `selector` within, A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @param {selector} selector - The selector or object(s) to store in the `dabby` object
+ * @param {selector} context - An object or selector to find `selector` within
  * @returns {dabby} A Dabby object containing the nodes requested with `selector`
  */
 const $ = proxy(function dabby(selector, context) { // proxy dabby to make sure once properties are set, they cannot be overwritten
