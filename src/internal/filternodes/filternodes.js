@@ -2,6 +2,16 @@ import $ from "../../core/dabby/dabby.js";
 import "../../core/get/get.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 
+/**
+* Filters nodes in a dabby collection by the specified filters
+* @function filternodes
+* @param {dabby} dabby The dabby collection to filter
+* @param {(filterCallback|selector)} filter A string specifying a CSS selector to match against the items in the collection, a selector specifying the nodes to filter the collection by, or a callback function to do custom filtering
+* @param {(selector|boolean)} context A selector to use as the context to a `filter` when specified as a selector (except a string), or a boolean to specify `not` (shorthand)
+* @param {boolean} not Inverses the filtering process to produce all the nodes that do not match the input `filter`
+* @returns {dabby} A new dabby collection containing the filtered nodes
+*/
+
 export default (dabby, filter, context, not) => {
 	let func,
 		nodes = dabby.nodeType ? [dabby] : Array.from(dabby);
