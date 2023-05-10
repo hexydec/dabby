@@ -5,8 +5,8 @@ Dabby.js is designed to be a simple and streamlined as possible whilst covering 
 ## Project Aims
 
 - Be small (Less than 10kb minified and gzipped)
-- Be built in a modular was so that its components can be included as needed
-- Be fast, tries to use the browsers native functions in each method (Without duplicating more complex functionality)
+- Be built in a modular way so that its components can be included as needed
+- Be fast, tries to use the browser's native functions in each method (Without duplicating more complex functionality)
 - Be easy to understand. jQuery and other clone libraries' code can be a little obfuscated to read and understand
 
 ## Why did you create Dabby.js?
@@ -27,15 +27,15 @@ It is however designed to be completely modular, as it is written as ES6 modules
 
 Dabby.js is designed for modern browsers and supports IE11+, Chrome, Firefox, iOS 8+, and Android 4.4.4.
 
-The final thing to note is that currently the full dabby.js library weighs in at just under 6kb zipped, and can be smaller with a custom build.
+The final thing to note is that currently the full dabby.js library weighs in at just over 6kb zipped, and can be smaller with a custom build.
 
 ## Differences between dabby.js and jQuery:
 
 - No fx library, if you want effects, use CSS and class toggles
-- ‎Extra CSS selectors like :first are not supported, and dabby doesn't have a selector engine plugin architecture, it supports what the browser's `document.querySelectorAll()` supports
-- ‎Doesn't support the deferred object
-- ‎Events return the native browser event, not a super or custom object like jQuery
-- ‎Ajax support is much more basic, dabby doesn't support global callbacks or promises, and only offers a subset of the configuration options
-- ‎The Ajax object returned is the native XHR object, not a super or custom object like jQuery's jqXHR object
-- ‎Dabby does not stack selectors like jQuery does, so methods like andBack() are not supported
-- ‎It may not support all the inputs of each method that jQuery does (See documentation for each method to see differences if available)
+- Extra CSS selectors like `:first` are not supported, and Dabby doesn't have a selector engine plugin architecture. It supports what the browser's `document.querySelectorAll()` supports
+- Doesn't support the deferred object
+- Events return the native browser event, not a super or custom object like jQuery
+- Ajax support is much more basic, Dabby doesn't support global callbacks or promises, and only offers a subset of the configuration options
+- The Ajax object returned is the native XHR object, not a super or custom object like jQuery's `jqXHR` object
+- Dabby does not stack selectors like jQuery does, so methods like `andBack()` are not supported
+- It may not support all the inputs of each method that jQuery does (See documentation for each method to see differences if available)
