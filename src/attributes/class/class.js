@@ -1,6 +1,43 @@
 import $ from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
 
+/**
+ * A callback to generate class names from a node
+ * 
+ * @callback classCallback
+ * @param {int} [index] The index of the node in the Dabby object 
+ * @param {Node} [element] A Node object
+ * @returns {(string|string[])} A string specifying the name of the class or an array of classes
+ */
+
+/**
+ * Adds a class or classes to the nodes in the collection
+ * @memberof dabby
+ * @method addClass
+ * @instance
+ * @param {(string|string[]|classCallback)} prop The class name, an array of class names, or a callback to generate the same
+ * @returns {dabby} The original dabby collection
+ */
+
+/**
+ * Removes a class or classes from the nodes in the collection
+ * @memberof dabby
+ * @method removeClass
+ * @instance
+ * @param {(string|string[]|classCallback)} prop The class name, an array of class names, or a callback to generate the same
+ * @returns {dabby} The original dabby collection
+ */
+
+/**
+ * Adds or removes a class or classes from the nodes in the collection
+ * @memberof dabby
+ * @method toggleClass
+ * @instance
+ * @param {(string|string[]|classCallback)} prop The class name, an array of class names, or a callback to generate the same
+ * @param {boolean=} state Sets the state of the toggle where `true` is equivalent to addClass() and `false` to removeClass(), if not specified, each node will be toggled to the opposite of its current state
+ * @returns {dabby} The original dabby collection
+ */
+
 const funcs = [];
 ["removeClass", "addClass", "toggleClass"].forEach((func, f) => {
 
