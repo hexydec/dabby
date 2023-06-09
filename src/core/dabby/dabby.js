@@ -10,22 +10,17 @@ import parseHTML from "../../internal/parsehtml/parsehtml.js";
  */
 
 /**
- * The core Dabby function, generates an object containing DOM elements for manipulation
- * @module dabby
- * @function $
- * @constructs dabby
- * @param {selector} selector - The selector or object(s) to store in the `dabby` object
- * @param {selector} context - An object or selector to find `selector` within
- * @returns {dabby} A Dabby object containing the nodes requested with `selector`
+ * @typedef {Object} dabby
+ * @property {number} length The number of DOM nodes in the collection.
  */
 
 /**
- * @class dabby
+ * The core Dabby function, generates an object containing DOM elements for manipulation
  * @param {selector} selector - The selector or object(s) to store in the `dabby` object
  * @param {selector} context - An object or selector to find `selector` within
  * @returns {dabby} A Dabby object containing the nodes requested with `selector`
  */
-const $ = proxy(function dabby(selector, context) { // proxy dabby to make sure once properties are set, they cannot be overwritten
+function dabby(selector, context) { // proxy dabby to make sure once properties are set, they cannot be overwritten
 	if (this instanceof dabby) {
 		let nodes = [],
 			match;
@@ -103,7 +98,9 @@ const $ = proxy(function dabby(selector, context) { // proxy dabby to make sure 
 	} else {
 		return new dabby(selector, context);
 	}
-});
+};
+
+const $ = proxy(dabby);
 
 // proxy the prototype to $.fn to prevent methods from being overwritten
 $.fn = proxy($.prototype);
