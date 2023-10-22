@@ -1,11 +1,13 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 
-$.fn.empty = function () {
-	let i = this.length;
-	while (i--) {
-		while (this[i].firstChild) {
-			this[i].removeChild(this[i].firstChild);
+Object.defineProperty($.fn, "empty", {
+	value: function () {
+		let i = this.length;
+		while (i--) {
+			while (this[i].firstChild) {
+				this[i].removeChild(this[i].firstChild);
+			}
 		}
+		return this;
 	}
-	return this;
-};
+});

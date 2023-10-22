@@ -1,6 +1,8 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import "../eq/eq.js";
 
-$.fn.last = function () {
-	return this.eq(-1);
-};
+Object.defineProperty($.fn, "last", {
+	value: function () {
+		return this.eq(-1);
+	}
+});

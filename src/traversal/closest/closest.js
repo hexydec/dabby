@@ -1,19 +1,21 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
-$.fn.closest = function (selector, context) {
-	let i = this.length,
-		nodes = [];
+Object.defineProperty($.fn, "closest", {
+	value: function (selector, context) {
+		let i = this.length,
+			nodes = [];
 
-	while (i--) {
-		let node = this[i];
-		while (node && node.nodeType === 1) { // Node.ELEMENT_NODE
-			if (filterNodes(node, selector, context).length) {
-				nodes.unshift(node);
-				break;
+		while (i--) {
+			let node = this[i];
+			while (node && node.nodeType === 1) { // Node.ELEMENT_NODE
+				if (filterNodes(node, selector, context).length) {
+					nodes.unshift(node);
+					break;
+				}
+				node = node.parentNode;
 			}
-			node = node.parentNode;
 		}
+		return $(nodes);
 	}
-	return $(nodes);
-};
+});

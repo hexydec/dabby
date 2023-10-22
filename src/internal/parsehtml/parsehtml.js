@@ -1,3 +1,12 @@
+/**
+ * Generates a DOM tree from the input HTML
+ * @function parseHtml
+ * @param {string} html A string containing valid HTML
+ * @param {(Node|boolean)=} context A node to use as context for generating the DOM, if not specified then the document is used, can also soecify `runscripts` (shorthand)
+ * @param {boolean=} runscripts A boolean indicating whether to extract script tags from `html` and run them
+ * @returns {Node[]} An array of Node objects representing the input HTML
+ */
+
 export default (html, context, runscripts = false) => {
 
 	// sort out args

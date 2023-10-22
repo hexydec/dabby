@@ -1,3 +1,10 @@
+/**
+ * converts a CSS property name to the correct Javascript case
+ * @function getProp
+ * @param {string} prop The property name
+ * @returns {string} The correctly formatted property name
+ */
+
 export default prop => {
 	const properties = {
 		"for": "htmlFor",

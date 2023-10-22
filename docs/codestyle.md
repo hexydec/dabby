@@ -12,7 +12,8 @@ If you wish to contribute to the project, please follow our style guide:
 - Use tabs not spaces for indenting code.
 - Do not write control loops or ifs on one line.
 - Use a double line to divide sections of code, with preceding comment
-	-```
+
+```
 	lastline = true;
 
 	// next block
@@ -43,7 +44,7 @@ for (let i = 0; i < len; i++) {
 
 ### Leverage the browser, not Dabby.js
 
-Where the vanilla Javascript code is simple, use that instead of the internal Dabby methods. For example, if you need to retrieve the parent of a node, use this.parentNode, rather than $(this).parent().
+Where the vanilla Javascript code is simple, use that instead of the internal Dabby methods. For example, if you need to retrieve the parent of a node, use `this.parentNode`, rather than `$(this).parent()`.
 
 This will make Dabby.js as fast as possible and prevent unneeded dependencies, making custom builds smaller.
 

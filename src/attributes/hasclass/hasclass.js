@@ -1,11 +1,13 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 
-$.fn.hasClass = function (cls) {
-	let i = this.length;
-	while (i--) {
-		if (this[i].classList.contains(cls)) {
-			return true;
+Object.defineProperty($.fn, "hasClass", {
+	value: function (cls) {
+		let i = this.length;
+		while (i--) {
+			if (this[i].classList.contains(cls)) {
+				return true;
+			}
 		}
+		return false;
 	}
-	return false;
-}
+});

@@ -1,4 +1,4 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import "../insert/insert.js";
 import "../../utils/each/each.js";
 
@@ -8,8 +8,10 @@ $.each({
 	insertBefore: "before",
 	insertAfter: "after"
 }, (name, func) => {
-	$.fn[name] = function (selector) {
-		$(selector)[func](this);
-		return this;
-	};
+	Object.defineProperty($.fn, name, {
+		value: function (selector) {
+			$(selector)[func](this);
+			return this;
+		}
+	});
 });

@@ -1,4 +1,6 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 import isWindow from "../../internal/iswindow/iswindow.js";
 
-$.isWindow = isWindow;
+Object.defineProperty($, "isWindow", {
+	value: isWindow
+});

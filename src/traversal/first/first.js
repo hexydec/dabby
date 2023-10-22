@@ -1,5 +1,7 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 
-$.fn.first = function () {
-	return $(this[0]);
-};
+Object.defineProperty($.fn, "first", {
+	value: function () {
+		return $(this[0]);
+	}
+});

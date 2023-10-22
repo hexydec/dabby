@@ -1,5 +1,7 @@
-import $ from "../../core/core.js";
+import $ from "../../core/dabby/dabby.js";
 
-$.fn.find = function (selector) {
-	return $(selector, this);
-};
+Object.defineProperty($.fn, "find", {
+	value: function (selector) {
+		return $(selector, this);
+	}
+});

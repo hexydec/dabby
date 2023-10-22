@@ -1,13 +1,17 @@
-// import proxy from "../../internal/proxy/proxy.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import isWindow from "../../internal/iswindow/iswindow.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
-// proxy dabby to make sure once properties are set, they cannot be overwritten
 class dabby {
 
-	constructor (selector, context) {
+	#length = 0;
+
+	init(selector, context) {
+		return new dabby(selector, context);
+	}
+
+	constructor(selector, context) {
 		let nodes = [],
 			match;
 
@@ -69,23 +73,26 @@ class dabby {
 
 		// create a getter for the length so it can't be edited from outside
 		let i = nodes.length;
-		Object.defineProperty(this, "length", {
-			get length() {
-				return this.length;
-			},
-			value: i
-		});
+		this.#length = i;
 
 		// assign nodes to object
 		while (i--) {
 			this[i] = nodes[i];
 		}
 	}
+
+	// static get fn() {
+	// 	return Dabby.prototype;
+	// }
+
+	get length() {
+		return this.#length;
+	}
 }
 
-const $ = (selector, context) => {
-	return new dabby(selector, context);
-};
-$.fn = dabby.prototype;
-
+const $ = dabby.prototype.init;
+$.fn = $.prototype = dabby.prototype;
+// Object.defineProperty($, "fn", {
+// 	value: Dabby.prototype
+// });
 export default $;

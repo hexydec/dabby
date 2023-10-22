@@ -1,4 +1,4 @@
-import $ from "./core/core.js";
+import $ from "./core/dabby/dabby.js";
 
 // ajax
 import "./ajax/ajax/ajax.js";
