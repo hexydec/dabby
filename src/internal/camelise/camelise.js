@@ -1,5 +1,6 @@
 /**
  * Converts CSS property names to camelCase, the inverse of `dasherise`
+ * 
  * @function camelise
  * @param {string} prop The property name
  * @returns {string} The camelCase formatted property

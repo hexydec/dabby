@@ -4,48 +4,52 @@ import isObj from "../../internal/isobj/isobj.js";
 
 [$, $.fn].forEach(obj => {
 	Object.defineProperty(obj, "extend", {
-		value: function (...arrs) {
+		value: function (target, arr1, ...arrs) {
 
 			// deep copy
-			if (arrs[0] === true) {
+			if (target === true) {
 
 				// check base is object
-				if (!isObj(arrs[1])) {
-					arrs[1] = {};
+				if (!isObj(arr1)) {
+					arr1 = {};
 				}
 
 				// merge items in second object into first
-				if (isObj(arrs[2])) {
-					for (const prop in arrs[2]) {
+				if (isObj(arrs[0])) {
+					for (const prop in arrs[0]) {
 
 						// only allow own properties and don't merge prototypes
-						if (prop !== "__proto__" && arrs[1][prop] !== arrs[2][prop]) {
-							const isArr = Array.isArray(arrs[2][prop]);
-							if (isArr || isPlainObject(arrs[2][prop])) { // only deep merge plain objects and arrays
-								arrs[1][prop] = $.extend(
+						if (prop !== "__proto__" && arr1[prop] !== arrs[0][prop]) {
+							const isArr = Array.isArray(arrs[0][prop]);
+							if (isArr || isPlainObject(arrs[0][prop])) { // only deep merge plain objects and arrays
+								arr1[prop] = $.extend(
 									true,
-									Array.isArray(arrs[1][prop]) === isArr ? arrs[1][prop] : (isArr ? [] : {}), // if types do not match, make an empty object
-									arrs[2][prop]
+									Array.isArray(arr1[prop]) === isArr ? arr1[prop] : (isArr ? [] : {}), // if types do not match, make an empty object
+									arrs[0][prop]
 								);
 							} else {
-								arrs[1][prop] = arrs[2][prop];
+								arr1[prop] = arrs[0][prop];
 							}
 						}
 					}
 				}
 
 				// merge the next object
-				if (isObj(arrs[3])) {
-					return $.extend(true, arrs[1], ...arrs.slice(3));
+				if (isObj(arrs[1])) {
+					return $.extend(true, arr1, ...arrs.slice(1));
 				}
-				return arrs[1];
+				return arr1;
 			}
 
 			// copy into dabby object
-			if (arrs[2] === undefined) {
-				arrs[2] = arrs[1];
-				arrs[1] = this;
+			if (arr1 === undefined) {
+				arr1 = target;
+				target = this;
 			}
+
+			// merge arguments into array
+			arrs.unshift(arr1);
+			arrs.unshift(target);
 			return Object.assign.apply(null, arrs);
 		}
 	});

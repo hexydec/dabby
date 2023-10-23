@@ -12,11 +12,11 @@ import "../../utils/each/each.js";
 
 /**
  * Run a custom callback function on each item in a Dabby collection
- * @memberof dabby
- * @method each
  * @instance
+ * @memberOf Dabby
+ * @method each
  * @param {eachCallback} callback - A callback to process each node in the Dabby object
- * @returns {dabby} The original Dabby object
+ * @returns {Dabby} The original Dabby object
  */
 Object.defineProperty($.fn, "each", {
 	value: function (callback) {
@@ -24,7 +24,3 @@ Object.defineProperty($.fn, "each", {
 		return this;
 	}
 });
-// $.fn.each = function (callback) {
-// 	$.each(this, callback);
-// 	return this;
-// };

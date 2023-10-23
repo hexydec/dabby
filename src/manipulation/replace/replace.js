@@ -1,13 +1,14 @@
 import $ from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import getVal from "../../internal/getval/getval.js";
+import "../../core/get/get.js";
 import "../../manipulation/clone/clone.js";
 
 ["replaceWith", "replaceAll"].forEach((func, f) => {
 	Object.defineProperty($.fn, func, {
 		value: function (html) {
-			let source = f ? $(html) : this,
-				target = f ? this : html,
+			let source = (f ? $(html) : this).get(),
+				target = (f ? this : $(html)).get(),
 				isFunc = isFunction(target),
 				i = source.length;
 
@@ -27,7 +28,7 @@ import "../../manipulation/clone/clone.js";
 					}
 				}
 			}
-			return this;
+			return $(source);
 		}
 	});
 });

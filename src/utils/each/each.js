@@ -1,5 +1,21 @@
 import $ from "../../core/dabby/dabby.js";
 
+/**
+ * @callback eachCallback
+ * @param {int} key The index of the current item being processed
+ * @param {any} value The value of the current item
+ * @returns {(undefined|false)} false to end the loop early, or undefined to continue
+ */
+
+/**
+ * A generic iterator for looping through arrayLike objects
+ * 
+ * @method
+ * @memberOf Dabby
+ * @param {(Dabby|Object)} obj A Dabby object, or ArrayLike object that can be iterated over
+ * @param {eachCallback} callback A callback function to process each item in the list
+ * @returns {(Dabby|Object)} The input object
+ */
 Object.defineProperty($, "each", {
 	value: (obj, callback) => {
 		const isArr = Array.isArray(obj) || obj.length !== undefined,

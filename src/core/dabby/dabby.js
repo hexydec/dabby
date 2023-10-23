@@ -3,14 +3,28 @@ import isWindow from "../../internal/iswindow/iswindow.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
-class dabby {
+/**
+ * The inputs for a dabby selector - A string containing a CSS selector, a Node object or array of Node objects, or iterable yielding Node objects, or a Document object, or a Dabby object
+ * @typedef {(string|Node|Node[]|Document|Dabby)} selector
+ */
+
+/**
+ * Dabby class, manipulates DOM nodes
+ * 
+ * @class
+ * @type {Object.<number, Node>}
+ * @property {number} length The number of DOM nodes in the collection.
+ */
+class Dabby {
 
 	#length = 0;
 
-	init(selector, context) {
-		return new dabby(selector, context);
-	}
-
+	/**
+	 * Dabby factory, generates a dabby object containing DOM elements for manipulation
+	 * 
+	 * @param {selector} [selector] - The selector or object(s) to store in the `dabby` object
+	 * @param {selector} [context] - An object or selector to find `selector` within
+	 */
 	constructor(selector, context) {
 		let nodes = [],
 			match;
@@ -36,7 +50,7 @@ class dabby {
 					nodes = [document.createElement(match[1])];
 
 					// context is CSS attributes, import /src/attributes/attr/attr.js to use
-					if (context && isPlainObject(context)) {
+					if (context && isPlainObject(context) && Dabby.prototype.hasOwnProperty("attr")) {
 						$(nodes).attr(context);
 					}
 
@@ -46,7 +60,7 @@ class dabby {
 				}
 
 			// $ collection - copy nodes to new object
-			} else if (selector instanceof dabby) {
+			} else if (selector instanceof Dabby) {
 				nodes = Array.from(selector);
 
 			// single node or Window
@@ -77,22 +91,40 @@ class dabby {
 
 		// assign nodes to object
 		while (i--) {
-			this[i] = nodes[i];
+			Object.defineProperty(this, i, {
+				value: nodes[i],
+				enumerable: true
+			});
 		}
 	}
 
-	// static get fn() {
-	// 	return Dabby.prototype;
-	// }
-
+	/**@type {number} */
 	get length() {
 		return this.#length;
 	}
 }
 
-const $ = dabby.prototype.init;
-$.fn = $.prototype = dabby.prototype;
-// Object.defineProperty($, "fn", {
-// 	value: Dabby.prototype
-// });
+// wire up the factory method
+// const $ = Dabby.prototype.init;
+
+/**
+ * Dabby factory, generates a dabby object containing DOM elements for manipulation
+ * 
+ * @param {selector} [selector] - The selector or object(s) to store in the `dabby` object
+ * @param {selector} [context] - An object or selector to find `selector` within
+ * @returns {Dabby} A Dabby object containing the nodes requested with `selector`
+ */
+const $ = (selector, context) => {
+	return new Dabby(selector, context);
+};
+
+// set the factory prototype to the class prototype and prevent overwriting
+Object.defineProperty($, "prototype", {
+	value: Dabby.prototype
+});
+Object.defineProperty($, "fn", {
+	value: Dabby.prototype
+});
+
+// export
 export default $;

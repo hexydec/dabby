@@ -15,9 +15,8 @@ import "./attributes/data/test.js";
 import "./attributes/hasclass/test.js";
 import "./attributes/prop/test.js";
 import "./attributes/show-hide/test.js";
-//import "./attributes/removeprop/test.js";
+import "./attributes/removeprop/test.js";
 import "./attributes/val/test.js";
-import $ from "./core/dabby/dabby.js";
 
 // core
 import "./core/dabby/test.js";

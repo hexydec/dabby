@@ -12,17 +12,15 @@ import dasherise from "../../internal/dasherise/dasherise.js";
  * @returns {string} A string specifying the CSS value
  */
 
-/**
- * Retrieves the requested style properties from the first item in a collection or sets the specified CSS style(s) to each item in a collection
- * @memberof dabby
- * @method css
- * @instance
- * @param {(string|string[]|Object)} props The property name, an array or proprty names, or an object of property key/values, where the values are specified as per `value`
- * @param {(string|cssCallback)=} value A string containing the value to set, or a callback function to generate a value
- * @returns {(dabby|string)} The original dabby collection, or the requested value
- */
-
 Object.defineProperty($.fn, "css", {
+	/**
+	 * Retrieves the requested style properties from the first item in a collection or sets the specified CSS style(s) to each item in a collection
+	 * @memberof Dabby#
+	 * @function css
+	 * @param {(string|string[]|Object)} props The property name, an array or proprty names, or an object of property key/values, where the values are specified as per `value`
+	 * @param {(string|cssCallback)=} value A string containing the value to set, or a callback function to generate a value
+	 * @returns {(Dabby|string)} The original dabby collection, or the requested value
+	 */
 	value: function (props, value) {
 
 		// set the values

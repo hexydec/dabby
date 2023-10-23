@@ -3,6 +3,14 @@ import "../../utils/each/each.js";
 import camelise from "../../internal/camelise/camelise.js";
 
 Object.defineProperty($.fn, "data", {
+	/**
+	 * Get or set arbitrary data as properties of each node in a collection
+	 * @memberof Dabby#
+	 * @function data
+	 * @param {string} name The name of the data attribute to get/set
+	 * @param {(string|object)} [data] A string or Object containing the value to set, if `data` is an Object it will be converted to JSON before being stored
+	 * @returns {(Dabby|string|Object)} The original dabby collection when setting, or the requested value when getting
+	 */
 	value: function (name, data) {
 
 		// convert data to object

@@ -8,5 +8,5 @@ QUnit.test("$.fn.map", function (assert) {
 	var output = $(".testtemp").map(function () {
 		return this.innerText;
 	});
-	assert.deepEqual(Array.from(output), ["first", "second"]);
+	assert.deepEqual(Array.from(output), ["first", "second"], "Can extract text from nodes using $.fn.map");
 });

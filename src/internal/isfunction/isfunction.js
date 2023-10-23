@@ -1,7 +1,7 @@
 /**
  * Tests a value to see if it is a function
  * @function isFunction
- * @param {string} func The value to be tested
+ * @param {any} func The value to be tested
  * @returns {boolean} Whether the input value is a function
  */
 

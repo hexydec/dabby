@@ -9,3 +9,4 @@ node_modules
 /benchmark/suite.js
 /tests/test.js.map
 /tests/internals.js.map
+/out
