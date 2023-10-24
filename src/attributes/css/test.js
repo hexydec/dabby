@@ -23,7 +23,7 @@ QUnit.module("Attributes", hooks => {
 			};
 
 		// retrieve CSS properties
-		rmain.style.cssText = 'border: 1px solid red;';
+		rmain.style.border = "1px solid red";
 		assert.equal(main.css("border-left-color"), "rgb(255, 0, 0)", "Can retrieve CSS property");
 		assert.deepEqual(main.css(props), output, "Can retrieve multiple CSS properties");
 

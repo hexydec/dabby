@@ -32,7 +32,7 @@ Object.defineProperty($.fn, "css", {
 		if (this[0]) {
 			let name = props,
 				i,
-				style = getComputedStyle(this[0], ""),
+				style = getComputedStyle(this[0]),
 				output = {},
 				ret = false;
 

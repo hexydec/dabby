@@ -2,19 +2,7 @@ import $ from "../../../dist/dabby.js";
 
 QUnit.module("Core");
 
-// add mouseevent support
-if (!("MouseEvent" in window)) {
-	var MouseEvent = function (eventType, params) {
-		params = params || { bubbles: false, cancelable: false };
-		var mouseEvent = document.createEvent('MouseEvent');
-		mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-		return mouseEvent;
-	}
-	MouseEvent.prototype = Event.prototype;
-	window.MouseEvent = MouseEvent;
-}
-
-QUnit.test("$.fn.init", function (assert) {
+QUnit.test("$()", function (assert) {
 	var test = document.getElementsByClassName("test")[0];
 	test.innerHTML = '<h1>test</h1><input type="checkbox" checked="checked" />';
 	var h1 = test.getElementsByTagName("h1")[0],
@@ -51,7 +39,7 @@ QUnit.test("$.fn.init", function (assert) {
 	assert.ok(objNode.innerText === "test", "Can create HTML objects with text attributes");
 	assert.ok(objNode.style.backgroundColor === "red", "Can create HTML objects with style attributes");
 
-	objNode.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: true}));
+	objNode.dispatchEvent(new MouseEvent("click", {view: window, bubbles: true, cancelable: true}));
 	assert.ok(triggered, "Can create HTML objects and attached events");
 
 	assert.equal($(html).get(0).outerHTML, html, "Can create HTML nodes");
