@@ -15,13 +15,16 @@
 		"javascript"
 	],
 	"contributors": [],
-	"main": "dist/dabby.min.js",
+	"main": "dist/dabby.js",
+	"types": "dist/src/build.d.ts",
+	"source": "src/build.js",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/hexydec/dabby/issues"
 	},
 	"scripts": {
-		"test": "grunt test"
+		"test": "grunt test",
+		"tsc": "node_modules\\.bin\\tsc"
 	},
 	"browserslist": [
 		"defaults"
@@ -43,7 +46,8 @@
 		"load-grunt-tasks": "^5.1.0",
 		"qunit": "^2.20.0",
 		"rollup": "^4.1.4",
-		"terser": "^5.22.0"
+		"terser": "^5.22.0",
+		"typescript": "^5.2.2"
 	},
 	"repository": {
 		"type": "git",

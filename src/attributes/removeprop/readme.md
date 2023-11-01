@@ -1,6 +1,6 @@
 # .removeProp()
 
-Remove the selected property from all objects in a collection.
+Removes the selected property from all objects in a collection.
 
 ## Usage
 

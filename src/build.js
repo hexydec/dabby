@@ -1,5 +1,10 @@
 import $ from "./core/dabby/dabby.js";
 
+// core
+import "./core/each/each.js";
+import "./core/get/get.js";
+import "./core/map/map.js";
+
 // ajax
 import "./ajax/ajax/ajax.js";
 import "./ajax/getpost/getpost.js";
@@ -18,11 +23,6 @@ import "./attributes/prop/prop.js";
 import "./attributes/removeprop/removeprop.js";
 import "./attributes/show-hide/show-hide.js";
 import "./attributes/val/val.js";
-
-// core
-import "./core/each/each.js";
-import "./core/get/get.js";
-import "./core/map/map.js";
 
 // dimensions
 import "./dimensions/offset/offset.js";
@@ -70,7 +70,6 @@ import "./traversal/slice/slice.js";
 // utilities
 import "./utils/each/each.js";
 import "./utils/extend/extend.js";
-//import "./utils/isarray/isarray.js";
 import "./utils/isfunction/isfunction.js";
 import "./utils/isplainobject/isplainobject.js";
 import "./utils/iswindow/iswindow.js";

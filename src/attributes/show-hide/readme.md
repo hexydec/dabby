@@ -8,7 +8,7 @@ The display property is set as an inline property, if a CSS rule sets the proper
 
 # .hide()
 
-Set the display property of each object in a collection to none.
+Set the display property of each object in a collection to `none`.
 
 The display property is set as an inline property, if a CSS rule sets the property with !important, this method will have no effect.
 

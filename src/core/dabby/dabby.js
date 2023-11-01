@@ -15,7 +15,7 @@ import parseHTML from "../../internal/parsehtml/parsehtml.js";
  * @type {Object.<number, Node>}
  * @property {number} length The number of DOM nodes in the collection.
  */
-class Dabby {
+export class Dabby {
 
 	#length = 0;
 
