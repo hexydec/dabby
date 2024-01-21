@@ -10,6 +10,34 @@ import getVal from "../../internal/getval/getval.js";
  * @returns {(string|string[])} A string specifying the name of the class or an array of classes
  */
 
+/**
+ * Adds a class or classes to the nodes in the collection
+ * @memberof dabby
+ * @method addClass
+ * @instance
+ * @param {(string|string[]|classCallback)} prop The class name, an array of class names, or a callback to generate the same
+ * @returns {dabby} The original dabby collection
+ */
+
+/**
+ * Removes a class or classes from the nodes in the collection
+ * @memberof dabby
+ * @method removeClass
+ * @instance
+ * @param {(string|string[]|classCallback)} prop The class name, an array of class names, or a callback to generate the same
+ * @returns {dabby} The original dabby collection
+ */
+
+/**
+ * Adds or removes a class or classes from the nodes in the collection
+ * @memberof dabby
+ * @method toggleClass
+ * @instance
+ * @param {(string|string[]|classCallback)} prop The class name, an array of class names, or a callback to generate the same
+ * @param {boolean=} state Sets the state of the toggle where `true` is equivalent to addClass() and `false` to removeClass(), if not specified, each node will be toggled to the opposite of its current state
+ * @returns {dabby} The original dabby collection
+ */
+
 const funcs = [];
 ["removeClass", "addClass", "toggleClass"].forEach((func, f) => {
 
@@ -18,31 +46,6 @@ const funcs = [];
 
 	// create function
 	Object.defineProperty($.fn, func, {
-
-		/**
-		 * Adds a class or classes to the nodes in the collection
-		 * @memberof Dabby#
-		 * @function addClass
-		 * @param {(string|string[]|classCallback)} cls The class name, an array of class names, or a callback to generate the same
-		 * @returns {Dabby} The original dabby collection
-		 */
-		
-		/**
-		 * Removes a class or classes from the nodes in the collection
-		 * @memberof Dabby#
-		 * @function removeClass
-		 * @param {(string|string[]|classCallback)} cls The class name, an array of class names, or a callback to generate the same
-		 * @returns {Dabby} The original dabby collection
-		 */
-		
-		/**
-		 * Adds or removes a class or classes from the nodes in the collection
-		 * @memberof Dabby#
-		 * @function toggleClass
-		 * @param {(string|string[]|classCallback)} cls The class name, an array of class names, or a callback to generate the same
-		 * @param {boolean} [state] Sets the state of the toggle where `true` is equivalent to addClass() and `false` to removeClass(), if not specified, each node will be toggled to the opposite of its current state
-		 * @returns {Dabby} The original dabby collection
-		 */
 		value: function (cls, state) {
 			if (this[0]) {
 				let i = this.length,

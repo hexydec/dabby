@@ -4,18 +4,17 @@ import "../../events/on/on.js";
 import events from "../../internal/getevents/getevents.js";
 import getVal from "../../internal/getval/getval.js";
 
+/**
+ * Retrieves the requested property from the first node in a collection, or sets the specified value on every item in the collection
+ * @memberof dabby
+ * @method attr
+ * @instance
+ * @param {(string|Object)} prop The name of the property to retrieve or set, or a plain object specifying keys/values to set
+ * @param {(string|int|float)=} value The value to set the property to if `prop` is a string, `undefined` to retrieve the requested `prop`
+ * @returns {(dabby|string|int|float)} The original dabby collection if setting values, or the value of the requested attribute
+ */
 Object.defineProperty($.fn, "attr", {
-
-	/**
-	 * Retrieves the requested property from the first node in a collection, or sets the specified value on every item in the collection
-	 * 
-	 * @memberof Dabby#
-	 * @function attr
-	 * @param {(string|Object)} prop The name of the property to retrieve or set, or a plain object specifying keys/values to set
-	 * @param {(string|number)=} [value] The value to set the property to if `prop` is a string, `undefined` to retrieve the requested `prop`
-	 * @returns {(Dabby|string|number|undefined)} The original dabby collection if setting values, or the value of the requested attribute
-	 */
-	value(prop, value) {
+	value: function (prop, value) {
 		let isObj = typeof prop !== "string",
 			obj = {};
 
