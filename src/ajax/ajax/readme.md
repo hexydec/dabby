@@ -31,7 +31,7 @@ The `settings` object can accept the following parameters:
 | scriptCharset	| string | Sets the charset of synchronous and requests of type "script" |	|
 | jsonp		| string	| The parameter name that contains the name of the `jsonpCallback` | "callback"|
 | jsonpCallback| string	| The name of the function to execute when a syncronous JSONP request has been made | [Auto-generated] |
-| contentType | string	| "application/x-www-form-urlencoded; charset=UTF-8" | Sets the content-type header |
+| contentType | string	| Sets the content-type header | "application/x-www-form-urlencoded; charset=UTF-8" |
 | headers	| object	| An object containing any headers to send with the request | 		|
 | context	| object	| An HTML node or other object that will be the context of any callbacks (`this`) ||
 | statusCode | object	| An object of key/value pairs where the key is the HTTP response code and the value is the callback function. Will be called when the specified status code is returned (Asynchronous requests only) ||

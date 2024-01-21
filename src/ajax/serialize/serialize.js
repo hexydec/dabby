@@ -1,10 +1,10 @@
-import $ from "../../core/dabby/dabby.js";
+import $, {Dabby} from "../../core/dabby/dabby.js";
 import "../../traversal/filter/filter.js";
 import "../../core/each/each.js";
 import "../../attributes/val/val.js";
 import "../param/param.js";
 
-$.fn.serialize = function () {
+const serialize = function () {
 	const selector = "input[name]:not([type=file]):not([type=submit]):not([type=radio]):not([type=checkbox]),input[name]:checked,textarea[name],select[name]",
 		add = (name, value, params) => {
 			let match;
@@ -42,3 +42,5 @@ $.fn.serialize = function () {
 	});
 	return $.param(params);
 };
+
+Object.defineProperty(Dabby.prototype, "serialize", {value: serialize});

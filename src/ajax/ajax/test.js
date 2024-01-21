@@ -1,7 +1,7 @@
 import $ from "../../../dist/dabby.js";
 
 QUnit.module("Ajax", function (hooks) {
-
+	
 	QUnit.test("$.ajax", function (assert) {
 		assert.expect(17);
 		var done = assert.async(8);
