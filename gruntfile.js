@@ -112,6 +112,11 @@ module.exports = function (grunt) {
 			}
 		},
 		watch: {
+			options: {
+				interrupt: true,
+				spawn: false,
+				atBegin: true
+			},
 			main: {
 				files: ["src/**/*.js", "!src/**/test.js", "!src/**/benchmark.js", "gruntfile.js", "package.json"],
 				tasks: ["rollup:es6"]

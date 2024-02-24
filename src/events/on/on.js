@@ -77,6 +77,15 @@ const factory = (obj, one, events, selector, data, callback) => {
 };
 
 /**
+ * A callback to generate class names from a node
+ * 
+ * @callback onCallback
+ * @param {Event} [event] The native DOM event
+ * @param {...*} [args] Any arguments that were passed to $.fn.trigger()
+ * @returns {void}
+ */
+
+/**
  * Bind event callbacks to DOM nodes
  * 
  * @type {{
@@ -99,7 +108,6 @@ const on = function (events, selector, data, callback) {
 	return factory(this, false, events, selector, data, callback);
 }
 Object.defineProperty(Dabby.prototype, "on", {value: on});
-
 
 /**
  * Bind event callbacks to DOM nodes that fire only once
