@@ -11,10 +11,10 @@ import getVal from "../../internal/getval/getval.js";
  */
 
 const funcs = ["remove", "add", "toggle"],
-	factory = function (f, cls, state) {
-		if (this[0]) {
-			let i = this.length,
-				values = getVal(this, cls, obj => obj.className),
+	factory = function (obj, f, cls, state) {
+		if (obj[0]) {
+			let i = obj.length,
+				values = getVal(obj, cls, obj => obj.className),
 				key = f;
 
 			if (f > 1 && typeof state === "boolean") {
@@ -27,11 +27,11 @@ const funcs = ["remove", "add", "toggle"],
 					values[i] = values[i].split(" ");
 				}
 				for (let n = 0, len = values[i].length; n < len; n++) {
-					this[i].classList[funcs[key]](values[i][n]);
+					obj[i].classList[funcs[key]](values[i][n]);
 				}
 			}
 		}
-		return this;
+		return obj;
 	};
 	
 /**
@@ -43,8 +43,9 @@ const funcs = ["remove", "add", "toggle"],
  * @returns {Dabby} The original dabby collection
  */
 const remove = function (cls) {
-	return factory.apply(this, 0, cls);
+	return factory(this, 0, cls);
 }
+Object.defineProperty(Dabby.prototype, "removeClass", {value: remove});
 	
 /**
  * Removes a class or classes from the nodes in the collection
@@ -55,8 +56,9 @@ const remove = function (cls) {
  * @returns {Dabby} The original dabby collection
  */
 const add = function (cls) {
-	return factory.apply(this, 1, cls);
+	return factory(this, 1, cls);
 };
+Object.defineProperty(Dabby.prototype, "addClass", {value: add});
 	
 /**
  * Adds or removes a class or classes from the nodes in the collection
@@ -68,9 +70,6 @@ const add = function (cls) {
  * @returns {Dabby} The original dabby collection
  */
 const toggle = function (cls, state) {
-	return factory.apply(this, 2, cls, state);
+	return factory(this, 2, cls, state);
 };
-
-Object.defineProperty(Dabby.prototype, "removeClass", {value: remove});
-Object.defineProperty(Dabby.prototype, "addClass", {value: add});
 Object.defineProperty(Dabby.prototype, "toggleClass", {value: toggle});

@@ -129,9 +129,9 @@ Object.defineProperty(Dabby.prototype, "innerWidth", {value: innerWidth});
  * @function outerWidth
  * @type {{
  * 	() => number|undefined;
- * 	(val:number|string|dimCallback) => Dabby;
+ * 	(val:number|string|bool|dimCallback) => Dabby;
  * }}
- * @param {number|string|dimCallback} val An integer or string specifying the desired dimensions of the items in the collection. As a string the value should be numeric with a unit as a suffix such as px, pt, cm, or % (Any unit suppported by the browser)
+ * @param {number|string|bool|dimCallback} val An integer or string specifying the desired dimensions of the items in the collection. As a string the value should be numeric with a unit as a suffix such as px, pt, cm, or % (Any unit suppported by the browser)
  * @returns {number|Dabby|undefined} An integer or float containing the requested dimension as a pixel unit, or if setting the dimension, the input Dabby collection will be returned
  */
 const outerWidth = function (val) {

@@ -4,7 +4,7 @@ QUnit.module("Ajax", function (hooks) {
 	
 	QUnit.test("$.ajax", function (assert) {
 		assert.expect(17);
-		var done = assert.async(8);
+		var done = assert.async(9);
 		$.ajax("../tests/assets/sample.html", {success: function (response, status) {
 			assert.equal(status, "success", "Can make an AJAX request");
 			assert.ok(response.indexOf("Sample HTML File") !== -1, "AJAX request returned correct file");
@@ -57,6 +57,7 @@ QUnit.module("Ajax", function (hooks) {
 		$.ajax(action, {success: function (response, status) {
 			assert.equal(status, "success", "Can fetch file when settings.url not set");
 			assert.ok(response.indexOf("<title>Dabby.js Test Page</title>") > -1, "Current URL is fetched when settings.url is not set");
+			done();
 		}});
 
 		// jsonp
