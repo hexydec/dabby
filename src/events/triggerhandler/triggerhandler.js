@@ -1,6 +1,6 @@
-import $ from "../../core/dabby/dabby.js";
+import {Dabby} from "../../core/dabby/dabby.js";
 
-Object.defineProperty($.fn, "triggerHandler", {
+Object.defineProperty(Dabby.prototype, "triggerHandler", {
 	value: function (name, data) {
 		let ret;
 		(this[0].events || []).forEach(evt => {

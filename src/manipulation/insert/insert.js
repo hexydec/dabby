@@ -41,7 +41,7 @@ function factory(name, pos, obj, ...content) {
  * 
  * @memberof Dabby#
  * @function before
- * @param {...Node|...Node[]|...Dabby} [content] A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
+ * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */
 const before = function (...content) {
@@ -54,7 +54,7 @@ Object.defineProperty(Dabby.prototype, "before", {value: before});
  * 
  * @memberof Dabby#
  * @function prepend
- * @param {...Node|...Node[]|...Dabby} [content] A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
+ * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */
 const prepend = function (...content) {
@@ -67,7 +67,7 @@ Object.defineProperty(Dabby.prototype, "prepend", {value: prepend});
  * 
  * @memberof Dabby#
  * @function append
- * @param {...Node|...Node[]|...Dabby} [content] A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
+ * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */
 const append = function (...content) {
@@ -80,7 +80,7 @@ Object.defineProperty(Dabby.prototype, "append", {value: append});
  * 
  * @memberof Dabby#
  * @function after
- * @param {...Node|...Node[]|...Dabby} [content] A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
+ * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */
 const after = function (...content) {

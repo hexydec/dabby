@@ -1,6 +1,6 @@
-import $ from "../../core/dabby/dabby.js";
+import {Dabby} from "../../core/dabby/dabby.js";
 
-Object.defineProperty($.fn, "empty", {
+Object.defineProperty(Dabby.prototype, "empty", {
 	value: function () {
 		let i = this.length;
 		while (i--) {

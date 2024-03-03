@@ -1,8 +1,8 @@
-import $ from "../../core/dabby/dabby.js";
+import $, {Dabby} from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
 import "../wrapall/wrapall.js";
 
-Object.defineProperty($.fn, "wrap", {
+Object.defineProperty(Dabby.prototype, "wrap", {
 	value: function (html) {
 		let i = this.length,
 			values = getVal(this, html);

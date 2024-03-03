@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $, {Dabby} from "../../core/dabby/dabby.js";
 import "../../events/on/on.js";
 
 const copy = (from, to) => {
@@ -15,7 +15,7 @@ const copy = (from, to) => {
 	}
 };
 
-Object.defineProperty($.fn, "clone", {
+Object.defineProperty(Dabby.prototype, "clone", {
 	value: function (withDataAndEvents = false, deepWithDataAndEvents = null) {
 
 		// default for arg 2 is the same as arg 1

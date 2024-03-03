@@ -10,7 +10,7 @@ import isWindow from "../../internal/iswindow/iswindow.js";
  */
 
 /**
- * scroll factory function
+ * Scroll factory function
  * 
  * @type {{
  * 	{} => number|undefined;
@@ -41,8 +41,6 @@ const factory = (obj, func, pos) => {
 /**
  * Retrieves the left scroll position of the first element in the collection, or sets the scroll position on each item in the collection
  * 
- * @memberof Dabby#
- * @function scrollLeft
  * @type {{
  * 	{} => number|undefined;
 * 	{number|scrollCallback} => Dabby;
@@ -58,8 +56,6 @@ Object.defineProperty(Dabby.prototype, "scrollLeft", {value: scrollLeft});
 /**
  * Retrieves the top scroll position of the first element in the collection, or sets the scroll position on each item in the collection
  * 
- * @memberof Dabby#
- * @function scrollTop
  * @type {{
  * 	{} => number|undefined;
 * 	{number|scrollCallback} => Dabby;

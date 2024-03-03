@@ -4,6 +4,11 @@ import "../../core/each/each.js";
 import "../../attributes/val/val.js";
 import "../param/param.js";
 
+/**
+ * Serializes the values of the form controls contained within the collection as a querystring
+ * 
+ * @returns string The values of the collection of form controls as a querystring
+ */
 const serialize = function () {
 	const selector = "input[name]:not([type=file]):not([type=submit]):not([type=radio]):not([type=checkbox]),input[name]:checked,textarea[name],select[name]",
 		add = (name, value, params) => {

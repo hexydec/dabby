@@ -1,34 +1,40 @@
-import $ from "../../core/dabby/dabby.js";
+import $, {Dabby} from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import getVal from "../../internal/getval/getval.js";
 import "../../core/get/get.js";
 import "../../manipulation/clone/clone.js";
 
-["replaceWith", "replaceAll"].forEach((func, f) => {
-	Object.defineProperty($.fn, func, {
-		value: function (html) {
-			let source = (f ? $(html) : this).get(),
-				target = (f ? this : $(html)).get(),
-				isFunc = isFunction(target),
-				i = source.length;
+const factory = (obj, html, all) => {
+	let source = (all ? $(html) : obj).get(),
+		target = (all ? obj : $(html)).get(),
+		isFunc = isFunction(target),
+		i = source.length;
 
-			if (!isFunc) {
-				target = $(target);
-			}
+	if (!isFunc) {
+		target = $(target);
+	}
 
-			while (i--) {
-				let n = target.length,
-					parent = source[i].parentNode;
-				while (n--) {
-					const replace = isFunc ? getVal(target[n], n, target[n]) : target[n];
-					if (n) {
-						source[i].insertAdjacentElement("beforebegin", $(replace).clone(true).get(0));
-					} else {
-						source[i] = parent.replaceChild(i ? $(replace).clone(true).get(0) : replace, source[i]);
-					}
-				}
+	while (i--) {
+		let n = target.length,
+			parent = source[i].parentNode;
+		while (n--) {
+			const replace = isFunc ? getVal(target[n], n, target[n]) : target[n];
+			if (n) {
+				source[i].insertAdjacentElement("beforebegin", $(replace).clone(true).get(0));
+			} else {
+				source[i] = parent.replaceChild(i ? $(replace).clone(true).get(0) : replace, source[i]);
 			}
-			return $(source);
 		}
-	});
-});
+	}
+	return $(source);
+};
+
+const replaceWith = function (html) {
+	return factory(this, html, false);
+}
+Object.defineProperty(Dabby.prototype, "replaceWith", {value: replaceWith});
+
+const replaceAll = function (html) {
+	return factory(this, html, true);
+}
+Object.defineProperty(Dabby.prototype, "replaceAll", {value: replaceAll});

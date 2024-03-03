@@ -91,8 +91,6 @@ const factory = (obj, dim, n, val) => {
 /**
  * Retrieve the width of the first element in a matched collection or set the width of every element in a collection
  * 
- * @memberof Dabby#
- * @function width
  * @type {{
  * 	() => number|undefined;
  * 	(val:number|string|dimCallback) => Dabby;
@@ -108,8 +106,6 @@ Object.defineProperty(Dabby.prototype, "width", {value: width});
 /**
  * Retrieve the inner width of the first element in a matched collection or set the inner width of every element in a collection
  * 
- * @memberof Dabby#
- * @function innerWidth
  * @type {{
  * 	() => number|undefined;
  * 	(val:number|string|dimCallback) => Dabby;
@@ -125,8 +121,6 @@ Object.defineProperty(Dabby.prototype, "innerWidth", {value: innerWidth});
 /**
  * Retrieve the outer width of the first element in a matched collection or set the outer width of every element in a collection
  * 
- * @memberof Dabby#
- * @function outerWidth
  * @type {{
  * 	() => number|undefined;
  * 	(val:number|string|bool|dimCallback) => Dabby;
@@ -142,8 +136,6 @@ Object.defineProperty(Dabby.prototype, "outerWidth", {value: outerWidth});
 /**
  * Retrieve the height of the first element in a matched collection or set the height of every element in a collection
  * 
- * @memberof Dabby#
- * @function height
  * @type {{
  * 	() => number|undefined;
  * 	(val:number|string|dimCallback) => Dabby;
@@ -159,8 +151,6 @@ Object.defineProperty(Dabby.prototype, "height", {value: height});
 /**
  * Retrieve the inner height of the first element in a matched collection or set the inner height of every element in a collection
  * 
- * @memberof Dabby#
- * @function innerWidth
  * @type {{
  * 	() => number|undefined;
  * 	(val:number|string|dimCallback) => Dabby;
@@ -176,8 +166,6 @@ Object.defineProperty(Dabby.prototype, "innerHeight", {value: innerHeight});
 /**
  * Retrieve the outer height of the first element in a matched collection or set the outer height of every element in a collection
  * 
- * @memberof Dabby#
- * @function outerHeight
  * @type {{
  * 	() => number|undefined;
  * 	(val:number|string|dimCallback) => Dabby;

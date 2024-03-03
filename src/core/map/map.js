@@ -12,8 +12,6 @@ import {Dabby} from "../../core/dabby/dabby.js";
 /**
  * Run a custom callback function on each item in a Dabby collection
  * 
- * @memberof Dabby#
- * @method map
  * @param {mapCallback} callback - A callback to process each node in the Dabby object
  * @returns {any[]} An array of values returned from each callback on a node
  */

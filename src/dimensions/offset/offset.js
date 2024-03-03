@@ -17,8 +17,6 @@ import "../../core/each/each.js";
 /**
  * Run a custom callback function on each item in a Dabby collection
  * 
- * @memberof Dabby#
- * @function offset
  * @type {{
  * 	{} => coords;
  * 	(coords:coords|offsetCallback) => Dabby;

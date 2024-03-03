@@ -9,9 +9,7 @@ function factory(func, obj, selector) {
 /**
  * Add nodes before each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function insertBefore
- * @param {selector} [selector] A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
+ * @param {selector} selector A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
  * @returns {Dabby} The original dabby collection
  */
 const insertBefore = function (selector) {
@@ -22,9 +20,7 @@ Object.defineProperty(Dabby.prototype, "insertBefore", {value: insertBefore});
 /**
  * Prepend nodes to each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function prependTo
- * @param {selector} [selector] A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
+ * @param {selector} selector A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
  * @returns {Dabby} The original dabby collection
  */
 const prependTo = function (selector) {
@@ -35,9 +31,7 @@ Object.defineProperty(Dabby.prototype, "prependTo", {value: prependTo});
 /**
  * Append nodes to each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function appendTo
- * @param {selector} [selector] A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
+ * @param {selector} selector A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
  * @returns {Dabby} The original dabby collection
  */
 const appendTo = function (selector) {
@@ -48,9 +42,7 @@ Object.defineProperty(Dabby.prototype, "appendTo", {value: appendTo});
 /**
  * Add nodes after each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function insertAfter
- * @param {selector} [selector] A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
+ * @param {selector} selector A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the current Dabby collection to
  * @returns {Dabby} The original dabby collection
  */
 const insertAfter = function (selector) {

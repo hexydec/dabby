@@ -1,6 +1,6 @@
-import $ from "../../core/dabby/dabby.js";
+import $, {Dabby} from "../../core/dabby/dabby.js";
 
-Object.defineProperty($.fn, "eq", {
+Object.defineProperty(Dabby.prototype, "eq", {
 	value: function (i) {
 		return $(this[i < 0 ? i + this.length : i]);
 	}
