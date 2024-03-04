@@ -1,7 +1,7 @@
-import $ from "../../core/dabby/dabby.js";
+import {Dabby} from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
 
-Object.defineProperty($.fn, "html", {
+Object.defineProperty(Dabby.prototype, "html", {
 	value: function (html) {
 
 		// set

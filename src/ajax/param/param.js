@@ -2,7 +2,7 @@ import $ from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 import "../../utils/each/each.js";
 
-$.param = obj => {
+Object.defineProperty($, "param", {value: obj => {
 	let params = [],
 		add = (key, value, params) => {
 			let isArr = Array.isArray(value);
@@ -24,4 +24,4 @@ $.param = obj => {
 		params = add(key, item, params);
 	});
 	return params.join("&");
-};
+}});

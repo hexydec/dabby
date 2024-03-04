@@ -7,7 +7,7 @@ import isFunction from "../../internal/isfunction/isfunction.js";
 
 /**
  * @callback xhrCallback
- * @param {string|ArrayBuffer|Blob|Document|object} response The reponse from the XHR request
+ * @param {string|ArrayBuffer|Blob|Document|object} response The response from the XHR request
  * @param {number} status The status code returned from the XHR request
  * @param {XMLHttpRequest} xhr The XHR object used to make the request
  */
@@ -218,5 +218,4 @@ const ajax = (url, settings) => {
 		return xhr;
 	}
 };
-
 Object.defineProperty($, "ajax", {value: ajax});

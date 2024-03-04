@@ -1,6 +1,6 @@
-import $ from "../../core/dabby/dabby.js";
+import $, {Dabby} from "../../core/dabby/dabby.js";
 
-Object.defineProperty($.fn, "index", {
+Object.defineProperty(Dabby.prototype, "index", {
 	value: function (selector) {
 		if (this[0]) {
 			let nodes,

@@ -2,7 +2,7 @@ import {Dabby} from "../../core/dabby/dabby.js";
 
 // store for current values
 const display = [],
-	obj = [],
+	cache = [],
 	defaults = [],
 	values = ["none", "block"],
 
@@ -13,7 +13,7 @@ const display = [],
 	 * @param {boolean} [show] Whether to show or hide the items in the collection, omit to set each item to the opposite of their current state
 	 * @returns {Dabby} The original dabby collection
 	 */
-	factory = function (n, show) {
+	factory = function (obj, n, show) {
 
 		// for toggle they can set the show value
 		if (n > 1 && show !== undefined) {
@@ -21,17 +21,17 @@ const display = [],
 		}
 
 		// loop through each node
-		let i = this.length;
+		let i = obj.length;
 		while (i--) {
-			let item = obj.indexOf(this[i]),
-				current = item > -1 && n < 2 ? null : getComputedStyle(this[i]).display;
+			let item = cache.indexOf(obj[i]),
+				current = item > -1 && n < 2 ? null : getComputedStyle(obj[i]).display;
 
 			// cache the initial value of the current
 			if (item === -1) {
-				item = obj.length;
-				obj.push(this[i]);
+				item = cache.length;
+				cache.push(obj[i]);
 				display.push(current);
-				defaults.push(this[i].style.display);
+				defaults.push(obj[i].style.display);
 			}
 
 			// determine if we are going to show or hide
@@ -43,45 +43,38 @@ const display = [],
 			}
 
 			// update the value, use the default if setting back to initial
-			this[i].style.display = value === display[item] ? defaults[item] : value;
+			obj[i].style.display = value === display[item] ? defaults[item] : value;
 		}
-		return this;
+		return obj;
 	};
 
 /**
  * Set the display property of each object in a collection to `none`
  * 
- * @memberof Dabby#
- * @function hide
  * @returns {Dabby} The original dabby collection
  */
 const hide = function () {
-	return factory.apply(this, 0);
+	return factory(this, 0);
 };
+Object.defineProperty(Dabby.prototype, "hide", {value: hide});
 
 /**
  * Set the display property of each object in a collection to show the items
  * 
- * @memberof Dabby#
- * @function show
  * @returns {Dabby} The original dabby collection
  */
 const show = function () {
-	return factory.apply(this, 1);
+	return factory(this, 1);
 };
+Object.defineProperty(Dabby.prototype, "show", {value: show});
 
 /**
  * Toggle the display property of each item in a collection to show or hide the items
  * 
- * @memberof Dabby#
- * @function toggle
  * @param {boolean} [show] Whether to show or hide the items in the collection, omit to set each item to the opposite of their current state
  * @returns {Dabby} The original dabby collection
  */
 const toggle = function (show) {
-	return factory.apply(this, 2, show);
+	return factory(this, 2, show);
 };
-
-Object.defineProperty(Dabby.prototype, "hide", {value: hide});
-Object.defineProperty(Dabby.prototype, "show", {value: show});
 Object.defineProperty(Dabby.prototype, "toggle", {value: toggle});

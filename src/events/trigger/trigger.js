@@ -1,7 +1,7 @@
-import $ from "../../core/dabby/dabby.js";
+import {Dabby} from "../../core/dabby/dabby.js";
 import isFunction from "../../internal/isfunction/isfunction.js";
 
-Object.defineProperty($.fn, "trigger", {
+Object.defineProperty(Dabby.prototype, "trigger", {
 	value: function (name, data) {
 		let i = this.length;
 		while (i--) {

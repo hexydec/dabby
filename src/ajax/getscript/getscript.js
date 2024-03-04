@@ -5,8 +5,7 @@ Object.defineProperty($, "getScript", {
 
 	/**
 	 * Attach an external script to the document and process the contained Javascript
-	 * @memberof Dabby
-	 * @function getScript
+	 * 
 	 * @param {(string|string[]|classCallback)} cls The class name, an array of class names, or a callback to generate the same
 	 * @returns {Dabby} The original dabby collection
 	 */

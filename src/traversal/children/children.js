@@ -1,7 +1,7 @@
-import $ from "../../core/dabby/dabby.js";
+import $, {Dabby} from "../../core/dabby/dabby.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
-Object.defineProperty($.fn, "children", {
+Object.defineProperty(Dabby.prototype, "children", {
 	value: function (selector) {
 		let nodes = [],
 			i = this.length;
