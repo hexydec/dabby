@@ -39,8 +39,6 @@ function factory(name, pos, obj, ...content) {
 /**
  * Add nodes before each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function before
  * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */
@@ -52,8 +50,6 @@ Object.defineProperty(Dabby.prototype, "before", {value: before});
 /**
  * Prepend nodes to each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function prepend
  * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */
@@ -65,8 +61,6 @@ Object.defineProperty(Dabby.prototype, "prepend", {value: prepend});
 /**
  * Append nodes to each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function append
  * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */
@@ -78,8 +72,6 @@ Object.defineProperty(Dabby.prototype, "append", {value: append});
 /**
  * Add nodes after each object in a Dabby collection
  * 
- * @memberof Dabby#
- * @function after
  * @param {...Node|...Node[]|...Dabby} content A node, array of nodes, or a Dabby collection to attach to each item in the target Dabby collection
  * @returns {Dabby} The original dabby collection
  */

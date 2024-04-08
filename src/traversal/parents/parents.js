@@ -25,20 +25,25 @@ const factory = (obj, selector, filter, single, until) => {
 	return $(filter ? filterNodes(nodes, filter) : nodes);
 }
 
+/**
+ * Retrieve the parent of each item in a collection
+ * 
+ * @param {selector} selector A string selector, node, collection of nodes
+ */
 Object.defineProperty(Dabby.prototype, "parent", {
-	value: function (selector, filter) {
-		return factory(this, selector, filter, true);
+	value: function (selector) {
+		return factory(this, selector, null, true);
 	}
 });
 
 Object.defineProperty(Dabby.prototype, "parents", {
-	value: function (selector, filter) {
-		return factory(this, selector, filter);
+	value: function (selector) {
+		return factory(this, selector);
 	}
 });
 
 Object.defineProperty(Dabby.prototype, "parentsUntil", {
 	value: function (selector, filter) {
-		return factory(this, selector, filter, true, true);
+		return factory(this, selector, filter, false, true);
 	}
 });

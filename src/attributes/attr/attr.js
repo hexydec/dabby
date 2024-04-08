@@ -7,8 +7,6 @@ import getVal from "../../internal/getval/getval.js";
 /**
  * Retrieves the requested property from the first node in a collection, or sets the specified value on every item in the collection
  * 
- * @memberof Dabby#
- * @function attr
  * @type {{
  * 	(prop:string) => string|number|undefined;
  * 	(prop:string, value:string|number) => Dabby;
