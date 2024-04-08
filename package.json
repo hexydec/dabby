@@ -34,8 +34,8 @@
 		"src/**/*.js"
 	],
 	"devDependencies": {
-		"@babel/core": "^7.23.2",
-		"@babel/preset-env": "^7.23.2",
+		"@babel/core": "^7.23.7",
+		"@babel/preset-env": "^7.23.8",
 		"benchmark": "^2.1.4",
 		"grunt": "^1.6.1",
 		"grunt-babel": "^8.0.0",
@@ -45,9 +45,9 @@
 		"jsdoc": "^4.0.2",
 		"load-grunt-tasks": "^5.1.0",
 		"qunit": "^2.20.0",
-		"rollup": "^4.1.4",
-		"terser": "^5.22.0",
-		"typescript": "^5.2.2"
+		"rollup": "^4.9.6",
+		"terser": "^5.27.0",
+		"typescript": "^5.3.3"
 	},
 	"repository": {
 		"type": "git",
