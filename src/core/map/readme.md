@@ -36,4 +36,4 @@ An array containing the values returned from the callback.
 
 ## Differences to jQuery
 
-Dabby does not support making a collection from anything but nodes, so whereas in jQuery this method returns a jQuery collection wrapping the return values, Dabby returns a plain array.
+Dabby does not support making a collection from anything but nodes, whereas in jQuery this method returns a jQuery collection wrapping the return values, Dabby returns a plain array.

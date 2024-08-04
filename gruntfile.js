@@ -16,16 +16,6 @@ module.exports = function (grunt) {
 				src: "src/build.js",
 				dest: "dist/dabby.js"
 			},
-			es5: {
-				options: {
-					format: "umd",
-					sourcemap: true,
-					banner: banner,
-					name: "$"
-				},
-				src: "src/build.js",
-				dest: "dist/dabby.es5.js"
-			},
 			test: {
 				options: {
 					format: "es",
@@ -35,17 +25,6 @@ module.exports = function (grunt) {
 				},
 				src: "src/test.js",
 				dest: "tests/test.js"
-			},
-			testes5: {
-				options: {
-					format: "iife",
-					external: [
-						path.resolve(__dirname, "dist/dabby.js")
-					],
-					globals: {[path.resolve(__dirname, "dist/dabby.js")]: "$"}
-				},
-				src: "src/test.js",
-				dest: "tests/test.es5.js"
 			},
 			benchmark: {
 				options: {
@@ -71,21 +50,6 @@ module.exports = function (grunt) {
 				options: {
 					sourceMap: true
 				}
-			},
-			es5: {
-				files: {
-					"dist/dabby.es5.js": "dist/dabby.es5.js",
-					"tests/test.es5.js": "tests/test.es5.js"
-				},
-				options: {
-					sourceMap: true,
-					presets: [
-						["@babel/env", {
-							useBuiltIns: false,
-							modules: false
-						}]
-					]
-				}
 			}
 		},
 		terser: {
@@ -102,12 +66,6 @@ module.exports = function (grunt) {
 				},
 				files: {
 					"dist/dabby.min.js": "dist/dabby.js"
-				}
-			},
-			es5: {
-				ecma: 5,
-				files: {
-					"dist/dabby.es5.min.js": "dist/dabby.es5.js"
 				}
 			}
 		},
