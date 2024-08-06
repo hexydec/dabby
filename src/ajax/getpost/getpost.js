@@ -1,9 +1,8 @@
 import $ from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import "../ajax/ajax.js";
 
 function factory(name, url, data, success, type) {
-	const isFunc = isFunction(data);
+	const isFunc = typeof data === "function";
 	let settings = url !== null && typeof url === "object" ? url : {
 		url: url,
 		data: isFunc ? {} : data,

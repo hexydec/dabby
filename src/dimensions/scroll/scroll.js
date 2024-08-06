@@ -1,6 +1,5 @@
 import {Dabby} from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
-import isWindow from "../../internal/iswindow/iswindow.js";
 
 /**
  * @callback scrollCallback
@@ -34,7 +33,7 @@ const factory = (obj, func, pos) => {
 
 	// get
 	if (obj[0]) {
-		return obj[0][isWindow(obj[0]) ? (func === "scrollTop" ? "pageYOffset" : "pageXOffset") : func];
+		return obj[0][obj[0] === window ? (func === "scrollTop" ? "pageYOffset" : "pageXOffset") : func];
 	}
 };
 

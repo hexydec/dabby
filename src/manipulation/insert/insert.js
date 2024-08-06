@@ -1,5 +1,4 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import "../../traversal/add/add.js";
 import "../../manipulation/clone/clone.js";
 import getVal from "../../internal/getval/getval.js";
@@ -11,7 +10,7 @@ function factory(name, pos, obj, ...content) {
 	let elems,
 		i = obj.length,
 		len = i,
-		isFunc = isFunction(content[0]);
+		isFunc = typeof content[0] === "function";
 
 	// multiple arguments containing nodes
 	if (!isFunc) {

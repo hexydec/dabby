@@ -1,6 +1,5 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
-import isWindow from "../../internal/iswindow/iswindow.js";
 
 /**
  * Factory function
@@ -68,7 +67,7 @@ const factory = (obj, dim, n, val) => {
 		}
 
 		// element
-		if (!isWindow(obj[0])) {
+		if (obj[0] !== window) {
 			let value = obj[0][(outer ? "offset" : "client") + whu];
 
 			// add padding on, or if outer and margins requested, add margins on

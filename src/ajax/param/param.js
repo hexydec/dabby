@@ -1,5 +1,4 @@
 import $ from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import "../../utils/each/each.js";
 
 Object.defineProperty($, "param", {value: obj => {
@@ -11,7 +10,7 @@ Object.defineProperty($, "param", {value: obj => {
 					params = add(`${key}[${isArr ? "" : i}]`, val, params);
 				});
 			} else {
-				if (isFunction(value)) {
+				if (typeof value === "function") {
 					value = value();
 				}
 				params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value === null ? "" : value));

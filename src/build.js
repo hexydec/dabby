@@ -70,9 +70,7 @@ import "./traversal/slice/slice.js";
 // utilities
 import "./utils/each/each.js";
 import "./utils/extend/extend.js";
-import "./utils/isfunction/isfunction.js";
 import "./utils/isplainobject/isplainobject.js";
-import "./utils/iswindow/iswindow.js";
 import "./utils/map/map.js";
 
 export default $;

@@ -1,5 +1,4 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import isPassive from "../../internal/ispassive/ispassive.js";
 import "../../traversal/add/add.js";
@@ -12,10 +11,10 @@ const factory = (obj, one, events, selector, data, callback) => {
 	if (obj.length) {
 
 		// sort out args
-		if (isFunction(selector)) {
+		if (typeof selector === "function") {
 			callback = selector;
 			selector = undefined;
-		} else if (isFunction(data)) {
+		} else if (typeof data === "function") {
 			callback = data;
 			data = undefined;
 		}

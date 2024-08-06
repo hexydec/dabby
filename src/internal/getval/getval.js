@@ -1,4 +1,3 @@
-import isFunction from "../../internal/isfunction/isfunction.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 
 /**
@@ -17,9 +16,9 @@ export default (obj, val, current) => {
 	if (i) {
 
 		// check what types of data we are dealing with
-		const funcVal = isFunction(val),
+		const funcVal = typeof val === "function",
 			objVal = funcVal ? 0 : isPlainObject(val),
-			funcCurrent = isFunction(current);
+			funcCurrent = typeof current === "function";
 
 		// generate values
 		while (i--) {

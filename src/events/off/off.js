@@ -1,5 +1,4 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import isPassive from "../../internal/ispassive/ispassive.js";
 import "../../utils/each/each.js";
 
@@ -22,7 +21,7 @@ const off = function (events, selector, callback) {
 	if (this.length) {
 
 		// sort out args
-		if (isFunction(selector)) {
+		if (typeof selector === "function") {
 			callback = selector;
 			selector = undefined;
 		}

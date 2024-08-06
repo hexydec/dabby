@@ -2,6 +2,21 @@ import $, {Dabby} from "../../core/dabby/dabby.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import isObj from "../../internal/isobj/isobj.js";
 
+
+/**
+ * Extend one or more objects/arrays into the first object. Can perform either a shallow or deep copy.
+ * 
+ * @type {{
+ * 	(target:object, arr1:object, ...arrs:object) => object;
+ * 	(deep:true, target:object, arr1:object, ...arrs:object) => object;
+ * 	(target:object) => object
+ * }}
+ * @param {true} deep A boolean indicating that the merge should be deep
+ * @param {(Dabby|Object)} target The object to merge other objects into
+ * @param {(Dabby|Object)} arr1 An object to merge into target
+ * @param {(Dabby|Object)} ...arrs Any other objects to merge in order into the target object
+ * @returns {Object} The target object, with the requested objects merged in
+ */
 const extend = function (target, arr1, ...arrs) {
 
 	// deep copy
@@ -51,10 +66,6 @@ const extend = function (target, arr1, ...arrs) {
 	return Object.assign.apply(null, arrs);
 };
 
-// attach to prototype chain
 Object.defineProperty($, "extend", {
-	value: extend
-});
-Object.defineProperty(Dabby.prototype, "extend", {
 	value: extend
 });

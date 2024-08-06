@@ -1,5 +1,3 @@
-import isFunction from "../../internal/isfunction/isfunction.js";
-import isWindow from "../../internal/iswindow/iswindow.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 
@@ -64,11 +62,11 @@ export class Dabby {
 				nodes = Array.from(selector);
 
 			// single node or Window
-			} else if (selector instanceof Node || isWindow(selector)) {
+			} else if (selector instanceof Node || selector === window) {
 				nodes = [selector];
 
 			// ready function
-			} else if (isFunction(selector)) {
+			} else if (typeof selector === "function") {
 				if (document.readyState !== "loading") {
 					selector.call(document, $);
 				} else {
@@ -80,7 +78,7 @@ export class Dabby {
 
 				// check node is unique, then filter only element, document, documentFragment and window
 				nodes = Array.from(selector).filter(
-					(node, i, self) => self.indexOf(node) === i && ([1, 9, 11].includes(node.nodeType) || isWindow(node))
+					(node, i, self) => self.indexOf(node) === i && ([1, 9, 11].includes(node.nodeType) || node === window)
 				)
 			}
 		}

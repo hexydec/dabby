@@ -1,12 +1,11 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import "../../traversal/eq/eq.js";
 import "../../manipulation/clone/clone.js";
 
 Object.defineProperty(Dabby.prototype, "wrapAll", {
 	value: function (html) {
 		if (this[0]) {
-			if (isFunction(html)) {
+			if (typeof html === "function") {
 				html = html.call(this[0]);
 			}
 

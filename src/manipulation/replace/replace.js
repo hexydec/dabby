@@ -1,5 +1,4 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import getVal from "../../internal/getval/getval.js";
 import "../../core/get/get.js";
 import "../../manipulation/clone/clone.js";
@@ -7,7 +6,7 @@ import "../../manipulation/clone/clone.js";
 const factory = (obj, html, all) => {
 	let source = (all ? $(html) : obj).get(),
 		target = (all ? obj : $(html)).get(),
-		isFunc = isFunction(target),
+		isFunc = typeof target === "function",
 		i = source.length;
 
 	if (!isFunc) {

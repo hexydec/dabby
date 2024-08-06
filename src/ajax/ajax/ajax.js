@@ -3,7 +3,6 @@ import "../../utils/extend/extend.js";
 import "../param/param.js";
 import "../../utils/each/each.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 
 /**
  * @callback xhrCallback
@@ -143,7 +142,7 @@ const ajax = (url, settings) => {
 			script.addEventListener(key, () => {
 				const response = settings.dataType === "jsonp" ? window[settings.jsonpCallback] || null : null;
 				[settings[value], settings.complete].forEach(callback => {
-					if (isFunction(callback)) {
+					if (typeof callback === "function") {
 						callback.apply(settings.context || settings, callback === settings.complete ? [null, value] : [response, value]);
 					}
 				});

@@ -1,11 +1,10 @@
 import {Dabby} from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 
 Object.defineProperty(Dabby.prototype, "trigger", {
 	value: function (name, data) {
 		let i = this.length;
 		while (i--) {
-			let isFunc = isFunction(this[i][name]);
+			let isFunc = typeof this[i][name] === "function";
 
 			// native submit event doesn't trigger event handlers
 			if (name === "submit" || !isFunc) {

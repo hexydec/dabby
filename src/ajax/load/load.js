@@ -1,5 +1,4 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 import "../ajax/ajax.js";
 import "../../traversal/filter/filter.js";
 import "../../manipulation/insert/insert.js";
@@ -27,7 +26,7 @@ const load = function (url, data, success) {
 			selector = url[1];
 
 		// check for data
-		if (isFunction(data)) {
+		if (typeof data === "function") {
 			success = data;
 			data = undefined;
 		}

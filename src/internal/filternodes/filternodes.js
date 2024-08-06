@@ -1,6 +1,5 @@
 import $ from "../../core/dabby/dabby.js";
 import "../../core/get/get.js";
-import isFunction from "../../internal/isfunction/isfunction.js";
 
 /**
 * Filters nodes in a dabby collection by the specified filters
@@ -23,7 +22,7 @@ export default (dabby, filter, context, not) => {
 	}
 
 	// custom filter function
-	if (isFunction(filter)) {
+	if (typeof filter === "function") {
 		func = filter;
 
 	// nodes
