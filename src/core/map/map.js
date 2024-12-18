@@ -7,25 +7,22 @@ import "../../traversal/add/add.js";
  * @callback mapCallback
  * @param {number} [index] The index of the node in the Dabby object 
  * @param {Node} [element] A Node object
- * @returns {any} A node, array of nodes, or a Dabby object
+ * @returns {node|node[]|Dabby} A node, array of nodes, or a Dabby object
  */
 
 /**
  * Run a custom callback function on each item in a Dabby collection
  * 
  * @param {mapCallback} callback - A callback to process each node in the Dabby object
- * @returns {any[]} An array containing the mapped values
+ * @returns {Dabby} A Dabby object containing the mapped nodes
  */
 const map = function (callback) {
 	let len = this.length,
-		arr = [],
+		arr = $(),
 		i = 0;
 
 	for (; i < len; i++) {
-		const result = callback.call(this[i], i, this[i]);
-		if (result != null) { // double equals to capture undefined also
-			arr = arr.concat(Array.isArray(result) ? result : [result]);
-		}
+		arr = arr.add($(callback.call(this[i], i, this[i])));
 	}
 	return arr;
 };

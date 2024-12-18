@@ -1,9 +1,7 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import isPassive from "../../internal/ispassive/ispassive.js";
-import "../../traversal/add/add.js";
-import "../../traversal/parents/parents.js";
-import "../../traversal/filter/filter.js";
+import "../../traversal/closest/closest.js";
 import "../../core/get/get.js";
 import "../../utils/each/each.js";
 
@@ -46,7 +44,7 @@ const factory = (obj, one, events, selector, data, callback) => {
 						data: data,
 						callback: func,
 						func: evt => { // delegate function
-							const target = selector ? $(selector, evt.currentTarget).filter($(evt.target).parents().add(evt.target)).get() : [evt.currentTarget];
+							const target = selector ? $(evt.target).closest(selector).get() : [evt.currentTarget];
 							if (target.length) {
 								if (evt.data === undefined) {
 									evt.data = data; // set data to event object
