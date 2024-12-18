@@ -11,10 +11,4 @@ QUnit.test("$.fn.map", function (assert) {
 		return $("p", this);
 	});
 	assert.deepEqual($("<div>").append(output).html(), "<p>first</p><p>second</p>", "Can extract children from a list of nodes using $.fn.map()");
-
-	// array test
-	// var output = $(".testtemp").map(function () {
-	// 	return this.innerText.split(" ");
-	// });
-	// assert.deepEqual(Array.from(output), ["first", "box", "second", "box"], "Can extract text and flatten the result from nodes using $.fn.map");
 });
