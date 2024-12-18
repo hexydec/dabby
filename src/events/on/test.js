@@ -4,12 +4,11 @@ QUnit.module("Events", function (hooks) {
 	var test = document.getElementsByClassName("test")[0];
 
 	hooks.before(function () {
-		test.innerHTML = '<div class="testtemp"></div>';
+		test.innerHTML = '<div class="testtemp"><p>Inner</p></div>';
 	});
 
 	QUnit.test("$.fn.on/$.fn.off", function (assert) {
 		var obj = $(".testtemp"),
-			plain = document.getElementsByClassName("testtemp")[0],
 			triggered = -1,
 			func = function (e) {
 				triggered++;
@@ -42,22 +41,26 @@ QUnit.module("Events", function (hooks) {
 		$(test).trigger(name);
 		assert.equal(triggered, 2, "Events are set on the correct object");
 
+		// test delegated events when child is clicked
+		$("p", obj).trigger(name);
+		assert.equal(triggered, 3, "Delegated events trigger when child item is clicked");
+
 		// test removing event
 		assert.equal(body.off(name, ".testtemp", func), body, "Returns self on remove event");
 		obj.trigger(name);
-		assert.equal(triggered, 2, "Events are removed from the correct object");
+		assert.equal(triggered, 3, "Events are removed from the correct object");
 
 		// test removing event with no handler
 		body.on(name, ".testtemp", func);
 		body.off(name, ".testtemp");
 		obj.trigger(name);
-		assert.equal(triggered, 2, "Events are removed from the correct delegated object by event name");
+		assert.equal(triggered, 3, "Events are removed from the correct delegated object by event name");
 
 		// test removing event with no handler
 		obj.on(name, func);
 		obj.off(name);
 		obj.trigger(name);
-		assert.equal(triggered, 2, "Events are removed from the correct object by event name");
+		assert.equal(triggered, 3, "Events are removed from the correct object by event name");
 
 		// test adding multiple events
 		triggered = 0;

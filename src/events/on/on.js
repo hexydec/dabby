@@ -49,7 +49,7 @@ import "../../utils/each/each.js";
 							data: data,
 							callback: func,
 							func: evt => { // delegate function
-								const target = selector ? $(selector, evt.currentTarget).filter($(evt.target).parents().add(evt.target)).get() : [evt.currentTarget];
+								const target = selector ? $(evt.target).closest(selector).get() : [evt.currentTarget];
 								if (target.length) {
 									if (evt.data === undefined) {
 										evt.data = data; // set data to event object
