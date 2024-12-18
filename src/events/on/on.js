@@ -4,7 +4,7 @@ import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import isPassive from "../../internal/ispassive/ispassive.js";
 import "../../traversal/add/add.js";
 import "../../traversal/parents/parents.js";
-import "../../traversal/filter/filter.js";
+import "../../traversal/closest/closest.js";
 import "../../core/get/get.js";
 import "../../utils/each/each.js";
 
