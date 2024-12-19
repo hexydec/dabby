@@ -54,16 +54,18 @@ const extend = function (target, arr1, ...arrs) {
 		return arr1;
 	}
 
-	// copy into dabby object
-	if (arr1 === undefined) {
-		arr1 = target;
-		target = this;
+	// merge arguments into array
+	if (arr1 !== undefined) {
+		arrs.unshift(arr1);
+		arrs.unshift(target);
+
+	// copy into dabby object when only one arg
+	} else {
+		arrs = [this, target];
 	}
 
-	// merge arguments into array
-	arrs.unshift(arr1);
-	arrs.unshift(target);
-	return Object.assign.apply(null, arrs);
+	// copy into dabby object?
+	return Object.assign(...arrs);
 };
 
 Object.defineProperty($, "extend", {

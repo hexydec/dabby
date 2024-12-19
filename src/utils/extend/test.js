@@ -14,7 +14,8 @@ QUnit.test("$.extend", function (assert) {
 			{deep: {foobar: "foobar"}}
 		),
 		{deep: {foo: "foo", bar: "bar", foobar: "foobar"}},
-		"$.extend deep copy 3 objects");
+		"$.extend deep copy 3 objects"
+	);
 	assert.deepEqual(
 		$.extend(
 			true,
@@ -135,29 +136,14 @@ QUnit.test("$.extend", function (assert) {
 		{arr: ["is", "arr"], obj: {is: "obj"}},
 		"$.extend deep merge"
 	);
-});
 
-QUnit.module("Utils", function (hooks) {
-	var test = document.getElementsByClassName("test")[0];
-
-	hooks.before(function () {
-		test.innerHTML = '<div class="testtemp"><div></div><div></div><div></div></div>';
+	// test extending Dabby
+	let int = 0;
+	$.extend({
+		testExtend: function () {
+			int++;
+		}
 	});
-
-	QUnit.test("$.fn.extend", function (assert) {
-		$.fn.extend({
-			testExtend: function (text) {
-				let i = this.length;
-				while (i--) {
-					this[i].innerText = text;
-				}
-			}
-		});
-		$(".testtemp div").testExtend("test");
-		assert.equal($(".testtemp").html(), "<div>test</div><div>test</div><div>test</div>", "Can extend dabby with new method and show it has been added/is working");
-	});
-
-	hooks.after(function () {
-		test.innerHTML = "";
-	});
+	$.testExtend();
+	assert.equal(int, 1, "Can extend dabby with new method and show it has been added/is working");
 });

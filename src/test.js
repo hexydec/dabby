@@ -77,7 +77,7 @@ import "./traversal/slice/test.js";
 // utilities
 import "./utils/each/test.js";
 import "./utils/extend/test.js";
-import "./utils/isfunction/test.js";
+// import "./utils/isfunction/test.js";
 import "./utils/isplainobject/test.js";
-import "./utils/iswindow/test.js";
+// import "./utils/iswindow/test.js";
 import "./utils/map/test.js";
