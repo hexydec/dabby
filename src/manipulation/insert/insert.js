@@ -1,5 +1,6 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
 import "../../traversal/add/add.js";
+import "../../traversal/eq/eq.js";
 import "../../manipulation/clone/clone.js";
 import getVal from "../../internal/getval/getval.js";
 
