@@ -2,6 +2,8 @@
 
 Determines whether the passed value is the `window` object.
 
+**WARNING: This method is deprecated**
+
 ## Usage
 
 ```javascript

@@ -2,6 +2,8 @@
 
 Determines whether the passed value is a function.
 
+**WARNING: This method is deprecated**
+
 ## Usage
 
 ```javascript
