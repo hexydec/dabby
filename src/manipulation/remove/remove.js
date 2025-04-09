@@ -22,11 +22,35 @@ const factory = (obj, selector, remove) => {
 	return remove ? obj : $(nodes);
 };
 
+/**
+ * Detaches the some or all of the items in the collection from the DOM
+ * 
+ * @memberof Dabby#
+ * @function detach
+ * @type {{
+* 	(prop:string) => Dabby;
+* 	() => Dabby;
+* }}
+ * @param {string} selector An optional string specifying a selector to filter the collection by
+ * @returns {Dabby} A new Dabby collection containing the detached nodes
+ */
 const detach = function (selector) {
 	return factory(this, selector, false);
 }
 Object.defineProperty(Dabby.prototype, "detach", {value: detach});
 
+/**
+ * Removes some or all of the items in the collection from the DOM
+ * 
+ * @memberof Dabby#
+ * @function remove
+ * @type {{
+* 	(selector:string) => Dabby;
+* 	() => Dabby;
+* }}
+ * @param {string} selector An optional string specifying a selector to filter the collection by
+ * @returns {Dabby} The original Dabby collection
+ */
 const remove = function (selector) {
 	return factory(this, selector, true);
 }

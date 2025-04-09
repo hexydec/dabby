@@ -28,11 +28,27 @@ const factory = (obj, html, all) => {
 	return $(source);
 };
 
+/**
+ * Removes some or all of the items in the collection from the DOM
+ * 
+ * @memberof Dabby#
+ * @function replaceWith
+ * @param {(string|Node|Node[]|Dabby|function)} html An HTML string, Node, array of Nodes or function that returns HTML
+ * @returns {Dabby} The original Dabby collection
+ */
 const replaceWith = function (html) {
 	return factory(this, html, false);
 }
 Object.defineProperty(Dabby.prototype, "replaceWith", {value: replaceWith});
 
+/**
+ * Removes some or all of the items in the collection from the DOM
+ * 
+ * @memberof Dabby#
+ * @function replaceAll
+ * @param {selector} html An HTML string, Node, array of Nodes or function that returns HTML
+ * @returns {Dabby} The original Dabby collection
+ */
 const replaceAll = function (html) {
 	return factory(this, html, true);
 }
