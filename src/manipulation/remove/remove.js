@@ -28,10 +28,10 @@ const factory = (obj, selector, remove) => {
  * @memberof Dabby#
  * @function detach
  * @type {{
-* 	(prop:string) => Dabby;
+* 	(prop:selector) => Dabby;
 * 	() => Dabby;
 * }}
- * @param {string} selector An optional string specifying a selector to filter the collection by
+* @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
  * @returns {Dabby} A new Dabby collection containing the detached nodes
  */
 const detach = function (selector) {
@@ -45,10 +45,10 @@ Object.defineProperty(Dabby.prototype, "detach", {value: detach});
  * @memberof Dabby#
  * @function remove
  * @type {{
-* 	(selector:string) => Dabby;
-* 	() => Dabby;
-* }}
- * @param {string} selector An optional string specifying a selector to filter the collection by
+ * 	(selector:selector) => Dabby;
+ * 	() => Dabby;
+ * }}
+* @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
  * @returns {Dabby} The original Dabby collection
  */
 const remove = function (selector) {

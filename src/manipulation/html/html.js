@@ -10,7 +10,7 @@ import getVal from "../../internal/getval/getval.js";
  * 	(html:selector) => Dabby;
  * 	() => string;
  * }}
- * @param {selector} html An HTML string, Node, array of Nodes or function that returns HTML
+ * @param {selector} html A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function
  * @param {(string|function)} html A string of HTML content, a function that returns HTML, or undefined to retrieve the HTML from the first item
  * @returns {(Dabby|string)} A string of HTML when retrieving, or the original Dabby collection when setting
  */

@@ -8,10 +8,10 @@ import "../../core/get/get.js";
  * @function add
  * @type {{
  * 	(nodes:selector) => Dabby;
-* 	(selector:string, context:selector) => Dabby;
+* 	(nodes:selector, context:selector) => Dabby;
  * }}
- * @param {selector} nodes An HTML string, Node, array of Nodes or function that returns HTML
- * @param {selector} context An HTML string, Node, array of Nodes or function that returns HTML indicating where a selector should start matching
+ * @param {selector} nodes A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to add to the collection
+ * @param {selector} context A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function indicating where a selector should start matching
  * @returns {Dabby} A new Dabby collection containing all the nodes from the input collection plus the nodes that were added
  */
 const add = function (nodes, context) {

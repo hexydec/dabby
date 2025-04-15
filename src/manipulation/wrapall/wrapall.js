@@ -7,7 +7,7 @@ import "../../manipulation/clone/clone.js";
  * 
  * @memberof Dabby#
  * @function wrapAll
- * @param {selector} html An HTML string, Node, array of Nodes or function that returns HTML
+ * @param {selector} html A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function
  * @returns {Dabby} The original Dabby collection
  */
 const wrapall = function (html) {

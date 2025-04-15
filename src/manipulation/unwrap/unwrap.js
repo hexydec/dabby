@@ -9,10 +9,10 @@ import "../../core/each/each.js";
  * @memberof Dabby#
  * @function unwrap
  * @type {{
-* 	(selector:string) => Dabby;
+* 	(selector:selector) => Dabby;
 * 	() => Dabby;
 * }}
- * @param {string} selector An optional string specifying a selector to filter the collection by
+* @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to match the parent
  * @returns {Dabby} The original Dabby collection
  */
 const unwrap = function (selector) {

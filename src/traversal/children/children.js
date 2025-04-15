@@ -10,7 +10,7 @@ import filterNodes from "../../internal/filternodes/filternodes.js";
  * 	(selector:string) => Dabby;
  * 	() => Dabby;
  * }}
- * @param {string} selector An optional CSS selector to filter the collection by
+* @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
  * @returns {Dabby} A new Dabby collection containing the matched children
  */
 const children = function (selector) {

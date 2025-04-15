@@ -46,7 +46,7 @@ Object.defineProperty(Dabby.prototype, "replaceWith", {value: replaceWith});
  * 
  * @memberof Dabby#
  * @function replaceAll
- * @param {selector} html An HTML string, Node, array of Nodes or function that returns HTML
+ * @param {selector} html A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function
  * @returns {Dabby} The original Dabby collection
  */
 const replaceAll = function (html) {

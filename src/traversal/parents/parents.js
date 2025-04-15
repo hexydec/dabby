@@ -26,24 +26,53 @@ const factory = (obj, selector, filter, single, until) => {
 }
 
 /**
- * Retrieve the parent of each item in a collection
+ * Retrieve the parent of each item in a collection, optionally filtered by a selector
  * 
- * @param {selector} selector A string selector, node, collection of nodes
+ * @memberof Dabby#
+ * @function parent
+ * @type {{
+ *  () => Dabby;
+* 	(selector:selector) => Dabby;
+* }}
+ * @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
+ * @returns {Dabby} A Dabby collection 
  */
-Object.defineProperty(Dabby.prototype, "parent", {
-	value: function (selector) {
-		return factory(this, selector, null, true);
-	}
-});
+const parent = function (selector) {
+	return factory(this, selector, null, true);
+};
+Object.defineProperty(Dabby.prototype, "parent", {value: parent});
 
-Object.defineProperty(Dabby.prototype, "parents", {
-	value: function (selector) {
-		return factory(this, selector);
-	}
-});
+/**
+ * Retrieve all the parents of each item in a collection, optionally filtered by a selector
+ * 
+ * @memberof Dabby#
+ * @function parents
+ * @type {{
+ *  () => Dabby;
+* 	(selector:selector) => Dabby;
+* }}
+ * @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
+ * @returns {Dabby} A Dabby collection 
+ */
+const parents = function (selector) {
+	return factory(this, selector);
+};
+Object.defineProperty(Dabby.prototype, "parents", {value: parents});
 
-Object.defineProperty(Dabby.prototype, "parentsUntil", {
-	value: function (selector, filter) {
-		return factory(this, selector, filter, false, true);
-	}
-});
+/**
+ * Retrieve the parents of each item in a collection until but not including the matched selector, optionally filtered by a selector
+ * 
+ * @memberof Dabby#
+ * @function parentsUntil
+ * @type {{
+* 	(selector:selector) => Dabby;
+ *  (selector:selector, filter:selector) => Dabby;
+* }}
+* @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function indicating the where to stop matching parent nodes
+ * @param {selector} filteer A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
+ * @returns {Dabby} A Dabby collection 
+ */
+const until = function (selector, filter) {
+	return factory(this, selector, filter, false, true);
+};
+Object.defineProperty(Dabby.prototype, "parentsUntil", {value: until});
