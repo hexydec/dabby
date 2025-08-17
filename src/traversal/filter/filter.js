@@ -11,7 +11,7 @@ const factory = (obj, selector, filter, not) => {
  * 
  * @memberof Dabby#
  * @function is
-* @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
+ * @param {selector} selector A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by
  * @returns {boolean} Whether any item in the collection matches the input selector
  */
 const is = function (selector) {
