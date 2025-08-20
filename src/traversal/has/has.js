@@ -1,5 +1,5 @@
 import $, {Dabby} from "../../core/dabby/dabby.js";
-import "../core/get/get.js";
+import "../../core/get/get.js";
 
 /**
  * Reduce the input collection to those that match the input selector
