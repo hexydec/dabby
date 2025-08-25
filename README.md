@@ -4,10 +4,10 @@ A lightweight modular jQuery clone/alternative library built for modern browsers
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-17.8kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-6.57kb-brightgreen.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-25.6kb-brightgreen.svg)
+![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-7.44kb-brightgreen.svg)
 
-**This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
+**This project is in beta, make sure to test your integration with this code thoroughly before deploying**
 
 ## jQuery is awesome, why do I need this?
 
@@ -38,18 +38,16 @@ $ npm install
 $ grunt
 ```
 
-Then swap jQuery out for dabby.js in your project. It does support AMD modules and CommonJS, so if your project does too, have a fiddle with your build to achieve this.
+Then swap jQuery out for Dabby.js in your project.
 
-Next you should probably audit and refactor your code to update anything that Dabby.js will definitely not support, like custom pseudo selectors. Ajax calls will probably need checking over too (Promises are not supported).
+Next you should probably audit and refactor your code to update anything that Dabby.js will definitely not support, like custom pseudo selectors or any animation methods.
 
 Then run it in the browser, or through your test suite to highlight any other issues.
 
-Dabby.js compiles to both ES6 and ES5 bundles, to support all browsers, include Dabby.js like this:
+Dabby.js compiles an ES6 module, include Dabby.js like this:
 
-```html
-<script src="dist/dabby.es5.js" nomodule></script>
-<script src="yourfile.es5.js" nomodule></script>
-<script src="yourfile.js" type="module"></script> // include dist/dabby.js or dist/dabby.min.js in your ES6 file.
+```javascript
+import $ from "dabbyjs/dist/dabby.js"; // or dabby.min.js
 ```
 
 ## Browser Support

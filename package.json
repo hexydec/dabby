@@ -45,7 +45,7 @@
 		"jsdoc": "^4.0.4",
 		"load-grunt-tasks": "^5.1.0",
 		"qunit": "^2.24.1",
-		"rollup": "^4.46.3",
+		"rollup": "^4.48.1",
 		"terser": "^5.43.1",
 		"typescript": "^5.9.2"
 	},

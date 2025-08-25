@@ -13,7 +13,7 @@ If you wish to contribute to the project, please follow our style guide:
 - Do not write control loops or ifs on one line.
 - Use a double line to divide sections of code, with preceding comment
 
-```
+```javascript
 	lastline = true;
 
 	// next block
@@ -24,7 +24,7 @@ If you wish to contribute to the project, please follow our style guide:
 
 There is no internal method to loop through nodes. The fastest and simplest way to loop through Dabby nodes is to use the following pattern:
 
-```
+```javascript
 let i = this.length;
 while (i--) {
 	// write node manipulation code here
@@ -34,7 +34,7 @@ while (i--) {
 
 This is normally the fastest type of loop, and uses the least code. Note that this will loop through the nodes in reverse order, so if order matters use the following pattern:
 
-```
+```javascript
 const len = this.length;
 for (let i = 0; i < len; i++) {
 	// write node manipulation code here

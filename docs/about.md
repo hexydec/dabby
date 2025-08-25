@@ -1,6 +1,6 @@
 # About Dabby.js
 
-Dabby.js is designed to be a simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (~6kb minified and Gzipped), you can also build it as part of your project and only include the bits you are actually using.
+Dabby.js is designed to be a simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (~8kb minified and Gzipped), you can also build it as part of your project and only include the bits you are actually using.
 
 ## Project Aims
 
@@ -25,9 +25,9 @@ It is designed to be a cut down version of jQuery, leaning more on the browser t
 
 It is however designed to be completely modular, as it is written as ES6 modules, this means you can just include the bits you are actually using in your project.
 
-Dabby.js is designed for modern browsers and supports IE11+, Chrome, Firefox, iOS 8+, and Android 4.4.4.
+Dabby.js is designed for modern browsers and supports Chrome, Firefox, Edge and Safari.
 
-The final thing to note is that currently the full dabby.js library weighs in at just over 6kb zipped, and can be smaller with a custom build.
+The final thing to note is that currently the full dabby.js library weighs in at just under 8kb zipped, and can be smaller with a custom build.
 
 ## Differences between dabby.js and jQuery:
 
