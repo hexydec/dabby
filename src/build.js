@@ -72,5 +72,6 @@ import "./utils/each/each.js";
 import "./utils/extend/extend.js";
 import "./utils/isplainobject/isplainobject.js";
 import "./utils/map/map.js";
+import "./utils/parsehtml/parsehtml.js";
 
 export default $;

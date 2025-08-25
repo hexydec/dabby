@@ -81,3 +81,4 @@ import "./utils/extend/test.js";
 import "./utils/isplainobject/test.js";
 // import "./utils/iswindow/test.js";
 import "./utils/map/test.js";
+import "./utils/parsehtml/test.js";

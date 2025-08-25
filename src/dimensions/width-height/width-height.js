@@ -68,13 +68,19 @@ const factory = (obj, dim, n, val) => {
 
 		// element
 		if (obj[0] !== window) {
-			let value = obj[0][(outer ? "offset" : "client") + whu];
-
-			// add padding on, or if outer and margins requested, add margins on
-			if (!io || (outer && val === true)) {
-				const style = getComputedStyle(obj[0]);
-				pos.forEach(item => value += parseFloat(style[(io ? "margin" : "padding") + item]) * (io ? 1 : -1));
-			}
+			const rect = obj[0].getBoundingClientRect(),
+				style = getComputedStyle(obj[0]);
+			let value = rect[wh];
+			pos.forEach(item => {
+				if (!io || inner) {
+					value -= parseFloat(style["border" + item]);
+					if (!io) {
+						value -= parseFloat(style["padding" + item]);
+					}
+				} else if (outer && val === true) {
+					value += parseFloat(style["margin" + item]);
+				}
+			});
 			return value;
 		}
 

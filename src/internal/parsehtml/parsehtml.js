@@ -32,7 +32,7 @@ export default (html, context, runscripts = false) => {
 			if (src) {
 				script.src = src;
 			} else {
-				script.text = item.innerText;
+				script.textContent = item.innerText;
 			}
 			context.head.appendChild(script);
 		});

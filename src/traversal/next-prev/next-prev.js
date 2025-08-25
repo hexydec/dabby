@@ -102,7 +102,7 @@ Object.defineProperty(Dabby.prototype, "nextUntil", {value: nextuntil});
  * @returns {Dabby} A new Dabby collection containing the prev sibling
  */
 const prev = function (selector) {
-	return factory(this, selector, true);
+	return factory(this, selector, true, true);
 };
 Object.defineProperty(Dabby.prototype, "prev", {value: prev});
 

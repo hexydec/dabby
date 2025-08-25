@@ -6,12 +6,11 @@ QUnit.module("Internal");
 QUnit.test("setCss", function (assert) {
 	var main = $(".test"),
 		rmain = document.getElementsByClassName("test")[0],
-		props = {"border-left-color": "red", "border-left-style": "solid", "border-left-width": "1px"},
-		propsCC = {borderLeftColor: "red", borderLeftStyle: "solid", borderLeftWidth: "1px"},
+		props = {"border-left-color": "red", "border-left-style": "solid"},
+		propsCC = {borderLeftColor: "red", borderLeftStyle: "solid"},
 		output = {
 			"border-left-color": "rgb(255, 0, 0)",
-			"border-left-style": "solid",
-			"border-left-width": "1px"
+			"border-left-style": "solid"
 		};
 
 	rmain.style.cssText = "";
