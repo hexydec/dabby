@@ -1,77 +1,107 @@
 # .closest()
+
 Finds the first ancestor of each element in the collection that matches a given selector, starting with the element itself.
 
 ## Usage
+
 ```javascript
 $(collection).closest(selector);
 $(collection).closest(selector, context);
 ```
 
 ### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to find the matching ancestor.
+
+A selector, HTML string, Node, array of Nodes, Dabby collection, or callback function to find the matching ancestor.
 
 ### context
-An optional HTML string, Node, array of Nodes, or a function that returns HTML, indicating where the search for an ancestor should stop.
+
+An optional HTML string, Node, array of Nodes, or function indicating where the search for an ancestor should stop.
 
 ## Returns
+
 A new Dabby collection containing the matched ancestors.
 
-## Example
-Find the closest div ancestor:
+## Examples
+
+### Basic Usage
 
 ```javascript
-// HTML:
-// <div class="container">
-//   <p>
-//     <span>Hello</span>
-//   </p>
-// </div>
+// Find closest parent with class
+const $card = $(".button").closest(".card");
 
-const span = $("span");
-const div = span.closest("div");
+// Find closest form
+const $form = $("input").closest("form");
 
-// The `div` collection will now contain the `<div class="container">` element.
-console.log(div.length); // 1
+// Find closest list item
+const $listItem = $(".link").closest("li");
+
+// Find with context limit
+const $section = $(".element").closest(".section", ".container");
 ```
 
-Find the closest list item with a specific class:
+### Real-World Examples
 
 ```javascript
-// HTML:
-// <ul>
-//   <li class="item-a">
-//     <p>
-//       <a href="#">Link</a>
-//     </p>
-//   </li>
-//   <li class="item-b">...</li>
-// </ul>
+// Event delegation - find closest clickable parent
+$(".list").on("click", ".delete-button", function () {
+    $(this).closest(".list-item").remove();
+});
 
-const link = $("a");
-const closest = link.closest("li.item-a");
+// Form handling
+$("input").on("change", function () {
+    const $formGroup = $(this).closest(".form-group");
+    $formGroup.removeClass("error");
+});
 
-// The `closest` collection will contain the `<li>` with class "item-a".
-console.log(closest.length); // 1
-```
+// Find parent card on button click
+$(".card-button").on("click", function () {
+    const $card = $(this).closest(".card");
+    const cardId = $card.data("id");
+    console.log("Card clicked:", cardId);
+});
 
-Find the closest ancestor up to a specific context:
+// Toggle accordion sections
+$(".accordion-header").on("click", function () {
+    const $section = $(this).closest(".accordion-section");
+    $section.toggleClass("expanded");
+    $section.find(".accordion-content").toggle();
+});
 
-```javascript
-// HTML:
-// <div id="main-content">
-//   <div class="card">
-//     <p>
-//       <span>Text</span>
-//     </p>
-//   </div>
-// </div>
-// <div id="sidebar">...</div>
+// Navigate up to table row
+$(".edit-cell").on("click", function () {
+    const $row = $(this).closest("tr");
+    $row.addClass("editing");
+});
 
-const span = $("span");
-const ancestor = span.closest(".card", "#main-content");
+// Find modal container
+$(".modal-close").on("click", function () {
+    $(this).closest(".modal").hide();
+});
 
-// The search will stop at `#main-content`, and `.card` is an ancestor within that context.
-console.log(ancestor.length); // 1
+// Validate field's parent form
+function validateField($field) {
+    const $form = $field.closest("form");
+    const isValid = $form.find("input[required]").filter(function () {
+        return !$(this).val();
+    }).length === 0;
+
+    return isValid;
+}
+
+// Update parent statistics
+$(".item-checkbox").on("change", function () {
+    const $container = $(this).closest(".container");
+    const checkedCount = $container.find(".item-checkbox:checked").length;
+
+    $container.find(".checked-count").text(checkedCount);
+});
+
+// Find data container
+$(".item").on("click", function () {
+    const $dataContainer = $(this).closest("[data-category]");
+    const category = $dataContainer.data("category");
+    console.log("Category:", category);
+});
 ```
 
 ## Differences to jQuery

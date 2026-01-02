@@ -6,6 +6,11 @@ module.exports = function (grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
+		ts: {
+			default: {
+				tsconfig: './tsconfig.json'
+			}
+		},
 		rollup: {
 			es6: {
 				options: {
@@ -13,7 +18,7 @@ module.exports = function (grunt) {
 					sourcemap: true,
 					banner: banner
 				},
-				src: "src/build.js",
+				src: "dist/build.js",
 				dest: "dist/dabby.js"
 			},
 			test: {
@@ -76,8 +81,8 @@ module.exports = function (grunt) {
 				atBegin: true
 			},
 			main: {
-				files: ["src/**/*.js", "!src/**/test.js", "!src/**/benchmark.js", "gruntfile.js", "package.json"],
-				tasks: ["rollup:es6"]
+				files: ["src/**/*.ts", "src/**/*.js", "!src/**/test.js", "!src/**/test.ts", "!src/**/benchmark.js", "!src/**/benchmark.ts", "gruntfile.js", "package.json"],
+				tasks: ["ts", "rollup:es6"]
 			},
 			test: {
 				files: ["gruntfile.js", "package.json", "src/test.js", "src/**/test.js", "src/internal/**/*.js"],
@@ -89,5 +94,5 @@ module.exports = function (grunt) {
 			}
 		}
 	});
-	grunt.registerTask("default", ["rollup", "babel", "terser"]);
+	grunt.registerTask("default", ["ts", "rollup", "babel", "terser"]);
 };

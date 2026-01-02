@@ -15,23 +15,235 @@
 		"javascript"
 	],
 	"contributors": [],
-	"main": "dist/dabby.js",
-	"types": "dist/src/build.d.ts",
-	"source": "src/build.js",
+	"main": "dist/modular.js",
+	"types": "dist/modular.d.ts",
+	"source": "src/modular.ts",
+	"exports": {
+		".": {
+			"types": "./dist/modular.d.ts",
+			"default": "./dist/modular.js"
+		},
+		"./modular": {
+			"types": "./dist/modular.d.ts",
+			"default": "./dist/modular.js"
+		},
+		"./dist/modular.js": {
+			"types": "./dist/modular.d.ts",
+			"default": "./dist/modular.js"
+		},
+		"./src/ajax/ajax/ajax": {
+			"types": "./dist/ajax/ajax/ajax.d.ts",
+			"default": "./src/ajax/ajax/ajax.js"
+		},
+		"./src/ajax/getpost/getpost": {
+			"types": "./dist/ajax/getpost/getpost.d.ts",
+			"default": "./src/ajax/getpost/getpost.js"
+		},
+		"./src/ajax/getscript/getscript": {
+			"types": "./dist/ajax/getscript/getscript.d.ts",
+			"default": "./src/ajax/getscript/getscript.js"
+		},
+		"./src/ajax/param/param": {
+			"types": "./dist/ajax/param/param.d.ts",
+			"default": "./src/ajax/param/param.js"
+		},
+		"./src/ajax/serialize/serialize": {
+			"types": "./dist/ajax/serialize/serialize.d.ts",
+			"default": "./src/ajax/serialize/serialize.js"
+		},
+		"./src/attributes/attr/attr": {
+			"types": "./dist/attributes/attr/attr.d.ts",
+			"default": "./src/attributes/attr/attr.js"
+		},
+		"./src/attributes/class/class": {
+			"types": "./dist/attributes/class/class.d.ts",
+			"default": "./src/attributes/class/class.js"
+		},
+		"./src/attributes/css/css": {
+			"types": "./dist/attributes/css/css.d.ts",
+			"default": "./src/attributes/css/css.js"
+		},
+		"./src/attributes/data/data": {
+			"types": "./dist/attributes/data/data.d.ts",
+			"default": "./src/attributes/data/data.js"
+		},
+		"./src/attributes/hasclass/hasclass": {
+			"types": "./dist/attributes/hasclass/hasclass.d.ts",
+			"default": "./src/attributes/hasclass/hasclass.js"
+		},
+		"./src/attributes/prop/prop": {
+			"types": "./dist/attributes/prop/prop.d.ts",
+			"default": "./src/attributes/prop/prop.js"
+		},
+		"./src/attributes/removeprop/removeprop": {
+			"types": "./dist/attributes/removeprop/removeprop.d.ts",
+			"default": "./src/attributes/removeprop/removeprop.js"
+		},
+		"./src/attributes/show-hide/show-hide": {
+			"types": "./dist/attributes/show-hide/show-hide.d.ts",
+			"default": "./src/attributes/show-hide/show-hide.js"
+		},
+		"./src/attributes/val/val": {
+			"types": "./dist/attributes/val/val.d.ts",
+			"default": "./src/attributes/val/val.js"
+		},
+		"./src/dimensions/offset/offset": {
+			"types": "./dist/dimensions/offset/offset.d.ts",
+			"default": "./src/dimensions/offset/offset.js"
+		},
+		"./src/dimensions/offsetparent/offsetparent": {
+			"types": "./dist/dimensions/offsetparent/offsetparent.d.ts",
+			"default": "./src/dimensions/offsetparent/offsetparent.js"
+		},
+		"./src/dimensions/position/position": {
+			"types": "./dist/dimensions/position/position.d.ts",
+			"default": "./src/dimensions/position/position.js"
+		},
+		"./src/dimensions/scroll/scroll": {
+			"types": "./dist/dimensions/scroll/scroll.d.ts",
+			"default": "./src/dimensions/scroll/scroll.js"
+		},
+		"./src/dimensions/width-height/width-height": {
+			"types": "./dist/dimensions/width-height/width-height.d.ts",
+			"default": "./src/dimensions/width-height/width-height.js"
+		},
+		"./src/events/off/off": {
+			"types": "./dist/events/off/off.d.ts",
+			"default": "./src/events/off/off.js"
+		},
+		"./src/events/on/on": {
+			"types": "./dist/events/on/on.d.ts",
+			"default": "./src/events/on/on.js"
+		},
+		"./src/events/trigger/trigger": {
+			"types": "./dist/events/trigger/trigger.d.ts",
+			"default": "./src/events/trigger/trigger.js"
+		},
+		"./src/events/triggerhandler/triggerhandler": {
+			"types": "./dist/events/triggerhandler/triggerhandler.d.ts",
+			"default": "./src/events/triggerhandler/triggerhandler.js"
+		},
+		"./src/manipulation/clone/clone": {
+			"types": "./dist/manipulation/clone/clone.d.ts",
+			"default": "./src/manipulation/clone/clone.js"
+		},
+		"./src/manipulation/empty/empty": {
+			"types": "./dist/manipulation/empty/empty.d.ts",
+			"default": "./src/manipulation/empty/empty.js"
+		},
+		"./src/manipulation/html/html": {
+			"types": "./dist/manipulation/html/html.d.ts",
+			"default": "./src/manipulation/html/html.js"
+		},
+		"./src/manipulation/insert/insert": {
+			"types": "./dist/manipulation/insert/insert.d.ts",
+			"default": "./src/manipulation/insert/insert.js"
+		},
+		"./src/manipulation/insertto/insertto": {
+			"types": "./dist/manipulation/insertto/insertto.d.ts",
+			"default": "./src/manipulation/insertto/insertto.js"
+		},
+		"./src/manipulation/remove/remove": {
+			"types": "./dist/manipulation/remove/remove.d.ts",
+			"default": "./src/manipulation/remove/remove.js"
+		},
+		"./src/manipulation/replace/replace": {
+			"types": "./dist/manipulation/replace/replace.d.ts",
+			"default": "./src/manipulation/replace/replace.js"
+		},
+		"./src/manipulation/text/text": {
+			"types": "./dist/manipulation/text/text.d.ts",
+			"default": "./src/manipulation/text/text.js"
+		},
+		"./src/manipulation/unwrap/unwrap": {
+			"types": "./dist/manipulation/unwrap/unwrap.d.ts",
+			"default": "./src/manipulation/unwrap/unwrap.js"
+		},
+		"./src/manipulation/wrap/wrap": {
+			"types": "./dist/manipulation/wrap/wrap.d.ts",
+			"default": "./src/manipulation/wrap/wrap.js"
+		},
+		"./src/manipulation/wrapall/wrapall": {
+			"types": "./dist/manipulation/wrapall/wrapall.d.ts",
+			"default": "./src/manipulation/wrapall/wrapall.js"
+		},
+		"./src/traversal/children/children": {
+			"types": "./dist/traversal/children/children.d.ts",
+			"default": "./src/traversal/children/children.js"
+		},
+		"./src/traversal/closest/closest": {
+			"types": "./dist/traversal/closest/closest.d.ts",
+			"default": "./src/traversal/closest/closest.js"
+		},
+		"./src/traversal/eq/eq": {
+			"types": "./dist/traversal/eq/eq.d.ts",
+			"default": "./src/traversal/eq/eq.js"
+		},
+		"./src/traversal/filter/filter": {
+			"types": "./dist/traversal/filter/filter.d.ts",
+			"default": "./src/traversal/filter/filter.js"
+		},
+		"./src/traversal/first/first": {
+			"types": "./dist/traversal/first/first.d.ts",
+			"default": "./src/traversal/first/first.js"
+		},
+		"./src/traversal/has/has": {
+			"types": "./dist/traversal/has/has.d.ts",
+			"default": "./src/traversal/has/has.js"
+		},
+		"./src/traversal/index/index": {
+			"types": "./dist/traversal/index/index.d.ts",
+			"default": "./src/traversal/index/index.js"
+		},
+		"./src/traversal/last/last": {
+			"types": "./dist/traversal/last/last.d.ts",
+			"default": "./src/traversal/last/last.js"
+		},
+		"./src/traversal/next-prev/next-prev": {
+			"types": "./dist/traversal/next-prev/next-prev.d.ts",
+			"default": "./src/traversal/next-prev/next-prev.js"
+		},
+		"./src/traversal/parents/parents": {
+			"types": "./dist/traversal/parents/parents.d.ts",
+			"default": "./src/traversal/parents/parents.js"
+		},
+		"./src/traversal/siblings/siblings": {
+			"types": "./dist/traversal/siblings/siblings.d.ts",
+			"default": "./src/traversal/siblings/siblings.js"
+		},
+		"./src/traversal/slice/slice": {
+			"types": "./dist/traversal/slice/slice.d.ts",
+			"default": "./src/traversal/slice/slice.js"
+		},
+		"./src/utils/extend/extend": {
+			"types": "./dist/utils/extend/extend.d.ts",
+			"default": "./src/utils/extend/extend.js"
+		},
+		"./src/utils/map/map": {
+			"types": "./dist/utils/map/map.d.ts",
+			"default": "./src/utils/map/map.js"
+		},
+		"./src/*": "./src/*"
+	},
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/hexydec/dabby/issues"
 	},
 	"scripts": {
 		"test": "grunt test",
-		"tsc": "node_modules\\.bin\\tsc"
+		"test:types": "tsd",
+		"tsc": "tsc",
+		"build": "grunt"
 	},
 	"browserslist": [
 		"defaults"
 	],
 	"files": [
-		"dist/*.js",
-		"src/**/*.js"
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
+		"dist/**/*.d.ts.map",
+		"src/**/*.js",
+		"src/**/*.ts"
 	],
 	"devDependencies": {
 		"@babel/core": "^7.28.3",
@@ -42,11 +254,13 @@
 		"grunt-contrib-watch": "^1.1.0",
 		"grunt-rollup": "^12.0.0",
 		"grunt-terser": "^2.0.0",
+		"grunt-ts": "^6.0.0-beta.22",
 		"jsdoc": "^4.0.4",
 		"load-grunt-tasks": "^5.1.0",
 		"qunit": "^2.24.1",
 		"rollup": "^4.48.1",
 		"terser": "^5.43.1",
+		"tsd": "^0.33.0",
 		"typescript": "^5.9.2"
 	},
 	"repository": {

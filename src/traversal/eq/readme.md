@@ -1,53 +1,89 @@
 # .eq()
+
 Creates a new Dabby collection containing the element at the specified index.
 
 ## Usage
+
 ```javascript
 $(collection).eq(index);
 ```
 
 ### index
+
 The zero-based index of the element to select. A negative number will select elements from the end of the collection.
 
 ## Returns
+
 A new Dabby collection containing the single element at the requested index. If the index does not exist, an empty collection will be returned.
 
-## Example
-Select the first element of a collection:
+## Examples
+
+### Basic Usage
 
 ```javascript
-// HTML:
-// <ul>
-//   <li>Item 1</li>
-//   <li>Item 2</li>
-//   <li>Item 3</li>
-// </ul>
+// Select first element
+const $first = $("li").eq(0);
 
-const items = $('li'); // The collection contains all three <li> elements
-const first = items.eq(0);
+// Select third element
+const $third = $("li").eq(2);
 
-// The `first` collection now contains only the first <li> element.
-console.log(first.text()); // "Item 1"
+// Select last element (negative index)
+const $last = $("li").eq(-1);
+
+// Select second-to-last
+const $secondLast = $("li").eq(-2);
 ```
 
-Select the last element of a collection using a negative index:
+### Real-World Examples
 
 ```javascript
-// Using the same HTML as above
-const last = items.eq(-1);
+// Highlight specific item
+$(".item").eq(2).addClass("highlighted");
 
-// The `last` collection now contains only the last <li> element.
-console.log(last.text()); // "Item 3"
-```
+// Get value from specific input
+const thirdValue = $("input[type='text']").eq(2).val();
 
-Select an element that doesn't exist:
+// Show specific tab
+$(".tab-button").eq(0).on("click", function () {
+    $(".tab-content").hide();
+    $(".tab-content").eq(0).show();
+});
 
-```javascript
-// Using the same HTML as above
-const nonexistentItem = items.eq(5);
+// Style every third item differently
+$(".product").each(function (index) {
+    if (index % 3 === 0) {
+        $(this).addClass("special");
+    }
+});
+// Or using eq:
+for (let i = 0; i < $(".product").length; i += 3) {
+    $(".product").eq(i).addClass("special");
+}
 
-// The `nonexistentItem` collection will be empty.
-console.log(nonexistentItem.length); // 0
+// Navigate carousel
+let currentSlide = 0;
+$(".next-slide").on("click", function () {
+    $(".slide").hide();
+    currentSlide = (currentSlide + 1) % $(".slide").length;
+    $(".slide").eq(currentSlide).show();
+});
+
+// Select random element
+const randomIndex = Math.floor(Math.random() * $(".item").length);
+$(".item").eq(randomIndex).addClass("random-selection");
+
+// Remove specific element
+$(".list-item").eq(3).remove();
+
+// Update specific row
+$("tr").eq(1).css("background-colour", "#f0f0f0");
+
+// Get last item safely
+const $items = $(".item");
+if ($items.length > 0) {
+    const $lastItem = $items.eq(-1);
+    console.log("Last item:", $lastItem.text());
+}
 ```
 
 ## Differences to jQuery

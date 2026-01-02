@@ -1,16 +1,25 @@
-# .insertBefore()
-Add nodes before each object in a Dabby collection.
+# .insertBefore(), .prependTo(), .appendTo(), .insertAfter()
 
-# .prependTo()
-Prepend nodes to each object in a Dabby collection.
+Insert the current collection before, at the start of, at the end of, or after a target selector. These are the inverse of `.before()`, `.prepend()`, `.append()`, and `.after()`.
 
-# .appendTo()
-Append nodes to each object in a Dabby collection.
+## .insertBefore()
 
-# .insertAfter()
-Add nodes after each object in a Dabby collection.
+Insert nodes before each object matching the target selector (as a sibling).
+
+## .prependTo()
+
+Prepend nodes to each object matching the target selector (as the first child).
+
+## .appendTo()
+
+Append nodes to each object matching the target selector (as the last child).
+
+## .insertAfter()
+
+Insert nodes after each object matching the target selector (as a sibling).
 
 ## Usage
+
 ```javascript
 $(content).insertBefore(selector);
 $(content).prependTo(selector);
@@ -19,43 +28,125 @@ $(content).insertAfter(selector);
 ```
 
 ### content
-The Dabby collection, node, array of nodes, or document to insert.
+
+The Dabby collection, node, array of nodes, or HTML string to insert.
 
 ### selector
-A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the Dabby collection to.
+
+A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection specifying where to insert the content.
 
 ## Returns
-The original Dabby collection.
 
-## Differences to jQuery
-None.
+The original Dabby collection.
 
 ## Examples
 
-### Using .insertBefore()
-This will insert the `<span>` element before the` <p>` element.
+### Basic Usage
 
 ```javascript
-$("<span>Hello</span>").insertBefore("p.target");
+// Create and insert before
+$("<span>Label:</span>").insertBefore(".input");
+
+// Create and prepend to
+$("<h2>Title</h2>").prependTo(".container");
+
+// Create and append to
+$("<li>New item</li>").appendTo("ul");
+
+// Create and insert after
+$("<button>Submit</button>").insertAfter(".form");
 ```
 
-### Using .prependTo()
-This will prepend the `<h2>` element to the `<section>` element.
+### Comparison with Insert Methods
 
 ```javascript
-$("<h2>My Title</h2>").prependTo("section.main");
+// These two are equivalent:
+$(".target").before("<span>Before</span>");
+$("<span>Before</span>").insertBefore(".target");
+
+// These two are equivalent:
+$(".container").prepend("<div>First</div>");
+$("<div>First</div>").prependTo(".container");
+
+// These two are equivalent:
+$(".container").append("<div>Last</div>");
+$("<div>Last</div>").appendTo(".container");
+
+// These two are equivalent:
+$(".target").after("<span>After</span>");
+$("<span>After</span>").insertAfter(".target");
 ```
 
-### Using .appendTo()
-This will append the `<li>` element to the `<ul>` element.
+### Real-World Examples
 
 ```javascript
-$("<li>Item 3</li>").appendTo("ul#my-list");
+// Add item to list
+$("<li>New Task</li>").appendTo(".todo-list");
+
+// Insert heading before content
+$("<h3>Section Title</h3>").insertBefore(".section-content");
+
+// Add label to inputs
+$("input[type='text']").each(function () {
+    const label = $(this).attr("name");
+    $(`<label>${label}</label>`).insertBefore(this);
+});
+
+// Prepend icon to buttons
+$("<span class='icon'>★</span>").prependTo(".favourite-button");
+
+// Add separator after menu items
+$("<li class='separator'>|</li>").insertAfter(".menu-item:not(:last-child)");
+
+// Move elements to different container
+$(".sidebar-widget").appendTo(".new-sidebar");
+
+// Insert error message after field
+function showFieldError(fieldName, message) {
+    $(`<span class="error">${message}</span>`)
+        .insertAfter(`input[name="${fieldName}"]`);
+}
+
+// Add close button to modal
+$("<button class='close'>×</button>").prependTo(".modal-header");
+
+// Insert breadcrumb separator
+$(".breadcrumb-item:not(:last-child)").each(function () {
+    $("<span> / </span>").insertAfter(this);
+});
+
+// Move selected items to another list
+$(".source-list .selected").appendTo(".destination-list");
+
+// Add timestamps
+$("<span class='timestamp'>Just now</span>").appendTo(".comment");
+
+// Insert notification badge
+const count = getNotificationCount();
+if (count > 0) {
+    $(`<span class="badge">${count}</span>`).appendTo(".notification-button");
+}
+
+// Add required indicator to labels
+$("label[for]").each(function () {
+    const inputId = $(this).attr("for");
+    const $input = $(`#${inputId}`);
+
+    if ($input.prop("required")) {
+        $("<span class='required'>*</span>").appendTo(this);
+    }
+});
+
+// Insert loading spinner
+$("<div class='spinner'></div>").prependTo(".content-area");
+
+// Add tooltips
+$("[data-tooltip]").each(function () {
+    const tooltipText = $(this).data("tooltip");
+    $(`<span class="tooltip">${tooltipText}</span>`).insertAfter(this);
+});
 ```
 
-### Using .insertAfter()
-This will insert the `<button>` element after the `<div>` element.
+## Differences to jQuery
 
-```javascript
-$("<button>Click Me</button>").insertAfter("div#container");
-```
+None.

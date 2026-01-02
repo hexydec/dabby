@@ -44,10 +44,16 @@ Next you should probably audit and refactor your code to update anything that Da
 
 Then run it in the browser, or through your test suite to highlight any other issues.
 
-Dabby.js compiles an ES6 module, include Dabby.js like this:
+Dabby.js compiles an ES6 module with TypeScript definitions. Include Dabby.js like this:
 
 ```javascript
 import $ from "dabbyjs/dist/dabby.js"; // or dabby.min.js
+```
+
+For TypeScript projects:
+
+```typescript
+import $ from "dabbyjs"; // Automatically includes type definitions
 ```
 
 ## Browser Support
@@ -71,6 +77,75 @@ import "/src/traversal/filter/filter.js"; // I need $.fn.is(), which is written 
 ```
 
 You can either do this in each module you need dabby.js in, or build a file that imports all the methods you need for your project, and include that somewhere.
+
+## TypeScript Support
+
+Dabby.js now includes comprehensive TypeScript definitions with full type safety and IntelliSense support.
+
+### Using TypeScript
+
+The library provides complete type definitions for all methods and supports both full and modular builds:
+
+```typescript
+import $ from 'dabbyjs';
+
+// Full type safety with IntelliSense
+$('#app').html('<div>Hello</div>');
+const text = $('#app').text(); // string
+```
+
+### Modular TypeScript Builds
+
+When building custom modular bundles, TypeScript automatically infers available methods:
+
+```typescript
+import $ from 'dabbyjs/modular';
+import 'dabbyjs/src/manipulation/html/html';
+import 'dabbyjs/src/events/on/on';
+
+// TypeScript knows html() and on() are available
+$('#app').html('Hello').on('click', () => {});
+
+// TypeScript error - css() not imported
+$('#app').css('color', 'red'); // Error: Property 'css' does not exist
+```
+
+### Type Definitions
+
+All type definitions are automatically generated during the build process and included in the npm package. The following files provide type information:
+
+- `dist/modular.d.ts` - Modular build types
+- `dist/types.d.ts` - Core type definitions
+- `dist/dabby-full.d.ts` - Full build type definitions
+
+### Building with TypeScript
+
+To compile the TypeScript source files:
+
+```bash
+npm run tsc
+```
+
+To run the full build pipeline including TypeScript compilation:
+
+```bash
+npm run build
+```
+
+### Type Testing
+
+The project includes comprehensive type tests using tsd to ensure type accuracy:
+
+```bash
+npm run test:types
+```
+
+Type tests validate:
+- Factory function return types
+- Method signatures and overloads
+- Callback parameter types
+- Chaining behaviour
+- Type safety for modular builds
 
 ## Troubleshooting
 
