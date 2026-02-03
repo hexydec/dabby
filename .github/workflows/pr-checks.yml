@@ -1,0 +1,237 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-info:
+    name: PR Information
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Generate PR Summary
+        run: |
+          echo "# Pull Request Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Changes Overview" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: \`${{ github.head_ref }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Base**: \`${{ github.base_ref }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "## Build Status" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ TypeScript compilation successful" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build artifacts generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "## Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| dabby.min.js | $(ls -lh dist/dabby.min.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| modular.js | $(ls -lh dist/modular.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check for TypeScript errors
+        run: npm run tsc -- --noEmit
+
+      - name: Run type tests
+        run: npm run test:types
+
+  file-changes:
+    name: Analyze File Changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+        with:
+          files: |
+            src/**/*.ts
+            src/**/*.js
+            tests/**/*.ts
+
+      - name: List changed TypeScript files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "Changed TypeScript/JavaScript files:"
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "  - $file"
+          done
+
+      - name: Comment file changes on PR
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = '${{ steps.changed-files.outputs.all_changed_files }}'.split(' ');
+            const comment = `## 📝 File Changes Detected
+
+            This PR modifies ${files.length} TypeScript/JavaScript file(s):
+
+            ${files.map(f => `- \`${f}\``).join('\n')}
+
+            All automated checks are running...`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript compiler
+        run: npm run tsc
+
+      - name: Verify type definitions
+        run: npm run test:types
+
+      - name: Comment success on PR
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Type Checks Passed**\n\nAll TypeScript type definitions are correct and compilation was successful!'
+            });
+
+      - name: Comment failure on PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Type Checks Failed**\n\nPlease review the TypeScript errors in the workflow logs and fix any type issues.'
+            });
+
+  bundle-size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          path: base
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          path: pr
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: pr/package-lock.json
+
+      - name: Build base branch
+        run: |
+          cd base
+          npm ci
+          npm run build
+
+      - name: Build PR branch
+        run: |
+          cd pr
+          npm ci
+          npm run build
+
+      - name: Compare bundle sizes
+        id: compare
+        run: |
+          BASE_SIZE=$(stat -c%s base/dist/dabby.min.js)
+          PR_SIZE=$(stat -c%s pr/dist/dabby.min.js)
+          DIFF=$((PR_SIZE - BASE_SIZE))
+          PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF / $BASE_SIZE) * 100}")
+
+          echo "base_size=$BASE_SIZE" >> $GITHUB_OUTPUT
+          echo "pr_size=$PR_SIZE" >> $GITHUB_OUTPUT
+          echo "diff=$DIFF" >> $GITHUB_OUTPUT
+          echo "percent=$PERCENT" >> $GITHUB_OUTPUT
+
+      - name: Comment bundle size on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const baseSize = parseInt('${{ steps.compare.outputs.base_size }}');
+            const prSize = parseInt('${{ steps.compare.outputs.pr_size }}');
+            const diff = parseInt('${{ steps.compare.outputs.diff }}');
+            const percent = parseFloat('${{ steps.compare.outputs.percent }}');
+
+            const formatSize = (bytes) => {
+              if (bytes < 1024) return `${bytes} B`;
+              if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+              return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+            };
+
+            const emoji = diff > 0 ? '📈' : diff < 0 ? '📉' : '➡️';
+            const status = Math.abs(percent) > 5 ? '⚠️' : '✅';
+            const diffText = diff > 0 ? `+${formatSize(diff)}` : formatSize(diff);
+
+            const comment = `## ${status} Bundle Size Report ${emoji}
+
+            | Metric | Size |
+            |--------|------|
+            | Base (\`${context.payload.pull_request.base.ref}\`) | ${formatSize(baseSize)} |
+            | PR (\`${context.payload.pull_request.head.ref}\`) | ${formatSize(prSize)} |
+            | **Difference** | **${diffText} (${percent > 0 ? '+' : ''}${percent}%)** |
+
+            ${Math.abs(percent) > 5 ? '⚠️ **Warning**: Bundle size changed by more than 5%' : '✅ Bundle size change is acceptable'}`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

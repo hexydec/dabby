@@ -1,0 +1,136 @@
+name: TypeScript Tests
+
+on:
+  push:
+    branches: [ master, exp-ts ]
+  pull_request:
+    branches: [ master, exp-ts ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Run TypeScript compiler checks
+        run: npm run tsc
+
+      - name: Run type definition tests
+        run: npm run test:types
+
+      - name: Check bundle sizes
+        run: |
+          echo "=== Bundle Sizes ==="
+          ls -lh dist/dabby.min.js dist/dabby.js dist/modular.js
+          echo ""
+          echo "=== Individual Module Sizes (sample) ==="
+          ls -lh dist/manipulation/html/html.js dist/attributes/css/css.js dist/events/on/on.js dist/ajax/ajax/ajax.js
+          echo ""
+          echo "=== Total dist size ==="
+          du -sh dist/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == '20.x'
+        with:
+          name: dist-files
+          path: dist/
+          retention-days: 7
+
+  type-safety:
+    name: TypeScript Type Safety Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile test files
+        run: |
+          npx tsc tests/typescript-import-test.ts --noEmit --skipLibCheck --module ES2022 --target ES2022 --lib ES2022,DOM --moduleResolution bundler
+          npx tsc tests/bundle-size-test.ts --noEmit --skipLibCheck --module ES2022 --target ES2022 --lib ES2022,DOM --moduleResolution bundler
+
+      - name: Run strict TypeScript compilation
+        run: npm run tsc -- --noEmit
+
+  bundle-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Analyze bundle sizes
+        run: |
+          echo "# Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Main Bundles" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| dabby.min.js | $(ls -lh dist/dabby.min.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| dabby.js | $(ls -lh dist/dabby.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| modular.js | $(ls -lh dist/modular.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Sample Module Sizes" >> $GITHUB_STEP_SUMMARY
+          echo "| Module | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| html.js | $(ls -lh dist/manipulation/html/html.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| css.js | $(ls -lh dist/attributes/css/css.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| on.js | $(ls -lh dist/events/on/on.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| ajax.js | $(ls -lh dist/ajax/ajax/ajax.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Total Distribution Size" >> $GITHUB_STEP_SUMMARY
+          echo "$(du -sh dist/ | awk '{print $1}')" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check for size regressions
+        run: |
+          MIN_SIZE=$(stat -c%s dist/dabby.min.js)
+          MAX_ALLOWED=35000  # 35KB max for minified build
+
+          if [ $MIN_SIZE -gt $MAX_ALLOWED ]; then
+            echo "❌ Minified bundle size ($MIN_SIZE bytes) exceeds maximum allowed ($MAX_ALLOWED bytes)"
+            exit 1
+          else
+            echo "✅ Minified bundle size ($MIN_SIZE bytes) is within acceptable range"
+          fi
