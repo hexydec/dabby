@@ -10,3 +10,39 @@ node_modules
 /tests/test.js.map
 /tests/internals.js.map
 /out
+
+# TypeScript cache
+.tscache/
+*.tsbuildinfo
+
+# TypeScript compiled test files
+/tests/**/*.js
+!/tests/assets/*.js
+/tests/src/
+/tests/tests/
+
+# Build artifacts
+*.js.map
+*.d.ts.map
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Temp files
+tmp/
+temp/
