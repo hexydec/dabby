@@ -65,13 +65,22 @@ export interface DabbyMethodSignatures {
 
   // Events
   on: {
-    (events: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | unknown, data?: unknown, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Dabby
+    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
   }
   off: {
-    (events?: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | ((this: Element, event: Event, ...args: unknown[]) => void | false), callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (): Dabby
+    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Dabby
+    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: string, selector: string, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
   }
   one: {
-    (events: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | unknown, data?: unknown, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Dabby
+    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
   }
   trigger: {
     (name: string, data?: unknown): Dabby
@@ -195,8 +204,9 @@ export function createDabby<Methods extends keyof DabbyMethodSignatures = never>
 }
 
 // Create a Dabby type with auto-inferred methods from imports
-// ModularDabbyMethods properties override optional Dabby properties
-export type DabbyAuto = Omit<Dabby, keyof ModularDabbyMethods> & ModularDabbyMethods
+// Intersection with Dabby ensures DabbyAuto is assignable to Dabby,
+// which is required because many augmented methods use `this: Dabby`
+export type DabbyAuto = Dabby & ModularDabbyMethods
 
 // Factory type that returns auto-inferred Dabby
 export type DabbyAutoFactory = {

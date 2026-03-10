@@ -85,6 +85,9 @@ Object.defineProperty(Dabby.prototype, "off", { value: off, configurable: true }
 // Module augmentation for auto-inferred modular imports
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    off(events?: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | ((this: Element, event: Event, ...args: unknown[]) => void | false), callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+    off(): this;
+    off(events: EventMap): this;
+    off(events: string, callback: OnCallback): this;
+    off(events: string, selector: string, callback?: OnCallback): this;
   }
 }

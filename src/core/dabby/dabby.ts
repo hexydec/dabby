@@ -115,11 +115,15 @@ export class Dabby implements Iterable<DOMNode> {
 
 	// Method signatures for dynamically added methods
 	// These will be implemented in separate module files
+	// IMPORTANT: signatures must match the ModularDabbyMethods augmentation exactly
+	// to avoid DabbyAuto assignability issues.
+	// Methods returning collections MUST return `this` (not `Dabby`) to preserve
+	// augmented method types through chaining.
 
-	// Attributes
-	attr?(prop: string): string | number | null | undefined;
+	// Attributes — signatures match attr.ts augmentation
+	attr?(prop: string): string | null;
 	attr?(prop: string, value: string | number | null | ((this: Element, index: number, currentValue: string | null) => string | number | null)): this;
-	attr?(props: Record<string, unknown>): this;
+	attr?(props: Record<string, string | number | null | Function>): this;
 
 	css?(prop: string): string;
 	css?(props: string[]): Record<string, string>;
@@ -127,7 +131,7 @@ export class Dabby implements Iterable<DOMNode> {
 	css?(props: Record<string, string | number>): this;
 
 	addClass?(cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;
-	removeClass?(cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;
+	removeClass?(cls?: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;
 	toggleClass?(cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[]), state?: boolean): this;
 	hasClass?(cls: string): boolean;
 
@@ -145,10 +149,19 @@ export class Dabby implements Iterable<DOMNode> {
 	show?(): this;
 	toggle?(show?: boolean): this;
 
-	// Events
-	on?(events: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | unknown, data?: unknown, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
-	one?(events: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | unknown, data?: unknown, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
-	off?(events?: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | ((this: Element, event: Event, ...args: unknown[]) => void | false), callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	// Events — overloaded signatures matching on.ts augmentation
+	on?(events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): this;
+	on?(events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	on?(events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	on?(events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	one?(events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): this;
+	one?(events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	one?(events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	one?(events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	off?(): this;
+	off?(events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): this;
+	off?(events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+	off?(events: string, selector: string, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
 	trigger?(name: string, data?: unknown): this;
 	triggerHandler?(name: string, data?: unknown): unknown;
 	// Named events
@@ -183,50 +196,56 @@ export class Dabby implements Iterable<DOMNode> {
 	text?(): string;
 	text?(content: string | ((this: Element, index: number, currentText: string) => string)): this;
 
-	// Traversal
-	find?(selector: Selector): Dabby;
-	filter?(selector: Selector | ((this: Element, index: number) => boolean)): Dabby;
+	// Traversal — return `this` to preserve augmented types through chaining
+	find?(selector: Selector): this;
+	filter?(selector: Selector | ((this: Element, index: number) => boolean)): this;
 	is?(selector: Selector | ((this: Element, index: number) => boolean)): boolean;
-	add?(selector: Selector): Dabby;
-	eq?(index: number): Dabby;
-	first?(): Dabby;
-	last?(): Dabby;
-	slice?(start: number, end?: number): Dabby;
-	parent?(selector?: Selector): Dabby;
-	parents?(selector?: Selector): Dabby;
-	parentsUntil?(selector: Selector, filter?: Selector): Dabby;
-	children?(selector?: Selector): Dabby;
-	siblings?(selector?: Selector): Dabby;
-	closest?(selector: Selector, context?: Selector): Dabby;
-	has?(selector: Selector): Dabby;
+	add?(selector: Selector): this;
+	eq?(index: number): this;
+	first?(): this;
+	last?(): this;
+	slice?(start: number, end?: number): this;
+	parent?(selector?: Selector): this;
+	parents?(selector?: Selector): this;
+	parentsUntil?(selector: Selector, filter?: Selector): this;
+	children?(selector?: Selector): this;
+	siblings?(selector?: Selector): this;
+	closest?(selector: Selector, context?: Selector): this;
+	has?(selector: Selector): this;
 	index?(selector?: Selector): number;
-	not?(selector: Selector): Dabby;
-	next?(selector?: Selector): Dabby;
-	nextAll?(selector?: Selector): Dabby;
-	nextUntil?(selector: Selector, filter?: Selector): Dabby;
-	prev?(selector?: Selector): Dabby;
-	prevAll?(selector?: Selector): Dabby;
-	prevUntil?(selector: Selector, filter?: Selector): Dabby;
+	not?(selector: Selector): this;
+	next?(selector?: Selector): this;
+	nextAll?(selector?: Selector): this;
+	nextUntil?(selector: Selector, filter?: Selector): this;
+	prev?(selector?: Selector): this;
+	prevAll?(selector?: Selector): this;
+	prevUntil?(selector: Selector, filter?: Selector): this;
 
 	// Manipulation
-	clone?(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): Dabby;
+	clone?(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): this;
 	empty?(): this;
 	remove?(selector?: Selector): this;
-	detach?(selector?: Selector): Dabby;
+	detach?(selector?: Selector): this;
 	append?(...content: unknown[]): this;
 	prepend?(...content: unknown[]): this;
 	before?(...content: unknown[]): this;
 	after?(...content: unknown[]): this;
-	replaceWith?(content: unknown): Dabby;
-	replaceAll?(content: unknown): Dabby;
+	replaceWith?(content: unknown): this;
+	replaceAll?(content: unknown): this;
 	wrap?(html: unknown): this;
 	wrapAll?(html: unknown): this;
 	unwrap?(selector?: Selector): this;
 
+	// Insertion
+	appendTo?(selector: Selector): this;
+	insertAfter?(selector: Selector): this;
+	insertBefore?(selector: Selector): this;
+	prependTo?(selector: Selector): this;
+
 	// Dimensions
 	offset?(): { top: number; left: number } | undefined;
 	offset?(coords: { top: number; left: number } | ((this: Element, index: number, currentValue: { top: number; left: number }) => { top: number; left: number })): this;
-	offsetParent?(): Dabby;
+	offsetParent?(): this;
 	position?(): { top: number; left: number } | undefined;
 	scrollLeft?(): number | undefined;
 	scrollLeft?(pos: number | ((this: Element | Window, index: number, currentValue: number) => number)): this;
@@ -250,7 +269,7 @@ export class Dabby implements Iterable<DOMNode> {
 	load?(url: string, success: (this: Element, response: any, status: string | number, xhr: XMLHttpRequest) => void): this;
 	load?(url: string): this;
 	serialize?(): string;
-	val?(): string | number | string[] | undefined;
+	val?(): string | string[] | undefined;
 	val?(value: string | number | string[] | ((this: Element, index: number, currentValue: string | number | string[] | undefined) => string | number | string[] | undefined)): this;
 }
 

@@ -132,8 +132,14 @@ Object.defineProperty(Dabby.prototype, "one", { value: one, configurable: true }
 // Module augmentation for auto-inferred modular imports
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    on(events: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | unknown, data?: unknown, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
-    one(events: string | Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>, selector?: string | unknown, data?: unknown, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): this;
+    on(events: EventMap): this;
+    on(events: string, callback: OnCallback): this;
+    on(events: string, selector: string, callback: OnCallback): this;
+    on(events: string, selector: string, data: unknown, callback: OnCallback): this;
+    one(events: EventMap): this;
+    one(events: string, callback: OnCallback): this;
+    one(events: string, selector: string, callback: OnCallback): this;
+    one(events: string, selector: string, data: unknown, callback: OnCallback): this;
   }
 }
 

@@ -22,7 +22,7 @@ const copy = (from: Element, to: Element): void => {
 
 		events.forEach(e => {
 			if (toObj.on) {
-				toObj.on(e.event, e.selector, e.data, e.callback);
+				toObj.on(e.event, e.selector!, e.data, e.callback);
 			}
 		});
 	}

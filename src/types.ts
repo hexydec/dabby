@@ -21,7 +21,7 @@ export interface DabbyFactory {
 	// Static utility methods
 	map?: <T, R>(
 		obj: Record<string, T> | T[],
-		callback: (this: Window, value: T, key: string) => R | R[] | null | undefined
+		callback: (this: Window, value: T, key: number | string) => R | R[] | null | undefined
 	) => R[];
 	extend?: {
 		(deep: true, target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;

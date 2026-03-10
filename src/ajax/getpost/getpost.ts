@@ -25,6 +25,7 @@ function get(url: string, data: DataParam, success: XhrCallback): XMLHttpRequest
 function get(url: string, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
 function get(url: string, success: XhrCallback): XMLHttpRequest | undefined;
 function get(url: string): XMLHttpRequest | undefined;
+function get(url: string, data: DataParam): XMLHttpRequest | undefined;
 function get(settings: AjaxSettings): XMLHttpRequest | undefined;
 
 // GET implementation
@@ -40,6 +41,7 @@ function post(url: string, data: DataParam, success: XhrCallback): XMLHttpReques
 function post(url: string, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
 function post(url: string, success: XhrCallback): XMLHttpRequest | undefined;
 function post(url: string): XMLHttpRequest | undefined;
+function post(url: string, data: DataParam): XMLHttpRequest | undefined;
 function post(settings: AjaxSettings): XMLHttpRequest | undefined;
 
 // POST implementation
