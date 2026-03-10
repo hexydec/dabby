@@ -24,7 +24,7 @@ function offset(this: Dabby, coords?: Coords | OffsetCallback): Dabby | Coords |
 		const values = getVal(
 			this as unknown as { readonly length: number; readonly [n: number]: Element },
 			coords,
-			(obj: Element) => $(obj).offset!()
+			(obj: Element) => ($(obj) as Dabby & { offset: () => Coords | undefined }).offset()
 		) as CoordsWithPosition[];
 		let i = this.length;
 
@@ -39,7 +39,7 @@ function offset(this: Dabby, coords?: Coords | OffsetCallback): Dabby | Coords |
 
 			// take off offset parent position
 			const parent = (element as unknown as Record<string, Node>)[pos === "relative" ? "parentNode" : "offsetParent"] as Element;
-			const parentOffset = $(parent).offset!();
+			const parentOffset = ($(parent) as Dabby & { offset: () => Coords | undefined }).offset();
 			if (parentOffset) {
 				($ as typeof $ & { each: (obj: Coords, callback: (key: string, value: number) => void) => void }).each(parentOffset, (key, val) => {
 					if (key === "top" || key === "left") {
@@ -87,7 +87,8 @@ Object.defineProperty(Dabby.prototype, "offset", { value: offset, configurable: 
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    offset: typeof offset;
+    offset(): { top: number; left: number } | undefined;
+    offset(coords: { top: number; left: number } | ((this: Element, index: number, currentValue: { top: number; left: number }) => { top: number; left: number })): this;
   }
 }
 

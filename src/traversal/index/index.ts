@@ -38,7 +38,7 @@ Object.defineProperty(Dabby.prototype, "index", { value: index, configurable: tr
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    index: typeof index;
+    index(selector?: Selector): number;
   }
 }
 

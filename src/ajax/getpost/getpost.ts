@@ -16,7 +16,7 @@ function factory(name: string, url: string | AjaxSettings, data?: DataParam | Xh
 		dataType: isFunc ? success as string : type
 	};
 	settings.method = name.toUpperCase() as "GET" | "POST";
-	return $.ajax!(settings);
+	return ($ as typeof $ & { ajax: (settings: AjaxSettings) => XMLHttpRequest | undefined }).ajax(settings);
 }
 
 // GET overloads
@@ -54,8 +54,20 @@ Object.defineProperty($, "post", { value: post });
 // Augment ModularDabbyStatics for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyStatics {
-    get: typeof get;
-    post: typeof post;
+    get(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+    get(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }, success: XhrCallback): XMLHttpRequest | undefined;
+    get(url: string, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+    get(url: string, success: XhrCallback): XMLHttpRequest | undefined;
+    get(url: string): XMLHttpRequest | undefined;
+    get(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }): XMLHttpRequest | undefined;
+    get(settings: AjaxSettings): XMLHttpRequest | undefined;
+    post(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+    post(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }, success: XhrCallback): XMLHttpRequest | undefined;
+    post(url: string, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+    post(url: string, success: XhrCallback): XMLHttpRequest | undefined;
+    post(url: string): XMLHttpRequest | undefined;
+    post(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }): XMLHttpRequest | undefined;
+    post(settings: AjaxSettings): XMLHttpRequest | undefined;
   }
 }
 

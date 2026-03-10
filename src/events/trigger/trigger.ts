@@ -31,7 +31,7 @@ Object.defineProperty(Dabby.prototype, "trigger", { value: trigger, configurable
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    trigger: typeof trigger;
+    trigger(name: string, data?: unknown): this;
   }
 }
 

@@ -18,8 +18,8 @@ function wrapAll(this: Dabby, html: Selector | WrapCallback): Dabby {
 		// Set variables
 		const len = this.length;
 		let i = 0;
-		const wrapperDabby = $(wrapper);
-		let node: Element = (wrapperDabby.eq?.(0).clone?.(true).get?.(0) as Element) ?? (wrapperDabby[0] as Element);
+		const wrapperDabby = $(wrapper) as Dabby & { eq?: (index: number) => Dabby & { clone?: (deep: boolean) => Dabby & { get?: (index: number) => Element } } };
+		let node: Element = (wrapperDabby.eq?.(0)?.clone?.(true)?.get?.(0) as Element) ?? (wrapperDabby[0] as Element);
 
 		// Insert clone into parent
 		(this[0] as Element).parentNode!.insertBefore(node, null);
@@ -43,7 +43,7 @@ Object.defineProperty(Dabby.prototype, "wrapAll", { value: wrapAll, configurable
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    wrapAll: typeof wrapAll;
+    wrapAll(html: Selector | WrapCallback): this;
   }
 }
 

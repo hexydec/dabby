@@ -10,7 +10,7 @@ Object.defineProperty(Dabby.prototype, "offsetParent", { value: offsetParent, co
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    offsetParent: typeof offsetParent;
+    offsetParent(): this;
   }
 }
 

@@ -36,10 +36,10 @@ Object.defineProperty(Dabby.prototype, "insertAfter", { value: insertAfter, conf
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    appendTo: typeof appendTo;
-    insertAfter: typeof insertAfter;
-    insertBefore: typeof insertBefore;
-    prependTo: typeof prependTo;
+    appendTo(selector: Selector): this;
+    insertAfter(selector: Selector): this;
+    insertBefore(selector: Selector): this;
+    prependTo(selector: Selector): this;
   }
 }
 

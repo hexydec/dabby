@@ -55,9 +55,9 @@ Object.defineProperty(Dabby.prototype, "parentsUntil", { value: until, configura
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    parent: typeof parent;
-    parents: typeof parents;
-    parentsUntil: typeof until;
+    parent(selector?: Selector): this;
+    parents(selector?: Selector): this;
+    parentsUntil(selector: Selector, filter?: Selector): this;
   }
 }
 

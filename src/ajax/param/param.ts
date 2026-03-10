@@ -38,7 +38,7 @@ Object.defineProperty($, "param", { value: param });
 // Augment ModularDabbyStatics for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyStatics {
-    param: typeof param;
+    param(obj: { [key: string]: string | number | boolean | null | ParamValue[] | { [key: string]: ParamValue } | (() => ParamValue) }): string;
   }
 }
 

@@ -23,7 +23,7 @@ Object.defineProperty(Dabby.prototype, "triggerHandler", { value: triggerHandler
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    triggerHandler: typeof triggerHandler;
+    triggerHandler(name: string, data?: unknown): unknown;
   }
 }
 

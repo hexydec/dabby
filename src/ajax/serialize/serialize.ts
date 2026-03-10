@@ -34,7 +34,7 @@ function serialize(this: Dabby): string {
 		return params;
 	};
 
-	let obj = this.filter!(selector);
+	let obj = (this as Dabby & { filter: (selector: string) => Dabby }).filter(selector);
 
 	if (!obj.length) {
 		obj = $(selector, this);
@@ -43,15 +43,15 @@ function serialize(this: Dabby): string {
 	let params: SerializedParams = {};
 
 	// process values
-	obj.each!((_index, element) => {
-		const value = $(element).val!();
+	(obj as Dabby & { each: (callback: (_index: number, element: Element) => void) => Dabby }).each((_index: number, element: Element) => {
+		const value = ($(element) as Dabby & { val: () => unknown }).val();
 		if (!(element as HTMLInputElement).disabled && value !== undefined) {
 			params = add((element as HTMLInputElement).name, value as ParamValue, params);
 		}
 	});
 	// Ensure params is an object, not an array
 	const finalParams = Array.isArray(params) ? { "": params } : params;
-	return $.param!(finalParams as unknown as Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>);
+	return ($ as typeof $ & { param: (obj: Record<string, unknown>) => string }).param(finalParams as unknown as Record<string, unknown>);
 }
 
 Object.defineProperty(Dabby.prototype, "serialize", { value: serialize, configurable: true });
@@ -59,7 +59,7 @@ Object.defineProperty(Dabby.prototype, "serialize", { value: serialize, configur
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    serialize: typeof serialize;
+    serialize(): string;
   }
 }
 

@@ -162,12 +162,18 @@ Object.defineProperty(Dabby.prototype, "outerHeight", { value: outerHeight, conf
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    height: typeof height;
-    innerHeight: typeof innerHeight;
-    innerWidth: typeof innerWidth;
-    outerHeight: typeof outerHeight;
-    outerWidth: typeof outerWidth;
-    width: typeof width;
+    height(): number | undefined;
+    height(val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;
+    innerHeight(): number | undefined;
+    innerHeight(val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;
+    innerWidth(): number | undefined;
+    innerWidth(val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;
+    outerHeight(): number | undefined;
+    outerHeight(val: number | string | boolean | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;
+    outerWidth(): number | undefined;
+    outerWidth(val: number | string | boolean | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;
+    width(): number | undefined;
+    width(val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;
   }
 }
 

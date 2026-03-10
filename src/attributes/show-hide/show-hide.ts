@@ -61,9 +61,9 @@ Object.defineProperty(Dabby.prototype, "toggle", { value: toggle, configurable: 
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    hide: typeof hide;
-    show: typeof show;
-    toggle: typeof toggle;
+    hide(): this;
+    show(): this;
+    toggle(show?: boolean): this;
   }
 }
 

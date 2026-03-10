@@ -7,7 +7,7 @@ type OnCallback = (this: Element, event: Event, ...args: unknown[]) => void | fa
 
 function createNamedEvent(eventName: string) {
 	return function(this: Dabby, selector?: string | unknown | OnCallback, data?: unknown | OnCallback, callback?: OnCallback): Dabby {
-		return data ? this.on!(eventName, selector as string, data as unknown, callback!) : this.trigger!(eventName);
+		return data ? (this as Dabby & { on: (event: string, selector: string, data: unknown, callback: OnCallback) => Dabby }).on(eventName, selector as string, data as unknown, callback!) : (this as Dabby & { trigger: (event: string) => Dabby }).trigger(eventName);
 	};
 }
 

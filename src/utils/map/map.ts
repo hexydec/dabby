@@ -31,7 +31,7 @@ $.map = map;
 // Augment ModularDabbyStatics for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyStatics {
-    map: typeof map;
+    map<T, R>(obj: Record<string, T> | T[], callback: (this: Window, value: T, key: number | string) => R | R[] | null | undefined): R[];
   }
 }
 

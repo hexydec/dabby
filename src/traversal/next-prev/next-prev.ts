@@ -89,12 +89,12 @@ Object.defineProperty(Dabby.prototype, "prevUntil", { value: prevuntil, configur
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    next: typeof next;
-    nextAll: typeof nextall;
-    nextUntil: typeof nextuntil;
-    prev: typeof prev;
-    prevAll: typeof prevall;
-    prevUntil: typeof prevuntil;
+    next(selector?: Selector): this;
+    nextAll(selector?: Selector): this;
+    nextUntil(selector: Selector, filter?: Selector): this;
+    prev(selector?: Selector): this;
+    prevAll(selector?: Selector): this;
+    prevUntil(selector: Selector, filter?: Selector): this;
   }
 }
 

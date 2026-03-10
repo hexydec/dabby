@@ -14,8 +14,8 @@ const factory = (obj: Dabby, selector: Selector | undefined, remove: boolean): D
 		const element = obj[i] as Element;
 		if (!selector || filterNodes(element, selector).length) {
 			// Remove data from removed nodes
-			if (remove && ($ as { fn: { off?: () => void } }).fn.off) {
-				$(element).off?.();
+			if (remove && ($ as unknown as { fn: { off?: () => void } }).fn.off) {
+				($(element) as Dabby & { off: () => void }).off();
 			}
 			// Only remove if attached to something
 			nodes.push(element.parentNode ? element.parentNode.removeChild(element) as Element : element);

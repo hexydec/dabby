@@ -27,7 +27,7 @@ Object.defineProperty(Dabby.prototype, "closest", { value: closest, configurable
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    closest: typeof closest;
+    closest(selector: Selector, context?: Selector): this;
   }
 }
 

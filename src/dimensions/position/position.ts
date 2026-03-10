@@ -16,7 +16,7 @@ Object.defineProperty(Dabby.prototype, "position", { value: position, configurab
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    position: typeof position;
+    position(): { top: number; left: number } | undefined;
   }
 }
 

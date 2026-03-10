@@ -16,7 +16,7 @@ Object.defineProperty(Dabby.prototype, "has", { value: has, configurable: true }
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    has: typeof has;
+    has(selector: Selector): this;
   }
 }
 

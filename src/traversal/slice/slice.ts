@@ -10,7 +10,7 @@ Object.defineProperty(Dabby.prototype, "slice", { value: slice, configurable: tr
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    slice: typeof slice;
+    slice(start: number, end?: number): this;
   }
 }
 

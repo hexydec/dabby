@@ -30,8 +30,10 @@ Object.defineProperty(Dabby.prototype, "scrollTop", { value: scrollTop, configur
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    scrollLeft: typeof scrollLeft;
-    scrollTop: typeof scrollTop;
+    scrollLeft(): number | undefined;
+    scrollLeft(pos: number | ((this: Element | Window, index: number, currentValue: number) => number)): this;
+    scrollTop(): number | undefined;
+    scrollTop(pos: number | ((this: Element | Window, index: number, currentValue: number) => number)): this;
   }
 }
 

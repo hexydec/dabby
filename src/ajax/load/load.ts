@@ -28,7 +28,7 @@ function load(this: Dabby, url: string, data?: string | PlainObject | XhrCallbac
 		}
 
 		// make AJAX request
-		$.ajax!(uri, {
+		($ as typeof $ & { ajax: (url: string, settings: Record<string, unknown>) => void }).ajax(uri, {
 			data: data,
 			method: data instanceof Object ? "POST" : "GET",
 			success: (response: XhrResponse, status: string | number, xhr: XMLHttpRequest) => {
@@ -38,13 +38,13 @@ function load(this: Dabby, url: string, data?: string | PlainObject | XhrCallbac
 
 				// refine by selector if supplied
 				if (selector && response && typeof response === "string") {
-					html = $(response, (this[0] as Element).ownerDocument).filter!(selector);
+					html = ($(response, (this[0] as Element).ownerDocument) as Dabby & { filter: (selector: string) => Dabby }).filter(selector);
 				} else {
 					html = (response as string) || "";
 				}
 
 				// set HTML to nodes in collection
-				this.append!(html);
+				(this as Dabby & { append: (html: string | Dabby) => Dabby }).append(html);
 
 				// fire success callback on nodes
 				if (success) {

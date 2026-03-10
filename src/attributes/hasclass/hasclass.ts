@@ -17,7 +17,7 @@ Object.defineProperty(Dabby.prototype, "hasClass", { value: hasClass, configurab
 // Module augmentation for auto-inferred modular imports
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    hasClass: typeof hasClass;
+    hasClass(cls: string): boolean;
   }
 }
 

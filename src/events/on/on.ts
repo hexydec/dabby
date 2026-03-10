@@ -74,7 +74,7 @@ function factory(
 						data: data,
 						callback: func,
 						func: (evt: Event) => { // delegate function
-							const target = selector ? $(evt.target as Element).closest?.(selector as string).get() : [evt.currentTarget];
+							const target = selector ? ($(evt.target as Element) as Dabby & { closest: (selector: string) => Dabby & { get: () => Element[] } }).closest(selector as string).get() : [evt.currentTarget];
 							if (target && target.length) {
 								const eventWithData = evt as Event & { data?: unknown; _data?: unknown };
 								if (eventWithData.data === undefined) {

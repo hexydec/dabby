@@ -22,8 +22,9 @@ function factory(
 	// Multiple arguments containing nodes
 	if (!isFunc) {
 		elems = content.reduce((dabby: Dabby, item) => {
-			if (dabby.add) {
-				return dabby.add(item as Selector);
+			const d = dabby as Dabby & { add?: (item: Selector) => Dabby };
+			if (d.add) {
+				return d.add(item as Selector);
 			}
 			return dabby;
 		}, $());
@@ -38,8 +39,9 @@ function factory(
 			const dabbyCollection = [element] as unknown as { readonly length: number; readonly [n: number]: Element };
 			const values = getVal(dabbyCollection, content[0], (obj: Element) => obj.innerHTML);
 			elems = values.reduce((dabby: Dabby, item) => {
-				if (dabby.add) {
-					return dabby.add(item as Selector);
+				const d = dabby as Dabby & { add?: (item: Selector) => Dabby };
+				if (d.add) {
+					return d.add(item as Selector);
 				}
 				return dabby;
 			}, $());
@@ -53,7 +55,7 @@ function factory(
 			const index = pre ? backwards : forwards;
 			const nodeToInsert = i === len - 1
 				? elems![index] as Element
-				: (elems!.eq?.(index).clone?.(true)[0] as Element) ?? (elems![index] as Element);
+				: ((elems! as Dabby & { eq?: (index: number) => Dabby & { clone?: (deep: boolean) => Dabby } }).eq?.(index)?.clone?.(true)?.[0] as Element) ?? (elems![index] as Element);
 
 			element.insertAdjacentElement(pos, nodeToInsert);
 		}

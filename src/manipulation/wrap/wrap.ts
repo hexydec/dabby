@@ -13,7 +13,7 @@ function wrap(this: Dabby, html: Selector | WrapCallback): Dabby {
 	const values = getVal(dabbyCollection, html);
 
 	while (i--) {
-		const element = $(this[i]);
+		const element = $(this[i]) as Dabby & { wrapAll?: (html: Selector) => Dabby };
 		if (element.wrapAll) {
 			element.wrapAll(values[i] as Selector);
 		}
@@ -27,7 +27,7 @@ Object.defineProperty(Dabby.prototype, "wrap", { value: wrap, configurable: true
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    wrap: typeof wrap;
+    wrap(html: Selector | WrapCallback): this;
   }
 }
 

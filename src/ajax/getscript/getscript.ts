@@ -6,11 +6,12 @@ type XhrResponse = string | ArrayBuffer | Blob | Document | object | null;
 type XhrCallback = (response: XhrResponse, status: string | number, xhr: XMLHttpRequest) => void;
 
 function getScript(url: string, success?: XhrCallback): XMLHttpRequest | undefined {
-	return $.ajax!({
+	return ($ as typeof $ & { ajax: (settings: { url: string; dataType: string; success?: XhrCallback }) => XMLHttpRequest | undefined }).ajax({
 		url: url,
 		dataType: "script",
 		success: success
 	});
+
 }
 
 Object.defineProperty($, "getScript", { value: getScript });
@@ -18,7 +19,7 @@ Object.defineProperty($, "getScript", { value: getScript });
 // Augment ModularDabbyStatics for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyStatics {
-    getScript: typeof getScript;
+    getScript(url: string, success?: XhrCallback): XMLHttpRequest | undefined;
   }
 }
 

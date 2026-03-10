@@ -122,7 +122,7 @@ function ajax(url: string | AjaxSettings, settings?: AjaxSettings): XMLHttpReque
 
 	// process data add data to query string for GET requests
 	if (s.data) {
-		data = isPlainObject(s.data) ? $.param!(s.data as Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>) : s.data as string;
+		data = isPlainObject(s.data) ? ($ as typeof $ & { param: (obj: Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>) => string }).param(s.data as Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>) : s.data as string;
 
 		if (s.method === "GET") {
 			s.url += join + data;
@@ -270,7 +270,8 @@ Object.defineProperty($, "ajax", { value: ajax });
 // Augment ModularDabbyStatics for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyStatics {
-    ajax: typeof ajax;
+    ajax(url: string, settings?: AjaxSettings): XMLHttpRequest | undefined;
+    ajax(settings: AjaxSettings): XMLHttpRequest | undefined;
   }
 }
 

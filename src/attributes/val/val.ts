@@ -86,7 +86,8 @@ Object.defineProperty(Dabby.prototype, "val", { value: val, configurable: true }
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    val: typeof val;
+    val(): string | string[] | undefined;
+    val(value: string | number | string[] | ((this: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number, currentValue: string) => string | number | string[])): this;
   }
 }
 

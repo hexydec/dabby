@@ -3,7 +3,7 @@ import type {} from "../../modular.js";
 import "../eq/eq.js";
 
 function last(this: Dabby): Dabby {
-	return this.eq!(-1);
+	return (this as Dabby & { eq: (index: number) => Dabby }).eq(-1);
 }
 
 Object.defineProperty(Dabby.prototype, "last", { value: last, configurable: true });

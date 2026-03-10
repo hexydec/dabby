@@ -26,7 +26,7 @@ Object.defineProperty($, "each", { value: each });
 // Augment ModularDabbyStatics for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyStatics {
-    each: typeof each;
+    each<T>(obj: ArrayLike<T> | Record<string, T>, callback: (this: T, key: number | string, value: T) => void | false): ArrayLike<T> | Record<string, T>;
   }
 }
 

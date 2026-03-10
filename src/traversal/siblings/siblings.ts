@@ -24,7 +24,7 @@ Object.defineProperty(Dabby.prototype, "siblings", { value: siblings, configurab
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    siblings: typeof siblings;
+    siblings(selector?: Selector): this;
   }
 }
 

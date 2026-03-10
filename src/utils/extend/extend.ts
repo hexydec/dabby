@@ -80,7 +80,8 @@ import type {} from "../../modular.js";
 // Augment ModularDabbyStatics for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyStatics {
-    extend: typeof extend;
+    extend(deep: true, target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;
+    extend(target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;
   }
 }
 

@@ -21,7 +21,7 @@
  */
 
 import type { Dabby } from './core/dabby/dabby.js'
-import type { Selector } from './types.js'
+import type { Selector, ReadyCallback } from './types.js'
 import $base from './core/dabby/dabby.js'
 
 // This interface is populated by method files via module augmentation
@@ -210,7 +210,7 @@ export type DabbyAuto = Dabby & ModularDabbyMethods
 
 // Factory type that returns auto-inferred Dabby
 export type DabbyAutoFactory = {
-  (selector?: Selector): DabbyAuto
+  (selector?: Selector | ReadyCallback, context?: Selector | Record<string, unknown>): DabbyAuto
   readonly prototype: DabbyAuto
   readonly fn: DabbyAuto
 } & ModularDabbyStatics

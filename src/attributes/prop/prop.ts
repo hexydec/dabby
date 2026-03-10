@@ -68,7 +68,9 @@ Object.defineProperty(Dabby.prototype, "prop", { value: prop, configurable: true
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    prop: typeof prop;
+    prop(prop: string): unknown;
+    prop(prop: string, value: unknown | ((this: Element, index: number, currentValue: unknown) => unknown)): this;
+    prop(props: Record<string, unknown>): this;
   }
 }
 

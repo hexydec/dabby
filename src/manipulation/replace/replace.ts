@@ -30,7 +30,7 @@ function factory(obj: Dabby, html: Selector | ReplaceCallback, all: boolean): Da
 				: (target as Dabby)[index];
 
 			if (index > 0) {
-				const cloned = $(replaceElement as Selector);
+				const cloned = $(replaceElement as Selector) as Dabby & { clone?: (deep: boolean) => Dabby & { get?: (index: number) => Element } };
 				sourceElement.insertAdjacentElement(
 					"beforebegin",
 					(cloned.clone?.(true).get?.(0) as Element) ?? (cloned[0] as Element)
@@ -38,7 +38,7 @@ function factory(obj: Dabby, html: Selector | ReplaceCallback, all: boolean): Da
 			} else {
 				const replacement = i > 0
 					? (() => {
-						const cloned = $(replaceElement as Selector);
+						const cloned = $(replaceElement as Selector) as Dabby & { clone?: (deep: boolean) => Dabby & { get?: (index: number) => Element } };
 						return (cloned.clone?.(true).get?.(0) as Element) ?? (cloned[0] as Element);
 					})()
 					: replaceElement as Element;
@@ -65,8 +65,8 @@ Object.defineProperty(Dabby.prototype, "replaceAll", { value: replaceAll, config
 // Augment ModularDabbyMethods for modular builds
 declare module 'dabbyjs' {
   interface ModularDabbyMethods {
-    replaceAll: typeof replaceAll;
-    replaceWith: typeof replaceWith;
+    replaceAll(html: Selector): this;
+    replaceWith(html: Selector | ReplaceCallback): this;
   }
 }
 
