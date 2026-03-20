@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import events from "../../internal/getevents/getevents.js";
 import getVal from "../../internal/getval/getval.js";
 
@@ -96,7 +96,7 @@ function attr(
 Object.defineProperty(Dabby.prototype, "attr", { value: attr, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     attr(prop: string): string | null;
     attr(prop: string, value: string | number | null | ((this: Element, index: number, currentValue: string | null) => string | number | null)): this;

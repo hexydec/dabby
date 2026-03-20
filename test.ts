@@ -4,7 +4,7 @@
  */
 
 // Just import $ and the modules you need — types follow automatically
-import $ from './src/modular.js';
+import $ from './src/dabby.js';
 
 // Import whichever modules you want — each one adds its methods to $
 import './src/manipulation/html/html.js';
@@ -38,8 +38,5 @@ import './src/dimensions/width-height/width-height.js';
 // Try it out
 const $el = $('#app');
 
-// Test augmented methods work
-$el.html('<div>test</div>');
-$el.css('color', 'red');
-$el.addClass('active');
-$el.on('click', () => {});
+// Try autocomplete after the dot:
+$el

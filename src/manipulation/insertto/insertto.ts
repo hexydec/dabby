@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 
 function factory(func: string, obj: Dabby, selector: Selector): Dabby {
@@ -33,7 +33,7 @@ function insertAfter(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "insertAfter", { value: insertAfter, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     appendTo(selector: Selector): this;
     insertAfter(selector: Selector): this;

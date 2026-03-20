@@ -15,21 +15,13 @@
 		"javascript"
 	],
 	"contributors": [],
-	"main": "dist/modular.js",
-	"types": "dist/modular.d.ts",
-	"source": "src/modular.ts",
+	"main": "dist/dabby.js",
+	"types": "dist/dabby.d.ts",
+	"source": "src/dabby.ts",
 	"exports": {
 		".": {
-			"types": "./dist/modular.d.ts",
-			"default": "./dist/modular.js"
-		},
-		"./modular": {
-			"types": "./dist/modular.d.ts",
-			"default": "./dist/modular.js"
-		},
-		"./dist/modular.js": {
-			"types": "./dist/modular.d.ts",
-			"default": "./dist/modular.js"
+			"types": "./dist/dabby.d.ts",
+			"default": "./dist/dabby.js"
 		},
 		"./src/ajax/ajax/ajax": {
 			"types": "./dist/ajax/ajax/ajax.d.ts",

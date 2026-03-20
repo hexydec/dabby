@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
@@ -51,7 +51,7 @@ function until(this: Dabby, selector: Selector, filter?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "parentsUntil", { value: until, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     parent(selector?: Selector): this;
     parents(selector?: Selector): this;

@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import isPlainObject, { type PlainObject } from "../../internal/isplainobject/isplainobject.js";
 import getProp from "../../internal/getprop/getprop.js";
 import getVal from "../../internal/getval/getval.js";
@@ -63,7 +63,7 @@ function prop(
 Object.defineProperty(Dabby.prototype, "prop", { value: prop, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     prop(prop: string): unknown;
     prop(prop: string, value: unknown | ((this: Element, index: number, currentValue: unknown) => unknown)): this;

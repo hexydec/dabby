@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 
 type WrapCallback = (this: Element) => Selector;
@@ -40,7 +40,7 @@ function wrapAll(this: Dabby, html: Selector | WrapCallback): Dabby {
 Object.defineProperty(Dabby.prototype, "wrapAll", { value: wrapAll, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     wrapAll(html: Selector | WrapCallback): this;
   }

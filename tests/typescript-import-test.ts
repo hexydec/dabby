@@ -4,7 +4,7 @@
  */
 
 // Test default import
-import $ from '../src/modular.js';
+import $ from '../src/dabby.js';
 
 // Test individual module imports - Manipulation
 import '../src/manipulation/html/html.js';

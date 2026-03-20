@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import getProp from "../../internal/getprop/getprop.js";
 
 function removeProp(this: Dabby, prop: string): Dabby {
@@ -16,7 +16,7 @@ function removeProp(this: Dabby, prop: string): Dabby {
 Object.defineProperty(Dabby.prototype, "removeProp", { value: removeProp, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     removeProp(prop: string): this;
   }

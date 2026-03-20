@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../ajax/ajax.js";
 import "../../traversal/filter/filter.js";
 import "../../manipulation/insert/insert.js";
@@ -61,7 +61,7 @@ function load(this: Dabby, url: string, data?: string | PlainObject | XhrCallbac
 Object.defineProperty(Dabby.prototype, "load", { value: load, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     load(url: string, data: string | PlainObject, success: XhrCallback): this;
     load(url: string, success: XhrCallback): this;

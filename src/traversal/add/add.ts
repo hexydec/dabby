@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 
 function add(this: Dabby, selector: Selector): Dabby {
@@ -20,7 +20,7 @@ function add(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "add", { value: add, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     add(selector: Selector): this;
   }

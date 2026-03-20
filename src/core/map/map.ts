@@ -1,4 +1,4 @@
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../../traversal/add/add.js";
 
 // This file exists for backward compatibility but the map method

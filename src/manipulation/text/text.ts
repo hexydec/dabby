@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import getVal from "../../internal/getval/getval.js";
 
 type TextCallback = (this: Element, index: number, currentText: string) => string;
@@ -36,7 +36,7 @@ function text(this: Dabby, content?: string | TextCallback): Dabby | string {
 Object.defineProperty(Dabby.prototype, "text", { value: text, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     text(): string;
     text(content: string | number | boolean | ((this: Element, index: number, currentText: string) => string | number | boolean)): this;

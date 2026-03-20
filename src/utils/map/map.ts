@@ -1,5 +1,5 @@
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 type MapCallback<T, R> = (this: Window, value: T, key: number | string) => R | R[] | null | undefined;
 
@@ -29,7 +29,7 @@ function map<T, R>(
 $.map = map;
 
 // Augment ModularDabbyStatics for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyStatics {
     map<T, R>(obj: Record<string, T> | T[], callback: (this: Window, value: T, key: number | string) => R | R[] | null | undefined): R[];
   }

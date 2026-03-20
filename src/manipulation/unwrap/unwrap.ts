@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 
 function unwrap(this: Dabby, selector?: Selector): Dabby {
@@ -16,7 +16,7 @@ function unwrap(this: Dabby, selector?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "unwrap", { value: unwrap, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     unwrap(selector?: Selector): this;
   }

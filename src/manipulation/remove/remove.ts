@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
@@ -37,7 +37,7 @@ function remove(this: Dabby, selector?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "remove", { value: remove, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     detach(selector?: Selector): this;
     remove(selector?: Selector): this;

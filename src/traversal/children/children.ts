@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
@@ -18,7 +18,7 @@ function children(this: Dabby, selector?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "children", { value: children, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     children(selector?: Selector): this;
   }

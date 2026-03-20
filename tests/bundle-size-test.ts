@@ -5,7 +5,7 @@
  */
 
 // Import ONLY the modules we need - this should result in a small bundle
-import $ from '../src/modular.js';
+import $ from '../src/dabby.js';
 import '../src/manipulation/html/html.js';
 import '../src/attributes/css/css.js';
 import '../src/events/on/on.js';

@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 function trigger(this: Dabby, name: string, data?: unknown): Dabby {
 	let i = this.length;
@@ -29,7 +29,7 @@ function trigger(this: Dabby, name: string, data?: unknown): Dabby {
 Object.defineProperty(Dabby.prototype, "trigger", { value: trigger, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     trigger(name: string, data?: unknown): this;
   }

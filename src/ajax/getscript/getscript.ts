@@ -1,5 +1,5 @@
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../ajax/ajax.js";
 
 type XhrResponse = string | ArrayBuffer | Blob | Document | object | null;
@@ -17,7 +17,7 @@ function getScript(url: string, success?: XhrCallback): XMLHttpRequest | undefin
 Object.defineProperty($, "getScript", { value: getScript });
 
 // Augment ModularDabbyStatics for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyStatics {
     getScript(url: string, success?: XhrCallback): XMLHttpRequest | undefined;
   }

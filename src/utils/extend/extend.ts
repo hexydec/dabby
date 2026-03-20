@@ -1,5 +1,5 @@
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import isPlainObject, { type PlainObject } from "../../internal/isplainobject/isplainobject.js";
 import isObj from "../../internal/isobj/isobj.js";
 
@@ -75,7 +75,7 @@ import type { DabbyFactory } from "../../types.js";
 ($ as DabbyFactory & { extend: typeof extend }).extend = extend;
 
 // Augment ModularDabbyStatics for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyStatics {
     extend(deep: true, target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;
     extend(target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;

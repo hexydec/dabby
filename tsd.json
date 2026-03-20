@@ -9,7 +9,7 @@
 		"skipLibCheck": false,
 		"baseUrl": ".",
 		"paths": {
-			"dabbyjs": ["./src/modular.ts"],
+			"dabbyjs": ["./src/dabby.ts"],
 			"dabbyjs/*": ["./src/*"]
 		}
 	}

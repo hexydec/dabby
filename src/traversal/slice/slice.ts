@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 function slice(this: Dabby, start: number, end?: number): Dabby {
 	return $(Array.from(this).slice(start, end));
@@ -8,7 +8,7 @@ function slice(this: Dabby, start: number, end?: number): Dabby {
 Object.defineProperty(Dabby.prototype, "slice", { value: slice, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     slice(start: number, end?: number): this;
   }

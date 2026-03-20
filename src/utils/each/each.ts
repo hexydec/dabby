@@ -1,5 +1,5 @@
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 type EachCallback<T> = (this: T, key: number | string, value: T) => void | false;
 
@@ -24,7 +24,7 @@ function each<T>(
 Object.defineProperty($, "each", { value: each });
 
 // Augment ModularDabbyStatics for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyStatics {
     each<T>(obj: ArrayLike<T> | Record<string, T>, callback: (this: T, key: number | string, value: T) => void | false): ArrayLike<T> | Record<string, T>;
   }

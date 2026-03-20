@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 function eq(this: Dabby, i: number): Dabby {
 	if (i < 0) {
@@ -11,7 +11,7 @@ function eq(this: Dabby, i: number): Dabby {
 Object.defineProperty(Dabby.prototype, "eq", { value: eq, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     eq(index: number): this;
   }

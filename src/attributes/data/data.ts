@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import camelise from "../../internal/camelise/camelise.js";
 
 type DataValue = string | number | boolean | object | null;
@@ -80,7 +80,7 @@ function data(
 Object.defineProperty(Dabby.prototype, "data", { value: data, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     data(): Record<string, unknown>;
     data(name: string): unknown;

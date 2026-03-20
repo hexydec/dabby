@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { DOMNode, Selector } from "../../types.js";
 
 function index(this: Dabby, selector?: Selector): number {
@@ -35,7 +35,7 @@ function index(this: Dabby, selector?: Selector): number {
 Object.defineProperty(Dabby.prototype, "index", { value: index, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     index(selector?: Selector): number;
   }

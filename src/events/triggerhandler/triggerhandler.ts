@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 type EventRecord = {
 	func: (evt: Event) => unknown;
@@ -21,7 +21,7 @@ function triggerHandler(this: Dabby, _name: string, data?: unknown): unknown {
 Object.defineProperty(Dabby.prototype, "triggerHandler", { value: triggerHandler, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     triggerHandler(name: string, data?: unknown): unknown;
   }

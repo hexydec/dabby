@@ -1,4 +1,4 @@
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 // This file exists for backward compatibility but the get method
 // is already defined in the Dabby class. This export ensures

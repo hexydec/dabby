@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../eq/eq.js";
 
 function last(this: Dabby): Dabby {
@@ -9,7 +9,7 @@ function last(this: Dabby): Dabby {
 Object.defineProperty(Dabby.prototype, "last", { value: last, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     last(): this;
   }

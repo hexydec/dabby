@@ -1,12 +1,12 @@
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 import type { DabbyFactory } from "../../types.js";
 
 ($ as DabbyFactory & { parseHTML: typeof parseHTML }).parseHTML = parseHTML;
 
 // Augment ModularDabbyStatics for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyStatics {
     parseHTML(html: string, context?: Node | Document | boolean, keepScripts?: boolean): Node[];
   }

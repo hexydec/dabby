@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 function offsetParent(this: Dabby): Dabby {
 	return this[0] ? $((this[0] as HTMLElement).offsetParent || undefined) : $();
@@ -8,7 +8,7 @@ function offsetParent(this: Dabby): Dabby {
 Object.defineProperty(Dabby.prototype, "offsetParent", { value: offsetParent, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     offsetParent(): this;
   }

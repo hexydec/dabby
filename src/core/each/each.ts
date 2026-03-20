@@ -1,4 +1,4 @@
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../../utils/each/each.js";
 
 // This file exists for backward compatibility but the each method

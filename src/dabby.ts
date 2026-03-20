@@ -1,9 +1,3 @@
-/// <reference path="./manipulation/html/html.ts" />
-/// <reference path="./manipulation/text/text.ts" />
-/// <reference path="./manipulation/insert/insert.ts" />
-/// <reference path="./events/on/on.ts" />
-/// <reference path="./attributes/class/class.ts" />
-
 /**
  * Modular Dabby Export Helper
  *

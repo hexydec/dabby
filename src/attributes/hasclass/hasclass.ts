@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 function hasClass(this: Dabby, cls: string): boolean {
 	let i = this.length;
@@ -15,7 +15,7 @@ function hasClass(this: Dabby, cls: string): boolean {
 Object.defineProperty(Dabby.prototype, "hasClass", { value: hasClass, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     hasClass(cls: string): boolean;
   }

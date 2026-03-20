@@ -6,7 +6,7 @@
 		"moduleResolution": "bundler",
 		"baseUrl": ".",
 		"paths": {
-			"dabbyjs": ["./src/modular.ts"],
+			"dabbyjs": ["./src/dabby.ts"],
 			"dabbyjs/*": ["./src/*", "./dist/*"]
 		},
 		"resolveJsonModule": true,
@@ -33,6 +33,6 @@
 		"noFallthroughCasesInSwitch": true,
 		"skipLibCheck": true
 	},
-	"include": ["src/**/*.ts", "test.ts"],
-	"exclude": ["node_modules", "dist", "**/*.test.ts", "src/**/test.ts", "src/**/benchmark.ts"]
+	"include": ["test.ts"],
+	"exclude": ["node_modules", "dist"]
 }

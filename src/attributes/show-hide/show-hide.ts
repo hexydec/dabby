@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 // Store for current values
 const display: string[] = [];
@@ -59,7 +59,7 @@ Object.defineProperty(Dabby.prototype, "show", { value: show, configurable: true
 Object.defineProperty(Dabby.prototype, "toggle", { value: toggle, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     hide(): this;
     show(): this;

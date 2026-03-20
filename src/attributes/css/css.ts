@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import isPlainObject, { type PlainObject } from "../../internal/isplainobject/isplainobject.js";
 import setCss from "../../internal/setcss/setcss.js";
 import dasherise from "../../internal/dasherise/dasherise.js";
@@ -49,7 +49,7 @@ function css(
 Object.defineProperty(Dabby.prototype, "css", { value: css, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     css(prop: string): string;
     css(props: string[]): Record<string, string>;

@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../on/on.js";
 import "../trigger/trigger.js";
 
@@ -84,7 +84,7 @@ const submit = createNamedEvent("submit");
 Object.defineProperty(Dabby.prototype, "submit", { value: submit, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     focusin(callback: OnCallback): this;
     focusin(): this;

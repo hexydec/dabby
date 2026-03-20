@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import getVal from "../../internal/getval/getval.js";
 
 type DimCallback = (this: Element | Window | Document, index: number, currentValue: number) => number | string;
@@ -159,7 +159,7 @@ function outerHeight(this: Dabby, val?: number | string | boolean | DimCallback)
 Object.defineProperty(Dabby.prototype, "outerHeight", { value: outerHeight, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     height(): number | undefined;
     height(val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;

@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../../traversal/filter/filter.js";
 import "../../core/each/each.js";
 import "../../attributes/val/val.js";
@@ -57,7 +57,7 @@ function serialize(this: Dabby): string {
 Object.defineProperty(Dabby.prototype, "serialize", { value: serialize, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     serialize(): string;
   }

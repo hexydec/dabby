@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../../utils/each/each.js";
 
 type OnCallback = (this: Element, event: Event, ...args: unknown[]) => void | false;
@@ -83,7 +83,7 @@ function off(
 Object.defineProperty(Dabby.prototype, "off", { value: off, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     off(): this;
     off(events: EventMap): this;

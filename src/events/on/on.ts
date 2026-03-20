@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
 import isPassive from "../../internal/ispassive/ispassive.js";
 import "../../traversal/closest/closest.js";
@@ -130,7 +130,7 @@ function one(
 Object.defineProperty(Dabby.prototype, "one", { value: one, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     on(events: EventMap): this;
     on(events: string, callback: OnCallback): this;

@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 import getVal from "../../internal/getval/getval.js";
 
@@ -89,7 +89,7 @@ function after(this: Dabby, ...content: Array<Selector | InsertCallback>): Dabby
 Object.defineProperty(Dabby.prototype, "after", { value: after, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     append(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
     prepend(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;

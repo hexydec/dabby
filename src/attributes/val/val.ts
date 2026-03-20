@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import getVal from "../../internal/getval/getval.js";
 
 type ValCallback = (this: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number, currentValue: string) => string | number | string[];
@@ -83,7 +83,7 @@ function val(
 Object.defineProperty(Dabby.prototype, "val", { value: val, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     val(): string | string[] | undefined;
     val(value: string | number | string[] | ((this: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number, currentValue: string) => string | number | string[])): this;

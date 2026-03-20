@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
@@ -35,7 +35,7 @@ function not(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "not", { value: not, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     filter(selector: Selector | ((this: Element, index: number) => boolean)): this;
     is(selector: Selector | ((this: Element, index: number) => boolean)): boolean;

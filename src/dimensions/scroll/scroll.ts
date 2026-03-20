@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import getVal from "../../internal/getval/getval.js";
 
 type ScrollCallback = (this: Element | Window, index: number, currentValue: number) => number;
@@ -27,7 +27,7 @@ function scrollTop(this: Dabby, pos?: number | ScrollCallback): Dabby | number |
 Object.defineProperty(Dabby.prototype, "scrollTop", { value: scrollTop, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     scrollLeft(): number | undefined;
     scrollLeft(pos: number | ((this: Element | Window, index: number, currentValue: number) => number)): this;

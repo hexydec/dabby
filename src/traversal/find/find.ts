@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 
 function find(this: Dabby, selector: Selector): Dabby {
@@ -9,7 +9,7 @@ function find(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "find", { value: find, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     find(selector: Selector): this;
   }

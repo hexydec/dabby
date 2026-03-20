@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 type EventData = {
 	event: string;
@@ -70,7 +70,7 @@ function clone(
 Object.defineProperty(Dabby.prototype, "clone", { value: clone, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     clone(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): this;
   }

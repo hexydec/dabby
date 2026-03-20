@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import getVal from "../../internal/getval/getval.js";
 
 type ClassCallback = (this: Element, index: number, currentClass: string) => string | string[];
@@ -58,7 +58,7 @@ Object.defineProperty(Dabby.prototype, "addClass", { value: addClass, configurab
 Object.defineProperty(Dabby.prototype, "toggleClass", { value: toggleClass, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     addClass(cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;
     removeClass(cls?: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;

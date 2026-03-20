@@ -1,5 +1,5 @@
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../../utils/extend/extend.js";
 import "../param/param.js";
 import "../../utils/each/each.js";
@@ -267,7 +267,7 @@ function ajax(url: string | AjaxSettings, settings?: AjaxSettings): XMLHttpReque
 Object.defineProperty($, "ajax", { value: ajax });
 
 // Augment ModularDabbyStatics for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyStatics {
     ajax(url: string, settings?: AjaxSettings): XMLHttpRequest | undefined;
     ajax(settings: AjaxSettings): XMLHttpRequest | undefined;

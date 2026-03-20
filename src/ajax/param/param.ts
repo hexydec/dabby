@@ -1,5 +1,5 @@
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import "../../utils/each/each.js";
 
 type ParamValue = string | number | boolean | null | ParamValue[] | { [key: string]: ParamValue } | (() => ParamValue);
@@ -36,7 +36,7 @@ function param(obj: ParamObject): string {
 Object.defineProperty($, "param", { value: param });
 
 // Augment ModularDabbyStatics for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyStatics {
     param(obj: { [key: string]: string | number | boolean | null | ParamValue[] | { [key: string]: ParamValue } | (() => ParamValue) }): string;
   }

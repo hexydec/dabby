@@ -1,6 +1,6 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 type HTMLCallback = (this: Element, index: number, currentHTML: string) => string;
 
@@ -34,7 +34,7 @@ Object.defineProperty(Dabby.prototype, "html", { value: html, configurable: true
 
 // Augment ModularDabbyMethods for modular builds
 // Using package name so it works across package boundaries
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     html(): string | undefined;
     html(content: string | ((this: Element, index: number, currentHTML: string) => string)): this;

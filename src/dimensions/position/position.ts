@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 type Position = { top: number; left: number };
 
@@ -14,7 +14,7 @@ function position(this: Dabby): Position | undefined {
 Object.defineProperty(Dabby.prototype, "position", { value: position, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     position(): { top: number; left: number } | undefined;
   }

@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 import $ from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
 import "../../core/each/each.js";
@@ -83,7 +83,7 @@ function offset(this: Dabby, coords?: Coords | OffsetCallback): Dabby | Coords |
 Object.defineProperty(Dabby.prototype, "offset", { value: offset, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     offset(): { top: number; left: number } | undefined;
     offset(coords: { top: number; left: number } | ((this: Element, index: number, currentValue: { top: number; left: number }) => { top: number; left: number })): this;

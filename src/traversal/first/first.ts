@@ -1,5 +1,5 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 function first(this: Dabby): Dabby {
 	return $(this[0]);
@@ -8,7 +8,7 @@ function first(this: Dabby): Dabby {
 Object.defineProperty(Dabby.prototype, "first", { value: first, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     first(): this;
   }

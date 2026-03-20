@@ -1,5 +1,5 @@
 import { Dabby } from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
+import type {} from "../../dabby.js";
 
 function empty(this: Dabby): Dabby {
 	let i = this.length;
@@ -15,7 +15,7 @@ function empty(this: Dabby): Dabby {
 Object.defineProperty(Dabby.prototype, "empty", { value: empty, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module '../../modular.js' {
+declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     empty(): this;
   }
