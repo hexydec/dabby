@@ -16,7 +16,7 @@ function unwrap(this: Dabby, selector?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "unwrap", { value: unwrap, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     unwrap(selector?: Selector): this;
   }

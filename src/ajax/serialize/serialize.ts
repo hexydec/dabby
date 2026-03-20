@@ -57,7 +57,7 @@ function serialize(this: Dabby): string {
 Object.defineProperty(Dabby.prototype, "serialize", { value: serialize, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     serialize(): string;
   }

@@ -267,7 +267,7 @@ function ajax(url: string | AjaxSettings, settings?: AjaxSettings): XMLHttpReque
 Object.defineProperty($, "ajax", { value: ajax });
 
 // Augment ModularDabbyStatics for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyStatics {
     ajax(url: string, settings?: AjaxSettings): XMLHttpRequest | undefined;
     ajax(settings: AjaxSettings): XMLHttpRequest | undefined;

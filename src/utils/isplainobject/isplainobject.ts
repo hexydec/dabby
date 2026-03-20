@@ -6,7 +6,7 @@ import type { DabbyFactory } from "../../types.js";
 ($ as DabbyFactory & { isPlainObject: typeof isPlainObject }).isPlainObject = isPlainObject;
 
 // Augment ModularDabbyStatics for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyStatics {
     isPlainObject(obj: unknown): boolean;
   }

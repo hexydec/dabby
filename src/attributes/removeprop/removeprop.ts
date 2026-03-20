@@ -16,7 +16,7 @@ function removeProp(this: Dabby, prop: string): Dabby {
 Object.defineProperty(Dabby.prototype, "removeProp", { value: removeProp, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     removeProp(prop: string): this;
   }

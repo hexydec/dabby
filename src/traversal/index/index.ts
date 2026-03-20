@@ -35,7 +35,7 @@ function index(this: Dabby, selector?: Selector): number {
 Object.defineProperty(Dabby.prototype, "index", { value: index, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     index(selector?: Selector): number;
   }

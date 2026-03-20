@@ -8,7 +8,7 @@ function slice(this: Dabby, start: number, end?: number): Dabby {
 Object.defineProperty(Dabby.prototype, "slice", { value: slice, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     slice(start: number, end?: number): this;
   }

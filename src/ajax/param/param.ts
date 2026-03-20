@@ -36,7 +36,7 @@ function param(obj: ParamObject): string {
 Object.defineProperty($, "param", { value: param });
 
 // Augment ModularDabbyStatics for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyStatics {
     param(obj: { [key: string]: string | number | boolean | null | ParamValue[] | { [key: string]: ParamValue } | (() => ParamValue) }): string;
   }

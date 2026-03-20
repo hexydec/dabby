@@ -83,7 +83,7 @@ function offset(this: Dabby, coords?: Coords | OffsetCallback): Dabby | Coords |
 Object.defineProperty(Dabby.prototype, "offset", { value: offset, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     offset(): { top: number; left: number } | undefined;
     offset(coords: { top: number; left: number } | ((this: Element, index: number, currentValue: { top: number; left: number }) => { top: number; left: number })): this;

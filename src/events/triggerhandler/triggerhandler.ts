@@ -21,7 +21,7 @@ function triggerHandler(this: Dabby, _name: string, data?: unknown): unknown {
 Object.defineProperty(Dabby.prototype, "triggerHandler", { value: triggerHandler, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     triggerHandler(name: string, data?: unknown): unknown;
   }

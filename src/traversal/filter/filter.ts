@@ -35,7 +35,7 @@ function not(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "not", { value: not, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     filter(selector: Selector | ((this: Element, index: number) => boolean)): this;
     is(selector: Selector | ((this: Element, index: number) => boolean)): boolean;

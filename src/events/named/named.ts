@@ -84,7 +84,7 @@ const submit = createNamedEvent("submit");
 Object.defineProperty(Dabby.prototype, "submit", { value: submit, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     focusin(callback: OnCallback): this;
     focusin(): this;

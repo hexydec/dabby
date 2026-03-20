@@ -13,7 +13,7 @@ function has(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "has", { value: has, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     has(selector: Selector): this;
   }

@@ -159,7 +159,7 @@ function outerHeight(this: Dabby, val?: number | string | boolean | DimCallback)
 Object.defineProperty(Dabby.prototype, "outerHeight", { value: outerHeight, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     height(): number | undefined;
     height(val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): this;

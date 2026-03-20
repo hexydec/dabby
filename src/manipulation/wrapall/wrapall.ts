@@ -40,7 +40,7 @@ function wrapAll(this: Dabby, html: Selector | WrapCallback): Dabby {
 Object.defineProperty(Dabby.prototype, "wrapAll", { value: wrapAll, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     wrapAll(html: Selector | WrapCallback): this;
   }

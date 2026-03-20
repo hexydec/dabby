@@ -23,7 +23,7 @@ function wrap(this: Dabby, html: Selector | WrapCallback): Dabby {
 Object.defineProperty(Dabby.prototype, "wrap", { value: wrap, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     wrap(html: Selector | WrapCallback): this;
   }

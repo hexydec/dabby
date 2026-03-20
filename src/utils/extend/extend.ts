@@ -75,7 +75,7 @@ import type { DabbyFactory } from "../../types.js";
 ($ as DabbyFactory & { extend: typeof extend }).extend = extend;
 
 // Augment ModularDabbyStatics for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyStatics {
     extend(deep: true, target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;
     extend(target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;

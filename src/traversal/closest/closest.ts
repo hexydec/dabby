@@ -23,7 +23,7 @@ function closest(this: Dabby, selector: Selector, context?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "closest", { value: closest, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     closest(selector: Selector, context?: Selector): this;
   }

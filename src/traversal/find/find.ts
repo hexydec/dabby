@@ -9,7 +9,7 @@ function find(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "find", { value: find, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     find(selector: Selector): this;
   }

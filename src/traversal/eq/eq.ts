@@ -11,7 +11,7 @@ function eq(this: Dabby, i: number): Dabby {
 Object.defineProperty(Dabby.prototype, "eq", { value: eq, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     eq(index: number): this;
   }

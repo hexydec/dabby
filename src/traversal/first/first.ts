@@ -8,7 +8,7 @@ function first(this: Dabby): Dabby {
 Object.defineProperty(Dabby.prototype, "first", { value: first, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     first(): this;
   }

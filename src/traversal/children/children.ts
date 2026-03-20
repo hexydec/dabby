@@ -18,7 +18,7 @@ function children(this: Dabby, selector?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "children", { value: children, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     children(selector?: Selector): this;
   }

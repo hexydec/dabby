@@ -61,7 +61,7 @@ function replaceAll(this: Dabby, html: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "replaceAll", { value: replaceAll, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     replaceAll(html: Selector): this;
     replaceWith(html: Selector | ReplaceCallback): this;

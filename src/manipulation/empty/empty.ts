@@ -15,7 +15,7 @@ function empty(this: Dabby): Dabby {
 Object.defineProperty(Dabby.prototype, "empty", { value: empty, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     empty(): this;
   }

@@ -58,7 +58,7 @@ Object.defineProperty(Dabby.prototype, "addClass", { value: addClass, configurab
 Object.defineProperty(Dabby.prototype, "toggleClass", { value: toggleClass, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     addClass(cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;
     removeClass(cls?: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;

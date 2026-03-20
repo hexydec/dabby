@@ -17,7 +17,7 @@ function getScript(url: string, success?: XhrCallback): XMLHttpRequest | undefin
 Object.defineProperty($, "getScript", { value: getScript });
 
 // Augment ModularDabbyStatics for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyStatics {
     getScript(url: string, success?: XhrCallback): XMLHttpRequest | undefined;
   }

@@ -231,8 +231,8 @@
 	},
 	"scripts": {
 		"test:types": "tsd",
-		"build": "tsc && vite build",
-		"build:types": "tsc",
+		"build": "tsc -p tsconfig.build.json && vite build",
+		"build:types": "tsc -p tsconfig.build.json",
 		"build:bundle": "vite build",
 		"dev": "vite build --watch"
 	},

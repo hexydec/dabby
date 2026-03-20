@@ -8,7 +8,7 @@ function offsetParent(this: Dabby): Dabby {
 Object.defineProperty(Dabby.prototype, "offsetParent", { value: offsetParent, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     offsetParent(): this;
   }

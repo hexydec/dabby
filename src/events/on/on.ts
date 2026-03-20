@@ -130,7 +130,7 @@ function one(
 Object.defineProperty(Dabby.prototype, "one", { value: one, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     on(events: EventMap): this;
     on(events: string, callback: OnCallback): this;

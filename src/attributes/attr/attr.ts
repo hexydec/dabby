@@ -96,7 +96,7 @@ function attr(
 Object.defineProperty(Dabby.prototype, "attr", { value: attr, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     attr(prop: string): string | null;
     attr(prop: string, value: string | number | null | ((this: Element, index: number, currentValue: string | null) => string | number | null)): this;

@@ -80,7 +80,7 @@ function data(
 Object.defineProperty(Dabby.prototype, "data", { value: data, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     data(): Record<string, unknown>;
     data(name: string): unknown;

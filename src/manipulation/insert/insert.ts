@@ -89,7 +89,7 @@ function after(this: Dabby, ...content: Array<Selector | InsertCallback>): Dabby
 Object.defineProperty(Dabby.prototype, "after", { value: after, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     append(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
     prepend(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;

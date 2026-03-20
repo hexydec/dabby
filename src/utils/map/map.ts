@@ -29,7 +29,7 @@ function map<T, R>(
 $.map = map;
 
 // Augment ModularDabbyStatics for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyStatics {
     map<T, R>(obj: Record<string, T> | T[], callback: (this: Window, value: T, key: number | string) => R | R[] | null | undefined): R[];
   }

@@ -20,7 +20,7 @@ function add(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "add", { value: add, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     add(selector: Selector): this;
   }

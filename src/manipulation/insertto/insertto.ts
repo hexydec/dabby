@@ -33,7 +33,7 @@ function insertAfter(this: Dabby, selector: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "insertAfter", { value: insertAfter, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     appendTo(selector: Selector): this;
     insertAfter(selector: Selector): this;

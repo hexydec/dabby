@@ -35,11 +35,11 @@ import './src/traversal/siblings/siblings.js';
 import './src/traversal/next-prev/next-prev.js';
 import './src/dimensions/width-height/width-height.js';
 
-// Try it out — type $( and see what happens
+// Try it out
 const $el = $('#app');
 
-// Hover over $el. to see all available methods
-// Try autocomplete after the dot:
-$el.each((i, el) => {
-    console.log(el);
-});
+// Test augmented methods work
+$el.html('<div>test</div>');
+$el.css('color', 'red');
+$el.addClass('active');
+$el.on('click', () => {});

@@ -70,7 +70,7 @@ function clone(
 Object.defineProperty(Dabby.prototype, "clone", { value: clone, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     clone(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): this;
   }

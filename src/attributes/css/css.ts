@@ -49,7 +49,7 @@ function css(
 Object.defineProperty(Dabby.prototype, "css", { value: css, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     css(prop: string): string;
     css(props: string[]): Record<string, string>;

@@ -14,7 +14,7 @@ function position(this: Dabby): Position | undefined {
 Object.defineProperty(Dabby.prototype, "position", { value: position, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     position(): { top: number; left: number } | undefined;
   }

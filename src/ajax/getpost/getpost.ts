@@ -51,7 +51,7 @@ function post(url: string | AjaxSettings, data?: DataParam | XhrCallback, succes
 Object.defineProperty($, "post", { value: post });
 
 // Augment ModularDabbyStatics for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyStatics {
     get(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
     get(url: string, data: string | { [key: string]: string | number | boolean | null | string[] | number[] }, success: XhrCallback): XMLHttpRequest | undefined;

@@ -37,7 +37,7 @@ function remove(this: Dabby, selector?: Selector): Dabby {
 Object.defineProperty(Dabby.prototype, "remove", { value: remove, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     detach(selector?: Selector): this;
     remove(selector?: Selector): this;

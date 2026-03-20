@@ -34,7 +34,7 @@ Object.defineProperty(Dabby.prototype, "html", { value: html, configurable: true
 
 // Augment ModularDabbyMethods for modular builds
 // Using package name so it works across package boundaries
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     html(): string | undefined;
     html(content: string | ((this: Element, index: number, currentHTML: string) => string)): this;

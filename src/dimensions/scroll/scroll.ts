@@ -27,7 +27,7 @@ function scrollTop(this: Dabby, pos?: number | ScrollCallback): Dabby | number |
 Object.defineProperty(Dabby.prototype, "scrollTop", { value: scrollTop, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     scrollLeft(): number | undefined;
     scrollLeft(pos: number | ((this: Element | Window, index: number, currentValue: number) => number)): this;

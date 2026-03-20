@@ -36,7 +36,7 @@ function text(this: Dabby, content?: string | TextCallback): Dabby | string {
 Object.defineProperty(Dabby.prototype, "text", { value: text, configurable: true });
 
 // Module augmentation for auto-inferred modular imports
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     text(): string;
     text(content: string | number | boolean | ((this: Element, index: number, currentText: string) => string | number | boolean)): this;

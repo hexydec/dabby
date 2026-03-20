@@ -29,7 +29,7 @@ function trigger(this: Dabby, name: string, data?: unknown): Dabby {
 Object.defineProperty(Dabby.prototype, "trigger", { value: trigger, configurable: true });
 
 // Augment ModularDabbyMethods for modular builds
-declare module 'dabbyjs' {
+declare module '../../modular.js' {
   interface ModularDabbyMethods {
     trigger(name: string, data?: unknown): this;
   }
