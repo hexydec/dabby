@@ -1,11 +1,8 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import isPlainObject, { type PlainObject } from "../../internal/isplainobject/isplainobject.js";
-import type {} from "../../modular.js";
 import getProp from "../../internal/getprop/getprop.js";
-import type {} from "../../modular.js";
 import getVal from "../../internal/getval/getval.js";
-import type {} from "../../modular.js";
 
 type PropValue = unknown | ((this: Element, index: number, currentValue: unknown) => unknown);
 

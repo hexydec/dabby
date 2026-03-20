@@ -1,7 +1,6 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import getVal from "../../internal/getval/getval.js";
-import type {} from "../../modular.js";
 
 type DimCallback = (this: Element | Window | Document, index: number, currentValue: number) => number | string;
 type DimValue = number | string | boolean | DimCallback;

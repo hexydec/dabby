@@ -1,9 +1,7 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import type { Selector } from "../../types.js";
-import type {} from "../../modular.js";
 import getVal from "../../internal/getval/getval.js";
-import type {} from "../../modular.js";
 
 type ReplaceCallback = (this: Element, index: number, html: string) => Selector;
 

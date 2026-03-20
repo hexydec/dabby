@@ -2,7 +2,6 @@ import $ from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import "../ajax/ajax.js";
 import type { AjaxSettings, XhrCallback } from "../ajax/ajax.js";
-import type {} from "../../modular.js";
 
 type PlainObject = { [key: string]: string | number | boolean | null | string[] | number[] };
 type DataParam = string | PlainObject;

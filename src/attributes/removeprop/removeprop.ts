@@ -1,7 +1,6 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import getProp from "../../internal/getprop/getprop.js";
-import type {} from "../../modular.js";
 
 function removeProp(this: Dabby, prop: string): Dabby {
 	const normalisedProp = getProp(prop);

@@ -1,9 +1,7 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import events from "../../internal/getevents/getevents.js";
-import type {} from "../../modular.js";
 import getVal from "../../internal/getval/getval.js";
-import type {} from "../../modular.js";
 
 type AttrValue = string | number | null | ((this: Element, index: number, currentValue: string | null) => string | number | null);
 

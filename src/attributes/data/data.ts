@@ -1,7 +1,6 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import camelise from "../../internal/camelise/camelise.js";
-import type {} from "../../modular.js";
 
 type DataValue = string | number | boolean | object | null;
 

@@ -1,7 +1,6 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import type { Selector } from "../../types.js";
-import type {} from "../../modular.js";
 
 type WrapCallback = (this: Element) => Selector;
 

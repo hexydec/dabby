@@ -59,3 +59,15 @@ function load(this: Dabby, url: string, data?: string | PlainObject | XhrCallbac
 }
 
 Object.defineProperty(Dabby.prototype, "load", { value: load, configurable: true });
+
+// Augment ModularDabbyMethods for modular builds
+declare module 'dabbyjs' {
+  interface ModularDabbyMethods {
+    load(url: string, data: string | PlainObject, success: XhrCallback): this;
+    load(url: string, success: XhrCallback): this;
+    load(url: string): this;
+  }
+}
+
+// Export type witness to force TypeScript to include this file's augmentation
+export type __load = typeof load;

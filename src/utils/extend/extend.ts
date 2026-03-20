@@ -1,9 +1,7 @@
 import $ from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import isPlainObject, { type PlainObject } from "../../internal/isplainobject/isplainobject.js";
-import type {} from "../../modular.js";
 import isObj from "../../internal/isobj/isobj.js";
-import type {} from "../../modular.js";
 
 // Deep extend overload
 function extend(deep: true, target: PlainObject, ...sources: PlainObject[]): PlainObject;
@@ -74,7 +72,6 @@ function extend(
 }
 
 import type { DabbyFactory } from "../../types.js";
-import type {} from "../../modular.js";
 ($ as DabbyFactory & { extend: typeof extend }).extend = extend;
 
 // Augment ModularDabbyStatics for modular builds

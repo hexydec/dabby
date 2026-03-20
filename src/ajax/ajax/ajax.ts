@@ -4,7 +4,6 @@ import "../../utils/extend/extend.js";
 import "../param/param.js";
 import "../../utils/each/each.js";
 import isPlainObject from "../../internal/isplainobject/isplainobject.js";
-import type {} from "../../modular.js";
 
 type XhrResponse = string | ArrayBuffer | Blob | Document | object | null;
 

@@ -1,11 +1,8 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import isPlainObject, { type PlainObject } from "../../internal/isplainobject/isplainobject.js";
-import type {} from "../../modular.js";
 import setCss from "../../internal/setcss/setcss.js";
-import type {} from "../../modular.js";
 import dasherise from "../../internal/dasherise/dasherise.js";
-import type {} from "../../modular.js";
 
 type CSSCallback = (this: Element, index: number, currentValue: string) => string | number;
 type CSSValue = string | number | CSSCallback;

@@ -1,7 +1,6 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import getVal from "../../internal/getval/getval.js";
-import type {} from "../../modular.js";
 
 type ScrollCallback = (this: Element | Window, index: number, currentValue: number) => number;
 

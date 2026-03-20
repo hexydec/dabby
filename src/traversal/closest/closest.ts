@@ -1,9 +1,7 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import type { Selector } from "../../types.js";
-import type {} from "../../modular.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
-import type {} from "../../modular.js";
 
 function closest(this: Dabby, selector: Selector, context?: Selector): Dabby {
 	let i = this.length;

@@ -40,61 +40,130 @@ export interface ModularDabbyStatics {
 }
 
 // Define all possible Dabby methods with their signatures
-export interface DabbyMethodSignatures {
+// Self parameter enables proper return types for method chaining
+export interface DabbyMethodSignatures<Self = Dabby> {
   // Manipulation
   html: {
-    (): string
-    (content: string | Element | Dabby | ((this: Element, index: number, currentHTML: string) => string)): Dabby
+    (): string | undefined
+    (content: string | Element | Dabby | ((this: Element, index: number, currentHTML: string) => string)): Self
   }
   text: {
     (): string
-    (content: string | number | boolean | ((this: Element, index: number, currentText: string) => string | number | boolean)): Dabby
+    (content: string | number | boolean | ((this: Element, index: number, currentText: string) => string | number | boolean)): Self
   }
   append: {
-    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Dabby
+    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
   }
   prepend: {
-    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Dabby
+    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
+  }
+  before: {
+    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
+  }
+  after: {
+    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
+  }
+  appendTo: {
+    (selector: Selector): Self
+  }
+  prependTo: {
+    (selector: Selector): Self
+  }
+  insertBefore: {
+    (selector: Selector): Self
+  }
+  insertAfter: {
+    (selector: Selector): Self
   }
   empty: {
-    (): Dabby
+    (): Self
   }
   remove: {
-    (selector?: string): Dabby
+    (selector?: string): Self
+  }
+  detach: {
+    (selector?: string): Self
+  }
+  clone: {
+    (withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): Self
+  }
+  wrap: {
+    (html: Selector | ((this: Element, index: number) => Selector)): Self
+  }
+  wrapAll: {
+    (html: Selector | ((this: Element) => Selector)): Self
+  }
+  unwrap: {
+    (selector?: Selector): Self
+  }
+  replaceWith: {
+    (html: Selector | ((this: Element, index: number, html: string) => Selector)): Self
+  }
+  replaceAll: {
+    (html: Selector): Self
   }
 
   // Events
   on: {
-    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Dabby
-    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
-    (events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
-    (events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Self
+    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
+    (events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
+    (events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
   }
   off: {
-    (): Dabby
-    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Dabby
-    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
-    (events: string, selector: string, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (): Self
+    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Self
+    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
+    (events: string, selector: string, callback?: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
   }
   one: {
-    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Dabby
-    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
-    (events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
-    (events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Dabby
+    (events: Record<string, (this: Element, event: Event, ...args: unknown[]) => void | false>): Self
+    (events: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
+    (events: string, selector: string, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
+    (events: string, selector: string, data: unknown, callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self
   }
   trigger: {
-    (name: string, data?: unknown): Dabby
+    (name: string, data?: unknown): Self
   }
+  triggerHandler: {
+    (name: string, data?: unknown): unknown
+  }
+
+  // Named events
+  click: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  dblclick: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  mousedown: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  mouseup: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  mousemove: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  mouseover: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  mouseout: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  mouseenter: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  mouseleave: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  keydown: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  keypress: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  keyup: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  focus: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  blur: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  focusin: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  focusout: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  change: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  select: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  submit: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  scroll: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  resize: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  contextmenu: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  error: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  unload: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
 
   // Attributes & Classes
   addClass: {
-    (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): Dabby
+    (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): Self
   }
   removeClass: {
-    (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): Dabby
+    (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): Self
   }
   toggleClass: {
-    (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[]), state?: boolean): Dabby
+    (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[]), state?: boolean): Self
   }
   hasClass: {
     (cls: string): boolean
@@ -102,80 +171,178 @@ export interface DabbyMethodSignatures {
   css: {
     (prop: string): string
     (props: string[]): Record<string, string>
-    (prop: string, value: string | number | ((this: Element, index: number, currentValue: string) => string | number)): Dabby
-    (props: Record<string, string | number>): Dabby
+    (prop: string, value: string | number | ((this: Element, index: number, currentValue: string) => string | number)): Self
+    (props: Record<string, string | number>): Self
   }
   attr: {
     (name: string): string | undefined
-    (name: string, value: string | number | boolean | null | ((this: Element, index: number, currentValue: string | undefined) => string | number | boolean | null)): Dabby
-    (props: Record<string, unknown>): Dabby
+    (name: string, value: string | number | boolean | null | ((this: Element, index: number, currentValue: string | undefined) => string | number | boolean | null)): Self
+    (props: Record<string, unknown>): Self
   }
   data: {
     (): Record<string, unknown>
     (name: string): unknown
-    (name: string, value: string | number | boolean | object | null): Dabby
-    (props: Record<string, string | number | boolean | object | null>): Dabby
+    (name: string, value: string | number | boolean | object | null): Self
+    (props: Record<string, string | number | boolean | object | null>): Self
+  }
+  prop: {
+    (prop: string): unknown
+    (prop: string, value: unknown | ((this: Element, index: number, currentValue: unknown) => unknown)): Self
+    (props: Record<string, unknown>): Self
+  }
+  removeProp: {
+    (prop: string): Self
+  }
+  val: {
+    (): string | string[] | undefined
+    (value: string | number | string[] | ((this: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number, currentValue: string) => string | number | string[])): Self
   }
 
   // Visibility
   hide: {
-    (): Dabby
+    (): Self
   }
   show: {
-    (): Dabby
+    (): Self
   }
   toggle: {
-    (show?: boolean): Dabby
+    (show?: boolean): Self
   }
 
   // Traversal
+  add: {
+    (selector: Selector): Self
+  }
   filter: {
-    (selector: string | ((this: Element, index: number) => boolean)): Dabby
+    (selector: Selector | ((this: Element, index: number) => boolean)): Self
+  }
+  is: {
+    (selector: Selector | ((this: Element, index: number) => boolean)): boolean
+  }
+  not: {
+    (selector: Selector): Self
+  }
+  has: {
+    (selector: Selector): Self
   }
   first: {
-    (): Dabby
+    (): Self
   }
   last: {
-    (): Dabby
+    (): Self
   }
   find: {
-    (selector: string): Dabby
+    (selector: Selector): Self
   }
   children: {
-    (selector?: string): Dabby
+    (selector?: Selector): Self
   }
   parent: {
-    (selector?: string): Dabby
+    (selector?: Selector): Self
   }
   parents: {
-    (selector?: string): Dabby
+    (selector?: Selector): Self
+  }
+  parentsUntil: {
+    (selector: Selector, filter?: Selector): Self
   }
   closest: {
-    (selector: string): Dabby
+    (selector: Selector): Self
   }
   next: {
-    (selector?: string): Dabby
+    (selector?: Selector): Self
+  }
+  nextAll: {
+    (selector?: Selector): Self
+  }
+  nextUntil: {
+    (selector: Selector, filter?: Selector): Self
   }
   prev: {
-    (selector?: string): Dabby
+    (selector?: Selector): Self
+  }
+  prevAll: {
+    (selector?: Selector): Self
+  }
+  prevUntil: {
+    (selector: Selector, filter?: Selector): Self
   }
   siblings: {
-    (selector?: string): Dabby
+    (selector?: Selector): Self
   }
   eq: {
-    (index: number): Dabby
+    (index: number): Self
+  }
+  index: {
+    (selector?: Selector): number
+  }
+  slice: {
+    (start: number, end?: number): Self
+  }
+
+  // Dimensions
+  width: {
+    (): number | undefined
+    (val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): Self
+  }
+  height: {
+    (): number | undefined
+    (val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): Self
+  }
+  innerWidth: {
+    (): number | undefined
+    (val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): Self
+  }
+  innerHeight: {
+    (): number | undefined
+    (val: number | string | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): Self
+  }
+  outerWidth: {
+    (): number | undefined
+    (val: number | string | boolean | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): Self
+  }
+  outerHeight: {
+    (): number | undefined
+    (val: number | string | boolean | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)): Self
+  }
+  offset: {
+    (): { top: number; left: number } | undefined
+    (coords: { top: number; left: number } | ((this: Element, index: number, currentValue: { top: number; left: number }) => { top: number; left: number })): Self
+  }
+  offsetParent: {
+    (): Self
+  }
+  position: {
+    (): { top: number; left: number } | undefined
+  }
+  scrollLeft: {
+    (): number | undefined
+    (pos: number | ((this: Element | Window, index: number, currentValue: number) => number)): Self
+  }
+  scrollTop: {
+    (): number | undefined
+    (pos: number | ((this: Element | Window, index: number, currentValue: number) => number)): Self
+  }
+
+  // Ajax (instance)
+  load: {
+    (url: string, data: string | Record<string, unknown>, success: (this: Element, response: unknown, status: string | number, xhr: XMLHttpRequest) => void): Self
+    (url: string, success: (this: Element, response: unknown, status: string | number, xhr: XMLHttpRequest) => void): Self
+    (url: string): Self
+  }
+  serialize: {
+    (): string
   }
 
   // Utilities
   each: {
-    (callback: (this: Element, index: number, element: Element) => void | false): Dabby
+    (callback: (this: Element, index: number, element: Element) => void | false): Self
   }
 }
 
 // Create a Dabby interface with only the specified methods
-export type DabbyWithMethods<Methods extends keyof DabbyMethodSignatures> = Dabby & {
-  [K in Methods]: DabbyMethodSignatures[K]
-}
+// Self-referencing via DabbyMethodSignatures<...> ensures chained methods preserve the full type
+export type DabbyWithMethods<Methods extends keyof DabbyMethodSignatures> = Dabby & Pick<DabbyMethodSignatures<DabbyWithMethods<Methods>>, Methods>
 
 // Factory function type
 export type DabbyModularFactory<Methods extends keyof DabbyMethodSignatures> = {

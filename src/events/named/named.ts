@@ -82,3 +82,60 @@ Object.defineProperty(Dabby.prototype, "error", { value: error, configurable: tr
 
 const submit = createNamedEvent("submit");
 Object.defineProperty(Dabby.prototype, "submit", { value: submit, configurable: true });
+
+// Augment ModularDabbyMethods for modular builds
+declare module 'dabbyjs' {
+  interface ModularDabbyMethods {
+    focusin(callback: OnCallback): this;
+    focusin(): this;
+    focusout(callback: OnCallback): this;
+    focusout(): this;
+    focus(callback: OnCallback): this;
+    focus(): this;
+    blur(callback: OnCallback): this;
+    blur(): this;
+    resize(callback: OnCallback): this;
+    resize(): this;
+    scroll(callback: OnCallback): this;
+    scroll(): this;
+    unload(callback: OnCallback): this;
+    unload(): this;
+    click(callback: OnCallback): this;
+    click(): this;
+    dblclick(callback: OnCallback): this;
+    dblclick(): this;
+    mousedown(callback: OnCallback): this;
+    mousedown(): this;
+    mouseup(callback: OnCallback): this;
+    mouseup(): this;
+    mousemove(callback: OnCallback): this;
+    mousemove(): this;
+    mouseover(callback: OnCallback): this;
+    mouseover(): this;
+    mouseout(callback: OnCallback): this;
+    mouseout(): this;
+    mouseenter(callback: OnCallback): this;
+    mouseenter(): this;
+    mouseleave(callback: OnCallback): this;
+    mouseleave(): this;
+    contextmenu(callback: OnCallback): this;
+    contextmenu(): this;
+    change(callback: OnCallback): this;
+    change(): this;
+    select(callback: OnCallback): this;
+    select(): this;
+    keydown(callback: OnCallback): this;
+    keydown(): this;
+    keypress(callback: OnCallback): this;
+    keypress(): this;
+    keyup(callback: OnCallback): this;
+    keyup(): this;
+    error(callback: OnCallback): this;
+    error(): this;
+    submit(callback: OnCallback): this;
+    submit(): this;
+  }
+}
+
+// Export type witness to force TypeScript to include this file's augmentation
+export type __named = typeof click;

@@ -1,7 +1,6 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import type { Selector } from "../../types.js";
-import type {} from "../../modular.js";
 
 function unwrap(this: Dabby, selector?: Selector): Dabby {
 	(this as Dabby & { parent: (selector?: Selector) => Dabby & { not: (selector: string) => Dabby & { each: <T>(callback: (this: T, key: number, obj: T) => void) => Dabby } } }).parent(selector).not("body").each<Element>(function(this: Element, _key: number, obj: Element) {

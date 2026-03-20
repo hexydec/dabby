@@ -1,7 +1,6 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import type { Selector } from "../../types.js";
-import type {} from "../../modular.js";
 
 function add(this: Dabby, selector: Selector): Dabby {
 	// Get existing nodes
@@ -19,3 +18,13 @@ function add(this: Dabby, selector: Selector): Dabby {
 }
 
 Object.defineProperty(Dabby.prototype, "add", { value: add, configurable: true });
+
+// Augment ModularDabbyMethods for modular builds
+declare module 'dabbyjs' {
+  interface ModularDabbyMethods {
+    add(selector: Selector): this;
+  }
+}
+
+// Export type witness to force TypeScript to include this file's augmentation
+export type __add = typeof add;

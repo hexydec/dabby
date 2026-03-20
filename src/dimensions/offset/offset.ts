@@ -1,9 +1,7 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import $ from "../../core/dabby/dabby.js";
-import type {} from "../../modular.js";
 import getVal from "../../internal/getval/getval.js";
-import type {} from "../../modular.js";
 import "../../core/each/each.js";
 
 type Coords = { top: number; left: number };

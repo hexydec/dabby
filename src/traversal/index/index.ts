@@ -1,7 +1,6 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../modular.js";
 import type { DOMNode, Selector } from "../../types.js";
-import type {} from "../../modular.js";
 
 function index(this: Dabby, selector?: Selector): number {
 	if (this[0]) {
