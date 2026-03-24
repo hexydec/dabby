@@ -23,8 +23,9 @@
 		"url": "https://github.com/hexydec/dabby/issues"
 	},
 	"scripts": {
-		"test": "grunt test",
-		"tsc": "node_modules\\.bin\\tsc"
+		"dev": "vite build --watch",
+		"build": "vite build",
+		"deploy": "vite build --mode production"
 	},
 	"browserslist": [
 		"defaults"
@@ -34,19 +35,8 @@
 		"src/**/*.js"
 	],
 	"devDependencies": {
-		"@babel/core": "^7.29.0",
-		"@babel/preset-env": "^7.29.0",
-		"benchmark": "^2.1.4",
-		"grunt": "^1.6.1",
-		"grunt-babel": "^8.0.0",
-		"grunt-contrib-watch": "^1.1.0",
-		"grunt-rollup": "^12.0.0",
-		"grunt-terser": "^2.0.0",
-		"jsdoc": "^4.0.5",
-		"load-grunt-tasks": "^5.1.0",
-		"qunit": "^2.25.0",
-		"rollup": "^4.57.1",
-		"terser": "^5.46.0"
+		"terser": "^5.46.0",
+		"vite": "^6.0.0"
 	},
 	"repository": {
 		"type": "git",
