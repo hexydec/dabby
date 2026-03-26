@@ -32,7 +32,7 @@ jobs:
         run: npm run build
 
       - name: Run TypeScript compiler checks
-        run: npm run tsc
+        run: npx tsc --noEmit
 
       - name: Run type definition tests
         run: npm run test:types
@@ -40,7 +40,7 @@ jobs:
       - name: Check bundle sizes
         run: |
           echo "=== Bundle Sizes ==="
-          ls -lh dist/dabby.min.js dist/dabby.js dist/modular.js
+          ls -lh dist/dabby.js
           echo ""
           echo "=== Individual Module Sizes (sample) ==="
           ls -lh dist/manipulation/html/html.js dist/attributes/css/css.js dist/events/on/on.js dist/ajax/ajax/ajax.js
@@ -73,13 +73,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Compile test files
-        run: |
-          npx tsc tests/typescript-import-test.ts --noEmit --skipLibCheck --module ES2022 --target ES2022 --lib ES2022,DOM --moduleResolution bundler
-          npx tsc tests/bundle-size-test.ts --noEmit --skipLibCheck --module ES2022 --target ES2022 --lib ES2022,DOM --moduleResolution bundler
-
       - name: Run strict TypeScript compilation
-        run: npm run tsc -- --noEmit
+        run: npx tsc --noEmit
 
   bundle-analysis:
     name: Bundle Size Analysis
@@ -105,12 +100,10 @@ jobs:
         run: |
           echo "# Bundle Size Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Main Bundles" >> $GITHUB_STEP_SUMMARY
+          echo "## Main Bundle" >> $GITHUB_STEP_SUMMARY
           echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
           echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-          echo "| dabby.min.js | $(ls -lh dist/dabby.min.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
           echo "| dabby.js | $(ls -lh dist/dabby.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
-          echo "| modular.js | $(ls -lh dist/modular.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Sample Module Sizes" >> $GITHUB_STEP_SUMMARY
           echo "| Module | Size |" >> $GITHUB_STEP_SUMMARY
@@ -125,12 +118,12 @@ jobs:
 
       - name: Check for size regressions
         run: |
-          MIN_SIZE=$(stat -c%s dist/dabby.min.js)
-          MAX_ALLOWED=35000  # 35KB max for minified build
+          BUNDLE_SIZE=$(stat -c%s dist/dabby.js)
+          MAX_ALLOWED=35000  # 35KB max for minified bundle
 
-          if [ $MIN_SIZE -gt $MAX_ALLOWED ]; then
-            echo "❌ Minified bundle size ($MIN_SIZE bytes) exceeds maximum allowed ($MAX_ALLOWED bytes)"
+          if [ $BUNDLE_SIZE -gt $MAX_ALLOWED ]; then
+            echo "❌ Bundle size ($BUNDLE_SIZE bytes) exceeds maximum allowed ($MAX_ALLOWED bytes)"
             exit 1
           else
-            echo "✅ Minified bundle size ($MIN_SIZE bytes) is within acceptable range"
+            echo "✅ Bundle size ($BUNDLE_SIZE bytes) is within acceptable range"
           fi

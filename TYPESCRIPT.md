@@ -9,9 +9,10 @@ Dabby's type system solves a specific problem: how do you provide accurate TypeS
 The answer is **module augmentation** combined with **type witness exports**.
 
 ```
-src/types.ts           Base types: DOMNode, Selector, DabbyFactory, etc.
+src/trusted-types.d.ts     Trusted Types API declarations
+src/types.ts               Base types: DOMNode, Selector, DabbyFactory, etc.
 src/core/dabby/dabby.ts    Dabby class with core methods (each, get, map)
-src/dabby.ts           Modular entry point: empty interfaces + factory exports
+src/dabby.ts               Modular entry point: empty interfaces + factory exports
 src/[category]/[method]/   Each method file augments dabby.ts interfaces
 ```
 
@@ -27,6 +28,8 @@ type ReadyCallback = (this: Document, $: DabbyFactory) => void;
 
 `DOMNode` defines everything Dabby can wrap. `Selector` defines everything you can pass to `$()`.
 
+The `$()` factory also accepts `TrustedHTML` for Trusted Types compatibility — see [Trusted Types Support](#trusted-types-support) below.
+
 ### `src/core/dabby/dabby.ts` — The class
 
 ```typescript
@@ -38,7 +41,7 @@ class Dabby implements Iterable<DOMNode> {
 }
 ```
 
-The Dabby class is intentionally minimal. It only has the methods needed to bootstrap iteration and element access. All other methods (html, css, on, etc.) are added to `Dabby.prototype` at runtime by individual module files.
+The Dabby class is intentionally minimal. It only has the methods needed to bootstrap iteration and element access. All other methods (html, css, on, even, odd, etc.) are added to `Dabby.prototype` at runtime by individual module files.
 
 The file also creates and exports the `$` factory function:
 
@@ -74,8 +77,8 @@ Each method file (e.g. `src/manipulation/html/html.ts`) does three things:
 
 ```typescript
 function html(this: Dabby): string | undefined;
-function html(this: Dabby, content: string | HTMLCallback): Dabby;
-function html(this: Dabby, content?: string | HTMLCallback) { /* ... */ }
+function html(this: Dabby, content: string | TrustedHTML | HTMLCallback): Dabby;
+function html(this: Dabby, content?: string | TrustedHTML | HTMLCallback) { /* ... */ }
 
 Object.defineProperty(Dabby.prototype, "html", { value: html, configurable: true });
 ```
@@ -86,7 +89,7 @@ Object.defineProperty(Dabby.prototype, "html", { value: html, configurable: true
 declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     html(): string | undefined;
-    html(content: string | ((this: Element, index: number, currentHTML: string) => string)): this;
+    html(content: string | TrustedHTML | ((this: Element, index: number, currentHTML: string) => string)): this;
   }
 }
 ```
@@ -109,7 +112,7 @@ This forces TypeScript to include the file's module augmentation. Without it, Ty
 export type DabbyAuto = Dabby & ModularDabbyMethods;
 
 export type DabbyAutoFactory = {
-  (selector?: Selector | ReadyCallback, context?: Selector | Record<string, unknown>): DabbyAuto;
+  (selector?: Selector | TrustedHTML | ReadyCallback, context?: Selector | Record<string, unknown>): DabbyAuto;
   readonly prototype: DabbyAuto;
   readonly fn: DabbyAuto;
 } & ModularDabbyStatics;
@@ -176,9 +179,11 @@ This uses `DabbyMethodSignatures`, a comprehensive interface that defines every 
 
 ```typescript
 export interface DabbyMethodSignatures<Self = Dabby> {
-  html: { (): string | undefined; (content: string): Self }
+  html: { (): string | undefined; (content: string | TrustedHTML): Self }
   css:  { (prop: string): string;  (prop: string, value: string): Self }
   on:   { (events: string, callback: Function): Self }
+  even: { (): Self }
+  odd:  { (): Self }
   // ... every method
 }
 
@@ -195,12 +200,39 @@ The `Self` generic parameter is what makes method chaining work. `DabbyWithMetho
 ```typescript
 export interface DabbyFull extends Omit<Dabby, keyof DabbyFullMethods> {
   html(): string | undefined;
-  html(content: string): this;
+  html(content: string | TrustedHTML): this;
   css(prop: string): string;
   css(prop: string, value: string): this;
+  even(): DabbyFull;
+  odd(): DabbyFull;
   // ... every method, fully typed
 }
 ```
+
+## Trusted Types Support
+
+Dabby supports the [Trusted Types API](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) for environments enforcing `Content-Security-Policy: require-trusted-types-for 'script'`.
+
+### How it works
+
+- `src/trusted-types.d.ts` provides TypeScript declarations for the Trusted Types API (not yet in lib.dom.d.ts)
+- `src/internal/trustedhtml/trustedhtml.ts` creates a `trustedTypes.createPolicy("dabby", { createHTML: (s) => s })` pass-through policy at init
+- All `innerHTML` assignments route through `toTrustedHTML()` which wraps strings via the policy when available
+- `TrustedHTML` objects passed to public APIs (`.html()`, `.append()`, `$()`, etc.) are passed through unchanged
+
+### DOM sinks covered
+
+| Sink | File | How it's handled |
+|------|------|-----------------|
+| `innerHTML` | `parsehtml.ts` | Wrapped via `toTrustedHTML()` + DOMParser |
+| `innerHTML` | `html.ts` | Wrapped via `toTrustedHTML()` |
+| `script.src` | `parsehtml.ts`, `ajax.ts` | Script element creation (TrustedScriptURL sink) |
+
+### Zero impact when not enforced
+
+- If `trustedTypes` is not available, `toTrustedHTML()` returns the raw string unchanged
+- If the policy name "dabby" is blocked by CSP, it falls back gracefully
+- Adds ~30 bytes gzipped to the bundle
 
 ## Package Distribution
 

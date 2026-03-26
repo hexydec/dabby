@@ -45,14 +45,13 @@ jobs:
           echo "- ✅ Build artifacts generated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "## Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+          echo "## Bundle Size" >> $GITHUB_STEP_SUMMARY
           echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
           echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-          echo "| dabby.min.js | $(ls -lh dist/dabby.min.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
-          echo "| modular.js | $(ls -lh dist/modular.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| dabby.js | $(ls -lh dist/dabby.js | awk '{print $5}') |" >> $GITHUB_STEP_SUMMARY
 
       - name: Check for TypeScript errors
-        run: npm run tsc -- --noEmit
+        run: npx tsc --noEmit
 
       - name: Run type tests
         run: npm run test:types
@@ -84,27 +83,6 @@ jobs:
             echo "  - $file"
           done
 
-      - name: Comment file changes on PR
-        if: steps.changed-files.outputs.any_changed == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const files = '${{ steps.changed-files.outputs.all_changed_files }}'.split(' ');
-            const comment = `## 📝 File Changes Detected
-
-            This PR modifies ${files.length} TypeScript/JavaScript file(s):
-
-            ${files.map(f => `- \`${f}\``).join('\n')}
-
-            All automated checks are running...`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-
   type-check:
     name: TypeScript Type Check
     runs-on: ubuntu-latest
@@ -123,34 +101,10 @@ jobs:
         run: npm ci
 
       - name: Run TypeScript compiler
-        run: npm run tsc
+        run: npx tsc --noEmit
 
       - name: Verify type definitions
         run: npm run test:types
-
-      - name: Comment success on PR
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '✅ **Type Checks Passed**\n\nAll TypeScript type definitions are correct and compilation was successful!'
-            });
-
-      - name: Comment failure on PR
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '❌ **Type Checks Failed**\n\nPlease review the TypeScript errors in the workflow logs and fix any type issues.'
-            });
 
   bundle-size-check:
     name: Bundle Size Check
@@ -190,8 +144,8 @@ jobs:
       - name: Compare bundle sizes
         id: compare
         run: |
-          BASE_SIZE=$(stat -c%s base/dist/dabby.min.js)
-          PR_SIZE=$(stat -c%s pr/dist/dabby.min.js)
+          BASE_SIZE=$(stat -c%s base/dist/dabby.js)
+          PR_SIZE=$(stat -c%s pr/dist/dabby.js)
           DIFF=$((PR_SIZE - BASE_SIZE))
           PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF / $BASE_SIZE) * 100}")
 

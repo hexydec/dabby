@@ -6,6 +6,18 @@ import getVal from "../getval/getval.js";
 type CSSProps = string | PlainObject;
 type CSSValue = string | number | ((this: Element, index: number, currentValue: string) => string | number);
 
+// Properties that receive automatic "px" units when set with numeric values (jQuery 4 allowlist)
+const pxProperties = new Set([
+	"width", "height", "min-width", "max-width", "min-height", "max-height",
+	"top", "right", "bottom", "left",
+	"margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
+	"padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
+	"border-width", "border-top-width", "border-right-width", "border-bottom-width", "border-left-width",
+	"flex-basis", "gap", "row-gap", "column-gap",
+	"font-size", "outline-width", "outline-offset",
+	"text-indent", "letter-spacing", "word-spacing",
+]);
+
 export default function setCss(
 	dabby: Dabby,
 	props: CSSProps,
@@ -37,7 +49,14 @@ export default function setCss(
 		while (i--) {
 			const element = dabby[i] as HTMLElement;
 			const value = val[i];
-			const stringValue = !value || isNaN(Number(value)) ? String(value) : `${value}px`;
+			let stringValue: string;
+			if (!value && value !== 0) {
+				stringValue = "";
+			} else if (isNaN(Number(value))) {
+				stringValue = String(value);
+			} else {
+				stringValue = pxProperties.has(key) ? `${value}px` : String(value);
+			}
 			element.style.setProperty(key, stringValue);
 		}
 	}

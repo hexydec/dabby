@@ -30,11 +30,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check TypeScript formatting
-        run: |
-          echo "Checking TypeScript files..."
-          # Add your linter here when configured
-          # npx eslint "src/**/*.ts"
+      - name: TypeScript type check
+        run: npx tsc --noEmit
 
   test-matrix:
     name: Test on Node ${{ matrix.node-version }} / ${{ matrix.os }}
@@ -63,7 +60,7 @@ jobs:
         run: npm run build
 
       - name: TypeScript compilation check
-        run: npm run tsc
+        run: npx tsc --noEmit
 
       - name: Type definition tests
         run: npm run test:types
@@ -126,7 +123,7 @@ jobs:
 
       - name: Run tests
         run: |
-          npm run tsc
+          npx tsc --noEmit
           npm run test:types
 
       - name: Publish to NPM
@@ -161,10 +158,8 @@ jobs:
       - name: Create release bundle
         run: |
           mkdir -p release
-          cp dist/dabby.min.js release/
           cp dist/dabby.js release/
-          cp dist/modular.js release/
-          cp dist/modular.d.ts release/
+          cp dist/dabby.d.ts release/
           cp package.json release/
           cp README.md release/ || echo "No README found"
           tar -czf dabby-${{ github.ref_name }}.tar.gz release/
@@ -174,7 +169,6 @@ jobs:
         with:
           files: |
             dabby-${{ github.ref_name }}.tar.gz
-            dist/dabby.min.js
             dist/dabby.js
           generate_release_notes: true
           draft: false

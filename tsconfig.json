@@ -33,6 +33,6 @@
 		"noFallthroughCasesInSwitch": true,
 		"skipLibCheck": true
 	},
-	"include": ["test.ts"],
+	"include": ["src/trusted-types.d.ts", "src/**/*.ts"],
 	"exclude": ["node_modules", "dist"]
 }

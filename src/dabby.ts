@@ -39,23 +39,23 @@ export interface DabbyMethodSignatures<Self = Dabby> {
   // Manipulation
   html: {
     (): string | undefined
-    (content: string | Element | Dabby | ((this: Element, index: number, currentHTML: string) => string)): Self
+    (content: string | TrustedHTML | Element | Dabby | ((this: Element, index: number, currentHTML: string) => string)): Self
   }
   text: {
     (): string
     (content: string | number | boolean | ((this: Element, index: number, currentText: string) => string | number | boolean)): Self
   }
   append: {
-    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
+    (content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
   }
   prepend: {
-    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
+    (content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
   }
   before: {
-    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
+    (content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
   }
   after: {
-    (content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
+    (content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): Self
   }
   appendTo: {
     (selector: Selector): Self
@@ -273,6 +273,12 @@ export interface DabbyMethodSignatures<Self = Dabby> {
   slice: {
     (start: number, end?: number): Self
   }
+  even: {
+    (): Self
+  }
+  odd: {
+    (): Self
+  }
 
   // Dimensions
   width: {
@@ -371,7 +377,7 @@ export type DabbyAuto = Dabby & ModularDabbyMethods
 
 // Factory type that returns auto-inferred Dabby
 export type DabbyAutoFactory = {
-  (selector?: Selector | ReadyCallback, context?: Selector | Record<string, unknown>): DabbyAuto
+  (selector?: Selector | TrustedHTML | ReadyCallback, context?: Selector | Record<string, unknown>): DabbyAuto
   readonly prototype: DabbyAuto
   readonly fn: DabbyAuto
 } & ModularDabbyStatics

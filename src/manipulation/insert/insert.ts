@@ -91,10 +91,10 @@ Object.defineProperty(Dabby.prototype, "after", { value: after, configurable: tr
 // Module augmentation for auto-inferred modular imports
 declare module '../../dabby.js' {
   interface ModularDabbyMethods {
-    append(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
-    prepend(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
-    after(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
-    before(content: string | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
+    append(content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
+    prepend(content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
+    after(content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
+    before(content: string | TrustedHTML | Element | Element[] | Dabby | ((this: Element, index: number) => string | Element | Dabby)): this;
   }
 }
 

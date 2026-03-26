@@ -30,11 +30,14 @@ export class Dabby {
 		// if no selector, return empty collection
 		if (selector) {
 
-			// handle string selector first
-			if (typeof selector === "string") {
+			// TrustedHTML: must start with < and end with > (same constraint as jQuery 4)
+			const isTrustedHTML = typeof TrustedHTML !== "undefined" && selector instanceof TrustedHTML;
 
-				// CSS selector
-				if (selector[0] !== "<") {
+			// handle string or TrustedHTML selector first
+			if (typeof selector === "string" || isTrustedHTML) {
+
+				// CSS selector (strings only, not TrustedHTML)
+				if (!isTrustedHTML && selector[0] !== "<") {
 
 					// normalise context
 					let obj = context ? $(context) : [document],
@@ -43,8 +46,8 @@ export class Dabby {
 						nodes = [...obj[i].querySelectorAll(selector), ...nodes];
 					}
 
-				// create a single node and attach properties
-				} else if ((match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
+				// create a single node and attach properties (strings only)
+				} else if (!isTrustedHTML && (match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) !== null) {
 					nodes = [document.createElement(match[1])];
 
 					// context is CSS attributes, import /src/attributes/attr/attr.js to use
@@ -52,7 +55,7 @@ export class Dabby {
 						$(nodes).attr(context);
 					}
 
-				// parse HTML into nodes
+				// parse HTML into nodes (handles both string and TrustedHTML)
 				} else {
 					nodes = parseHTML(selector, context || document, true);
 				}

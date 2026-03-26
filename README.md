@@ -1,6 +1,6 @@
 # Dabby.js: Lightweight Modular ES6 jQuery clone
 
-A lightweight modular jQuery clone/alternative library built for modern browsers in ES6.
+A lightweight modular jQuery clone/alternative library built for modern browsers in ES6 with full TypeScript support.
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
@@ -18,6 +18,14 @@ Wouldn't it be good to have a simpler jQuery like library that is modular?
 Dabby.js is a jQuery alternative designed to be as simple and streamlined as possible whilst covering as much of the jQuery API as much as is feasibly possible in a small size (<10kb minified and Gzipped), you can also build it as part of your project and only include the bits you are actually using.
 
 [Find out more about the project here.](docs/about.md)
+
+## Features
+
+- **Modular** — import only the methods you need, tree-shake the rest
+- **TypeScript-first** — written in TypeScript with automatic type inference via module augmentation
+- **Trusted Types** — compatible with `require-trusted-types-for` CSP directive
+- **jQuery 4 parity** — CSS px allowlist, `.even()`/`.odd()`, FormData support, DOMParser-based HTML parsing
+- **Small** — <10kb gzipped for the full bundle
 
 ## I'm sold, how do I get started?
 
@@ -67,12 +75,12 @@ Dabby.js is billed as a jQuery clone library, and as such tries to implement as 
 
 ## Custom Builds
 
-As Dabby.js is built in ES6, you can include just the parts you need in your project (If you are using ES6 modules). Include the core library like this, methods are imported without a variable:
+As Dabby.js is built in ES6, you can include just the parts you need in your project (If you are using ES6 modules). Import the core library and only the methods you need:
 
 ```javascript
-import $ from "/src/core/dabby/dabby.js"; // update to reference where you have the project stored
-import "/src/attributes/attr/attr.js"; // if you need to create elements with attributes like $("<element>", {some: "attributes"}), include this
-import "/src/traversal/filter/filter.js"; // I need $.fn.is(), which is written with $.fn.filter() and $.fn.not()
+import $ from "dabbyjs";
+import "dabbyjs/src/attributes/attr/attr"; // if you need to create elements with attributes like $("<element>", {some: "attributes"})
+import "dabbyjs/src/traversal/filter/filter"; // I need $.fn.is(), which is written with $.fn.filter() and $.fn.not()
 ```
 
 You can either do this in each module you need dabby.js in, or build a file that imports all the methods you need for your project, and include that somewhere.
@@ -96,7 +104,7 @@ const text = $('#app').text(); // inferred as string
 Import only the modules you need. TypeScript automatically knows which methods are available based on your imports:
 
 ```typescript
-import $ from 'dabbyjs/modular';
+import $ from 'dabbyjs';
 import 'dabbyjs/src/manipulation/html/html';
 import 'dabbyjs/src/events/on/on';
 
@@ -108,6 +116,19 @@ $('#app').css('color', 'red'); // Error: Property 'css' does not exist
 ```
 
 Method chaining preserves all augmented types — every chained call returns the full type with all imported methods available.
+
+### Trusted Types Support
+
+Dabby.js supports the [Trusted Types API](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) for environments with `Content-Security-Policy: require-trusted-types-for 'script'`. All HTML-accepting methods (`.html()`, `.append()`, `.prepend()`, `.before()`, `.after()`, `$()`) accept `TrustedHTML` objects and route string assignments through a `trustedTypes` policy.
+
+```typescript
+// TrustedHTML objects pass through directly
+const policy = trustedTypes.createPolicy('myApp', { createHTML: (s) => DOMPurify.sanitize(s) });
+$('#app').html(policy.createHTML('<div>Safe HTML</div>'));
+
+// Raw strings are wrapped via dabby's own policy automatically
+$('#app').html('<div>Hello</div>'); // Works in both enforced and non-enforced environments
+```
 
 ### Build Commands
 

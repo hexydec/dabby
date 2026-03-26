@@ -99,6 +99,8 @@ export interface DabbyFull extends Omit<Dabby, keyof DabbyFullMethods> {
 	prev(selector?: Selector): DabbyFull;
 	prevAll(selector?: Selector): DabbyFull;
 	prevUntil(selector: Selector, filter?: Selector): DabbyFull;
+	even(): DabbyFull;
+	odd(): DabbyFull;
 
 	// Manipulation
 	clone(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): DabbyFull;
@@ -214,6 +216,8 @@ interface DabbyFullMethods {
 	prev: any;
 	prevAll: any;
 	prevUntil: any;
+	even: any;
+	odd: any;
 	clone: any;
 	empty: any;
 	remove: any;

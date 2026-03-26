@@ -117,16 +117,21 @@ function ajax(url: string | AjaxSettings, settings?: AjaxSettings): XMLHttpReque
 	const sync = ["script", "jsonp"].includes(s.dataType!);
 	let join = s.url.includes("?") ? "&" : "?";
 	let script: HTMLScriptElement | undefined;
-	let data: string | null = null;
+	let data: string | FormData | null = null;
 
 	// process data add data to query string for GET requests
 	if (s.data) {
-		data = isPlainObject(s.data) ? ($ as typeof $ & { param: (obj: Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>) => string }).param(s.data as Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>) : s.data as string;
+		if (s.data instanceof FormData) {
+			data = s.data;
+			s.contentType = null; // let browser set multipart boundary
+		} else {
+			data = isPlainObject(s.data) ? ($ as typeof $ & { param: (obj: Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>) => string }).param(s.data as Record<string, string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[] | (() => string | number | boolean | null | Record<string, unknown> | (string | number | boolean | null)[])>) : s.data as string;
 
-		if (s.method === "GET") {
-			s.url += join + data;
-			join = "&";
-			data = null;
+			if (s.method === "GET") {
+				s.url += join + data;
+				join = "&";
+				data = null;
+			}
 		}
 	}
 

@@ -207,6 +207,42 @@
 			"types": "./dist/traversal/slice/slice.d.ts",
 			"default": "./src/traversal/slice/slice.js"
 		},
+		"./src/traversal/even/even": {
+			"types": "./dist/traversal/even/even.d.ts",
+			"default": "./src/traversal/even/even.js"
+		},
+		"./src/traversal/odd/odd": {
+			"types": "./dist/traversal/odd/odd.d.ts",
+			"default": "./src/traversal/odd/odd.js"
+		},
+		"./src/traversal/add/add": {
+			"types": "./dist/traversal/add/add.d.ts",
+			"default": "./src/traversal/add/add.js"
+		},
+		"./src/traversal/find/find": {
+			"types": "./dist/traversal/find/find.d.ts",
+			"default": "./src/traversal/find/find.js"
+		},
+		"./src/ajax/load/load": {
+			"types": "./dist/ajax/load/load.d.ts",
+			"default": "./src/ajax/load/load.js"
+		},
+		"./src/events/named/named": {
+			"types": "./dist/events/named/named.d.ts",
+			"default": "./src/events/named/named.js"
+		},
+		"./src/utils/each/each": {
+			"types": "./dist/utils/each/each.d.ts",
+			"default": "./src/utils/each/each.js"
+		},
+		"./src/utils/isplainobject/isplainobject": {
+			"types": "./dist/utils/isplainobject/isplainobject.d.ts",
+			"default": "./src/utils/isplainobject/isplainobject.js"
+		},
+		"./src/utils/parsehtml/parsehtml": {
+			"types": "./dist/utils/parsehtml/parsehtml.d.ts",
+			"default": "./src/utils/parsehtml/parsehtml.js"
+		},
 		"./src/utils/extend/extend": {
 			"types": "./dist/utils/extend/extend.d.ts",
 			"default": "./src/utils/extend/extend.js"
@@ -239,6 +275,7 @@
 		"src/**/*.ts"
 	],
 	"devDependencies": {
+		"@types/node": "^25.5.0",
 		"benchmark": "^2.1.4",
 		"jsdoc": "^4.0.4",
 		"qunit": "^2.24.1",

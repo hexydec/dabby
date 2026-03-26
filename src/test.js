@@ -27,21 +27,22 @@ import "./core/map/test.js";
 // dimensions
 import "./dimensions/offset/test.js";
 import "./dimensions/offsetparent/test.js";
-//import "./dimensions/position/test.js";
+import "./dimensions/position/test.js";
 import "./dimensions/scroll/test.js";
 import "./dimensions/width-height/test.js";
 
 // events
-//import "./events/named/test.js";
+import "./events/named/test.js";
 import "./events/on/test.js";
 import "./events/trigger/test.js";
+import "./events/triggerhandler/test.js";
 
 // internals
 import "./internal/camelise/test.js";
 import "./internal/dasherise/test.js";
 import "./internal/filternodes/test.js";
-//import "./internal/getevents/test.js";
-//import "./internal/getprop/test.js";
+import "./internal/getevents/test.js";
+import "./internal/getprop/test.js";
 import "./internal/getval/test.js";
 import "./internal/setcss/test.js";
 
@@ -63,6 +64,7 @@ import "./traversal/add/test.js";
 import "./traversal/children/test.js";
 import "./traversal/closest/test.js";
 import "./traversal/eq/test.js";
+import "./traversal/even/test.js";
 import "./traversal/filter/test.js";
 import "./traversal/find/test.js";
 import "./traversal/first/test.js";
@@ -70,6 +72,7 @@ import "./traversal/has/test.js";
 import "./traversal/index/test.js";
 import "./traversal/last/test.js";
 import "./traversal/next-prev/test.js";
+import "./traversal/odd/test.js";
 import "./traversal/parents/test.js";
 import "./traversal/siblings/test.js";
 import "./traversal/slice/test.js";
@@ -77,8 +80,6 @@ import "./traversal/slice/test.js";
 // utilities
 import "./utils/each/test.js";
 import "./utils/extend/test.js";
-// import "./utils/isfunction/test.js";
 import "./utils/isplainobject/test.js";
-// import "./utils/iswindow/test.js";
 import "./utils/map/test.js";
 import "./utils/parsehtml/test.js";

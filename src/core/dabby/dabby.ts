@@ -6,32 +6,34 @@ export class Dabby implements Iterable<DOMNode> {
 	readonly length: number;
 	readonly [index: number]: DOMNode;
 
-	constructor(selector?: Selector | ReadyCallback, context?: Selector | Record<string, unknown>) {
+	constructor(selector?: Selector | TrustedHTML | ReadyCallback, context?: Selector | Record<string, unknown>) {
 		let nodes: DOMNode[] = [];
 
 		if (selector) {
-			if (typeof selector === "string") {
-				if (selector[0] !== "<") {
+			// TrustedHTML: must start with < and end with > (same constraint as jQuery 4)
+			const isTrustedHTML = typeof TrustedHTML !== "undefined" && selector instanceof TrustedHTML;
+
+			if (typeof selector === "string" || isTrustedHTML) {
+				const str = selector as string;
+				if (!isTrustedHTML && str[0] !== "<") {
 					// CSS selector
 					const obj = context ? $(context as Selector) : [document];
 					let i = obj.length;
 					while (i--) {
-						nodes = [...(obj[i] as Element | Document).querySelectorAll(selector), ...nodes];
+						nodes = [...(obj[i] as Element | Document).querySelectorAll(str), ...nodes];
+					}
+				} else if (!isTrustedHTML && str.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)) {
+					// Simple element creation: $("<div>"), $("<br/>")
+					const match = str.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i)!;
+					nodes = [document.createElement(match[1])];
+
+					// Context is CSS attributes
+					if (context && isPlainObject(context) && Dabby.prototype.hasOwnProperty("attr")) {
+						($(nodes) as Dabby & { attr: (attrs: PlainObject) => Dabby }).attr(context as PlainObject);
 					}
 				} else {
-					// Create element from HTML
-					const match = selector.match(/^<([a-z0-9]+)(( ?\/)?|><\/\1)>$/i);
-					if (match !== null) {
-						nodes = [document.createElement(match[1])];
-
-						// Context is CSS attributes
-						if (context && isPlainObject(context) && Dabby.prototype.hasOwnProperty("attr")) {
-							($(nodes) as Dabby & { attr: (attrs: PlainObject) => Dabby }).attr(context as PlainObject);
-						}
-					} else {
-						// Parse HTML
-						nodes = parseHTML(selector, (context as Node | Document | boolean) || document, true);
-					}
+					// Parse HTML (handles both string and TrustedHTML)
+					nodes = parseHTML(selector as string | TrustedHTML, (context as Node | Document | boolean) || document, true);
 				}
 			} else if (selector instanceof Dabby) {
 				// Copy Dabby collection
@@ -41,12 +43,13 @@ export class Dabby implements Iterable<DOMNode> {
 				nodes = [selector as DOMNode];
 			} else if (typeof selector === "function") {
 				// Ready function
+				const fn = selector as ReadyCallback;
 				if (document.readyState !== "loading") {
-					selector.call(document, $ as DabbyFactory);
+					fn.call(document, $ as DabbyFactory);
 				} else {
 					document.addEventListener(
 						"DOMContentLoaded",
-						() => selector.call(document, $ as DabbyFactory),
+						() => fn.call(document, $ as DabbyFactory),
 						{ once: true }
 					);
 				}

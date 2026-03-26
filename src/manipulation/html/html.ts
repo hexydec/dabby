@@ -1,5 +1,6 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
+import toTrustedHTML from "../../internal/trustedhtml/trustedhtml.js";
 import type {} from "../../dabby.js";
 
 type HTMLCallback = (this: Element, index: number, currentHTML: string) => string;
@@ -7,9 +8,9 @@ type HTMLCallback = (this: Element, index: number, currentHTML: string) => strin
 // Getter
 function html(this: Dabby): string | undefined;
 // Setter
-function html(this: Dabby, content: string | HTMLCallback): Dabby;
+function html(this: Dabby, content: string | TrustedHTML | HTMLCallback): Dabby;
 // Implementation
-function html(this: Dabby, content?: string | HTMLCallback): Dabby | string | undefined {
+function html(this: Dabby, content?: string | TrustedHTML | HTMLCallback): Dabby | string | undefined {
 	// Set
 	if (content !== undefined) {
 		let i = this.length;
@@ -17,7 +18,7 @@ function html(this: Dabby, content?: string | HTMLCallback): Dabby | string | un
 		const values = getVal(dabbyCollection, content, (obj: Element) => obj.innerHTML);
 
 		while (i--) {
-			(this[i] as Element).innerHTML = values[i] as string;
+			(this[i] as Element).innerHTML = toTrustedHTML(values[i] as string) as string;
 		}
 		return this;
 	}
@@ -37,7 +38,7 @@ Object.defineProperty(Dabby.prototype, "html", { value: html, configurable: true
 declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     html(): string | undefined;
-    html(content: string | ((this: Element, index: number, currentHTML: string) => string)): this;
+    html(content: string | TrustedHTML | ((this: Element, index: number, currentHTML: string) => string)): this;
   }
 }
 

@@ -63,6 +63,8 @@ import "./traversal/next-prev/next-prev.js";
 import "./traversal/parents/parents.js";
 import "./traversal/siblings/siblings.js";
 import "./traversal/slice/slice.js";
+import "./traversal/even/even.js";
+import "./traversal/odd/odd.js";
 
 // Utils
 // Note: each is now a core method in Dabby class
