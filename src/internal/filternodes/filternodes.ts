@@ -21,15 +21,16 @@ export default function filterNodes(
 	if (typeof filter === "function") {
 		func = filter;
 	} else {
-		// This will be resolved once $ is imported
 		let filterNodes: (string | Node)[];
 
 		if (typeof filter === "string") {
 			filterNodes = [filter];
+		} else if (Array.isArray(filter)) {
+			filterNodes = filter as Node[];
+		} else if ((filter as Node).nodeType) {
+			filterNodes = [filter as Node];
 		} else {
-			// Temporary implementation - will be replaced when $ is available
-			// @ts-expect-error - $ will be available at runtime
-			filterNodes = $(filter, context).get();
+			filterNodes = Array.from(filter as Dabby) as Node[];
 		}
 
 		func = (_n: number, node: Node) => {

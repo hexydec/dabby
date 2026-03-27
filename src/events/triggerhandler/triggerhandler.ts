@@ -2,18 +2,25 @@ import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../dabby.js";
 
 type EventRecord = {
+	event: string;
+	callback: (evt: Event) => unknown;
 	func: (evt: Event) => unknown;
 };
 
-function triggerHandler(this: Dabby, _name: string, data?: unknown): unknown {
+function triggerHandler(this: Dabby, name: string, data?: unknown): unknown {
+	const element = this[0] as (Element & { events?: EventRecord[] }) | undefined;
+	if (!element) {
+		return undefined;
+	}
 	let ret: unknown;
-	const element = this[0] as Element & { events?: EventRecord[] };
 	(element.events || []).forEach((evt) => {
-		ret = evt.func.call(element, {
-			arg: data,
-			target: element,
-			currentTarget: element
-		} as unknown as Event);
+		if (evt.event === name) {
+			ret = evt.callback.call(element, {
+				arg: data,
+				target: element,
+				currentTarget: element
+			} as unknown as Event);
+		}
 	});
 	return ret;
 }

@@ -24,7 +24,7 @@ export default function getVal<T, C>(
 					: current;
 				values[i] = callback.call(obj[i], i, currentValue as C);
 			} else if (objVal) {
-				values[i] = Object.create(val as PlainObject);
+				values[i] = Object.assign({}, val as PlainObject);
 			} else {
 				values[i] = val;
 			}

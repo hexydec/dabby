@@ -68,8 +68,9 @@ function data(
 		// Get specific property
 		if (typeof name === "string") {
 			const camelisedName = camelise(name);
-			if (firstElement.dataset.hasOwnProperty(camelisedName)) {
-				return parse(firstElement.dataset[camelisedName]!);
+			const val = firstElement.dataset[camelisedName];
+			if (val !== undefined) {
+				return parse(val);
 			}
 		}
 	}

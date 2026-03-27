@@ -15,12 +15,16 @@
 		"javascript"
 	],
 	"contributors": [],
-	"main": "dist/dabby.js",
+	"main": "src/dabby.js",
 	"types": "dist/dabby.d.ts",
 	"source": "src/dabby.ts",
 	"exports": {
 		".": {
 			"types": "./dist/dabby.d.ts",
+			"default": "./src/dabby.js"
+		},
+		"./full": {
+			"types": "./dist/build.d.ts",
 			"default": "./dist/dabby.js"
 		},
 		"./src/ajax/ajax/ajax": {
@@ -258,6 +262,8 @@
 		"url": "https://github.com/hexydec/dabby/issues"
 	},
 	"scripts": {
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"test:types": "tsd",
 		"build": "tsc -p tsconfig.build.json && vite build",
 		"build:types": "tsc -p tsconfig.build.json",
@@ -277,12 +283,13 @@
 	"devDependencies": {
 		"@types/node": "^25.5.0",
 		"benchmark": "^2.1.4",
+		"happy-dom": "^20.8.9",
 		"jsdoc": "^4.0.4",
-		"qunit": "^2.24.1",
 		"terser": "^5.43.1",
 		"tsd": "^0.33.0",
 		"typescript": "^5.9.2",
-		"vite": "^8.0.1"
+		"vite": "^8.0.1",
+		"vitest": "^4.1.2"
 	},
 	"repository": {
 		"type": "git",

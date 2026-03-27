@@ -30,7 +30,7 @@ function text(this: Dabby, content?: string | TextCallback): Dabby | string {
 	while (i--) {
 		output[i] = (this[i] as Element).textContent ?? "";
 	}
-	return output.join(" ");
+	return output.join("");
 }
 
 Object.defineProperty(Dabby.prototype, "text", { value: text, configurable: true });
