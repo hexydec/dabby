@@ -1,3 +1,4 @@
+/// <reference path="trusted-types.d.ts" />
 /**
  * Modular Dabby Export Helper
  *

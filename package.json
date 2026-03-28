@@ -280,6 +280,16 @@
 		"src/**/*.js",
 		"src/**/*.ts"
 	],
+	"tsd": {
+		"directory": "test-d",
+		"compilerOptions": {
+			"lib": ["ES2022", "DOM", "DOM.Iterable"],
+			"paths": {
+				"dabbyjs": ["./src/dabby.ts"],
+				"dabbyjs/*": ["./src/*", "./dist/*"]
+			}
+		}
+	},
 	"devDependencies": {
 		"@types/node": "^25.5.0",
 		"benchmark": "^2.1.4",
