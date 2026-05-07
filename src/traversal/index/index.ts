@@ -2,6 +2,22 @@ import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../dabby.js";
 import type { DOMNode, Selector } from "../../types.js";
 
+/**
+ * Return the position of an element relative to a set of siblings.
+ *
+ * - With no argument, returns the index of the first element among its parent's children.
+ * - With a string selector, returns the index of the first element among the matched set.
+ * - With a node or Dabby collection, returns the index of that element within the current collection.
+ *
+ * Returns `-1` when no match can be found.
+ *
+ * @param selector - optional CSS selector, node or Dabby collection that determines what to search within
+ * @returns the zero-based position, or `-1` if no match is found
+ *
+ * @example
+ * $("li.active").index();           // position among siblings
+ * $("li").index("li.active");       // position within the matched set
+ */
 function index(this: Dabby, selector?: Selector): number {
 	if (this[0]) {
 		let nodes: ArrayLike<DOMNode>;

@@ -3,8 +3,37 @@ import type {} from "../../dabby.js";
 import isPlainObject, { type PlainObject } from "../../internal/isplainobject/isplainobject.js";
 import isObj from "../../internal/isobj/isobj.js";
 
+/**
+ * Deep-merge one or more source objects into the target.
+ *
+ * Plain objects and arrays are merged recursively; all other values overwrite
+ * the existing key. Properties named `__proto__` are skipped to avoid prototype
+ * pollution.
+ *
+ * @param deep - pass `true` to merge recursively
+ * @param target - the object that receives merged properties (mutated in place)
+ * @param sources - one or more source objects whose properties are copied across
+ * @returns the mutated target object
+ *
+ * @example
+ * const settings = $.extend(true, { ui: { theme: "light" } }, { ui: { dense: true } });
+ * // settings.ui === { theme: "light", dense: true }
+ */
 // Deep extend overload
 function extend(deep: true, target: PlainObject, ...sources: PlainObject[]): PlainObject;
+/**
+ * Shallow-merge one or more source objects into the target.
+ *
+ * When called with a single argument, the properties are merged onto the
+ * factory `$` itself, mirroring jQuery's `$.extend(plugin)` behaviour.
+ *
+ * @param target - the object that receives merged properties (a new object is returned, the target is not mutated)
+ * @param sources - one or more source objects whose properties are copied across
+ * @returns a new object containing the merged properties
+ *
+ * @example
+ * const merged = $.extend({}, defaults, overrides);
+ */
 // Shallow extend overload
 function extend(target: PlainObject, ...sources: PlainObject[]): PlainObject;
 // Implementation

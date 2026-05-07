@@ -4,6 +4,18 @@ import type { Selector } from "../../types.js";
 
 type WrapCallback = (this: Element) => Selector;
 
+/**
+ * Wrap every item in the collection together with a single shared wrapper.
+ *
+ * Unlike {@link wrap}, only one copy of the wrapper is inserted; all items
+ * are gathered inside its deepest descendant in their original DOM order.
+ *
+ * @param html - a selector, HTML string, node or Dabby collection describing the wrapper, or a callback returning one
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".chip").wrapAll("<div class='chip-row'></div>");
+ */
 function wrapAll(this: Dabby, html: Selector | WrapCallback): Dabby {
 	if (this[0]) {
 		let wrapper: Selector;

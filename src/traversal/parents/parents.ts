@@ -32,18 +32,53 @@ function factory(
 	return $(filter ? filterNodes($(nodes), filter) as Element[] : nodes);
 }
 
+/**
+ * Get the immediate parent of every item in the collection.
+ *
+ * If a selector is supplied, only parents that match are kept.
+ *
+ * @param selector - optional CSS selector to narrow the result
+ * @returns a new Dabby collection of parent elements
+ *
+ * @example
+ * $("li.active").parent();
+ */
 function parent(this: Dabby, selector?: Selector): Dabby {
 	return factory(this, selector, null, true);
 }
 
 Object.defineProperty(Dabby.prototype, "parent", { value: parent, configurable: true });
 
+/**
+ * Get every ancestor of every item in the collection.
+ *
+ * Walks up to (but not including) the document. If a selector is supplied,
+ * only ancestors that match are kept.
+ *
+ * @param selector - optional CSS selector to narrow the result
+ * @returns a new Dabby collection of ancestor elements
+ *
+ * @example
+ * $("a.external").parents("article");
+ */
 function parents(this: Dabby, selector?: Selector): Dabby {
 	return factory(this, selector);
 }
 
 Object.defineProperty(Dabby.prototype, "parents", { value: parents, configurable: true });
 
+/**
+ * Get ancestors up to (but not including) the first one that matches `selector`.
+ *
+ * Optionally filter the collected ancestors with a second selector.
+ *
+ * @param selector - the boundary selector; iteration stops at the first match
+ * @param filter - optional selector that filters the collected ancestors
+ * @returns a new Dabby collection of ancestors up to the boundary
+ *
+ * @example
+ * $("a.external").parentsUntil("article");
+ */
 function until(this: Dabby, selector: Selector, filter?: Selector): Dabby {
 	return factory(this, selector, filter, false, true);
 }

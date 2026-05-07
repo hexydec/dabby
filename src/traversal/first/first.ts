@@ -1,6 +1,16 @@
 import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../dabby.js";
 
+/**
+ * Reduce the collection to its first element.
+ *
+ * If the collection is empty, returns an empty Dabby collection.
+ *
+ * @returns a new Dabby collection containing only the first element
+ *
+ * @example
+ * $("li").first().addClass("first");
+ */
 function first(this: Dabby): Dabby {
 	return $(this[0]);
 }

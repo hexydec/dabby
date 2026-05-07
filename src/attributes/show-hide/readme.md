@@ -1,204 +1,75 @@
-# .show(), .hide(), .toggle()
+# $.fn.show() / $.fn.hide() / $.fn.toggle()
 
-Show, hide, or toggle the display of elements in a collection.
+Show, hide or toggle the visibility of every element in the collection by
+modifying the inline `display` style.
 
-## .show()
+The implementation remembers each element's previous `display` value so
+calling `show()` after `hide()` restores the original — even if it was
+something other than `block`.
 
-Set the display property of each object in a collection to show the items.
+## Signatures
 
-If the item was previously hidden, the initial display value will be used.
-
-The display property is set as an inline property. If a CSS rule sets the property with `!important`, this method will have no effect.
-
-## .hide()
-
-Set the display property of each object in a collection to `none`.
-
-The display property is set as an inline property. If a CSS rule sets the property with `!important`, this method will have no effect.
-
-## .toggle()
-
-Toggle the display property of each item in a collection to show or hide the items.
-
-If the item was previously hidden, the initial display value will be used.
-
-The display property is set as an inline property. If a CSS rule sets the property with `!important`, this method will have no effect.
-
-## Usage
-
-```javascript
-$(selector).show();
-$(selector).hide();
-$(selector).toggle();
-$(selector).toggle(display);
+```ts
+show(): this;
+hide(): this;
+toggle(show?: boolean): this;
 ```
 
-### display
+## Parameters
 
-Sets the display value of the operation, equivalent to using `$.fn.show()` or `$.fn.hide()`.
+- For `toggle`:
+  - `show` (`boolean`, optional) — when `true`, force-show; when `false`,
+    force-hide. Omit to toggle based on current state.
 
 ## Returns
 
-The original Dabby collection will be returned.
+The original Dabby collection for chaining.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
 
-```javascript
-// Show hidden elements
-$(".modal").show();
-
-// Hide elements
-$(".alert").hide();
-
-// Toggle visibility
-$(".dropdown-menu").toggle();
-
-// Force show or hide
-$(".panel").toggle(true);  // Always show
-$(".panel").toggle(false); // Always hide
+// Hide the loading spinner
+$(".loading").hide();
 ```
 
-### Real-World Examples
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
 
-```javascript
-// Toggle navigation menu
-$(".menu-button").on("click", function () {
-    $(".navigation").toggle();
-});
+// Reveal a panel
+$("#confirm-dialog").show();
+```
 
-// Show/hide based on condition
-if (userLoggedIn) {
-    $(".user-menu").show();
-    $(".login-button").hide();
-} else {
-    $(".user-menu").hide();
-    $(".login-button").show();
-}
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
 
-// Accordion functionality
-$(".accordion-header").on("click", function () {
-    const $content = $(this).next(".accordion-content");
-
-    // Close all other sections
-    $(".accordion-content").not($content).hide();
-
-    // Toggle this section
-    $content.toggle();
-});
-
-// Tab switching
-$(".tab-button").on("click", function () {
-    const tabId = $(this).data("tab");
-
-    // Hide all tab content
-    $(".tab-content").hide();
-
-    // Show selected tab
-    $(`#${tabId}`).show();
-
-    // Update active button
-    $(".tab-button").removeClass("tab-button--active");
-    $(this).addClass("tab-button--active");
-});
-
-// Show more/less content
-$(".show-more-button").on("click", function () {
-    const $content = $(".extra-content");
-
-    if ($content.is(":visible")) {
-        $content.hide();
-        $(this).text("Show more");
-    } else {
-        $content.show();
-        $(this).text("Show less");
-    }
-});
-
-// Modal dialogue
-$(".open-modal").on("click", function () {
-    $(".modal-overlay").show();
-    $(".modal").show();
-});
-
-$(".close-modal, .modal-overlay").on("click", function () {
-    $(".modal-overlay").hide();
-    $(".modal").hide();
-});
-
-// Filter visibility based on selection
-$(".filter-select").on("change", function () {
-    const category = $(this).val();
-
-    if (category === "all") {
-        $(".product-item").show();
-    } else {
-        $(".product-item").hide();
-        $(`.product-item[data-category="${category}"]`).show();
-    }
-});
-
-// Dropdown menu
-$(".dropdown-trigger").on("click", function () {
-    const $menu = $(this).next(".dropdown-menu");
-
-    // Close all other dropdowns
-    $(".dropdown-menu").not($menu).hide();
-
-    // Toggle this dropdown
-    $menu.toggle();
-});
-
-// Close dropdown when clicking outside
-$(document).on("click", function (e) {
-    if (!$(e.target).closest(".dropdown").length) {
-        $(".dropdown-menu").hide();
-    }
-});
-
-// Show loading spinner
-function showLoading() {
-    $(".loading-spinner").show();
-    $(".content").hide();
-}
-
-function hideLoading() {
-    $(".loading-spinner").hide();
-    $(".content").show();
-}
-
-// Conditional alerts
-function showAlert(message, type) {
-    const $alert = $(".alert");
-
-    $alert
-        .removeClass("alert--success alert--error alert--warning")
-        .addClass(`alert--${type}`)
-        .text(message)
-        .show();
-
-    // Auto-hide after 5 seconds
-    setTimeout(function () {
-        $alert.hide();
-    }, 5000);
-}
-
-// Expandable sections
-$(".expand-button").on("click", function () {
-    const $section = $(this).closest(".section");
-    const $content = $section.find(".section-content");
-
-    $content.toggle();
-
-    if ($content.is(":visible")) {
-        $(this).text("Collapse");
-    } else {
-        $(this).text("Expand");
-    }
+// Toggle on a click
+$(".menu-trigger").on("click", () => {
+    $(".menu").toggle();
 });
 ```
 
-## Differences to jQuery
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
 
-jQuery supports extra arguments to each function to control animations. Dabby doesn't support animations, and therefore does not support these properties.
+// Toggle with explicit state, e.g. driven by a checkbox
+$("#advanced").on("change", function () {
+    $(".advanced-options").toggle((this as HTMLInputElement).checked);
+});
+```
+
+## Notes
+
+These methods modify the inline `display` style only. CSS rules with higher
+specificity (or `!important`) may override the result. For animation, prefer
+CSS transitions on a class you toggle with [`addClass`](../class/readme.md).
+
+## See also
+
+- [$.fn.addClass() / .removeClass() / .toggleClass()](../class/readme.md)
+- [$.fn.css()](../css/readme.md)

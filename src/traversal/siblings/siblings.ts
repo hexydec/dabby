@@ -3,6 +3,18 @@ import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 import filterNodes from "../../internal/filternodes/filternodes.js";
 
+/**
+ * Get the siblings of every item in the collection.
+ *
+ * The element itself is excluded from the result. If a selector is supplied,
+ * only siblings that match are kept.
+ *
+ * @param selector - optional CSS selector to narrow the result
+ * @returns a new Dabby collection of sibling elements
+ *
+ * @example
+ * $("li.active").siblings();
+ */
 function siblings(this: Dabby, selector?: Selector): Dabby {
 	let i = this.length;
 	const nodes: Element[] = [];

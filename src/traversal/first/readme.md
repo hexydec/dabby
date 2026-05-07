@@ -1,70 +1,43 @@
-# .first()
+# $.fn.first()
 
-Retrieve the first item in the collection.
+Reduce the collection to its first element. Equivalent to `eq(0)`, but slightly
+faster and more readable when you only want the head of the collection.
 
-## Usage
+## Signatures
 
-```javascript
-$(selector).first();
+```ts
+first(): this;
 ```
+
+## Parameters
+
+None.
 
 ## Returns
 
-A new Dabby collection containing the first item in the collection, or an empty collection if the original collection is empty.
+A new Dabby collection containing only the first element. If the original
+collection is empty, the returned collection is also empty.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/first/first";
 
-```javascript
-// Get first list item
-const $firstItem = $("li").first();
-
-// Get first paragraph
-const $firstPara = $("p").first();
-
-// Get first table row
-const $firstRow = $("tr").first();
+// Highlight the first item in a list
+$("li").first().addClass("first");
 ```
 
-### Real-World Examples
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/first/first";
 
-```javascript
-// Highlight first item
-$(".list-item").first().addClass("first");
-
-// Get first input value
-const firstValue = $("input[type='text']").first().val();
-
-// Auto-focus first field
-$("form").find("input").first().focus();
-
-// Style first card differently
-$(".card").first().css("border-color", "#007bff");
-
-// Remove first notification
-$(".notification").first().remove();
-
-// Expand first accordion
-$(".accordion-section").first().addClass("expanded");
-
-// Select first option
-$("select option").first().prop("selected", true);
-
-// Show first error
-$(".error-message").first().show();
-
-// Different style for first element
-$(".gallery-image").first().addClass("featured");
-
-// Get first matching element
-const $firstActive = $(".item").filter(".active").first();
-
-// Auto-select first tab
-$(".tab-button").first().addClass("active");
-$(".tab-content").first().show();
+// Read the value of the first input that matches
+const initial = $("input.editable").first().val();
 ```
 
-## Differences to jQuery
+## See also
 
-None.
+- [$.fn.last()](../last/readme.md)
+- [$.fn.eq()](../eq/readme.md)
+- [$.fn.slice()](../slice/readme.md)

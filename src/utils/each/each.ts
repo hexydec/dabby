@@ -3,6 +3,21 @@ import type {} from "../../dabby.js";
 
 type EachCallback<T> = (this: T, key: number | string, value: T) => void | false;
 
+/**
+ * Iterate over the keys of an array-like or plain object, calling a callback for each.
+ *
+ * Arrays (and array-likes with a numeric `length`) are iterated in index order;
+ * plain objects in `Object.keys` order. Returning `false` from the callback
+ * breaks the loop early.
+ *
+ * @param obj - the object or array-like collection to iterate
+ * @param callback - invoked once per entry; bound to the current value with `key` and `value` arguments
+ * @returns the original object for chaining
+ *
+ * @example
+ * $.each(["red", "green", "blue"], (i, colour) => console.log(i, colour));
+ * $.each({ a: 1, b: 2 }, (key, value) => console.log(key, value));
+ */
 function each<T>(
 	obj: ArrayLike<T> | Record<string, T>,
 	callback: EachCallback<T>

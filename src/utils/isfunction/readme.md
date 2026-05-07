@@ -1,37 +1,37 @@
-# $.isfunction()
+# isFunction(value)
 
-Determines whether the passed value is a function.
+Type guard that returns `true` when the value is a function.
 
-**WARNING: This method is deprecated**
+This is exposed as an internal helper and is **not** attached to the `$`
+factory. Importing the module does not pull in any runtime code beyond the
+single guard function.
 
-## Usage
+## Signatures
 
-```javascript
-$.isfunction(value);
+```ts
+isFunction(value: unknown): value is Function;
 ```
 
-#### value
+## Parameters
 
-A variable to test whether it is a function.
+- `value` (`unknown`) — the value to test.
 
 ## Returns
 
-A boolean specifying whether `value` is a function.
+`true` if `value` is callable (`typeof value === "function"`), otherwise
+`false`.
 
-## Example
+## Examples
 
-```javascript
-const test = [42, "hello world", function () {return 42;}, item => item + 42]
+```ts
+import isFunction from "dabbyjs/utils/isfunction/isfunction";
 
-test.forEach(item => {
-	console.log($.isfunction(item)); // false, false, true, true
-});
+if (isFunction(handler)) {
+    handler();
+}
 ```
 
 ## Notes
 
-This method is deprecated.
-
-## Differences to jQuery
-
-None.
+Internal helpers are kept narrow and tree-shakeable. Prefer
+[`$.isPlainObject()`](../isplainobject/readme.md) for object-shape checks.

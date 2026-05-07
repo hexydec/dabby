@@ -1,299 +1,85 @@
-# .before(), .prepend(), .append(), .after()
+# $.fn.before() / $.fn.prepend() / $.fn.append() / $.fn.after()
 
-Insert content before, at the start of, at the end of, or after each element in a Dabby collection.
+Insert content into the DOM relative to every element in the collection. All
+four methods are variadic: pass any combination of selectors, HTML strings,
+nodes or Dabby collections. Pass a single callback to compute different
+content per element.
 
-## .before()
+| Method     | Where the content is inserted                  |
+|------------|------------------------------------------------|
+| `before`   | as a previous sibling (outside the element)    |
+| `prepend`  | as the first child (inside, at the start)      |
+| `append`   | as the last child (inside, at the end)         |
+| `after`    | as a next sibling (outside the element)        |
 
-Add nodes before each object in a Dabby collection (as a sibling).
+When the collection contains multiple targets, the inserted nodes are
+deep-cloned for each but the last so every target receives its own copy.
 
-## .prepend()
+## Signatures
 
-Prepend nodes to each object in a Dabby collection (as the first child).
-
-## .append()
-
-Append nodes to each object in a Dabby collection (as the last child).
-
-## .after()
-
-Add nodes after each object in a Dabby collection (as a sibling).
-
-## Usage
-
-```javascript
-$(selector).before(...content);
-$(selector).prepend(...content);
-$(selector).append(...content);
-$(selector).after(...content);
+```ts
+before(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
+prepend(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
+append(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
+after(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
 ```
 
-### ...content
+## Parameters
 
-One or more arguments containing a node, array of nodes, HTML string, Dabby collection, or callback function to insert relative to each item in the target Dabby collection.
-
-When using a callback, it receives the index of the element and the current HTML, and should return the content to insert.
+- `...content` — one or more values to insert. Each value may be:
+  - a CSS selector or HTML string (parsed into nodes),
+  - a `TrustedHTML` value,
+  - an `Element`, an array of nodes, a `NodeList`, an `HTMLCollection`, or another Dabby collection,
+  - **or** (as a single argument) a callback `(index, currentHTML) => Selector`. The callback receives the element's index and current `innerHTML` and is bound (`this`) to the element.
 
 ## Returns
 
-The original Dabby collection.
+The original Dabby collection for chaining.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/insert/insert";
 
-```javascript
-// Insert HTML strings
-$(".container").append("<p>New paragraph</p>");
-$(".container").prepend("<h2>Title</h2>");
-$(".item").before("<hr>");
-$(".item").after("<div class='spacer'></div>");
-
-// Insert DOM elements
-const newDiv = document.createElement("div");
-$(".container").append(newDiv);
-
-// Insert Dabby collections
-const $newElement = $("<span>Hello</span>");
-$(".container").append($newElement);
-
-// Insert multiple items at once
-$(".list").append("<li>Item 1</li>", "<li>Item 2</li>", "<li>Item 3</li>");
+// Append a single child
+$("#cart").append("<li class='item'>Coffee</li>");
 ```
 
-### Visualising Insert Methods
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/insert/insert";
 
-Given this HTML:
-
-```html
-<div class="container">
-    <p class="existing">Existing content</p>
-</div>
+// Variadic — multiple values at once
+$(".todo-list").append(
+    "<li>Buy milk</li>",
+    "<li>Walk dog</li>",
+    "<li>Write tests</li>",
+);
 ```
 
-```javascript
-// .before() - adds as previous sibling
-$(".existing").before("<p>Before</p>");
-// Result:
-// <div class="container">
-//     <p>Before</p>
-//     <p class="existing">Existing content</p>
-// </div>
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/insert/insert";
 
-// .prepend() - adds as first child
-$(".container").prepend("<p>First child</p>");
-// Result:
-// <div class="container">
-//     <p>First child</p>
-//     <p class="existing">Existing content</p>
-// </div>
-
-// .append() - adds as last child
-$(".container").append("<p>Last child</p>");
-// Result:
-// <div class="container">
-//     <p class="existing">Existing content</p>
-//     <p>Last child</p>
-// </div>
-
-// .after() - adds as next sibling
-$(".existing").after("<p>After</p>");
-// Result:
-// <div class="container">
-//     <p class="existing">Existing content</p>
-//     <p>After</p>
-// </div>
+// Mix nodes and strings
+const $separator = $("<hr>");
+$(".article p").after($separator, "<p class='note'>End of section.</p>");
 ```
 
-### Using Callbacks
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/insert/insert";
 
-```javascript
-// Append with callback
-$(".card").append(function (index, currentHtml) {
-    return `<div class="card-footer">Card ${index + 1}</div>`;
-});
-
-// Prepend based on current content
-$(".section").prepend(function (index, currentHtml) {
-    const hasTitle = currentHtml.includes("<h");
-    return hasTitle ? "" : "<h3>Section " + (index + 1) + "</h3>";
-});
-
-// Dynamic insertion
-$(".item").after(function (index) {
-    return index < 5 ? "<hr>" : "";
+// Compute content per element
+$(".chapter").prepend(function (index) {
+    return `<h3>Chapter ${index + 1}</h3>`;
 });
 ```
 
-### Real-World Examples
+## See also
 
-```javascript
-// Add items to a list
-function addTodoItem(text) {
-    $(".todo-list").append(`
-        <li class="todo-item">
-            <input type="checkbox">
-            <span>${text}</span>
-            <button class="delete">×</button>
-        </li>
-    `);
-}
-
-// Prepend notification
-function showNotification(message) {
-    $(".notification-container").prepend(`
-        <div class="notification">
-            ${message}
-            <button class="close">×</button>
-        </div>
-    `);
-
-    // Auto-remove after 5 seconds
-    setTimeout(function () {
-        $(".notification").first().remove();
-    }, 5000);
-}
-
-// Build a table dynamically
-function addTableRow(data) {
-    $("table tbody").append(`
-        <tr>
-            <td>${data.id}</td>
-            <td>${data.name}</td>
-            <td>${data.email}</td>
-            <td>
-                <button class="edit">Edit</button>
-                <button class="delete">Delete</button>
-            </td>
-        </tr>
-    `);
-}
-
-// Add breadcrumb items
-function buildBreadcrumb(path) {
-    const parts = path.split("/").filter(Boolean);
-
-    $(".breadcrumb").empty();
-
-    parts.forEach(function (part, index) {
-        $(".breadcrumb").append(`
-            <li class="breadcrumb-item">
-                <a href="/${parts.slice(0, index + 1).join("/")}">${part}</a>
-            </li>
-        `);
-
-        if (index < parts.length - 1) {
-            $(".breadcrumb").append('<li class="separator">/</li>');
-        }
-    });
-}
-
-// Insert loading spinner
-function showLoading() {
-    $(".content").prepend(`
-        <div class="loading-overlay">
-            <div class="spinner"></div>
-        </div>
-    `);
-}
-
-function hideLoading() {
-    $(".loading-overlay").remove();
-}
-
-// Add pagination controls
-function addPagination(currentPage, totalPages) {
-    const $pagination = $(".pagination");
-    $pagination.empty();
-
-    // Previous button
-    $pagination.append(`
-        <button class="page-btn prev" ${currentPage === 1 ? "disabled" : ""}>
-            Previous
-        </button>
-    `);
-
-    // Page numbers
-    for (let i = 1; i <= totalPages; i++) {
-        $pagination.append(`
-            <button class="page-btn ${i === currentPage ? "active" : ""}" data-page="${i}">
-                ${i}
-            </button>
-        `);
-    }
-
-    // Next button
-    $pagination.append(`
-        <button class="page-btn next" ${currentPage === totalPages ? "disabled" : ""}>
-            Next
-        </button>
-    `);
-}
-
-// Insert ad after every 3rd paragraph
-$(".article p").each(function (index, paragraph) {
-    if ((index + 1) % 3 === 0) {
-        $(paragraph).after('<div class="advertisement">Ad</div>');
-    }
-});
-
-// Build navigation menu
-function buildMenu(items) {
-    const $menu = $(".main-nav");
-
-    items.forEach(function (item) {
-        $menu.append(`
-            <li class="nav-item">
-                <a href="${item.url}">${item.label}</a>
-            </li>
-        `);
-    });
-}
-
-// Add form fields dynamically
-$(".add-field-button").on("click", function () {
-    $(".dynamic-form").append(`
-        <div class="form-row">
-            <input type="text" name="field[]" placeholder="Enter value">
-            <button class="remove-field">Remove</button>
-        </div>
-    `);
-});
-
-$(document).on("click", ".remove-field", function () {
-    $(this).closest(".form-row").remove();
-});
-
-// Chat message insertion
-function addMessage(message, isOwn) {
-    const messageHtml = `
-        <div class="message ${isOwn ? "message--own" : "message--other"}">
-            <div class="message-content">${message.text}</div>
-            <div class="message-time">${message.time}</div>
-        </div>
-    `;
-
-    $(".chat-messages").append(messageHtml);
-
-    // Scroll to bottom
-    $(".chat-messages").scrollTop($(".chat-messages")[0].scrollHeight);
-}
-
-// Insert footnote references
-$(".article").find("[data-footnote]").each(function (index, element) {
-    const footnoteText = $(element).data("footnote");
-
-    // Add superscript number
-    $(element).append(`<sup>${index + 1}</sup>`);
-
-    // Add footnote at bottom
-    $(".footnotes").append(`
-        <p class="footnote">
-            <sup>${index + 1}</sup> ${footnoteText}
-        </p>
-    `);
-});
-```
-
-## Differences to jQuery
-
-None.
+- [$.fn.appendTo() / .prependTo() / .insertBefore() / .insertAfter()](../insertto/readme.md)
+- [$.fn.html()](../html/readme.md)
+- [$.fn.text()](../text/readme.md)
+- [$.fn.replaceWith()](../replace/readme.md)

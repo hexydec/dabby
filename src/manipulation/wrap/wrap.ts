@@ -5,6 +5,19 @@ import getVal from "../../internal/getval/getval.js";
 
 type WrapCallback = (this: Element, index: number) => Selector;
 
+/**
+ * Wrap each item in the collection with a copy of the supplied content.
+ *
+ * Each element receives its own clone of the wrapper. Pass a callback to
+ * compute a different wrapper per element from its index. If the wrapper
+ * has nested children, each element is placed inside the deepest descendant.
+ *
+ * @param html - a selector, HTML string, node or Dabby collection describing the wrapper, or a callback returning one
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("img.thumbnail").wrap("<a class='zoom'></a>");
+ */
 function wrap(this: Dabby, html: Selector | WrapCallback): Dabby {
 	let i = this.length;
 	const dabbyCollection = this as unknown as { readonly length: number; readonly [n: number]: Element };

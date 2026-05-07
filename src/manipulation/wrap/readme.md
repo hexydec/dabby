@@ -1,100 +1,59 @@
-# .wrap()
+# $.fn.wrap(html)
 
-Wraps each element in the collection with the provided new elements.
+Wrap each item in the collection with its own copy of the supplied content.
 
-## Usage
+If the wrapper has nested children, each element is placed inside the
+deepest descendant. Pass a callback to compute a different wrapper per
+element.
 
-```javascript
-$(selector).wrap(html);
-$(selector).wrap(function (index) {});
+## Signatures
+
+```ts
+wrap(html: Selector | ((this: Element, index: number) => Selector)): this;
 ```
 
-### html
+## Parameters
 
-An HTML string, Node, array of Nodes, Dabby collection, or callback function that returns the wrapping element.
-
-### function
-
-A callback that receives the index of the element and should return the HTML, Node, or Dabby collection to wrap around the element.
+- `html` (`Selector | callback`) — the wrapper, or a callback returning one.
+  - **`Selector`** — a CSS string, HTML string, node, array of nodes, or
+    Dabby collection. Each target receives its own deep clone.
+  - **callback** — invoked once per element with `(index)`, bound (`this`) to
+    the element. Return the wrapper to use.
 
 ## Returns
 
-The original Dabby collection.
+The original Dabby collection for chaining.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrap/wrap";
 
-```javascript
-// Wrap each paragraph with a div
-$("p").wrap("<div class='wrapper'></div>");
-
-// Before:
-// <p>Paragraph 1</p>
-// <p>Paragraph 2</p>
-
-// After:
-// <div class="wrapper"><p>Paragraph 1</p></div>
-// <div class="wrapper"><p>Paragraph 2</p></div>
+// Wrap each thumbnail with its own zoom link
+$("img.thumbnail").wrap("<a class='zoom'></a>");
 ```
 
-### Using Callbacks
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrap/wrap";
 
-```javascript
-// Wrap with different elements based on index
+// Wrapper with nested elements — items end up in the deepest descendant
+$(".chip").wrap("<div class='chip-row'><span class='chip-inner'></span></div>");
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrap/wrap";
+
+// Compute the wrapper per element
 $("p").wrap(function (index) {
-    return `<div class="wrapper-${index}"></div>`;
-});
-
-// Conditional wrapping
-$("img").wrap(function (index) {
-    const hasCaption = $(this).attr("alt");
-    return hasCaption ? "<figure></figure>" : "<div></div>";
+    return `<section data-index='${index}'></section>`;
 });
 ```
 
-### Real-World Examples
+## See also
 
-```javascript
-// Wrap images with links
-$("img[data-full-url]").wrap(function () {
-    const fullUrl = $(this).data("full-url");
-    return `<a href="${fullUrl}" class="image-link"></a>`;
-});
-
-// Add container to form fields
-$("input, select, textarea").each(function () {
-    $(this).wrap('<div class="form-control"></div>');
-});
-
-// Wrap headings with sections
-$("h2").wrap("<section class='content-section'></section>");
-
-// Add wrapper for styling
-$(".card-content").wrap("<div class='card-inner'></div>");
-
-// Create clickable card wrappers
-$(".product-card").wrap(function () {
-    const productId = $(this).data("product-id");
-    return `<a href="/products/${productId}" class="product-link"></a>`;
-});
-
-// Wrap table cells for additional styling
-$("td.price").wrap("<div class='price-wrapper'></div>");
-
-// Add responsive video wrapper
-$("iframe[src*='youtube'], iframe[src*='vimeo']").wrap(
-    "<div class='video-container'></div>"
-);
-
-// Wrap alternating rows differently
-$("tr").wrap(function (index) {
-    return index % 2 === 0
-        ? "<div class='even-row'></div>"
-        : "<div class='odd-row'></div>";
-});
-```
-
-## Differences to jQuery
-
-None.
+- [$.fn.wrapAll()](../wrapall/readme.md) — single wrapper around the whole set
+- [$.fn.unwrap()](../unwrap/readme.md)
+- [$.fn.append()](../insert/readme.md)

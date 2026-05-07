@@ -1,102 +1,50 @@
-# .wrapAll()
+# $.fn.wrapAll(html)
 
-Wraps all elements in the collection with a single provided wrapper element. Unlike `.wrap()`, this method wraps all elements together with one element, rather than wrapping each element individually.
+Wrap every item in the collection together with a single shared wrapper.
 
-## Usage
+Unlike [`wrap`](../wrap/readme.md), only one copy of the wrapper is inserted;
+all items are gathered inside its deepest descendant in their original DOM
+order. The wrapper is inserted at the position of the first item in the
+collection.
 
-```javascript
-$(selector).wrapAll(html);
+## Signatures
+
+```ts
+wrapAll(html: Selector | ((this: Element) => Selector)): this;
 ```
 
-### html
+## Parameters
 
-An HTML string, Node, array of Nodes, or Dabby collection to wrap around all matched elements.
+- `html` (`Selector | callback`) — the wrapper, or a callback returning one.
+  - **`Selector`** — a CSS string, HTML string, node, array of nodes, or
+    Dabby collection. Only the first matching node is used.
+  - **callback** — invoked once with no arguments, bound (`this`) to the first
+    element in the collection. Return the wrapper to use.
 
 ## Returns
 
-The original Dabby collection.
+The original Dabby collection for chaining.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrapall/wrapall";
 
-```javascript
-// Wrap all paragraphs with a single div
-$("p").wrapAll("<div class='container'></div>");
-
-// Before:
-// <p>Paragraph 1</p>
-// <p>Paragraph 2</p>
-// <p>Paragraph 3</p>
-
-// After:
-// <div class="container">
-//     <p>Paragraph 1</p>
-//     <p>Paragraph 2</p>
-//     <p>Paragraph 3</p>
-// </div>
+// Group every chip into a single shared row
+$(".chip").wrapAll("<div class='chip-row'></div>");
 ```
 
-### Real-World Examples
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrapall/wrapall";
 
-```javascript
-// Group related content
-$(".article-intro, .article-body, .article-footer").wrapAll(
-    "<article class='article-wrapper'></article>"
-);
-
-// Create a sidebar from multiple elements
-$(".widget").wrapAll("<aside class='sidebar'></aside>");
-
-// Group form fields
-$("input[type='text'], input[type='email']").wrapAll(
-    "<div class='text-inputs'></div>"
-);
-
-// Wrap list items in a group
-$(".menu-item").wrapAll("<ul class='menu-list'></ul>");
-
-// Create a gallery wrapper
-$("img.gallery-image").wrapAll("<div class='image-gallery'></div>");
-
-// Group table rows
-$("tr.highlight").wrapAll("<tbody class='highlighted-rows'></tbody>");
-
-// Wrap multiple headings and content
-$("h3, p").wrapAll("<section class='content-block'></section>");
-
-// Create a card from existing elements
-$(".card-title, .card-body, .card-footer").wrapAll(
-    "<div class='card'></div>"
-);
-
-// Group navigation items
-$("nav a").wrapAll("<div class='nav-links'></div>");
-
-// Wrap selected items
-$(".selected").wrapAll("<div class='selection-group'></div>");
+// Wrapper with nested elements — items end up in the deepest descendant
+$(".error-message").wrapAll("<div class='alert'><div class='alert-body'></div></div>");
 ```
 
-### Comparison with .wrap()
+## See also
 
-```javascript
-// .wrap() - wraps each element individually
-$("p").wrap("<div></div>");
-// Result:
-// <div><p>Paragraph 1</p></div>
-// <div><p>Paragraph 2</p></div>
-// <div><p>Paragraph 3</p></div>
-
-// .wrapAll() - wraps all elements together
-$("p").wrapAll("<div></div>");
-// Result:
-// <div>
-//     <p>Paragraph 1</p>
-//     <p>Paragraph 2</p>
-//     <p>Paragraph 3</p>
-// </div>
-```
-
-## Differences to jQuery
-
-None.
+- [$.fn.wrap()](../wrap/readme.md) — one wrapper per element
+- [$.fn.unwrap()](../unwrap/readme.md)
+- [$.fn.append()](../insert/readme.md)
