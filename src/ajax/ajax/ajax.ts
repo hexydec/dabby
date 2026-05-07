@@ -63,7 +63,35 @@ interface RequiredAjaxSettings {
 }
 
 // Overload signatures
+/**
+ * Make an asynchronous HTTP (AJAX) request.
+ *
+ * The URL may be passed as the first argument or supplied via the `url` property of `settings`. For `script` and `jsonp` data types a `<script>` tag is injected; otherwise an `XMLHttpRequest` is dispatched.
+ *
+ * @param url - URL to request
+ * @param settings - request options (method, data, headers, callbacks, etc.)
+ * @returns the underlying `XMLHttpRequest` for asynchronous requests, or `undefined` for script/jsonp loads
+ *
+ * @example
+ * $.ajax("/api/users", {
+ *   success: (users) => console.log(users)
+ * });
+ */
 function ajax(url: string, settings?: AjaxSettings): XMLHttpRequest | undefined;
+/**
+ * Make an asynchronous HTTP (AJAX) request using a single settings object.
+ *
+ * @param settings - request options including `url`
+ * @returns the underlying `XMLHttpRequest` for asynchronous requests, or `undefined` for script/jsonp loads
+ *
+ * @example
+ * $.ajax({
+ *   url: "/api/posts",
+ *   method: "POST",
+ *   data: { title: "Hello" },
+ *   success: (post) => console.log(post)
+ * });
+ */
 function ajax(settings: AjaxSettings): XMLHttpRequest | undefined;
 
 // Implementation

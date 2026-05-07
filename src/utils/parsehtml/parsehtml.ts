@@ -8,7 +8,7 @@ import type { DabbyFactory } from "../../types.js";
 // Augment ModularDabbyStatics for modular builds
 declare module '../../dabby.js' {
   interface ModularDabbyStatics {
-    parseHTML(html: string, context?: Node | Document | boolean, keepScripts?: boolean): Node[];
+    parseHTML(html: string | TrustedHTML, context?: Node | Document | boolean, keepScripts?: boolean): Element[];
   }
 }
 

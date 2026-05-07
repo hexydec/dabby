@@ -5,6 +5,18 @@ import "../../utils/each/each.js";
 type ParamValue = string | number | boolean | null | ParamValue[] | { [key: string]: ParamValue } | (() => ParamValue);
 type ParamObject = { [key: string]: ParamValue };
 
+/**
+ * Serialise an object into a URL-encoded query string.
+ *
+ * Nested objects and arrays are encoded with bracket notation (e.g. `user[name]=Ada`, `tags[]=foo`). Function values are evaluated and their return value is encoded. `null` values become empty strings.
+ *
+ * @param obj - object to serialise
+ * @returns URL-encoded query string (without a leading `?`)
+ *
+ * @example
+ * $.param({ q: "hello world", page: 2 });
+ * // => "q=hello%20world&page=2"
+ */
 function param(obj: ParamObject): string {
 	let params: string[] = [];
 

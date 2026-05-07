@@ -4,13 +4,55 @@ import camelise from "../../internal/camelise/camelise.js";
 
 type DataValue = string | number | boolean | object | null;
 
-// Getter - all data
+/**
+ * Retrieves all `data-*` values from the first node in the collection as a plain object.
+ *
+ * Each value is JSON-parsed where possible, so booleans, numbers and objects are
+ * returned in their original form. Keys are returned in camelCase.
+ *
+ * @returns an object containing all data values, or `undefined` if the collection is empty
+ *
+ * @example
+ * const allData = $("#user").data();
+ */
 function data(this: Dabby): Record<string, unknown>;
-// Getter - specific property
+/**
+ * Retrieves a single `data-*` value from the first node in the collection.
+ *
+ * The name may be supplied in dash-case or camelCase. The value is JSON-parsed where
+ * possible, so booleans, numbers and objects are returned in their original form.
+ *
+ * @param name - the data attribute name (without the `data-` prefix)
+ * @returns the parsed value, or `undefined` if the attribute is not set
+ *
+ * @example
+ * const userId = $("#user").data("user-id");
+ */
 function data(this: Dabby, name: string): unknown;
-// Setter - single property
+/**
+ * Sets a single `data-*` value on every node in the collection.
+ *
+ * Object values are serialised to JSON before being stored on the element's `dataset`.
+ *
+ * @param name - the data attribute name (without the `data-` prefix)
+ * @param value - the value to store
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("#user").data("status", "active");
+ */
 function data(this: Dabby, name: string, value: DataValue): Dabby;
-// Setter - multiple properties
+/**
+ * Sets multiple `data-*` values on every node in the collection.
+ *
+ * Object values are serialised to JSON before being stored on the element's `dataset`.
+ *
+ * @param props - a plain object of name/value pairs
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("#user").data({ role: "admin", verified: true });
+ */
 function data(this: Dabby, props: Record<string, DataValue>): Dabby;
 // Implementation
 function data(
@@ -85,8 +127,8 @@ declare module '../../dabby.js' {
   interface ModularDabbyMethods {
     data(): Record<string, unknown>;
     data(name: string): unknown;
-    data(name: string, value: unknown): this;
-    data(props: Record<string, unknown>): this;
+    data(name: string, value: string | number | boolean | object | null): this;
+    data(props: Record<string, string | number | boolean | object | null>): this;
   }
 }
 

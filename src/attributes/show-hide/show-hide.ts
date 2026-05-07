@@ -42,14 +42,50 @@ function factory(obj: Dabby, n: number, show?: boolean): Dabby {
 	return obj;
 }
 
+/**
+ * Hides every node in the collection by setting their inline `display` to `none`.
+ *
+ * The previous `display` value is cached so a subsequent `show()` can restore it.
+ * If a stylesheet rule sets `display` with `!important`, this method has no effect.
+ *
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".alert").hide();
+ */
 function hide(this: Dabby): Dabby {
 	return factory(this, 0);
 }
 
+/**
+ * Shows every node in the collection by restoring their previous `display` value.
+ *
+ * If the node was not previously hidden by Dabby, the inline `display` is set to
+ * `block`. If a stylesheet rule sets `display` with `!important`, this method has
+ * no effect.
+ *
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".modal").show();
+ */
 function show(this: Dabby): Dabby {
 	return factory(this, 1);
 }
 
+/**
+ * Toggles the visibility of every node in the collection.
+ *
+ * When `show` is supplied, the nodes are forced visible (`true`) or hidden (`false`),
+ * matching the behaviour of `show()` / `hide()` respectively. Without `show`, each
+ * node is flipped to the opposite of its current state.
+ *
+ * @param show - optional boolean to force the toggle direction
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".dropdown-menu").toggle();
+ */
 function toggle(this: Dabby, show?: boolean): Dabby {
 	return factory(this, 2, show);
 }

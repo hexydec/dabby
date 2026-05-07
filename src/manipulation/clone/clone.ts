@@ -29,6 +29,21 @@ const copy = (from: Element, to: Element): void => {
 	}
 };
 
+/**
+ * Clone the items in the collection and return a new collection.
+ *
+ * By default, only the DOM nodes are cloned. When `withDataAndEvents` is true,
+ * data attributes and bound event handlers are copied onto the new nodes;
+ * `deepWithDataAndEvents` controls the same behaviour for descendants and
+ * defaults to the value of `withDataAndEvents`.
+ *
+ * @param withDataAndEvents - copy data and event handlers onto the cloned nodes
+ * @param deepWithDataAndEvents - copy data and event handlers onto descendants of the cloned nodes
+ * @returns a new Dabby collection containing the cloned nodes
+ *
+ * @example
+ * const $copy = $(".card").clone(true);
+ */
 function clone(
 	this: Dabby,
 	withDataAndEvents: boolean = false,

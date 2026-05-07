@@ -105,6 +105,30 @@ function factory(
 	return obj;
 }
 
+/**
+ * Bind one or more event callbacks to each element in the collection.
+ *
+ * Accepts a space-separated event string or a plain object mapping events to
+ * handlers. Optionally delegates events to descendants matching a selector,
+ * and may pass arbitrary data to the handler via `event.data`. Returning
+ * `false` from a handler calls `preventDefault()` and `stopPropagation()` on
+ * the native event.
+ *
+ * @param events - Space-separated event names, or a plain object whose keys are space-separated event names and whose values are handlers
+ * @param selector - Optional descendant selector to delegate the event to
+ * @param data - Optional data exposed on the handler's event as `event.data` (or `event._data` if `event.data` is read-only)
+ * @param callback - Handler invoked when the event fires; `this` is the matched element
+ * @returns The original Dabby collection
+ *
+ * @example
+ * import $ from "dabbyjs";
+ * import "dabbyjs/events/on/on";
+ *
+ * $("#save").on("click", (event) => {
+ *   event.preventDefault();
+ *   saveDocument();
+ * });
+ */
 function on(
 	this: Dabby,
 	events: EventsParam,
@@ -117,6 +141,28 @@ function on(
 
 Object.defineProperty(Dabby.prototype, "on", { value: on, configurable: true });
 
+/**
+ * Bind a one-shot event callback that detaches itself after firing once.
+ *
+ * Behaves identically to {@link on} but each underlying `addEventListener`
+ * call uses the `{ once: true }` option, so the handler is removed after its
+ * first invocation. Delegation, event data and the `false`-return short-hand
+ * for cancelling the event are all supported.
+ *
+ * @param events - Space-separated event names, or a plain object whose keys are space-separated event names and whose values are handlers
+ * @param selector - Optional descendant selector to delegate the event to
+ * @param data - Optional data exposed on the handler's event as `event.data`
+ * @param callback - Handler invoked the first time the event fires; `this` is the matched element
+ * @returns The original Dabby collection
+ *
+ * @example
+ * import $ from "dabbyjs";
+ * import "dabbyjs/events/on/on";
+ *
+ * $(".banner").one("click", function () {
+ *   this.classList.add("dismissed");
+ * });
+ */
 function one(
 	this: Dabby,
 	events: EventsParam,

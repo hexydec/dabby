@@ -1,298 +1,97 @@
-# .off()
+# $.fn.off(events?, selector?, callback?)
 
-Unbinds event handlers previously bound through [.on()](../on/readme.md).
+Remove event handlers previously bound through [`.on()`](../on/readme.md) or [`.one()`](../on/readme.md). Without arguments, removes every Dabby-attached handler from each element. Otherwise, removes only the matching handlers, optionally narrowed by delegation selector and callback reference.
 
-## Usage
+Comparison of the callback reference is performed by comparing the `toString()` of the original handler against the supplied one, so passing the exact same function reference is the most reliable way to remove a single handler.
 
-```javascript
-// Unbind events as a string
-$(selector).off(events, handler);
-$(selector).off(events, delegate, handler);
+## Signatures
 
-// Unbind events as an object
-$(selector).off(eventsObject);
-
-// Unbind all events
-$(selector).off();
+```ts
+off(): this;
+off(events: EventMap): this;
+off(events: string, callback: OnCallback): this;
+off(events: string, selector: string, callback?: OnCallback): this;
 ```
 
-### events
+`OnCallback` is `(this: Element, event: Event, ...args: unknown[]) => void | false`. `EventMap` is `Record<string, OnCallback>`.
 
-A string containing a space-separated list of events to unbind, or a plain object where the key is a space-separated list of events to unbind and the value is the event handler.
+## Parameters
 
-### delegate
-
-A string specifying a selector the event to unbind is delegated to.
-
-### handler
-
-When `events` is a string, this is the callback function to match against the bound handlers for removal.
+- `events` (`string | EventMap`, optional) — A space-separated list of event names, or a plain object whose keys are event names and whose values are the handlers to remove. Omit to remove every handler bound through Dabby.
+- `selector` (`string`, optional) — The delegation selector that the handler was originally bound with. Required to match a delegated handler.
+- `callback` (`OnCallback`, optional) — The handler reference (or one whose `toString()` matches). Omit to remove all handlers for the named event(s).
 
 ## Returns
 
-The original Dabby collection.
+The original Dabby collection, for chaining.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/off/off";
 
-```javascript
-// Remove all click events
+// Remove every handler bound through Dabby on these elements
+$(".widget").off();
+
+// Remove every click handler
 $("a").off("click");
-
-// Remove specific click handler
-function myHandler(e) {
-    console.log("Clicked");
-}
-
-$("a").on("click", myHandler);
-$("a").off("click", myHandler);
-
-// Remove multiple events
-$("input").off("focus blur");
-
-// Remove delegated event
-$(".container").off("click", ".button");
-
-// Remove all events
-$("a").off();
 ```
 
-### Real-World Examples
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/off/off";
 
-```javascript
-// Temporary event handler
-function setupTempHandler() {
-    const handler = function (e) {
-        console.log("Temporary handler");
-        $(this).off("click", handler); // Remove after first use
-    };
-
-    $(".temp-button").on("click", handler);
+// Remove a specific handler reference
+function onClick() {
+    console.log("clicked");
 }
 
-// Disable form after submission
-$("form").on("submit", function (e) {
-    const $form = $(this);
+$("a").on("click", onClick);
+$("a").off("click", onClick);
 
-    // Remove submit handler to prevent double submission
-    $form.off("submit");
+// Remove a delegated handler — the selector must match the original binding
+$(".container").on("click", ".button", onClick);
+$(".container").off("click", ".button", onClick);
+```
 
-    // Process form
-    processForm($form);
-});
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/off/off";
 
-// Modal lifecycle
-function showModal() {
-    $(".modal").addClass("visible");
-
-    // Add close handlers
-    $(".modal-overlay").on("click", closeModal);
-    $(document).on("keydown", escapeHandler);
+// Use .one() semantics by hand: detach inside the handler after the first run
+function once(this: Element) {
+    console.log("first click only");
+    $(this).off("click", once);
 }
 
-function closeModal() {
-    $(".modal").removeClass("visible");
+$("#start").on("click", once);
+```
 
-    // Remove close handlers
-    $(".modal-overlay").off("click", closeModal);
-    $(document).off("keydown", escapeHandler);
-}
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/off/off";
 
-function escapeHandler(e) {
-    if (e.key === "Escape") {
-        closeModal();
-    }
-}
-
-// Toggle event handlers
-let isEnabled = true;
-
-function handleClick(e) {
-    console.log("Button clicked");
-}
-
-$("#toggle-events").on("click", function () {
-    if (isEnabled) {
-        $(".action-button").off("click", handleClick);
-        $(this).text("Enable Events");
-    } else {
-        $(".action-button").on("click", handleClick);
-        $(this).text("Disable Events");
-    }
-
-    isEnabled = !isEnabled;
-});
-
-// Remove all delegated events
-function cleanup() {
-    // Remove all delegated events from body
-    $("body").off("click", ".dynamic-button");
-    $("body").off("change", ".dynamic-input");
-    $("body").off("submit", ".dynamic-form");
-}
-
-// Wizard step management
-function goToStep(stepNumber) {
-    // Remove current step handlers
-    $(".wizard-step").off("click", ".next-button");
-    $(".wizard-step").off("click", ".prev-button");
-
-    // Setup new step handlers
-    setupStepHandlers(stepNumber);
-}
-
-// Live search with cleanup
-let searchHandler = null;
-
-function enableLiveSearch() {
-    searchHandler = function () {
-        const query = $(this).val();
-        performSearch(query);
-    };
-
-    $("#search").on("input", searchHandler);
-}
-
-function disableLiveSearch() {
-    if (searchHandler) {
-        $("#search").off("input", searchHandler);
-        searchHandler = null;
-    }
-}
-
-// Tab switching cleanup
-function switchTab(tabId) {
-    // Remove old tab handlers
-    $(".tab-content").off("click", ".tab-action");
-
-    // Load new tab content
-    loadTabContent(tabId);
-
-    // Setup new tab handlers
-    $(`#${tabId}`).on("click", ".tab-action", handleTabAction);
-}
-
-// Unbind object notation
+// Remove handlers using the same object passed to .on()
 const handlers = {
-    click: function () {
-        console.log("Clicked");
-    },
-    mouseenter: function () {
-        console.log("Mouse entered");
-    },
-    mouseleave: function () {
-        console.log("Mouse left");
-    }
+    mouseenter() { /* ... */ },
+    mouseleave() { /* ... */ },
 };
 
-$(".element").on(handlers);
-$(".element").off(handlers); // Remove all defined handlers
-
-// One-time validation
-function setupOneTimeValidation() {
-    function validateOnce(e) {
-        const isValid = validateForm($(this));
-
-        if (isValid) {
-            // Remove validator after first success
-            $(this).off("submit", validateOnce);
-        } else {
-            e.preventDefault();
-        }
-    }
-
-    $("form").on("submit", validateOnce);
-}
-
-// Remove specific event from multiple events
-function handler(e) {
-    console.log(e.type);
-}
-
-$("input").on("focus blur change", handler);
-$("input").off("focus", handler); // Remove only focus
-
-// Clean up on page navigation
-function navigateAway() {
-    // Remove all event handlers before leaving
-    $(".dynamic-content").off();
-    $(window).off("scroll");
-    $(document).off("keydown");
-
-    // Navigate
-    window.location.href = "/next-page";
-}
-
-// Temporarily disable interactions
-let savedHandlers = [];
-
-function disableInteractions() {
-    $(".interactive").each(function () {
-        const events = $(this).data("events");
-
-        if (events) {
-            savedHandlers.push({ element: this, events: events });
-        }
-
-        $(this).off();
-    });
-}
-
-function enableInteractions() {
-    savedHandlers.forEach(function (item) {
-        $(item.element).on(item.events);
-    });
-
-    savedHandlers = [];
-}
-
-// Remove delegated handler for specific selector
-$("body").on("click", ".button-primary", handlePrimary);
-$("body").on("click", ".button-secondary", handleSecondary);
-
-// Later, remove only primary handler
-$("body").off("click", ".button-primary", handlePrimary);
-
-// Cleanup before reinitialising
-function reinitialiseComponent() {
-    const $component = $(".component");
-
-    // Remove all existing handlers
-    $component.off();
-    $component.find("*").off();
-
-    // Reinitialise
-    initialiseComponent($component);
-}
-
-// Remove handler after condition met
-let clickCount = 0;
-
-function limitedHandler(e) {
-    clickCount++;
-
-    if (clickCount >= 5) {
-        $(this).off("click", limitedHandler);
-        console.log("Click limit reached");
-    }
-}
-
-$(".limited-button").on("click", limitedHandler);
-
-// Debugging event handlers
-function listEventHandlers() {
-    const events = $("button").data("events");
-    console.log("Attached events:", events);
-}
-
-// Remove and readd with different parameters
-function updateHandler() {
-    $(".button").off("click", oldHandler);
-    $(".button").on("click", { newData: "value" }, newHandler);
-}
+$(".card").on(handlers);
+$(".card").off(handlers);
 ```
 
-## Differences to jQuery
+## See also
 
-Doesn't support the jQuery.Event object.
+- [$.fn.on()](../on/readme.md) — bind handlers
+- [$.fn.trigger()](../trigger/readme.md) — dispatch a real event
+- [$.fn.triggerHandler()](../triggerhandler/readme.md) — invoke handlers without dispatching
+
+## Differences from jQuery
+
+Does not support the `jQuery.Event` wrapper. Handler matching uses `Function.prototype.toString()` rather than identity, so handlers that share the exact same source as another handler may be removed together.

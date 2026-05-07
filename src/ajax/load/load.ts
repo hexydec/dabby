@@ -9,8 +9,34 @@ type XhrResponse = string | ArrayBuffer | Blob | Document | object | null;
 type XhrCallback = (this: Element, response: XhrResponse, status: string | number, xhr: XMLHttpRequest) => void;
 
 // Overload signatures
+/**
+ * Fetch HTML and append it to each element in the collection.
+ *
+ * If `data` is a plain object the request is sent as POST, otherwise GET. The URL may include a trailing CSS selector (e.g. `"/page.html #main"`) to filter the returned HTML before insertion.
+ *
+ * @param url - URL to fetch (optionally followed by a space and a CSS selector)
+ * @param data - parameters to send with the request
+ * @param success - callback invoked once per element after insertion
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("#sidebar").load("/widgets.html .widget", { user: 42 }, function () {
+ *   $(this).fadeIn();
+ * });
+ */
 function load(this: Dabby, url: string, data: string | PlainObject, success: XhrCallback): Dabby;
+/**
+ * Fetch HTML via GET and append it to each element in the collection.
+ *
+ * @param url - URL to fetch (optionally followed by a space and a CSS selector)
+ * @param success - callback invoked once per element after insertion
+ */
 function load(this: Dabby, url: string, success: XhrCallback): Dabby;
+/**
+ * Fetch HTML via GET and append it to each element in the collection.
+ *
+ * @param url - URL to fetch (optionally followed by a space and a CSS selector)
+ */
 function load(this: Dabby, url: string): Dabby;
 
 // Implementation

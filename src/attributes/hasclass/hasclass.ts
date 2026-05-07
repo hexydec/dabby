@@ -1,6 +1,15 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../dabby.js";
 
+/**
+ * Determines whether any node in the collection has the requested class.
+ *
+ * @param cls - the class name to test for
+ * @returns `true` if any node has the class, otherwise `false`
+ *
+ * @example
+ * if ($("body").hasClass("dark-mode")) { ... }
+ */
 function hasClass(this: Dabby, cls: string): boolean {
 	let i = this.length;
 	while (i--) {

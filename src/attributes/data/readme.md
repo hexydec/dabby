@@ -1,175 +1,65 @@
-# .data()
+# $.fn.data()
 
-Get or set arbitrary data as properties of each node in a collection.
+Read or set `data-*` attributes on the elements in a collection. Internally, Dabby uses the native `dataset` property, so values are JSON-parsed when read and serialised to JSON when set.
 
-## Usage
+Names may be supplied in dash-case (e.g. `user-id`) or camelCase (e.g. `userId`); they are normalised to the camelCase form used by `dataset`.
 
-```javascript
-$(selector).data(key);
-$(selector).data(key, value);
-$(selector).data(obj);
+## Signatures
+
+```ts
+data(): Record<string, unknown>;
+data(name: string): unknown;
+data(name: string, value: string | number | boolean | object | null): this;
+data(props: Record<string, string | number | boolean | object | null>): this;
 ```
 
-### key
+## Parameters
 
-The name of the data attribute to get/set. The key corresponds directly to any `data-*` attributes, so when reading, if the node contains a corresponding data attribute, the value will be returned.
-
-The names of data attributes must conform to the naming convention of HTML `data-*` attributes, so they must contain only lowercase alphanumeric characters and dashes. Names can also be sent in camelCase notation.
-
-### value
-
-Can be anything, but note that internally, any data is converted to a JSON string, so objects that have a `.toJSON()` method may not return in the same format.
-
-### obj
-
-An object of key/value pairs, enabling multiple data attributes to be set.
+- `name` (`string`) — the data attribute name, without the `data-` prefix.
+- `value` (`string | number | boolean | object | null`) — the value to store. Objects are serialised with `JSON.stringify`; primitives are stringified by the browser.
+- `props` (`object`) — a plain object of name/value pairs to set in one call.
 
 ## Returns
 
-When reading, the contained value will be returned, or `undefined` if the data attribute hasn't been set. When setting a value, the original Dabby collection will be returned.
+When called with no arguments, an object containing every data value from the first node. When called with a single name, the parsed value of that attribute, or `undefined` if it is not set. When setting, the original Dabby collection.
 
 ## Examples
 
-### Getting Data Attributes
-
-Using the following HTML:
-
 ```html
-<div id="user" data-user-id="12345" data-role="admin" data-preferences='{"theme": "dark", "language": "en"}'></div>
+<div id="user" data-user-id="12345" data-role="admin"
+     data-preferences='{"theme":"dark","language":"en"}'></div>
 ```
 
-You can retrieve data like this:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/data/data";
 
-```javascript
-// Get a single data attribute (automatically parsed)
-const userId = $("#user").data("user-id"); // Returns: "12345"
-const userId = $("#user").data("userId");   // Same as above (camelCase)
+// Read a single value (numbers and JSON are parsed automatically)
+const userId = $("#user").data("user-id");      // "12345"
+const prefs = $("#user").data("preferences");   // { theme: "dark", language: "en" }
 
-const role = $("#user").data("role"); // Returns: "admin"
-
-// Get JSON data (automatically parsed into an object)
-const prefs = $("#user").data("preferences");
-// Returns: {theme: "dark", language: "en"}
+// Read every data value
+const all = $("#user").data();
 ```
 
-### Setting Data Attributes
-
-```javascript
-// Set a single data attribute
+```ts
+// Set one value
 $("#user").data("status", "active");
-$("#user").data("last-login", "2025-12-30");
 
-// Set numeric values
-$("#user").data("login-count", 42);
+// Set an object — stored as JSON
+$("#user").data("settings", { notifications: true, autoSave: false });
+```
 
-// Set object values (automatically converted to JSON)
-$("#user").data("settings", {
-    notifications: true,
-    autoSave: false
-});
-
-// Set multiple data attributes at once
+```ts
+// Set several values at once
 $("#user").data({
-    "user-id": "67890",
-    "role": "moderator",
-    "verified": true
-});
-
-// Chain data calls
-$("#user")
-    .data("status", "active")
-    .data("level", 5)
-    .data("badges", ["gold", "silver"]);
-```
-
-### Real-World Examples
-
-```javascript
-// Store product information
-$(".product-card").each(function (index, card) {
-    $(card).data({
-        productId: 1000 + index,
-        price: 29.99,
-        inStock: true,
-        categories: ["electronics", "gadgets"]
-    });
-});
-
-// Retrieve and use stored data
-$(".add-to-cart").on("click", function () {
-    const $product = $(this).closest(".product-card");
-    const productId = $product.data("product-id");
-    const price = $product.data("price");
-
-    console.log(`Adding product ${productId} (£${price}) to cart`);
-});
-
-// Toggle states with data attributes
-$(".accordion-header").on("click", function () {
-    const $header = $(this);
-    const isExpanded = $header.data("expanded") || false;
-
-    $header.data("expanded", !isExpanded);
-
-    if (!isExpanded) {
-        $header.next(".accordion-content").show();
-    } else {
-        $header.next(".accordion-content").hide();
-    }
-});
-
-// Track interaction counts
-$(".share-button").on("click", function () {
-    const $btn = $(this);
-    const clicks = $btn.data("click-count") || 0;
-
-    $btn.data("click-count", clicks + 1);
-    console.log(`Shared ${clicks + 1} times`);
-});
-
-// Store API responses
-function loadUserData(userId) {
-    $.ajax(`/api/users/${userId}`, {
-        success: function (response) {
-            $(`#user-${userId}`).data({
-                userData: response,
-                lastFetched: new Date().toISOString(),
-                cached: true
-            });
-        }
-    });
-}
-
-// Check cache before making API calls
-function getUserData(userId) {
-    const $user = $(`#user-${userId}`);
-    const cached = $user.data("cached");
-
-    if (cached) {
-        return $user.data("user-data");
-    } else {
-        loadUserData(userId);
-    }
-}
-
-// Form field validation tracking
-$("input").on("blur", function () {
-    const $input = $(this);
-    const value = $input.val();
-    const isValid = value && value.length >= 3;
-
-    $input.data({
-        validated: true,
-        isValid: isValid,
-        lastValidated: Date.now()
-    });
-
-    if (!isValid) {
-        $input.addClass("error");
-    }
+    role: "moderator",
+    verified: true,
+    lastLogin: "2026-05-07"
 });
 ```
 
-## Differences to jQuery
+## See also
 
-jQuery may have its own internal data store to associate data with nodes in a collection, and thus may be able to retain more complex objects or those that have a `.toJSON()` method. The reason for this is simplicity: the JavaScript API for the `HTMLElement` object provides the `dataset` property, which Dabby uses internally.
+- [$.fn.attr()](../attr/readme.md) — read or set arbitrary HTML attributes (no JSON parsing).
+- [$.fn.prop()](../prop/readme.md) — read or set live DOM properties.

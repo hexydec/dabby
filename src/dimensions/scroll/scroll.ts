@@ -4,9 +4,20 @@ import getVal from "../../internal/getval/getval.js";
 
 type ScrollCallback = (this: Element | Window, index: number, currentValue: number) => number;
 
-// Getter signature
+/**
+ * Retrieve the horizontal scroll position of the first node in the collection.
+ *
+ * For `window` the returned value is `pageXOffset`.
+ *
+ * @returns The current `scrollLeft` value in pixels, or `undefined` if the collection is empty.
+ */
 function scrollLeft(this: Dabby): number | undefined;
-// Setter signature
+/**
+ * Set the horizontal scroll position of every node in the collection.
+ *
+ * @param pos - The new scroll position in pixels, or a callback that returns the new value given the index and current `scrollLeft`.
+ * @returns The original Dabby collection for chaining.
+ */
 function scrollLeft(this: Dabby, pos: number | ScrollCallback): Dabby;
 // Implementation
 function scrollLeft(this: Dabby, pos?: number | ScrollCallback): Dabby | number | undefined {
@@ -15,9 +26,20 @@ function scrollLeft(this: Dabby, pos?: number | ScrollCallback): Dabby | number 
 
 Object.defineProperty(Dabby.prototype, "scrollLeft", { value: scrollLeft, configurable: true });
 
-// Getter signature
+/**
+ * Retrieve the vertical scroll position of the first node in the collection.
+ *
+ * For `window` the returned value is `pageYOffset`.
+ *
+ * @returns The current `scrollTop` value in pixels, or `undefined` if the collection is empty.
+ */
 function scrollTop(this: Dabby): number | undefined;
-// Setter signature
+/**
+ * Set the vertical scroll position of every node in the collection.
+ *
+ * @param pos - The new scroll position in pixels, or a callback that returns the new value given the index and current `scrollTop`.
+ * @returns The original Dabby collection for chaining.
+ */
 function scrollTop(this: Dabby, pos: number | ScrollCallback): Dabby;
 // Implementation
 function scrollTop(this: Dabby, pos?: number | ScrollCallback): Dabby | number | undefined {

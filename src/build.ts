@@ -1,4 +1,4 @@
-import $ from "./core/dabby/dabby.js";
+import $ from "./dabby.js";
 
 // Core methods are already in the Dabby class
 
@@ -76,4 +76,4 @@ import "./utils/parsehtml/parsehtml.js";
 export default $;
 export { Dabby } from "./core/dabby/dabby.js";
 export type { Selector, DOMNode, DabbyFactory, ReadyCallback } from "./types.js";
-export type { DabbyFull } from "./dabby-full.js";
+export type { DabbyAuto as DabbyFull } from "./dabby.js";

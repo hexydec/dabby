@@ -5,8 +5,33 @@ import type {} from "../../dabby.js";
 
 type HTMLCallback = (this: Element, index: number, currentHTML: string) => string;
 
+/**
+ * Retrieve the `innerHTML` of the first item in the collection.
+ *
+ * Returns `undefined` when the collection is empty.
+ *
+ * @returns the HTML markup of the first element, or `undefined`
+ *
+ * @example
+ * const markup = $(".article").html();
+ */
 // Getter
 function html(this: Dabby): string | undefined;
+/**
+ * Set the `innerHTML` of every item in the collection.
+ *
+ * Accepts a string, a `TrustedHTML` object, or a callback invoked for each
+ * element with the element's index and current HTML; the callback's return
+ * value becomes the new HTML. String values are routed through the configured
+ * Trusted Types policy when one is available, so this method is safe to use
+ * under `Content-Security-Policy: require-trusted-types-for 'script'`.
+ *
+ * @param content - HTML string, TrustedHTML, or a callback returning new HTML
+ * @returns the original Dabby collection
+ *
+ * @example
+ * $(".container").html("<p>Updated</p>");
+ */
 // Setter
 function html(this: Dabby, content: string | TrustedHTML | HTMLCallback): Dabby;
 // Implementation

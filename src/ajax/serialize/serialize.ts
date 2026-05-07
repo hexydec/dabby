@@ -8,6 +8,17 @@ import "../param/param.js";
 type ParamValue = string | number | boolean | null | string[] | number[];
 type SerializedParams = { [key: string]: ParamValue | SerializedParams } | ParamValue[];
 
+/**
+ * Serialise the values of form controls in the collection into a URL-encoded query string.
+ *
+ * Considers named `<input>` (excluding file, submit, and unchecked radio/checkbox), `<textarea>`, and `<select>` controls. Disabled fields are skipped. If the collection itself doesn't match form controls, descendants are searched instead.
+ *
+ * @returns URL-encoded query string of the collected name/value pairs
+ *
+ * @example
+ * $("form").serialize();
+ * // => "name=Ada&email=ada%40example.com"
+ */
 function serialize(this: Dabby): string {
 	const selector = "input[name]:not([type=file]):not([type=submit]):not([type=radio]):not([type=checkbox]),input[name]:checked,textarea[name],select[name]";
 

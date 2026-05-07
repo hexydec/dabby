@@ -41,14 +41,46 @@ function classFactory(
 	return obj;
 }
 
+/**
+ * Removes one or more classes from every node in the collection.
+ *
+ * @param cls - a class name, a space-separated string of class names, an array of class names, or a callback returning the same
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".product-item").removeClass("product-item--selected");
+ */
 function removeClass(this: Dabby, cls: ClassValue): Dabby {
 	return classFactory(this, 0, cls);
 }
 
+/**
+ * Adds one or more classes to every node in the collection.
+ *
+ * @param cls - a class name, a space-separated string of class names, an array of class names, or a callback returning the same
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".card").addClass("card--active");
+ */
 function addClass(this: Dabby, cls: ClassValue): Dabby {
 	return classFactory(this, 1, cls);
 }
 
+/**
+ * Toggles one or more classes on every node in the collection.
+ *
+ * When `state` is supplied, the classes are forced on (`true`) or off (`false`),
+ * matching the behaviour of `addClass()` / `removeClass()` respectively. Without
+ * `state`, each class is flipped to the opposite of its current state.
+ *
+ * @param cls - a class name, a space-separated string of class names, an array of class names, or a callback returning the same
+ * @param state - optional boolean to force the toggle direction
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".navigation").toggleClass("navigation--open");
+ */
 function toggleClass(this: Dabby, cls: ClassValue, state?: boolean): Dabby {
 	return classFactory(this, 2, cls, state);
 }

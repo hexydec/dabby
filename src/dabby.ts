@@ -16,7 +16,7 @@
  */
 
 import type { Dabby } from './core/dabby/dabby.js'
-import type { Selector, ReadyCallback } from './types.js'
+import type { Selector, ReadyCallback, DOMNode } from './types.js'
 import $base from './core/dabby/dabby.js'
 
 // This interface is populated by method files via module augmentation
@@ -32,6 +32,17 @@ export interface ModularDabbyMethods {
 export interface ModularDabbyStatics {
   // Static methods added dynamically via module augmentation
   // Example: After importing 'dabbyjs/src/ajax/ajax/ajax', this will have ajax()
+}
+
+// Shared callback shape for all event methods
+type EventCallback = (this: Element, event: Event, ...args: unknown[]) => void | false
+
+// Named event shortcut: zero-arg trigger, callback bind, or jQuery-style delegation
+type NamedEventMethod<Self> = {
+  (): Self
+  (callback: EventCallback): Self
+  (selector: string, callback: EventCallback): Self
+  (selector: string, data: unknown, callback: EventCallback): Self
 }
 
 // Define all possible Dabby methods with their signatures
@@ -74,10 +85,10 @@ export interface DabbyMethodSignatures<Self = Dabby> {
     (): Self
   }
   remove: {
-    (selector?: string): Self
+    (selector?: Selector): Self
   }
   detach: {
-    (selector?: string): Self
+    (selector?: Selector): Self
   }
   clone: {
     (withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): Self
@@ -125,37 +136,37 @@ export interface DabbyMethodSignatures<Self = Dabby> {
   }
 
   // Named events
-  click: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  dblclick: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  mousedown: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  mouseup: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  mousemove: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  mouseover: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  mouseout: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  mouseenter: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  mouseleave: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  keydown: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  keypress: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  keyup: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  focus: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  blur: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  focusin: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  focusout: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  change: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  select: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  submit: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  scroll: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  resize: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  contextmenu: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  error: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
-  unload: { (callback: (this: Element, event: Event, ...args: unknown[]) => void | false): Self; (): Self }
+  click: NamedEventMethod<Self>
+  dblclick: NamedEventMethod<Self>
+  mousedown: NamedEventMethod<Self>
+  mouseup: NamedEventMethod<Self>
+  mousemove: NamedEventMethod<Self>
+  mouseover: NamedEventMethod<Self>
+  mouseout: NamedEventMethod<Self>
+  mouseenter: NamedEventMethod<Self>
+  mouseleave: NamedEventMethod<Self>
+  keydown: NamedEventMethod<Self>
+  keypress: NamedEventMethod<Self>
+  keyup: NamedEventMethod<Self>
+  focus: NamedEventMethod<Self>
+  blur: NamedEventMethod<Self>
+  focusin: NamedEventMethod<Self>
+  focusout: NamedEventMethod<Self>
+  change: NamedEventMethod<Self>
+  select: NamedEventMethod<Self>
+  submit: NamedEventMethod<Self>
+  scroll: NamedEventMethod<Self>
+  resize: NamedEventMethod<Self>
+  contextmenu: NamedEventMethod<Self>
+  error: NamedEventMethod<Self>
+  unload: NamedEventMethod<Self>
 
   // Attributes & Classes
   addClass: {
     (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): Self
   }
   removeClass: {
-    (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): Self
+    (cls?: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): Self
   }
   toggleClass: {
     (cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[]), state?: boolean): Self
@@ -170,9 +181,9 @@ export interface DabbyMethodSignatures<Self = Dabby> {
     (props: Record<string, string | number>): Self
   }
   attr: {
-    (name: string): string | undefined
-    (name: string, value: string | number | boolean | null | ((this: Element, index: number, currentValue: string | undefined) => string | number | boolean | null)): Self
-    (props: Record<string, unknown>): Self
+    (name: string): string | null
+    (name: string, value: string | number | null | ((this: Element, index: number, currentValue: string | null) => string | number | null)): Self
+    (props: Record<string, string | number | null | Function>): Self
   }
   data: {
     (): Record<string, unknown>
@@ -242,7 +253,7 @@ export interface DabbyMethodSignatures<Self = Dabby> {
     (selector: Selector, filter?: Selector): Self
   }
   closest: {
-    (selector: Selector): Self
+    (selector: Selector, context?: Selector): Self
   }
   next: {
     (selector?: Selector): Self
@@ -335,9 +346,16 @@ export interface DabbyMethodSignatures<Self = Dabby> {
     (): string
   }
 
-  // Utilities
+  // Core (always present on Dabby)
   each: {
     (callback: (this: Element, index: number, element: Element) => void | false): Self
+  }
+  get: {
+    (): DOMNode[]
+    (index: number): DOMNode | undefined
+  }
+  map: {
+    (callback: (this: Element, index: number, element: Element) => Selector): Dabby
   }
 }
 

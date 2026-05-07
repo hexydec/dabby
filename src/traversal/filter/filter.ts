@@ -16,18 +16,54 @@ function factory(
 	return filter ? $(nodes as Element[]) : !!nodes.length; // not "is" : "is"
 }
 
+/**
+ * Determine whether any element in the collection matches the given selector.
+ *
+ * Useful for testing membership without producing a new collection.
+ *
+ * @param selector - A selector or callback used to test each element
+ * @returns `true` if at least one element matches, otherwise `false`
+ *
+ * @example
+ * if ($(".button").is(".active")) { ... }
+ */
 function is(this: Dabby, selector: FilterSelector): boolean {
 	return factory(this, selector) as boolean;
 }
 
 Object.defineProperty(Dabby.prototype, "is", { value: is, configurable: true });
 
+/**
+ * Reduce the collection to elements that match the given selector or callback.
+ *
+ * When a callback is supplied it is invoked once per element with the element
+ * index. Returning a truthy value keeps the element; a falsy value removes
+ * it. Inside the callback, `this` refers to the current element.
+ *
+ * @param selector - A selector or callback used to filter each element
+ * @returns A new Dabby collection containing only the matching elements
+ *
+ * @example
+ * $(".item").filter(".active");
+ */
 function filter(this: Dabby, selector: FilterSelector): Dabby {
 	return factory(this, selector, true) as Dabby;
 }
 
 Object.defineProperty(Dabby.prototype, "filter", { value: filter, configurable: true });
 
+/**
+ * Reduce the collection to elements that do not match the given selector.
+ *
+ * The inverse of [`filter`]. Elements that match `selector` are removed from
+ * the result.
+ *
+ * @param selector - A selector or callback used to identify elements to exclude
+ * @returns A new Dabby collection containing only the non-matching elements
+ *
+ * @example
+ * $(".item").not(".disabled");
+ */
 function not(this: Dabby, selector: Selector): Dabby {
 	return factory(this, selector, true, true) as Dabby;
 }

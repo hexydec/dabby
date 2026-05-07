@@ -2,6 +2,19 @@ import $, { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../dabby.js";
 import type { Selector } from "../../types.js";
 
+/**
+ * Add elements to the end of the current Dabby collection.
+ *
+ * Duplicate nodes are filtered out so the resulting collection contains each
+ * element at most once. The original collection is not modified — a new Dabby
+ * collection is returned.
+ *
+ * @param selector - A selector, HTML string, Node, array of Nodes or Dabby collection of nodes to add
+ * @returns A new Dabby collection containing the original nodes plus the added nodes
+ *
+ * @example
+ * $(".item").add(".extra-item");
+ */
 function add(this: Dabby, selector: Selector): Dabby {
 	// Get existing nodes
 	const existing = Array.from(this);

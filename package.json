@@ -15,247 +15,248 @@
 		"javascript"
 	],
 	"contributors": [],
-	"main": "src/dabby.js",
+	"main": "dist/dabby.js",
 	"types": "dist/dabby.d.ts",
 	"source": "src/dabby.ts",
 	"exports": {
 		".": {
 			"types": "./dist/dabby.d.ts",
-			"default": "./src/dabby.js"
+			"default": "./dist/dabby.js"
 		},
 		"./full": {
 			"types": "./dist/build.d.ts",
-			"default": "./dist/dabby.js"
+			"default": "./dist/full.js"
 		},
-		"./src/ajax/ajax/ajax": {
+		"./ajax/ajax/ajax": {
 			"types": "./dist/ajax/ajax/ajax.d.ts",
-			"default": "./src/ajax/ajax/ajax.js"
+			"default": "./dist/ajax/ajax/ajax.js"
 		},
-		"./src/ajax/getpost/getpost": {
+		"./ajax/getpost/getpost": {
 			"types": "./dist/ajax/getpost/getpost.d.ts",
-			"default": "./src/ajax/getpost/getpost.js"
+			"default": "./dist/ajax/getpost/getpost.js"
 		},
-		"./src/ajax/getscript/getscript": {
+		"./ajax/getscript/getscript": {
 			"types": "./dist/ajax/getscript/getscript.d.ts",
-			"default": "./src/ajax/getscript/getscript.js"
+			"default": "./dist/ajax/getscript/getscript.js"
 		},
-		"./src/ajax/param/param": {
-			"types": "./dist/ajax/param/param.d.ts",
-			"default": "./src/ajax/param/param.js"
-		},
-		"./src/ajax/serialize/serialize": {
-			"types": "./dist/ajax/serialize/serialize.d.ts",
-			"default": "./src/ajax/serialize/serialize.js"
-		},
-		"./src/attributes/attr/attr": {
-			"types": "./dist/attributes/attr/attr.d.ts",
-			"default": "./src/attributes/attr/attr.js"
-		},
-		"./src/attributes/class/class": {
-			"types": "./dist/attributes/class/class.d.ts",
-			"default": "./src/attributes/class/class.js"
-		},
-		"./src/attributes/css/css": {
-			"types": "./dist/attributes/css/css.d.ts",
-			"default": "./src/attributes/css/css.js"
-		},
-		"./src/attributes/data/data": {
-			"types": "./dist/attributes/data/data.d.ts",
-			"default": "./src/attributes/data/data.js"
-		},
-		"./src/attributes/hasclass/hasclass": {
-			"types": "./dist/attributes/hasclass/hasclass.d.ts",
-			"default": "./src/attributes/hasclass/hasclass.js"
-		},
-		"./src/attributes/prop/prop": {
-			"types": "./dist/attributes/prop/prop.d.ts",
-			"default": "./src/attributes/prop/prop.js"
-		},
-		"./src/attributes/removeprop/removeprop": {
-			"types": "./dist/attributes/removeprop/removeprop.d.ts",
-			"default": "./src/attributes/removeprop/removeprop.js"
-		},
-		"./src/attributes/show-hide/show-hide": {
-			"types": "./dist/attributes/show-hide/show-hide.d.ts",
-			"default": "./src/attributes/show-hide/show-hide.js"
-		},
-		"./src/attributes/val/val": {
-			"types": "./dist/attributes/val/val.d.ts",
-			"default": "./src/attributes/val/val.js"
-		},
-		"./src/dimensions/offset/offset": {
-			"types": "./dist/dimensions/offset/offset.d.ts",
-			"default": "./src/dimensions/offset/offset.js"
-		},
-		"./src/dimensions/offsetparent/offsetparent": {
-			"types": "./dist/dimensions/offsetparent/offsetparent.d.ts",
-			"default": "./src/dimensions/offsetparent/offsetparent.js"
-		},
-		"./src/dimensions/position/position": {
-			"types": "./dist/dimensions/position/position.d.ts",
-			"default": "./src/dimensions/position/position.js"
-		},
-		"./src/dimensions/scroll/scroll": {
-			"types": "./dist/dimensions/scroll/scroll.d.ts",
-			"default": "./src/dimensions/scroll/scroll.js"
-		},
-		"./src/dimensions/width-height/width-height": {
-			"types": "./dist/dimensions/width-height/width-height.d.ts",
-			"default": "./src/dimensions/width-height/width-height.js"
-		},
-		"./src/events/off/off": {
-			"types": "./dist/events/off/off.d.ts",
-			"default": "./src/events/off/off.js"
-		},
-		"./src/events/on/on": {
-			"types": "./dist/events/on/on.d.ts",
-			"default": "./src/events/on/on.js"
-		},
-		"./src/events/trigger/trigger": {
-			"types": "./dist/events/trigger/trigger.d.ts",
-			"default": "./src/events/trigger/trigger.js"
-		},
-		"./src/events/triggerhandler/triggerhandler": {
-			"types": "./dist/events/triggerhandler/triggerhandler.d.ts",
-			"default": "./src/events/triggerhandler/triggerhandler.js"
-		},
-		"./src/manipulation/clone/clone": {
-			"types": "./dist/manipulation/clone/clone.d.ts",
-			"default": "./src/manipulation/clone/clone.js"
-		},
-		"./src/manipulation/empty/empty": {
-			"types": "./dist/manipulation/empty/empty.d.ts",
-			"default": "./src/manipulation/empty/empty.js"
-		},
-		"./src/manipulation/html/html": {
-			"types": "./dist/manipulation/html/html.d.ts",
-			"default": "./src/manipulation/html/html.js"
-		},
-		"./src/manipulation/insert/insert": {
-			"types": "./dist/manipulation/insert/insert.d.ts",
-			"default": "./src/manipulation/insert/insert.js"
-		},
-		"./src/manipulation/insertto/insertto": {
-			"types": "./dist/manipulation/insertto/insertto.d.ts",
-			"default": "./src/manipulation/insertto/insertto.js"
-		},
-		"./src/manipulation/remove/remove": {
-			"types": "./dist/manipulation/remove/remove.d.ts",
-			"default": "./src/manipulation/remove/remove.js"
-		},
-		"./src/manipulation/replace/replace": {
-			"types": "./dist/manipulation/replace/replace.d.ts",
-			"default": "./src/manipulation/replace/replace.js"
-		},
-		"./src/manipulation/text/text": {
-			"types": "./dist/manipulation/text/text.d.ts",
-			"default": "./src/manipulation/text/text.js"
-		},
-		"./src/manipulation/unwrap/unwrap": {
-			"types": "./dist/manipulation/unwrap/unwrap.d.ts",
-			"default": "./src/manipulation/unwrap/unwrap.js"
-		},
-		"./src/manipulation/wrap/wrap": {
-			"types": "./dist/manipulation/wrap/wrap.d.ts",
-			"default": "./src/manipulation/wrap/wrap.js"
-		},
-		"./src/manipulation/wrapall/wrapall": {
-			"types": "./dist/manipulation/wrapall/wrapall.d.ts",
-			"default": "./src/manipulation/wrapall/wrapall.js"
-		},
-		"./src/traversal/children/children": {
-			"types": "./dist/traversal/children/children.d.ts",
-			"default": "./src/traversal/children/children.js"
-		},
-		"./src/traversal/closest/closest": {
-			"types": "./dist/traversal/closest/closest.d.ts",
-			"default": "./src/traversal/closest/closest.js"
-		},
-		"./src/traversal/eq/eq": {
-			"types": "./dist/traversal/eq/eq.d.ts",
-			"default": "./src/traversal/eq/eq.js"
-		},
-		"./src/traversal/filter/filter": {
-			"types": "./dist/traversal/filter/filter.d.ts",
-			"default": "./src/traversal/filter/filter.js"
-		},
-		"./src/traversal/first/first": {
-			"types": "./dist/traversal/first/first.d.ts",
-			"default": "./src/traversal/first/first.js"
-		},
-		"./src/traversal/has/has": {
-			"types": "./dist/traversal/has/has.d.ts",
-			"default": "./src/traversal/has/has.js"
-		},
-		"./src/traversal/index/index": {
-			"types": "./dist/traversal/index/index.d.ts",
-			"default": "./src/traversal/index/index.js"
-		},
-		"./src/traversal/last/last": {
-			"types": "./dist/traversal/last/last.d.ts",
-			"default": "./src/traversal/last/last.js"
-		},
-		"./src/traversal/next-prev/next-prev": {
-			"types": "./dist/traversal/next-prev/next-prev.d.ts",
-			"default": "./src/traversal/next-prev/next-prev.js"
-		},
-		"./src/traversal/parents/parents": {
-			"types": "./dist/traversal/parents/parents.d.ts",
-			"default": "./src/traversal/parents/parents.js"
-		},
-		"./src/traversal/siblings/siblings": {
-			"types": "./dist/traversal/siblings/siblings.d.ts",
-			"default": "./src/traversal/siblings/siblings.js"
-		},
-		"./src/traversal/slice/slice": {
-			"types": "./dist/traversal/slice/slice.d.ts",
-			"default": "./src/traversal/slice/slice.js"
-		},
-		"./src/traversal/even/even": {
-			"types": "./dist/traversal/even/even.d.ts",
-			"default": "./src/traversal/even/even.js"
-		},
-		"./src/traversal/odd/odd": {
-			"types": "./dist/traversal/odd/odd.d.ts",
-			"default": "./src/traversal/odd/odd.js"
-		},
-		"./src/traversal/add/add": {
-			"types": "./dist/traversal/add/add.d.ts",
-			"default": "./src/traversal/add/add.js"
-		},
-		"./src/traversal/find/find": {
-			"types": "./dist/traversal/find/find.d.ts",
-			"default": "./src/traversal/find/find.js"
-		},
-		"./src/ajax/load/load": {
+		"./ajax/load/load": {
 			"types": "./dist/ajax/load/load.d.ts",
-			"default": "./src/ajax/load/load.js"
+			"default": "./dist/ajax/load/load.js"
 		},
-		"./src/events/named/named": {
+		"./ajax/param/param": {
+			"types": "./dist/ajax/param/param.d.ts",
+			"default": "./dist/ajax/param/param.js"
+		},
+		"./ajax/serialize/serialize": {
+			"types": "./dist/ajax/serialize/serialize.d.ts",
+			"default": "./dist/ajax/serialize/serialize.js"
+		},
+		"./attributes/attr/attr": {
+			"types": "./dist/attributes/attr/attr.d.ts",
+			"default": "./dist/attributes/attr/attr.js"
+		},
+		"./attributes/class/class": {
+			"types": "./dist/attributes/class/class.d.ts",
+			"default": "./dist/attributes/class/class.js"
+		},
+		"./attributes/css/css": {
+			"types": "./dist/attributes/css/css.d.ts",
+			"default": "./dist/attributes/css/css.js"
+		},
+		"./attributes/data/data": {
+			"types": "./dist/attributes/data/data.d.ts",
+			"default": "./dist/attributes/data/data.js"
+		},
+		"./attributes/hasclass/hasclass": {
+			"types": "./dist/attributes/hasclass/hasclass.d.ts",
+			"default": "./dist/attributes/hasclass/hasclass.js"
+		},
+		"./attributes/prop/prop": {
+			"types": "./dist/attributes/prop/prop.d.ts",
+			"default": "./dist/attributes/prop/prop.js"
+		},
+		"./attributes/removeprop/removeprop": {
+			"types": "./dist/attributes/removeprop/removeprop.d.ts",
+			"default": "./dist/attributes/removeprop/removeprop.js"
+		},
+		"./attributes/show-hide/show-hide": {
+			"types": "./dist/attributes/show-hide/show-hide.d.ts",
+			"default": "./dist/attributes/show-hide/show-hide.js"
+		},
+		"./attributes/val/val": {
+			"types": "./dist/attributes/val/val.d.ts",
+			"default": "./dist/attributes/val/val.js"
+		},
+		"./dimensions/offset/offset": {
+			"types": "./dist/dimensions/offset/offset.d.ts",
+			"default": "./dist/dimensions/offset/offset.js"
+		},
+		"./dimensions/offsetparent/offsetparent": {
+			"types": "./dist/dimensions/offsetparent/offsetparent.d.ts",
+			"default": "./dist/dimensions/offsetparent/offsetparent.js"
+		},
+		"./dimensions/position/position": {
+			"types": "./dist/dimensions/position/position.d.ts",
+			"default": "./dist/dimensions/position/position.js"
+		},
+		"./dimensions/scroll/scroll": {
+			"types": "./dist/dimensions/scroll/scroll.d.ts",
+			"default": "./dist/dimensions/scroll/scroll.js"
+		},
+		"./dimensions/width-height/width-height": {
+			"types": "./dist/dimensions/width-height/width-height.d.ts",
+			"default": "./dist/dimensions/width-height/width-height.js"
+		},
+		"./events/named/named": {
 			"types": "./dist/events/named/named.d.ts",
-			"default": "./src/events/named/named.js"
+			"default": "./dist/events/named/named.js"
 		},
-		"./src/utils/each/each": {
+		"./events/off/off": {
+			"types": "./dist/events/off/off.d.ts",
+			"default": "./dist/events/off/off.js"
+		},
+		"./events/on/on": {
+			"types": "./dist/events/on/on.d.ts",
+			"default": "./dist/events/on/on.js"
+		},
+		"./events/trigger/trigger": {
+			"types": "./dist/events/trigger/trigger.d.ts",
+			"default": "./dist/events/trigger/trigger.js"
+		},
+		"./events/triggerhandler/triggerhandler": {
+			"types": "./dist/events/triggerhandler/triggerhandler.d.ts",
+			"default": "./dist/events/triggerhandler/triggerhandler.js"
+		},
+		"./manipulation/clone/clone": {
+			"types": "./dist/manipulation/clone/clone.d.ts",
+			"default": "./dist/manipulation/clone/clone.js"
+		},
+		"./manipulation/empty/empty": {
+			"types": "./dist/manipulation/empty/empty.d.ts",
+			"default": "./dist/manipulation/empty/empty.js"
+		},
+		"./manipulation/html/html": {
+			"types": "./dist/manipulation/html/html.d.ts",
+			"default": "./dist/manipulation/html/html.js"
+		},
+		"./manipulation/insert/insert": {
+			"types": "./dist/manipulation/insert/insert.d.ts",
+			"default": "./dist/manipulation/insert/insert.js"
+		},
+		"./manipulation/insertto/insertto": {
+			"types": "./dist/manipulation/insertto/insertto.d.ts",
+			"default": "./dist/manipulation/insertto/insertto.js"
+		},
+		"./manipulation/remove/remove": {
+			"types": "./dist/manipulation/remove/remove.d.ts",
+			"default": "./dist/manipulation/remove/remove.js"
+		},
+		"./manipulation/replace/replace": {
+			"types": "./dist/manipulation/replace/replace.d.ts",
+			"default": "./dist/manipulation/replace/replace.js"
+		},
+		"./manipulation/text/text": {
+			"types": "./dist/manipulation/text/text.d.ts",
+			"default": "./dist/manipulation/text/text.js"
+		},
+		"./manipulation/unwrap/unwrap": {
+			"types": "./dist/manipulation/unwrap/unwrap.d.ts",
+			"default": "./dist/manipulation/unwrap/unwrap.js"
+		},
+		"./manipulation/wrap/wrap": {
+			"types": "./dist/manipulation/wrap/wrap.d.ts",
+			"default": "./dist/manipulation/wrap/wrap.js"
+		},
+		"./manipulation/wrapall/wrapall": {
+			"types": "./dist/manipulation/wrapall/wrapall.d.ts",
+			"default": "./dist/manipulation/wrapall/wrapall.js"
+		},
+		"./traversal/add/add": {
+			"types": "./dist/traversal/add/add.d.ts",
+			"default": "./dist/traversal/add/add.js"
+		},
+		"./traversal/children/children": {
+			"types": "./dist/traversal/children/children.d.ts",
+			"default": "./dist/traversal/children/children.js"
+		},
+		"./traversal/closest/closest": {
+			"types": "./dist/traversal/closest/closest.d.ts",
+			"default": "./dist/traversal/closest/closest.js"
+		},
+		"./traversal/eq/eq": {
+			"types": "./dist/traversal/eq/eq.d.ts",
+			"default": "./dist/traversal/eq/eq.js"
+		},
+		"./traversal/even/even": {
+			"types": "./dist/traversal/even/even.d.ts",
+			"default": "./dist/traversal/even/even.js"
+		},
+		"./traversal/filter/filter": {
+			"types": "./dist/traversal/filter/filter.d.ts",
+			"default": "./dist/traversal/filter/filter.js"
+		},
+		"./traversal/find/find": {
+			"types": "./dist/traversal/find/find.d.ts",
+			"default": "./dist/traversal/find/find.js"
+		},
+		"./traversal/first/first": {
+			"types": "./dist/traversal/first/first.d.ts",
+			"default": "./dist/traversal/first/first.js"
+		},
+		"./traversal/has/has": {
+			"types": "./dist/traversal/has/has.d.ts",
+			"default": "./dist/traversal/has/has.js"
+		},
+		"./traversal/index/index": {
+			"types": "./dist/traversal/index/index.d.ts",
+			"default": "./dist/traversal/index/index.js"
+		},
+		"./traversal/last/last": {
+			"types": "./dist/traversal/last/last.d.ts",
+			"default": "./dist/traversal/last/last.js"
+		},
+		"./traversal/next-prev/next-prev": {
+			"types": "./dist/traversal/next-prev/next-prev.d.ts",
+			"default": "./dist/traversal/next-prev/next-prev.js"
+		},
+		"./traversal/odd/odd": {
+			"types": "./dist/traversal/odd/odd.d.ts",
+			"default": "./dist/traversal/odd/odd.js"
+		},
+		"./traversal/parents/parents": {
+			"types": "./dist/traversal/parents/parents.d.ts",
+			"default": "./dist/traversal/parents/parents.js"
+		},
+		"./traversal/siblings/siblings": {
+			"types": "./dist/traversal/siblings/siblings.d.ts",
+			"default": "./dist/traversal/siblings/siblings.js"
+		},
+		"./traversal/slice/slice": {
+			"types": "./dist/traversal/slice/slice.d.ts",
+			"default": "./dist/traversal/slice/slice.js"
+		},
+		"./utils/each/each": {
 			"types": "./dist/utils/each/each.d.ts",
-			"default": "./src/utils/each/each.js"
+			"default": "./dist/utils/each/each.js"
 		},
-		"./src/utils/isplainobject/isplainobject": {
-			"types": "./dist/utils/isplainobject/isplainobject.d.ts",
-			"default": "./src/utils/isplainobject/isplainobject.js"
-		},
-		"./src/utils/parsehtml/parsehtml": {
-			"types": "./dist/utils/parsehtml/parsehtml.d.ts",
-			"default": "./src/utils/parsehtml/parsehtml.js"
-		},
-		"./src/utils/extend/extend": {
+		"./utils/extend/extend": {
 			"types": "./dist/utils/extend/extend.d.ts",
-			"default": "./src/utils/extend/extend.js"
+			"default": "./dist/utils/extend/extend.js"
 		},
-		"./src/utils/map/map": {
+		"./utils/isplainobject/isplainobject": {
+			"types": "./dist/utils/isplainobject/isplainobject.d.ts",
+			"default": "./dist/utils/isplainobject/isplainobject.js"
+		},
+		"./utils/map/map": {
 			"types": "./dist/utils/map/map.d.ts",
-			"default": "./src/utils/map/map.js"
+			"default": "./dist/utils/map/map.js"
 		},
-		"./src/*": "./src/*"
+		"./utils/parsehtml/parsehtml": {
+			"types": "./dist/utils/parsehtml/parsehtml.d.ts",
+			"default": "./dist/utils/parsehtml/parsehtml.js"
+		},
+		"./src/*": "./src/*",
+		"./dist/*": "./dist/*"
 	},
 	"license": "MIT",
 	"bugs": {
@@ -268,7 +269,8 @@
 		"build": "tsc -p tsconfig.build.json && vite build",
 		"build:types": "tsc -p tsconfig.build.json",
 		"build:bundle": "vite build",
-		"dev": "vite build --watch"
+		"dev": "vite build --watch",
+		"demo": "vite --config demo/vite.config.ts"
 	},
 	"browserslist": [
 		"defaults"
@@ -283,10 +285,19 @@
 	"tsd": {
 		"directory": "test-d",
 		"compilerOptions": {
-			"lib": ["ES2022", "DOM", "DOM.Iterable"],
+			"lib": [
+				"ES2022",
+				"DOM",
+				"DOM.Iterable"
+			],
 			"paths": {
-				"dabbyjs": ["./src/dabby.ts"],
-				"dabbyjs/*": ["./src/*", "./dist/*"]
+				"dabbyjs": [
+					"./src/dabby.ts"
+				],
+				"dabbyjs/*": [
+					"./src/*",
+					"./dist/*"
+				]
 			}
 		}
 	},
@@ -298,8 +309,8 @@
 		"terser": "^5.43.1",
 		"tsd": "^0.33.0",
 		"typescript": "^5.9.2",
-		"vite": "^8.0.1",
-		"vitest": "^4.1.2"
+		"vite": "^7.3.3",
+		"vitest": "^3.2.4"
 	},
 	"repository": {
 		"type": "git",

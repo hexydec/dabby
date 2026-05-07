@@ -1,109 +1,59 @@
-# .closest()
+# $.fn.closest(selector, context?)
 
-Finds the first ancestor of each element in the collection that matches a given selector, starting with the element itself.
+For each element in the collection, find the first matching ancestor by
+walking upwards through the parent chain. The search begins with the element
+itself, so an element that matches `selector` will be returned as its own
+closest ancestor.
 
-## Usage
+## Signatures
 
-```javascript
-$(collection).closest(selector);
-$(collection).closest(selector, context);
+```ts
+closest(selector: Selector, context?: Selector): this;
 ```
 
-### selector
+## Parameters
 
-A selector, HTML string, Node, array of Nodes, Dabby collection, or callback function to find the matching ancestor.
-
-### context
-
-An optional HTML string, Node, array of Nodes, or function indicating where the search for an ancestor should stop.
+- `selector` (`Selector`) — the selector used to identify the target ancestor.
+- `context` (`Selector`, optional) — scopes the search; only ancestors within
+  the supplied context are considered.
 
 ## Returns
 
-A new Dabby collection containing the matched ancestors.
+A new Dabby collection containing the matched ancestors. If no ancestor
+matches for a given element, that element contributes nothing to the result.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/closest/closest";
 
-```javascript
-// Find closest parent with class
-const $card = $(".button").closest(".card");
-
-// Find closest form
-const $form = $("input").closest("form");
-
-// Find closest list item
-const $listItem = $(".link").closest("li");
-
-// Find with context limit
-const $section = $(".element").closest(".section", ".container");
-```
-
-### Real-World Examples
-
-```javascript
-// Event delegation - find closest clickable parent
+// Remove the list item that owns the clicked delete button
 $(".list").on("click", ".delete-button", function () {
     $(this).closest(".list-item").remove();
 });
+```
 
-// Form handling
-$("input").on("change", function () {
-    const $formGroup = $(this).closest(".form-group");
-    $formGroup.removeClass("error");
-});
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/closest/closest";
 
-// Find parent card on button click
-$(".card-button").on("click", function () {
-    const $card = $(this).closest(".card");
-    const cardId = $card.data("id");
-    console.log("Card clicked:", cardId);
-});
+// Find the form that contains an input
+const $form = $("input[name='email']").closest("form");
+```
 
-// Toggle accordion sections
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/closest/closest";
+
+// Toggle the surrounding accordion section
 $(".accordion-header").on("click", function () {
-    const $section = $(this).closest(".accordion-section");
-    $section.toggleClass("expanded");
-    $section.find(".accordion-content").toggle();
-});
-
-// Navigate up to table row
-$(".edit-cell").on("click", function () {
-    const $row = $(this).closest("tr");
-    $row.addClass("editing");
-});
-
-// Find modal container
-$(".modal-close").on("click", function () {
-    $(this).closest(".modal").hide();
-});
-
-// Validate field's parent form
-function validateField($field) {
-    const $form = $field.closest("form");
-    const isValid = $form.find("input[required]").filter(function () {
-        return !$(this).val();
-    }).length === 0;
-
-    return isValid;
-}
-
-// Update parent statistics
-$(".item-checkbox").on("change", function () {
-    const $container = $(this).closest(".container");
-    const checkedCount = $container.find(".item-checkbox:checked").length;
-
-    $container.find(".checked-count").text(checkedCount);
-});
-
-// Find data container
-$(".item").on("click", function () {
-    const $dataContainer = $(this).closest("[data-category]");
-    const category = $dataContainer.data("category");
-    console.log("Category:", category);
+    $(this).closest(".accordion-section").toggleClass("expanded");
 });
 ```
 
-## Differences to jQuery
+## See also
 
-None.
+- [$.fn.parent()](../parents/readme.md)
+- [$.fn.parents()](../parents/readme.md)
+- [$.fn.find()](../find/readme.md)

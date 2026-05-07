@@ -1,133 +1,64 @@
-# .attr()
+# $.fn.attr()
 
-Get attributes from the first node in a collection, or set attributes on all the nodes in a collection.
+Read an HTML attribute from the first node in a collection, or set one or more attributes on every node in the collection.
 
-## Usage
+The special keys `class`, `style` and `text` are mapped onto the element's `className`, `style.cssText` and `textContent` respectively. Setting a value of `null` removes the attribute. When the supplied key matches a known event name, the call is delegated to `$.fn.on()`.
 
-```javascript
-$(selector).attr(key); // => String
-$(selector).attr(key, value); // => Dabby
-$(selector).attr(attributes); // => Dabby
-$(selector).attr(key, function (index, currentValue) {}); // => Dabby
+## Signatures
+
+```ts
+attr(prop: string): string | null;
+attr(prop: string, value: string | number | null | ((this: Element, index: number, currentValue: string | null) => string | number | null)): this;
+attr(props: Record<string, string | number | null | Function>): this;
 ```
 
-### key
+## Parameters
 
-The name of the attribute to get or set.
-
-### value
-
-The value to set the attribute to.
-
-### attributes
-
-A plain object of key/value pairs representing the attributes to set.
-
-### function
-
-A callback that receives the index of the element in the collection, and the current value of the attribute. Should return the new attribute value. `this` will reference the current item in the collection that is being processed.
+- `prop` (`string`) — the name of the attribute to read or set.
+- `value` (`string | number | null | function`) — the value to assign. Use `null` to remove the attribute. A function receives `(index, currentValue)` and `this` set to the current element; it should return the new value.
+- `props` (`object`) — a plain object of attribute name/value pairs. Each value can be a static value or a callback as described above.
 
 ## Returns
 
-A string containing the value of the requested attribute when getting, or the original Dabby collection when setting attributes.
+When reading, the attribute value as a string, or `null` if the attribute is not set or the collection is empty. When setting, the original Dabby collection.
 
 ## Examples
 
-### Getting Attributes
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/attr/attr";
 
-```javascript
-// Get a single attribute from the first element
-const href = $("a").attr("href");
-// Returns: "https://example.com"
-
-const alt = $("img").attr("alt");
-// Returns: "A descriptive image"
-
-// Returns undefined if attribute doesn't exist
-const missing = $("div").attr("data-missing"); // undefined
+// Read an attribute
+const href = $("a.external").attr("href");
 ```
 
-### Setting Attributes
+```ts
+// Set a single attribute
+$("a.external").attr("target", "_blank");
 
-```javascript
-// Set a single attribute on all matching elements
-$("a").attr("href", "https://hexydec.github.io/dabby");
+// Remove an attribute by passing null
+$(".legacy").attr("data-tracked", null);
+```
 
-// Set the target attribute on all links
-$("a").attr("target", "_blank");
-
-// Set multiple attributes using an object
-$("img").attr({
-    alt: "A person holding a pineapple",
-    src: "images/pineapple.png",
+```ts
+// Set several attributes at once
+$("img.hero").attr({
+    src: "images/sunset.jpg",
+    alt: "Sunset over the harbour",
     loading: "lazy"
 });
-
-// Chain attribute calls
-$("a")
-    .attr("href", "https://example.com")
-    .attr("rel", "noopener noreferrer")
-    .attr("target", "_blank");
 ```
 
-### Using Callbacks
-
-```javascript
-// Set attribute based on current value
-$("img").attr("alt", function (index, currentAlt) {
-    return currentAlt ? currentAlt + " (updated)" : "Image " + (index + 1);
-});
-
-// Set different values for each element
-$("a").attr("href", function (index) {
-    return "page-" + (index + 1) + ".html";
-});
-
-// Add index to data attributes
-$(".item").attr("data-index", function (index) {
-    return index;
+```ts
+// Use a callback to derive each value
+$(".gallery img").attr("alt", function (index, current) {
+    return current ?? `Gallery image ${index + 1}`;
 });
 ```
 
-### Real-World Examples
+## See also
 
-```javascript
-// Update all external links to open in new tab
-$("a[href^='http']").attr({
-    target: "_blank",
-    rel: "noopener noreferrer"
-});
-
-// Lazy load images
-$("img").attr({
-    loading: "lazy",
-    decoding: "async"
-});
-
-// Add ARIA attributes for accessibility
-$(".button-icon").attr({
-    "aria-label": "Close dialogue",
-    "role": "button",
-    "tabindex": "0"
-});
-
-// Dynamic image gallery with data attributes
-$(".gallery-image").each(function (index, img) {
-    $(img).attr({
-        "data-gallery-index": index,
-        "data-src-full": $(img).attr("src").replace("-thumb", "-full"),
-        "alt": "Gallery image " + (index + 1)
-    });
-});
-
-// Form field validation attributes
-$("input[type='email']").attr({
-    required: "required",
-    pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
-    title: "Please enter a valid email address"
-});
-```
-
-## Differences to jQuery
-
-None.
+- [$.fn.prop()](../prop/readme.md) — read or set live DOM properties (e.g. `checked`, `disabled`).
+- [$.fn.removeProp()](../removeprop/readme.md) — remove a custom property from each node.
+- [$.fn.data()](../data/readme.md) — read or set `data-*` attributes with JSON parsing.
+- [$.fn.css()](../css/readme.md) — read or set inline styles.

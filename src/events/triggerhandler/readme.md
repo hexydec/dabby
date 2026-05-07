@@ -1,256 +1,95 @@
-# .triggerHandler()
+# $.fn.triggerHandler(name, data?)
 
-Trigger any handlers attached to the first object in a collection that were attached with [.on()](../on/readme.md). It will not trigger the native event like [.trigger()](../trigger/readme.md).
+Invoke the handlers bound to the first element in the collection without dispatching a real DOM event. No event bubbles, no native default action runs, and the return value of the last matching handler is returned to the caller, which makes `.triggerHandler()` ideal for treating event handlers as ordinary functions whose result you want to read.
 
-## Usage
+Each matching handler receives a synthetic event-like object with `target`, `currentTarget`, and `arg` properties — the supplied `data` is exposed as `arg` rather than `detail`.
 
-```javascript
-$(selector).triggerHandler(event);
-$(selector).triggerHandler(event, data);
+## Signatures
+
+```ts
+triggerHandler(name: string, data?: unknown): unknown;
 ```
 
-### event
+## Parameters
 
-The name of the event to trigger the handlers on.
-
-### data
-
-Any data to be sent to the handler function.
+- `name` (`string`) — The event name whose bound handlers should be invoked.
+- `data` (`unknown`, optional) — A value passed to handlers via the synthetic event's `arg` property.
 
 ## Returns
 
-The return value from the last handler that was triggered.
+The return value of the last matching handler, or `undefined` if no handler is bound to that event on the first element.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
 
-```javascript
-// Trigger handler only, not native event
-$("a").triggerHandler("click");
+// Run a validation handler and read its return value
+$("form").on("validate", function () {
+    return (this as HTMLFormElement).checkValidity();
+});
 
-// Trigger with data
-$("form").triggerHandler("submit", ["custom", "data"]);
-
-// Get return value from handler
-const result = $("input").triggerHandler("validate");
-console.log(result); // true or false
+const isValid = $("form").triggerHandler("validate") as boolean;
+if (!isValid) {
+    console.log("form has errors");
+}
 ```
 
-### Real-World Examples
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
 
-```javascript
-// Validation without submission
-$("form").on("validate", function () {
-    let isValid = true;
-
-    $(this).find("[required]").each(function () {
-        if (!$(this).val()) {
-            isValid = false;
-        }
-    });
-
-    return isValid;
-});
-
-// Check validity without triggering submit
-const isFormValid = $("form").triggerHandler("validate");
-
-if (isFormValid) {
-    console.log("Form is valid");
-}
-
-// Trigger custom handler without side effects
-$("input").on("customValidation", function (e, value) {
-    const pattern = $(this).data("pattern");
-    return new RegExp(pattern).test(value);
-});
-
-const email = "user@example.com";
-const isValidEmail = $("#email").triggerHandler("customValidation", [email]);
-
-// Get computed value from handler
+// Compute a value from the first matching element without changing the DOM
 $(".price").on("calculateTotal", function () {
-    const price = parseFloat($(this).text());
-    const quantity = parseInt($(this).data("quantity"));
+    const price = parseFloat(this.textContent ?? "0");
+    const quantity = Number((this as HTMLElement).dataset.quantity ?? "1");
     return price * quantity;
 });
 
-const total = $(".price").triggerHandler("calculateTotal");
+const total = $(".price").triggerHandler("calculateTotal") as number;
 $(".total").text(`£${total.toFixed(2)}`);
+```
 
-// Test event handler without triggering native behaviour
-$("#file-input").on("change", function () {
-    const file = this.files[0];
-    return file && file.size <= 5000000; // 5MB limit
-});
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
 
-// Test if file would be accepted without actually changing
-const wouldAccept = $("#file-input").triggerHandler("change");
-
-// Programmatic value checking
-$("select").on("checkSelection", function () {
-    const value = $(this).val();
-    const options = $(this).find("option").map(function () {
-        return $(this).val();
-    }).get();
-
-    return options.includes(value);
-});
-
-const hasValidSelection = $("select").triggerHandler("checkSelection");
-
-// Trigger save handler without navigation
-$("a[href='#save']").on("click", function (e) {
-    e.preventDefault();
+// Run a click handler without following the link
+$("a[href='#save']").on("click", function (event) {
+    event.preventDefault();
     saveDocument();
     return "saved";
 });
 
-// Trigger save without following link
 const result = $("a[href='#save']").triggerHandler("click");
 console.log(result); // "saved"
 
-// Custom calculation without display update
-$(".calculator-input").on("calculate", function () {
-    const value = parseFloat($(this).val());
-    const multiplier = parseFloat($(this).data("multiplier"));
-    return value * multiplier;
-});
-
-const calculatedValue = $(".calculator-input").triggerHandler("calculate");
-
-// Validate field without showing errors
-$("input[type='email']").on("emailValidation", function () {
-    const email = $(this).val();
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-});
-
-if (!$("input[type='email']").triggerHandler("emailValidation")) {
-    console.log("Email is invalid");
-}
-
-// Get formatted value without changing display
-$("#phone").on("format", function () {
-    const value = $(this).val().replace(/\D/g, "");
-    return value.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
-});
-
-const formattedPhone = $("#phone").triggerHandler("format");
-
-// Test permission check
-$(".admin-button").on("checkPermission", function () {
-    const userRole = $(this).data("user-role");
-    return userRole === "admin";
-});
-
-if ($(".admin-button").triggerHandler("checkPermission")) {
-    $(".admin-button").prop("disabled", false);
-}
-
-// Get state without changing it
-$(".toggle").on("getState", function () {
-    return $(this).hasClass("active") ? "on" : "off";
-});
-
-const currentState = $(".toggle").triggerHandler("getState");
-
-// Trigger data fetch handler without updating UI
-$(".data-source").on("fetchData", function () {
-    const endpoint = $(this).data("endpoint");
-    // Synchronous for demonstration
-    return { endpoint: endpoint, status: "ready" };
-});
-
-const data = $(".data-source").triggerHandler("fetchData");
-
-// Run validation logic without displaying errors
-$("form").on("silentValidate", function () {
-    const errors = [];
-
-    $(this).find("[required]").each(function () {
-        if (!$(this).val()) {
-            errors.push($(this).attr("name"));
-        }
-    });
-
-    return errors;
-});
-
-const validationErrors = $("form").triggerHandler("silentValidate");
-console.log(`Found ${validationErrors.length} errors`);
-
-// Get current selection without modifying
-$(".selectable").on("getSelected", function () {
-    return $(this).find(".selected").map(function () {
-        return $(this).data("id");
-    }).get();
-});
-
-const selectedIds = $(".selectable").triggerHandler("getSelected");
-
-// Calculate without rendering
-$(".chart-data").on("sum", function () {
-    let total = 0;
-
-    $(this).find(".data-point").each(function () {
-        total += parseFloat($(this).data("value"));
-    });
-
-    return total;
-});
-
-const sum = $(".chart-data").triggerHandler("sum");
-$(".chart-total").text(sum);
-
-// Test handler chain
-$("button").on("process", function () {
-    console.log("Processing...");
-    return "step1";
-});
-
-$("button").on("process", function () {
-    console.log("Second handler");
-    return "step2";
-});
-
-const lastResult = $("button").triggerHandler("process");
-console.log(lastResult); // "step2" (from last handler)
-
-// Trigger only first element's handler
-$(".item").on("getValue", function () {
-    return $(this).data("value");
-});
-
-// Only triggers on first .item
-const firstValue = $(".item").triggerHandler("getValue");
-
-// Run preprocessing logic
-$("textarea").on("preprocess", function (e, text) {
-    return text.trim().toLowerCase().replace(/\s+/g, " ");
-});
-
-const processedText = $("textarea").triggerHandler("preprocess", ["  Hello  World  "]);
-console.log(processedText); // "hello world"
-
-// Dry-run event handler
-$("#upload-form").on("prepareUpload", function () {
-    const files = $(this).find("input[type='file']")[0].files;
-    const validFiles = [];
-
-    for (let file of files) {
-        if (file.size <= 10000000) { // 10MB
-            validFiles.push(file.name);
-        }
-    }
-
-    return validFiles;
-});
-
-const uploadableFiles = $("#upload-form").triggerHandler("prepareUpload");
-console.log(`Can upload: ${uploadableFiles.join(", ")}`);
+declare function saveDocument(): void;
 ```
 
-## Differences to jQuery
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
 
-Doesn't support the jQuery.Event object.
+// When several handlers are bound, only the last return value comes back
+$("button").on("process", () => "step1");
+$("button").on("process", () => "step2");
+
+const last = $("button").triggerHandler("process");
+console.log(last); // "step2"
+```
+
+## See also
+
+- [$.fn.trigger()](../trigger/readme.md) — dispatch a real bubbling event
+- [$.fn.on()](../on/readme.md) — bind handlers
+- [$.fn.off()](../off/readme.md) — remove bound handlers
+
+## Differences from jQuery
+
+Does not support the `jQuery.Event` wrapper. Only handlers attached through Dabby's `.on()` are invoked — native listeners attached directly with `addEventListener` are not. Only the first element in the collection is processed, matching jQuery's behaviour.

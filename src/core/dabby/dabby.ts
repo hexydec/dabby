@@ -2,10 +2,30 @@ import isPlainObject, { type PlainObject } from "../../internal/isplainobject/is
 import parseHTML from "../../internal/parsehtml/parsehtml.js";
 import type { DOMNode, Selector, ReadyCallback, DabbyFactory } from "../../types.js";
 
+/**
+ * An iterable, array-like collection of DOM nodes that exposes the chainable Dabby API.
+ *
+ * Instances are created by the `$` factory and behave like a frozen array: nodes are
+ * available via numeric indexes, the size is exposed through `length`, and the
+ * collection can be iterated with `for...of`.
+ */
 export class Dabby implements Iterable<DOMNode> {
+	/** The number of nodes in the collection. */
 	readonly length: number;
+	/** Indexed access to each node in the collection. */
 	readonly [index: number]: DOMNode;
 
+	/**
+	 * Build a Dabby collection from a selector.
+	 *
+	 * Strings starting with `<` are parsed as HTML, other strings are treated as CSS
+	 * selectors. Nodes, NodeLists, arrays, other Dabby collections, `window`, and
+	 * `TrustedHTML` are all accepted. When `selector` is a function it is registered
+	 * as a DOMContentLoaded callback (or fired immediately if the document is ready).
+	 *
+	 * @param selector - A CSS selector, HTML string, node, iterable of nodes, ready callback, or another Dabby collection.
+	 * @param context - The element to scope a CSS selector to, the owner document for HTML, or an attribute map for single-tag creation.
+	 */
 	constructor(selector?: Selector | TrustedHTML | ReadyCallback, context?: Selector | Record<string, unknown>) {
 		let nodes: DOMNode[] = [];
 
@@ -74,12 +94,23 @@ export class Dabby implements Iterable<DOMNode> {
 		}
 	}
 
+	/**
+	 * Yield each node in the collection so it can be used with `for...of` and spread syntax.
+	 */
 	*[Symbol.iterator](): Iterator<DOMNode> {
 		for (let i = 0; i < this.length; i++) {
 			yield this[i];
 		}
 	}
 
+	/**
+	 * Run a callback once for every node in the collection.
+	 *
+	 * `this` inside the callback is the current node. Returning `false` halts the loop.
+	 *
+	 * @param callback - Function invoked with the index and node.
+	 * @returns The original Dabby collection for chaining.
+	 */
 	each<T extends DOMNode = DOMNode>(
 		callback: (this: T, index: number, element: T) => void | false
 	): this {
@@ -91,7 +122,20 @@ export class Dabby implements Iterable<DOMNode> {
 		return this;
 	}
 
+	/**
+	 * Retrieve the underlying nodes from the collection as a plain array.
+	 *
+	 * @returns A new array containing every node in the collection.
+	 */
 	get(): DOMNode[];
+	/**
+	 * Retrieve a single node from the collection.
+	 *
+	 * Negative indexes count from the end of the collection.
+	 *
+	 * @param index - Zero-based index of the node to return.
+	 * @returns The node at the requested index, or `undefined` if out of range.
+	 */
 	get(index: number): DOMNode | undefined;
 	get(index?: number): DOMNode | DOMNode[] | undefined {
 		if (index === undefined) {
@@ -100,6 +144,15 @@ export class Dabby implements Iterable<DOMNode> {
 		return this[index >= 0 ? index : index + this.length];
 	}
 
+	/**
+	 * Map every node in the collection through a callback and gather the results.
+	 *
+	 * The callback may return a node, an array of nodes, or another Dabby collection;
+	 * the returned values are merged into a single new Dabby collection.
+	 *
+	 * @param callback - Function invoked with the index and node, returning the value(s) to gather.
+	 * @returns A new Dabby collection containing the mapped nodes.
+	 */
 	map<T extends DOMNode = DOMNode>(
 		callback: (this: T, index: number, element: T) => Selector
 	): Dabby {

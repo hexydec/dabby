@@ -5,9 +5,33 @@ import getVal from "../../internal/getval/getval.js";
 type ValCallback = (this: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number, currentValue: string) => string | number | string[];
 type ValValue = string | number | string[] | ValCallback;
 
-// Getter
+/**
+ * Retrieves the value of the first form control in the collection.
+ *
+ * For `<select multiple>`, returns an array of the selected option values. For
+ * unchecked checkboxes, returns `undefined`. For all other inputs, returns the
+ * value as a string.
+ *
+ * @returns the current value, an array of values for multi-selects, or `undefined` if there is no value
+ *
+ * @example
+ * const username = $("input[name='username']").val();
+ */
 function val(this: Dabby): string | string[] | undefined;
-// Setter
+/**
+ * Sets the value of every form control in the collection.
+ *
+ * For `<select>` elements, an array selects every option whose value (or text)
+ * matches. For radios and checkboxes given an array, the `checked` state is set
+ * based on whether the input's value appears in the array. Otherwise the `value`
+ * property is set directly.
+ *
+ * @param value - the value to set, or a callback receiving `(index, currentValue)` returning the new value
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("select[multiple]").val(["red", "green"]);
+ */
 function val(this: Dabby, value: ValValue): Dabby;
 // Implementation
 function val(

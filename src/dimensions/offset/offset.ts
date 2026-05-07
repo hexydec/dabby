@@ -8,9 +8,21 @@ type Coords = { top: number; left: number };
 type OffsetCallback = (this: Element, index: number, currentValue: Coords) => Coords;
 type CoordsWithPosition = Coords & { position?: string };
 
-// Getter signature
+/**
+ * Retrieve the document-relative coordinates of the first node in the collection.
+ *
+ * @returns An object with `top` and `left` pixel values, or `undefined` if the collection is empty.
+ */
 function offset(this: Dabby): Coords | undefined;
-// Setter signature
+/**
+ * Set the document-relative coordinates of every node in the collection.
+ *
+ * If the element's computed position is `static` it is changed to `relative` so the
+ * new offset can take effect.
+ *
+ * @param coords - Either a `{ top, left }` object, or a callback that receives the node index and current value and returns a new `{ top, left }` object.
+ * @returns The original Dabby collection for chaining.
+ */
 function offset(this: Dabby, coords: Coords | OffsetCallback): Dabby;
 // Implementation
 function offset(this: Dabby, coords?: Coords | OffsetCallback): Dabby | Coords | undefined {

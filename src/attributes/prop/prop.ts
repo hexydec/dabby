@@ -6,11 +6,42 @@ import getVal from "../../internal/getval/getval.js";
 
 type PropValue = unknown | ((this: Element, index: number, currentValue: unknown) => unknown);
 
-// Getter
+/**
+ * Retrieves the requested DOM property from the first node in the collection.
+ *
+ * Use this for live JavaScript properties such as `checked`, `disabled`, `selected`
+ * or `tagName` — for HTML attribute strings, use `$.fn.attr()` instead. Property
+ * name aliases (e.g. `for` → `htmlFor`) are normalised internally.
+ *
+ * @param prop - the property name to read
+ * @returns the property value, or `undefined` if the collection is empty
+ *
+ * @example
+ * const isChecked = $("#agree").prop("checked");
+ */
 function prop(this: Dabby, prop: string): unknown;
-// Setter - single property
+/**
+ * Sets a single DOM property on every node in the collection.
+ *
+ * @param prop - the property name to set
+ * @param value - the value to assign, or a callback receiving `(index, currentValue)` returning the new value
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("input[type='checkbox']").prop("checked", true);
+ */
 function prop(this: Dabby, prop: string, value: PropValue): Dabby;
-// Setter - multiple properties
+/**
+ * Sets multiple DOM properties on every node in the collection.
+ *
+ * Each value may be a static value or a callback receiving `(index, currentValue)`.
+ *
+ * @param props - a plain object of property name/value pairs
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("input").prop({ disabled: false, readOnly: false });
+ */
 function prop(this: Dabby, props: PlainObject): Dabby;
 // Implementation
 function prop(

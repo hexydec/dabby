@@ -48,12 +48,42 @@ function factory(obj: Dabby, html: Selector | ReplaceCallback, all: boolean): Da
 	return $(source);
 }
 
+/**
+ * Replace each element in the collection with the supplied content.
+ *
+ * Accepts a selector, HTML string, node, Dabby collection or callback. When
+ * a callback is supplied it is invoked once per element with the element's
+ * index and current HTML, and should return the replacement content. When
+ * the collection has multiple items the replacement nodes are deep-cloned
+ * (with data and events) for each but the last so each receives its own copy.
+ *
+ * @param html - the replacement content, or a callback returning content
+ * @returns a Dabby collection containing the replaced (now-detached) nodes
+ *
+ * @example
+ * $("b").replaceWith(function () {
+ *     return `<strong>${$(this).html()}</strong>`;
+ * });
+ */
 function replaceWith(this: Dabby, html: Selector | ReplaceCallback): Dabby {
 	return factory(this, html, false);
 }
 
 Object.defineProperty(Dabby.prototype, "replaceWith", { value: replaceWith, configurable: true });
 
+/**
+ * Replace every element matched by the target with the current collection.
+ *
+ * The inverse of `.replaceWith()`: the elements matched by `html` (the
+ * target selector) are removed from the DOM and the current collection
+ * takes their place.
+ *
+ * @param html - a selector, node, array of nodes or Dabby collection of elements to replace
+ * @returns a Dabby collection containing the replaced (now-detached) nodes
+ *
+ * @example
+ * $("<span class='new'>Updated</span>").replaceAll(".old");
+ */
 function replaceAll(this: Dabby, html: Selector): Dabby {
 	return factory(this, html, true);
 }

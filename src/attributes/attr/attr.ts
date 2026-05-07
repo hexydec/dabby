@@ -5,11 +5,42 @@ import getVal from "../../internal/getval/getval.js";
 
 type AttrValue = string | number | null | ((this: Element, index: number, currentValue: string | null) => string | number | null);
 
-// Getter
+/**
+ * Retrieves the requested attribute from the first node in a collection.
+ *
+ * @param prop - the name of the attribute to read
+ * @returns the attribute value, or `null` if the attribute is not set or the collection is empty
+ *
+ * @example
+ * const href = $("a.external").attr("href");
+ */
 function attr(this: Dabby, prop: string): string | null;
-// Setter - single property
+/**
+ * Sets a single attribute on every node in the collection.
+ *
+ * Passing `null` removes the attribute. The special keys `class`, `style` and `text`
+ * map onto `className`, `style.cssText` and `textContent` respectively. Event names
+ * (e.g. `click`) are delegated to `$.fn.on()`.
+ *
+ * @param prop - the name of the attribute to set
+ * @param value - the value to assign, or a callback receiving `(index, currentValue)` returning the new value
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("a.external").attr("target", "_blank");
+ */
 function attr(this: Dabby, prop: string, value: AttrValue): Dabby;
-// Setter - multiple properties
+/**
+ * Sets multiple attributes on every node in the collection.
+ *
+ * Each value may be a static value or a callback receiving `(index, currentValue)`.
+ *
+ * @param props - a plain object of attribute name/value pairs
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("img.hero").attr({ alt: "Sunset over the harbour", loading: "lazy" });
+ */
 function attr(this: Dabby, props: Record<string, AttrValue | Function>): Dabby;
 // Implementation
 function attr(

@@ -2,6 +2,18 @@ import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../dabby.js";
 import getProp from "../../internal/getprop/getprop.js";
 
+/**
+ * Removes the requested property from every node in the collection.
+ *
+ * Only use this for custom properties you have set yourself — removing native DOM
+ * properties (such as `className` or `innerHTML`) may throw or otherwise misbehave.
+ *
+ * @param prop - the property name to remove
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".product-card").removeProp("tempProcessingData");
+ */
 function removeProp(this: Dabby, prop: string): Dabby {
 	const normalisedProp = getProp(prop);
 	let i = this.length;

@@ -1,139 +1,52 @@
-# .hasClass()
+# $.fn.hasClass()
 
-Determine whether any elements in a collection have the requested class.
+Determine whether any node in the collection has the requested class. Returns as soon as a match is found.
 
-## Usage
+## Signatures
 
-```javascript
-$(selector).hasClass(className);
+```ts
+hasClass(cls: string): boolean;
 ```
 
-### className
+## Parameters
 
-The name of the class to test against the collection.
+- `cls` (`string`) — the class name to test for.
 
 ## Returns
 
-`true` when any item in the supplied collection has the requested class, `false` if not.
+`true` when any node in the collection has the class, otherwise `false`.
 
 ## Examples
 
-### Basic Usage
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/hasclass/hasclass";
 
-Using the following HTML:
-
-```html
-<div class="card"></div>
-<div class="card card--featured"></div>
-<div class="card card--sale"></div>
+// Test whether any element matches
+const isDark = $("body").hasClass("dark-mode");
 ```
 
-You can test for classes like this:
-
-```javascript
-// Check if any div has the 'card' class
-const hasCard = $("div").hasClass("card"); // true
-
-// Check if any div has the 'card--featured' class
-const hasFeatured = $("div").hasClass("card--featured"); // true
-
-// Check if any div has the 'card--premium' class
-const hasPremium = $("div").hasClass("card--premium"); // false
-
-// Check specific element
-const isFeatured = $(".card").eq(1).hasClass("card--featured"); // true
+```ts
+// Test a specific element
+const $card = $(".card").eq(1);
+if ($card.hasClass("card--featured")) {
+    $card.addClass("card--highlighted");
+}
 ```
 
-### Real-World Examples
-
-```javascript
-// Toggle menu based on current state
-$(".menu-toggle").on("click", function () {
-    if ($(".navigation").hasClass("navigation--open")) {
-        $(".navigation").removeClass("navigation--open");
+```ts
+// Conditional behaviour
+$(".menu-button").on("click", () => {
+    const $nav = $(".navigation");
+    if ($nav.hasClass("navigation--open")) {
+        $nav.removeClass("navigation--open");
     } else {
-        $(".navigation").addClass("navigation--open");
-    }
-});
-
-// Conditional styling based on class presence
-if ($("body").hasClass("dark-mode")) {
-    $(".logo").attr("src", "logo-light.png");
-} else {
-    $(".logo").attr("src", "logo-dark.png");
-}
-
-// Form validation
-function validateForm() {
-    const $fields = $(".form-field");
-    let hasErrors = false;
-
-    $fields.each(function (index, field) {
-        if ($(field).hasClass("form-field--error")) {
-            hasErrors = true;
-        }
-    });
-
-    if (hasErrors) {
-        alert("Please fix the errors before submitting");
-        return false;
-    }
-
-    return true;
-}
-
-// Accordion behaviour
-$(".accordion-header").on("click", function () {
-    const $header = $(this);
-    const $content = $header.next(".accordion-content");
-
-    if ($header.hasClass("accordion-header--expanded")) {
-        $header.removeClass("accordion-header--expanded");
-        $content.hide();
-    } else {
-        // Close all other accordions
-        $(".accordion-header").removeClass("accordion-header--expanded");
-        $(".accordion-content").hide();
-
-        // Open this one
-        $header.addClass("accordion-header--expanded");
-        $content.show();
-    }
-});
-
-// Disable buttons based on state
-$(".submit-button").on("click", function () {
-    const $btn = $(this);
-
-    if ($btn.hasClass("button--disabled")) {
-        return false;
-    }
-
-    $btn.addClass("button--disabled");
-    // Submit form...
-});
-
-// Track active items
-function getActiveItems() {
-    const activeItems = [];
-
-    $(".list-item").each(function (index, item) {
-        if ($(item).hasClass("list-item--active")) {
-            activeItems.push($(item).data("id"));
-        }
-    });
-
-    return activeItems;
-}
-
-// Conditional animations
-$(".card").on("mouseenter", function () {
-    if (!$(this).hasClass("card--no-hover")) {
-        $(this).addClass("card--hover-effect");
+        $nav.addClass("navigation--open");
     }
 });
 ```
 
-## Differences to jQuery
+## See also
 
-None.
+- [$.fn.addClass(), $.fn.removeClass(), $.fn.toggleClass()](../class/readme.md) — modify the class list.
+- [$.fn.attr()](../attr/readme.md) — read the `class` attribute as a string.

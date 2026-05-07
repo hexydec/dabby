@@ -13,6 +13,27 @@ type EventRecord = {
 	func: (evt: Event) => void;
 };
 
+/**
+ * Unbind event handlers previously attached with `.on()` or `.one()`.
+ *
+ * Without arguments, removes every handler bound through Dabby on each
+ * element. With an event string or event map it removes only the matching
+ * handlers, optionally narrowed further by a delegation selector and a
+ * specific callback reference.
+ *
+ * @param events - Space-separated event names, or a plain object whose keys are event names and whose values are the handlers to remove. Omit to remove every Dabby-attached handler
+ * @param selector - Optional delegation selector that the original handler was bound with
+ * @param callback - Optional handler reference; only matching handlers are removed
+ * @returns The original Dabby collection
+ *
+ * @example
+ * import $ from "dabbyjs";
+ * import "dabbyjs/events/off/off";
+ *
+ * const onClick = () => console.log("clicked");
+ * $("#save").on("click", onClick);
+ * $("#save").off("click", onClick);
+ */
 function off(
 	this: Dabby,
 	events?: EventsParam,

@@ -5,6 +5,23 @@ import "../trigger/trigger.js";
 
 type OnCallback = (this: Element, event: Event, ...args: unknown[]) => void | false;
 
+/**
+ * Build a named-event shortcut method bound to a single event name.
+ *
+ * The returned function delegates to `.trigger(eventName)` when called with
+ * no arguments, otherwise it delegates to `.on(eventName, ...)`. This factory
+ * powers all twenty-four built-in shortcuts (`click`, `keydown`, `submit`,
+ * etc.) and may be used to mint additional ones for custom event names.
+ *
+ * @param eventName - The event name the resulting method binds to or triggers
+ * @returns A method suitable for installing on `Dabby.prototype` that triggers the event when called with no arguments and binds a handler otherwise
+ *
+ * @example
+ * import { Dabby } from "dabbyjs";
+ *
+ * const change = createNamedEvent("change");
+ * Object.defineProperty(Dabby.prototype, "change", { value: change });
+ */
 function createNamedEvent(eventName: string) {
 	return function(this: Dabby, selector?: string | unknown | OnCallback, data?: unknown | OnCallback, callback?: OnCallback): Dabby {
 		if (selector !== undefined) {
@@ -86,57 +103,126 @@ Object.defineProperty(Dabby.prototype, "error", { value: error, configurable: tr
 const submit = createNamedEvent("submit");
 Object.defineProperty(Dabby.prototype, "submit", { value: submit, configurable: true });
 
+/**
+ * Named-event shortcut methods.
+ *
+ * Each of the methods below (`click`, `dblclick`, `mousedown`, `mouseup`,
+ * `mousemove`, `mouseover`, `mouseout`, `mouseenter`, `mouseleave`,
+ * `contextmenu`, `keydown`, `keypress`, `keyup`, `focus`, `blur`,
+ * `focusin`, `focusout`, `change`, `select`, `submit`, `scroll`, `resize`,
+ * `error`, `unload`) shares the same dual behaviour:
+ *
+ * - With no arguments, it triggers the event on every element in the
+ *   collection (equivalent to `.trigger("eventName")`).
+ * - With a callback (optionally a delegation selector and/or data) it binds
+ *   a handler for the event (equivalent to `.on("eventName", ...)`).
+ *
+ * @example
+ * import $ from "dabbyjs";
+ * import "dabbyjs/events/named/named";
+ *
+ * $("#save").click(() => saveDocument()); // bind handler
+ * $("#save").click();                     // trigger click
+ */
 // Augment ModularDabbyMethods for modular builds
 declare module '../../dabby.js' {
   interface ModularDabbyMethods {
-    focusin(callback: OnCallback): this;
     focusin(): this;
-    focusout(callback: OnCallback): this;
+    focusin(callback: OnCallback): this;
+    focusin(selector: string, callback: OnCallback): this;
+    focusin(selector: string, data: unknown, callback: OnCallback): this;
     focusout(): this;
-    focus(callback: OnCallback): this;
+    focusout(callback: OnCallback): this;
+    focusout(selector: string, callback: OnCallback): this;
+    focusout(selector: string, data: unknown, callback: OnCallback): this;
     focus(): this;
-    blur(callback: OnCallback): this;
+    focus(callback: OnCallback): this;
+    focus(selector: string, callback: OnCallback): this;
+    focus(selector: string, data: unknown, callback: OnCallback): this;
     blur(): this;
-    resize(callback: OnCallback): this;
+    blur(callback: OnCallback): this;
+    blur(selector: string, callback: OnCallback): this;
+    blur(selector: string, data: unknown, callback: OnCallback): this;
     resize(): this;
-    scroll(callback: OnCallback): this;
+    resize(callback: OnCallback): this;
+    resize(selector: string, callback: OnCallback): this;
+    resize(selector: string, data: unknown, callback: OnCallback): this;
     scroll(): this;
-    unload(callback: OnCallback): this;
+    scroll(callback: OnCallback): this;
+    scroll(selector: string, callback: OnCallback): this;
+    scroll(selector: string, data: unknown, callback: OnCallback): this;
     unload(): this;
-    click(callback: OnCallback): this;
+    unload(callback: OnCallback): this;
+    unload(selector: string, callback: OnCallback): this;
+    unload(selector: string, data: unknown, callback: OnCallback): this;
     click(): this;
-    dblclick(callback: OnCallback): this;
+    click(callback: OnCallback): this;
+    click(selector: string, callback: OnCallback): this;
+    click(selector: string, data: unknown, callback: OnCallback): this;
     dblclick(): this;
-    mousedown(callback: OnCallback): this;
+    dblclick(callback: OnCallback): this;
+    dblclick(selector: string, callback: OnCallback): this;
+    dblclick(selector: string, data: unknown, callback: OnCallback): this;
     mousedown(): this;
-    mouseup(callback: OnCallback): this;
+    mousedown(callback: OnCallback): this;
+    mousedown(selector: string, callback: OnCallback): this;
+    mousedown(selector: string, data: unknown, callback: OnCallback): this;
     mouseup(): this;
-    mousemove(callback: OnCallback): this;
+    mouseup(callback: OnCallback): this;
+    mouseup(selector: string, callback: OnCallback): this;
+    mouseup(selector: string, data: unknown, callback: OnCallback): this;
     mousemove(): this;
-    mouseover(callback: OnCallback): this;
+    mousemove(callback: OnCallback): this;
+    mousemove(selector: string, callback: OnCallback): this;
+    mousemove(selector: string, data: unknown, callback: OnCallback): this;
     mouseover(): this;
-    mouseout(callback: OnCallback): this;
+    mouseover(callback: OnCallback): this;
+    mouseover(selector: string, callback: OnCallback): this;
+    mouseover(selector: string, data: unknown, callback: OnCallback): this;
     mouseout(): this;
-    mouseenter(callback: OnCallback): this;
+    mouseout(callback: OnCallback): this;
+    mouseout(selector: string, callback: OnCallback): this;
+    mouseout(selector: string, data: unknown, callback: OnCallback): this;
     mouseenter(): this;
-    mouseleave(callback: OnCallback): this;
+    mouseenter(callback: OnCallback): this;
+    mouseenter(selector: string, callback: OnCallback): this;
+    mouseenter(selector: string, data: unknown, callback: OnCallback): this;
     mouseleave(): this;
-    contextmenu(callback: OnCallback): this;
+    mouseleave(callback: OnCallback): this;
+    mouseleave(selector: string, callback: OnCallback): this;
+    mouseleave(selector: string, data: unknown, callback: OnCallback): this;
     contextmenu(): this;
-    change(callback: OnCallback): this;
+    contextmenu(callback: OnCallback): this;
+    contextmenu(selector: string, callback: OnCallback): this;
+    contextmenu(selector: string, data: unknown, callback: OnCallback): this;
     change(): this;
-    select(callback: OnCallback): this;
+    change(callback: OnCallback): this;
+    change(selector: string, callback: OnCallback): this;
+    change(selector: string, data: unknown, callback: OnCallback): this;
     select(): this;
-    keydown(callback: OnCallback): this;
+    select(callback: OnCallback): this;
+    select(selector: string, callback: OnCallback): this;
+    select(selector: string, data: unknown, callback: OnCallback): this;
     keydown(): this;
-    keypress(callback: OnCallback): this;
+    keydown(callback: OnCallback): this;
+    keydown(selector: string, callback: OnCallback): this;
+    keydown(selector: string, data: unknown, callback: OnCallback): this;
     keypress(): this;
-    keyup(callback: OnCallback): this;
+    keypress(callback: OnCallback): this;
+    keypress(selector: string, callback: OnCallback): this;
+    keypress(selector: string, data: unknown, callback: OnCallback): this;
     keyup(): this;
-    error(callback: OnCallback): this;
+    keyup(callback: OnCallback): this;
+    keyup(selector: string, callback: OnCallback): this;
+    keyup(selector: string, data: unknown, callback: OnCallback): this;
     error(): this;
-    submit(callback: OnCallback): this;
+    error(callback: OnCallback): this;
+    error(selector: string, callback: OnCallback): this;
+    error(selector: string, data: unknown, callback: OnCallback): this;
     submit(): this;
+    submit(callback: OnCallback): this;
+    submit(selector: string, callback: OnCallback): this;
+    submit(selector: string, data: unknown, callback: OnCallback): this;
   }
 }
 

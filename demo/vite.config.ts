@@ -2,31 +2,11 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 import { existsSync } from "fs";
 
-const banner = `/*! dabbyjs v${process.env.npm_package_version} by Will Earp - https://github.com/hexydec/dabby */`;
-
 export default defineConfig({
-	build: {
-		lib: {
-			entry: resolve(__dirname, "src/build.ts"),
-			formats: ["es"],
-			fileName: () => "full.js",
-		},
-		outDir: "dist",
-		emptyOutDir: false,
-		sourcemap: true,
-		minify: "terser",
-		terserOptions: {
-			toplevel: true,
-			mangle: {
-				reserved: ["$"],
-				module: true,
-			},
-		},
-		rollupOptions: {
-			output: {
-				banner,
-			},
-		},
+	root: __dirname,
+	server: {
+		port: 5173,
+		open: false,
 	},
 	plugins: [
 		{
@@ -35,7 +15,7 @@ export default defineConfig({
 			resolveId(source, importer) {
 				if (source.endsWith(".js") && importer) {
 					const normalizedImporter = importer.replace(/\\/g, "/");
-					if (normalizedImporter.includes("/src/")) {
+					if (normalizedImporter.includes("/src/") || normalizedImporter.includes("/demo/")) {
 						const dir = normalizedImporter.substring(0, normalizedImporter.lastIndexOf("/"));
 						const tsPath = resolve(dir, source.replace(/\.js$/, ".ts")).replace(/\\/g, "/");
 						if (existsSync(tsPath)) {

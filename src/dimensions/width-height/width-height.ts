@@ -109,7 +109,21 @@ function factory(
 }
 
 // Width methods
+/**
+ * Retrieve the content width of the first node in the collection.
+ *
+ * The returned value excludes padding, border, and margin. For `document` the value
+ * is the document `scrollWidth`; for `window` it is the viewport width.
+ *
+ * @returns The width in pixels, or `undefined` if the collection is empty.
+ */
 function width(this: Dabby): number | undefined;
+/**
+ * Set the content width of every node in the collection.
+ *
+ * @param val - A pixel number, a CSS length string (e.g. `"50%"`, `"10rem"`), or a callback that returns the new width given the index and current value.
+ * @returns The original Dabby collection for chaining.
+ */
 function width(this: Dabby, val: number | string | DimCallback): Dabby;
 function width(this: Dabby, val?: number | string | DimCallback): Dabby | number | undefined {
 	return factory(this, "width", 0, val);
@@ -117,7 +131,21 @@ function width(this: Dabby, val?: number | string | DimCallback): Dabby | number
 
 Object.defineProperty(Dabby.prototype, "width", { value: width, configurable: true });
 
+/**
+ * Retrieve the inner width of the first node, including padding but excluding border and margin.
+ *
+ * @returns The inner width in pixels, or `undefined` if the collection is empty.
+ */
 function innerWidth(this: Dabby): number | undefined;
+/**
+ * Set the inner width of every node in the collection.
+ *
+ * The padding is preserved by reducing the underlying CSS `width` so that the
+ * resulting padded box matches the requested value.
+ *
+ * @param val - A pixel number, a CSS length string, or a callback returning the new value.
+ * @returns The original Dabby collection for chaining.
+ */
 function innerWidth(this: Dabby, val: number | string | DimCallback): Dabby;
 function innerWidth(this: Dabby, val?: number | string | DimCallback): Dabby | number | undefined {
 	return factory(this, "innerWidth", 1, val);
@@ -125,7 +153,21 @@ function innerWidth(this: Dabby, val?: number | string | DimCallback): Dabby | n
 
 Object.defineProperty(Dabby.prototype, "innerWidth", { value: innerWidth, configurable: true });
 
+/**
+ * Retrieve the outer width of the first node, including padding and border.
+ *
+ * Pass `true` to also include the horizontal margin in the returned value.
+ *
+ * @param includeMargin - When `true`, the left and right margin are added to the result.
+ * @returns The outer width in pixels, or `undefined` if the collection is empty.
+ */
 function outerWidth(this: Dabby): number | undefined;
+/**
+ * Set the outer width of every node in the collection.
+ *
+ * @param val - A pixel number, a CSS length string, or a callback returning the new value.
+ * @returns The original Dabby collection for chaining.
+ */
 function outerWidth(this: Dabby, val: number | string | boolean | DimCallback): Dabby;
 function outerWidth(this: Dabby, val?: number | string | boolean | DimCallback): Dabby | number | undefined {
 	return factory(this, "outerWidth", 2, val);
@@ -134,7 +176,21 @@ function outerWidth(this: Dabby, val?: number | string | boolean | DimCallback):
 Object.defineProperty(Dabby.prototype, "outerWidth", { value: outerWidth, configurable: true });
 
 // Height methods
+/**
+ * Retrieve the content height of the first node in the collection.
+ *
+ * The returned value excludes padding, border, and margin. For `document` the value
+ * is the document `scrollHeight`; for `window` it is the viewport height.
+ *
+ * @returns The height in pixels, or `undefined` if the collection is empty.
+ */
 function height(this: Dabby): number | undefined;
+/**
+ * Set the content height of every node in the collection.
+ *
+ * @param val - A pixel number, a CSS length string (e.g. `"50%"`, `"10rem"`), or a callback that returns the new height given the index and current value.
+ * @returns The original Dabby collection for chaining.
+ */
 function height(this: Dabby, val: number | string | DimCallback): Dabby;
 function height(this: Dabby, val?: number | string | DimCallback): Dabby | number | undefined {
 	return factory(this, "height", 3, val);
@@ -142,7 +198,18 @@ function height(this: Dabby, val?: number | string | DimCallback): Dabby | numbe
 
 Object.defineProperty(Dabby.prototype, "height", { value: height, configurable: true });
 
+/**
+ * Retrieve the inner height of the first node, including padding but excluding border and margin.
+ *
+ * @returns The inner height in pixels, or `undefined` if the collection is empty.
+ */
 function innerHeight(this: Dabby): number | undefined;
+/**
+ * Set the inner height of every node in the collection.
+ *
+ * @param val - A pixel number, a CSS length string, or a callback returning the new value.
+ * @returns The original Dabby collection for chaining.
+ */
 function innerHeight(this: Dabby, val: number | string | DimCallback): Dabby;
 function innerHeight(this: Dabby, val?: number | string | DimCallback): Dabby | number | undefined {
 	return factory(this, "innerHeight", 4, val);
@@ -150,7 +217,21 @@ function innerHeight(this: Dabby, val?: number | string | DimCallback): Dabby | 
 
 Object.defineProperty(Dabby.prototype, "innerHeight", { value: innerHeight, configurable: true });
 
+/**
+ * Retrieve the outer height of the first node, including padding and border.
+ *
+ * Pass `true` to also include the vertical margin in the returned value.
+ *
+ * @param includeMargin - When `true`, the top and bottom margin are added to the result.
+ * @returns The outer height in pixels, or `undefined` if the collection is empty.
+ */
 function outerHeight(this: Dabby): number | undefined;
+/**
+ * Set the outer height of every node in the collection.
+ *
+ * @param val - A pixel number, a CSS length string, or a callback returning the new value.
+ * @returns The original Dabby collection for chaining.
+ */
 function outerHeight(this: Dabby, val: number | string | boolean | DimCallback): Dabby;
 function outerHeight(this: Dabby, val?: number | string | boolean | DimCallback): Dabby | number | undefined {
 	return factory(this, "outerHeight", 5, val);

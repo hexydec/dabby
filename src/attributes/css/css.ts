@@ -7,13 +7,55 @@ import dasherise from "../../internal/dasherise/dasherise.js";
 type CSSCallback = (this: Element, index: number, currentValue: string) => string | number;
 type CSSValue = string | number | CSSCallback;
 
-// Getter overload - single property
+/**
+ * Retrieves a computed CSS property value from the first node in the collection.
+ *
+ * Property names may be supplied in dash-case or camelCase.
+ *
+ * @param prop - the property name to read
+ * @returns the computed value as a string, or an empty string if the collection is empty
+ *
+ * @example
+ * const colour = $(".card").css("background-color");
+ */
 function css(this: Dabby, prop: string): string;
-// Getter overload - multiple properties
+/**
+ * Retrieves several computed CSS property values from the first node in the collection.
+ *
+ * The returned object preserves the keys exactly as supplied (dash-case or camelCase).
+ *
+ * @param props - an array of property names to read
+ * @returns an object keyed by the requested property names containing computed values
+ *
+ * @example
+ * const box = $(".card").css(["border-color", "border-width"]);
+ */
 function css(this: Dabby, props: string[]): Record<string, string>;
-// Setter overload - single property with value
+/**
+ * Sets a single CSS property on every node in the collection.
+ *
+ * Numeric values are passed through unchanged — pixel suffixing is delegated to the
+ * browser's `style` setter.
+ *
+ * @param prop - the property name to set, in dash-case or camelCase
+ * @param value - the value to assign, or a callback receiving `(index, currentValue)` returning the new value
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".card").css("background-color", "#0055aa");
+ */
 function css(this: Dabby, prop: string, value: CSSValue): Dabby;
-// Setter overload - object of properties
+/**
+ * Sets multiple CSS properties on every node in the collection.
+ *
+ * Each value may be a static value or a callback receiving `(index, currentValue)`.
+ *
+ * @param props - a plain object of property name/value pairs
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".card").css({ backgroundColor: "#0055aa", padding: "1rem" });
+ */
 function css(this: Dabby, props: PlainObject): Dabby;
 // Implementation
 function css(

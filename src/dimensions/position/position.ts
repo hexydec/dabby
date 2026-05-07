@@ -3,6 +3,14 @@ import type {} from "../../dabby.js";
 
 type Position = { top: number; left: number };
 
+/**
+ * Retrieve the position of the first node relative to its offset parent.
+ *
+ * Returns the element's `offsetTop` and `offsetLeft` values, which measure the
+ * distance to the nearest positioned ancestor (not the document).
+ *
+ * @returns An object with `top` and `left` pixel values, or `undefined` if the collection is empty.
+ */
 function position(this: Dabby): Position | undefined {
 	if (this[0]) {
 		const element = this[0] as HTMLElement;

@@ -1,6 +1,17 @@
 import { Dabby } from "../../core/dabby/dabby.js";
 import type {} from "../../dabby.js";
 
+/**
+ * Empty the contents of each item in the collection.
+ *
+ * Removes every child node from each element in the collection by calling
+ * `removeChild` until none remain.
+ *
+ * @returns the original Dabby collection
+ *
+ * @example
+ * $(".search-results").empty();
+ */
 function empty(this: Dabby): Dabby {
 	let i = this.length;
 	while (i--) {
