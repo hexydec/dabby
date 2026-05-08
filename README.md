@@ -71,16 +71,101 @@ import $ from "dabbyjs"; // Automatically includes type definitions
 
 Dabby.js is billed as a jQuery clone library, and as such tries to implement as much of the jQuery API as is feasible without getting away from being fast, small, and letting the browser do most of the work.
 
-[See the API documentation here](src/).
+Every module has its own readme with signatures, parameters and examples. Click any method below to jump to its docs.
+
+### Core
+
+The `$()` factory and the underlying `Dabby` class. Methods on this section are always available — no extra import needed.
+
+- [`$()` factory and `Dabby` class](src/core/dabby/readme.md) — selectors, HTML creation, ready callback
+- [`$.fn.each()`](src/core/each/readme.md) — iterate the collection
+- [`$.fn.get()`](src/core/get/readme.md) — get a node from the collection
+- [`$.fn.map()`](src/core/map/readme.md) — translate the collection through a callback
+
+### Manipulation
+
+- [`$.fn.html()`](src/manipulation/html/readme.md) — get/set inner HTML
+- [`$.fn.text()`](src/manipulation/text/readme.md) — get/set text content
+- [`$.fn.append()` / `.prepend()` / `.before()` / `.after()`](src/manipulation/insert/readme.md) — insert content
+- [`$.fn.appendTo()` / `.prependTo()` / `.insertBefore()` / `.insertAfter()`](src/manipulation/insertto/readme.md) — insert into a target
+- [`$.fn.empty()`](src/manipulation/empty/readme.md) — remove children
+- [`$.fn.remove()` / `.detach()`](src/manipulation/remove/readme.md) — remove from DOM
+- [`$.fn.replaceWith()` / `.replaceAll()`](src/manipulation/replace/readme.md) — swap nodes
+- [`$.fn.clone()`](src/manipulation/clone/readme.md) — deep-copy elements
+- [`$.fn.wrap()`](src/manipulation/wrap/readme.md) — wrap each element
+- [`$.fn.wrapAll()`](src/manipulation/wrapall/readme.md) — wrap a group
+- [`$.fn.unwrap()`](src/manipulation/unwrap/readme.md) — remove the parent
+
+### Attributes & classes
+
+- [`$.fn.attr()`](src/attributes/attr/readme.md) — get/set HTML attributes
+- [`$.fn.prop()`](src/attributes/prop/readme.md) — get/set DOM properties
+- [`$.fn.removeProp()`](src/attributes/removeprop/readme.md) — delete a property
+- [`$.fn.data()`](src/attributes/data/readme.md) — read/write `data-*`
+- [`$.fn.val()`](src/attributes/val/readme.md) — get/set form values
+- [`$.fn.css()`](src/attributes/css/readme.md) — get/set inline CSS
+- [`$.fn.addClass()` / `.removeClass()` / `.toggleClass()`](src/attributes/class/readme.md) — class manipulation
+- [`$.fn.hasClass()`](src/attributes/hasclass/readme.md) — class predicate
+- [`$.fn.show()` / `.hide()` / `.toggle()`](src/attributes/show-hide/readme.md) — visibility
+
+### Events
+
+- [`$.fn.on()` / `.one()`](src/events/on/readme.md) — bind handlers (with optional delegation)
+- [`$.fn.off()`](src/events/off/readme.md) — remove handlers
+- [`$.fn.trigger()`](src/events/trigger/readme.md) — fire an event
+- [`$.fn.triggerHandler()`](src/events/triggerhandler/readme.md) — invoke handlers without dispatching
+- [Named events: `click`, `keydown`, `submit`, …](src/events/named/readme.md) — 24 jQuery-style shortcuts
+
+### Traversal
+
+- [`$.fn.find()`](src/traversal/find/readme.md) — descendants matching a selector
+- [`$.fn.children()`](src/traversal/children/readme.md) — direct children
+- [`$.fn.parent()` / `.parents()` / `.parentsUntil()`](src/traversal/parents/readme.md) — ancestors
+- [`$.fn.closest()`](src/traversal/closest/readme.md) — nearest matching ancestor
+- [`$.fn.siblings()`](src/traversal/siblings/readme.md) — siblings
+- [`$.fn.next()` / `.nextAll()` / `.nextUntil()` / `.prev()` / `.prevAll()` / `.prevUntil()`](src/traversal/next-prev/readme.md) — sibling chain
+- [`$.fn.filter()` / `.is()` / `.not()`](src/traversal/filter/readme.md) — narrow or test a collection
+- [`$.fn.has()`](src/traversal/has/readme.md) — keep parents containing a match
+- [`$.fn.add()`](src/traversal/add/readme.md) — combine collections
+- [`$.fn.first()`](src/traversal/first/readme.md) / [`.last()`](src/traversal/last/readme.md) / [`.eq()`](src/traversal/eq/readme.md) — pick by position
+- [`$.fn.even()`](src/traversal/even/readme.md) / [`.odd()`](src/traversal/odd/readme.md) — even/odd index subsets
+- [`$.fn.slice()`](src/traversal/slice/readme.md) — array-style subset
+- [`$.fn.index()`](src/traversal/index/readme.md) — position lookup
+
+### Dimensions
+
+- [`$.fn.width()` / `.height()` / `.innerWidth()` / `.innerHeight()` / `.outerWidth()` / `.outerHeight()`](src/dimensions/width-height/readme.md) — measurements
+- [`$.fn.scrollLeft()` / `.scrollTop()`](src/dimensions/scroll/readme.md) — scroll position
+- [`$.fn.offset()`](src/dimensions/offset/readme.md) — viewport position
+- [`$.fn.offsetParent()`](src/dimensions/offsetparent/readme.md) — nearest positioned ancestor
+- [`$.fn.position()`](src/dimensions/position/readme.md) — position relative to the offset parent
+
+### Ajax
+
+- [`$.ajax()`](src/ajax/ajax/readme.md) — primary request method
+- [`$.get()` / `$.post()`](src/ajax/getpost/readme.md) — GET/POST shortcuts
+- [`$.getScript()`](src/ajax/getscript/readme.md) — load and execute a script
+- [`$.fn.load()`](src/ajax/load/readme.md) — load HTML into elements
+- [`$.fn.serialize()`](src/ajax/serialize/readme.md) — serialise a form
+- [`$.param()`](src/ajax/param/readme.md) — serialise an object as a query string
+
+### Utilities
+
+- [`$.each()`](src/utils/each/readme.md) — iterate any collection
+- [`$.map()`](src/utils/map/readme.md) — translate any collection
+- [`$.extend()`](src/utils/extend/readme.md) — shallow/deep merge
+- [`$.parseHTML()`](src/utils/parsehtml/readme.md) — parse HTML to nodes
+- [`$.isPlainObject()`](src/utils/isplainobject/readme.md) — plain-object predicate
+- [`isFunction()`](src/utils/isfunction/readme.md) / [`isWindow()`](src/utils/iswindow/readme.md) — internal type guards
 
 ## Custom Builds
 
-As Dabby.js is built in ES6, you can include just the parts you need in your project (If you are using ES6 modules). Import the core library and only the methods you need:
+As Dabby.js is built in ES6, you can include just the parts you need in your project (if you are using ES6 modules). Import the core library and only the methods you need:
 
 ```javascript
 import $ from "dabbyjs";
-import "dabbyjs/src/attributes/attr/attr"; // if you need to create elements with attributes like $("<element>", {some: "attributes"})
-import "dabbyjs/src/traversal/filter/filter"; // I need $.fn.is(), which is written with $.fn.filter() and $.fn.not()
+import "dabbyjs/attributes/attr/attr";       // create elements with attributes like $("<element>", {some: "attributes"})
+import "dabbyjs/traversal/filter/filter";    // $.fn.is(), $.fn.filter() and $.fn.not()
 ```
 
 You can either do this in each module you need dabby.js in, or build a file that imports all the methods you need for your project, and include that somewhere.
@@ -92,7 +177,7 @@ Dabby.js is written in TypeScript with a seamless developer experience. Import `
 ### Full Build
 
 ```typescript
-import $ from 'dabbyjs';
+import $ from 'dabbyjs/full';
 
 // All methods available with full type safety and IntelliSense
 $('#app').html('<div>Hello</div>').addClass('active').on('click', () => {});
@@ -105,8 +190,8 @@ Import only the modules you need. TypeScript automatically knows which methods a
 
 ```typescript
 import $ from 'dabbyjs';
-import 'dabbyjs/src/manipulation/html/html';
-import 'dabbyjs/src/events/on/on';
+import 'dabbyjs/manipulation/html/html';
+import 'dabbyjs/events/on/on';
 
 // TypeScript knows html() and on() are available, with perfect autocomplete
 $('#app').html('Hello').on('click', () => {});
