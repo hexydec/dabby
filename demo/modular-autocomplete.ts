@@ -34,7 +34,7 @@ import "../src/traversal/find/find.js";
 const $el = $("#app");
 
 // html() — getter returns string | undefined
-const html: string | undefined = $el.html();
+const html = $el.html();
 console.log(html);
 
 // html() — setter, full callback typing
