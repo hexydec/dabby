@@ -69,7 +69,10 @@ import "./traversal/odd/odd.js";
 // Utils
 // Note: each is now a core method in Dabby class
 import "./utils/extend/extend.js";
+import "./utils/isarray/isarray.js";
+import "./utils/isfunction/isfunction.js";
 import "./utils/isplainobject/isplainobject.js";
+import "./utils/iswindow/iswindow.js";
 import "./utils/map/map.js";
 import "./utils/parsehtml/parsehtml.js";
 

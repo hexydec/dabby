@@ -130,10 +130,10 @@ import $ from 'dabbyjs';
 
 // At this point, $().html doesn't exist in types — ModularDabbyMethods is empty
 
-import 'dabbyjs/src/manipulation/html/html';
+import 'dabbyjs/manipulation/html/html';
 // Now ModularDabbyMethods has html(), so $().html() is valid
 
-import 'dabbyjs/src/events/on/on';
+import 'dabbyjs/events/on/on';
 // Now ModularDabbyMethods also has on()
 
 $('#app').html('Hello');     // OK — html() is known
@@ -142,6 +142,34 @@ $('#app').css('color');       // ERROR — css not imported, not in ModularDabby
 ```
 
 Types track exactly what's available at runtime. Import a module file, get the method in your types. Don't import it, TypeScript prevents you from calling it.
+
+> **Scope of this guarantee.** This holds for **consumers** of the published package, not inside Dabby's own source tree. See [Scope of the Per-Import Guarantee](#scope-of-the-per-import-guarantee) below for why.
+
+## Scope of the Per-Import Guarantee
+
+The "import a method, get its type; skip it, get an error" behaviour is real, but it is a property of the **compilation boundary**, not of individual `import` statements. It's worth understanding precisely, because it behaves differently depending on who is compiling.
+
+### `declare module` augmentations are global within one compilation
+
+TypeScript merges every `declare module '../../dabby.js'` block it sees into a single, program-wide `ModularDabbyMethods` / `ModularDabbyStatics`. Once *any* file contributing an augmentation is part of the current compilation, that member is visible **everywhere** in that compilation — there is no per-`import`-statement scoping.
+
+Inside this repository that means the guarantee does **not** hold. `tsconfig.build.json` includes `src/**/*.ts`, so all method files (and their augmentations) are part of one compilation. From within the repo, `$().css()` type-checks even in a file that only imported `html` — because `css.ts` is in the program and has already merged `css` into the interface.
+
+### Why it holds for published consumers
+
+The isolation comes from the [`package.json` exports map](#packagejson-type-fields), not from the augmentation mechanism:
+
+- Each method has its own subpath (`./manipulation/html/html`) pointing at its own emitted `./dist/manipulation/html/html.d.ts`.
+- A consumer's compiler only loads the `.d.ts` files for the subpaths they actually import.
+- So only the augmentations the consumer imported enter *their* program, and only those methods appear on `$()`.
+
+In other words: the per-method `.d.ts` files are the real unit of "import this, get its type." The repo authoring everything in one compilation is what makes the rule invisible locally.
+
+### How the modular typing is actually verified
+
+Because the rule is invisible from inside `src/`, the type tests don't try to assert it via auto-inference. `test-d/modular.test-d.ts` instead exercises the **explicit `createDabby<'html' | 'text' | 'on'>()` enumeration**, which is robust to the global-augmentation effect: `DabbyWithMethods` uses `Pick<DabbyMethodSignatures, Methods>`, so it exposes *only* the named methods regardless of what augmentations are present in the program. The auto-inferred `$` is only checked positively (imported methods are present); `expectError` in `test-d/dabby.test-d.ts` targets wrong **argument types**, not missing methods.
+
+To assert "a non-imported method is absent" the consumer way, you'd need a **separate compilation per import set** (or to compile against the built `dist` `.d.ts` files through the `exports` map) — neither is done in-repo, by design.
 
 ## The `import type {} from '../../dabby.js'` Line
 
@@ -167,8 +195,8 @@ For users who want to enumerate available methods explicitly rather than relying
 
 ```typescript
 import { createDabby } from 'dabbyjs';
-import 'dabbyjs/src/manipulation/html/html';
-import 'dabbyjs/src/events/on/on';
+import 'dabbyjs/manipulation/html/html';
+import 'dabbyjs/events/on/on';
 
 const $ = createDabby<'html' | 'on'>();
 $('#app').html('Hello');  // OK
@@ -243,12 +271,12 @@ Dabby supports the [Trusted Types API](https://developer.mozilla.org/en-US/docs/
   "types": "dist/dabby.d.ts",
   "exports": {
     ".": { "types": "./dist/dabby.d.ts", "default": "./dist/dabby.js" },
-    "./src/manipulation/html/html": { "types": "./dist/manipulation/html/html.d.ts", ... }
+    "./*": { "types": "./dist/*.d.ts", "default": "./dist/*.js" }
   }
 }
 ```
 
-Each method module has its own export entry, so consumers can import individual methods and TypeScript can resolve the `.d.ts` files for augmentation.
+The `./*` wildcard gives each method module its own subpath (e.g. `dabbyjs/manipulation/html/html`), so consumers can import individual methods and TypeScript can resolve the `.d.ts` files for augmentation.
 
 ### `tsconfig.json` key settings
 

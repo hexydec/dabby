@@ -54,7 +54,7 @@ Then run it in the browser, or through your test suite to highlight any other is
 Dabby.js compiles an ES6 module with TypeScript definitions. Include Dabby.js like this:
 
 ```javascript
-import $ from "dabbyjs/dist/dabby.js"; // or dabby.min.js
+import $ from "dabbyjs"; // or "dabbyjs/full" for the complete bundle
 ```
 
 For TypeScript projects:
@@ -156,7 +156,9 @@ The `$()` factory and the underlying `Dabby` class. Methods on this section are 
 - [`$.extend()`](src/utils/extend/readme.md) — shallow/deep merge
 - [`$.parseHTML()`](src/utils/parsehtml/readme.md) — parse HTML to nodes
 - [`$.isPlainObject()`](src/utils/isplainobject/readme.md) — plain-object predicate
-- [`isFunction()`](src/utils/isfunction/readme.md) / [`isWindow()`](src/utils/iswindow/readme.md) — internal type guards
+- [`$.isArray()`](src/utils/isarray/readme.md) — array predicate (`Array.isArray` wrapper)
+- [`$.isFunction()`](src/utils/isfunction/readme.md) — callable predicate
+- [`$.isWindow()`](src/utils/iswindow/readme.md) — window predicate
 
 ## Custom Builds
 

@@ -21,7 +21,7 @@ describe("Manipulation", () => {
 
 		it("can read html", () => {
 			const main = $(".testtemp");
-			(test.querySelector(".testtemp") as HTMLElement).insertAdjacentHTML("beforeEnd", "<div>Test</div>");
+			(test.querySelector(".testtemp") as HTMLElement).insertAdjacentHTML("beforeend", "<div>Test</div>");
 			expect(main.html()).toBe("<div>Test</div>");
 		});
 
