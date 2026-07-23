@@ -1,55 +1,66 @@
-# .css()
+# $.fn.css()
 
-Get the requested CSS attributes from the first item in a collection, or set the requested attributes on all the items in the collection.
+Read computed CSS properties from the first node in a collection, or set inline styles on every node in the collection. Property names may be supplied in dash-case or camelCase — the returned object preserves the form you used.
 
-## Usage
+## Signatures
 
-```javascript
-$(selector).css(attribute);
-$(selector).css([attribute, ...]);
-$(selector).css({attribute: value, ...});
-$(selector).css(attribute, value);
-$(selector).css(attribute, function (index, currentValue) {});
+```ts
+css(prop: string): string;
+css(props: string[]): Record<string, string>;
+css(prop: string, value: string | number | ((this: Element, index: number, currentValue: string) => string | number)): this;
+css(props: Record<string, string | number>): this;
 ```
 
-You can request an attribute or attributes from the first item in a collection by sending the attribute name as either a string or an array of strings. To set attributes, send an object containing attribute names as the key, and the attribute value as the value, or use the two argument form to set single attributes.
+## Parameters
 
-#### attribute
-
-The attribute name(s) can be requested using with dash or camel case notation.
-
-#### value
-
-The value to set the specified attribute to on each item in the collection.
-
-#### function
-
-A callback function to generate the value with. Receives the index of the current node in the collection, and the current value. `this` will be set to the current node.
-
-Where attributes are set as an object, callback functions can also be supplied.
+- `prop` (`string`) — a single CSS property name in dash-case (e.g. `background-color`) or camelCase (e.g. `backgroundColor`).
+- `props` (`string[]`) — when reading, an array of property names to read in one call.
+- `props` (`object`) — when setting, a plain object of property name/value pairs.
+- `value` (`string | number | function`) — the value to assign. Numeric values are passed through to the browser, which adds `px` for length-based properties. A function receives `(index, currentValue)` and `this` set to the current element; it should return a string or number.
 
 ## Returns
 
-When requesting attributes, the return value will be either the requested attribute, or an object containing the requested values. If multiple attributes are requested, the attribute names will be returned in the same form as they were requested (camelCase or dash-erised).
+When reading a single property, the computed value as a string. When reading multiple properties, an object keyed by the requested names. When setting, the original Dabby collection.
 
-When setting attributes, the original collection will be returned.
+## Examples
 
-## Example
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/css/css";
 
-```javascript
-// retrieve attributes
-var color = $(".item").css("border-color"); // returns the first item's border colour
-var color = $(".item").css("borderColor"); // returns the same
-var attr = $(".item").css(["border-color", "border-width"]); // returns {"border-color": "red", "border-width": "5px"}
-var attr = $(".item").css(["borderColor", "borderWidth"]); // returns {borderColor: "red", borderWidth: "5px"}
+// Read a single computed property
+const colour = $(".card").css("background-color");
 
-// set attributes
-$(".item").css("border-color", "green");
-$(".item").css("borderColor", "green"); // does the same as above
-$(".item").css({"border-color": "green", "border-width": "1px"});
-$(".item").css({borderColor: "green", borderWidth: "1px"});
+// Read several properties at once
+const box = $(".card").css(["border-color", "border-width"]);
 ```
 
-## Differences to jQuery
+```ts
+// Set a single property
+$(".card").css("background-color", "#0055aa");
 
-None.
+// Numeric values become pixels
+$(".card").css("width", 320);
+```
+
+```ts
+// Set several properties from an object
+$(".card").css({
+    backgroundColor: "#0055aa",
+    color: "#ffffff",
+    padding: "1rem"
+});
+```
+
+```ts
+// Compute each value from the current value
+$(".progress-bar").css("width", function (index, current) {
+    return parseFloat(current) + 10 + "px";
+});
+```
+
+## See also
+
+- [$.fn.attr()](../attr/readme.md) — read or set the `style` attribute as a string.
+- [$.fn.addClass()](../class/readme.md) — toggle classes rather than inline styles.
+- [$.fn.show()](../show-hide/readme.md) — show, hide and toggle the `display` property.

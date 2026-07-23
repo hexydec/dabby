@@ -1,37 +1,39 @@
-# $.iswindow()
+# $.isWindow(value)
 
-Determines whether the passed value is the `window` object.
+Type guard that returns `true` when the value is the global `window` object.
 
-**WARNING: This method is deprecated**
+Importing this module attaches `isWindow` to the `$` factory as a static
+helper, mirroring jQuery's `$.isWindow`. The check compares the value's
+`window` property to itself, which is true only for `window` (and `Window`
+aliases such as iframe globals).
 
-## Usage
+## Signatures
 
-```javascript
-$.iswindow(value);
+```ts
+$.isWindow(value: unknown): value is Window;
 ```
 
-#### value
+## Parameters
 
-A variable to test whether it is the window object.
+- `value` (`unknown`) — the value to test.
 
 ## Returns
 
-A boolean specifying whether `value` is a function.
+`true` if `value` is a `Window`, otherwise `false`.
 
-## Example
+## Examples
 
-```javascript
-const test = [42, "hello world", window, document]
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/iswindow/iswindow";
 
-test.forEach(item => {
-	console.log($.iswindow(item)); // false, false, true, false
-});
+$.isWindow(window);             // true
+$.isWindow(document);           // false
+$.isWindow(null);               // false
+$.isWindow(document.body);      // false
 ```
 
 ## Notes
 
-This method is deprecated.
-
-## Differences to jQuery
-
-None.
+Included in the `full` build. The Dabby class also uses the internal guard to
+detect when `$()` is called with the window directly.

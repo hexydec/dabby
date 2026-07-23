@@ -1,76 +1,105 @@
-# .width() / .height()
+# $.fn.width(val?), $.fn.height(val?), $.fn.innerWidth(val?), $.fn.innerHeight(val?), $.fn.outerWidth(val?), $.fn.outerHeight(val?)
 
-Retrieve the width or height of the first element in a matched collection or set the width or height of every element in a collection.
+Six related methods for reading and writing the size of a node, modelled on the CSS box model:
 
-The width and height is defined as the inner size of the element excluding padding, border, and margin.
+- **`.width()` / `.height()`** — the content box: padding, border, and margin are all excluded.
+- **`.innerWidth()` / `.innerHeight()`** — content plus padding (border and margin excluded).
+- **`.outerWidth()` / `.outerHeight()`** — content plus padding plus border. Pass `true` to also include margin.
 
-# .innerWidth() / .innerHeight()
+Each method reads from the first node when called with no value, and writes to every node in the collection when given a value or callback. For `document` the getters return the full scrollable size; for `window` they return the viewport size.
 
-Retrieve the inner width or inner height of the first element in a matched collection or set the inner width or inner height of every element in a collection.
+## Signatures
 
-The inner width and inner height is defined as the inner size of the element including padding, but excluding border and margin.
+```ts
+width(): number | undefined;
+width(
+    val: number | string
+        | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)
+): this;
 
-See .width() and .height() for usage.
+height(): number | undefined;
+height(
+    val: number | string
+        | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)
+): this;
 
-# .outerWidth() / .outerHeight()
+innerWidth(): number | undefined;
+innerWidth(
+    val: number | string
+        | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)
+): this;
 
-Retrieve the outer width or outer height of the first element in a matched collection or set the outer width or outer height of every element in a collection.
+innerHeight(): number | undefined;
+innerHeight(
+    val: number | string
+        | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)
+): this;
 
-The outer width and outer height is defined as the inner size of the element including padding and border, but excluding margin.
+outerWidth(): number | undefined;
+outerWidth(
+    val: number | string | boolean
+        | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)
+): this;
 
-See .width() and .height() for usage.
-
-## Usage
-
-```javascript
-$(selector).width();
-$(selector).height();
-$(selector).width(value);
-$(selector).height(value);
-$(selector).width(function (index, currentValue) {});
-$(selector).height(function (index, currentValue) {});
-$(selector).innerWidth();
-$(selector).innerHeight();
-$(selector).innerWidth(value);
-$(selector).innerHeight(value);
-$(selector).innerWidth(function (index, currentValue) {});
-$(selector).innerHeight(function (index, currentValue) {});
-$(selector).outerWidth();
-$(selector).outerHeight();
-$(selector).outerWidth(value);
-$(selector).outerHeight(value);
-$(selector).outerWidth(function (index, currentValue) {});
-$(selector).outerHeight(function (index, currentValue) {});
+outerHeight(): number | undefined;
+outerHeight(
+    val: number | string | boolean
+        | ((this: Element | Window | Document, index: number, currentValue: number) => number | string)
+): this;
 ```
 
-### value
+## Parameters
 
-An integer or string specifying the desired dimensions of the items in the collection. As a string the value should be numeric with a unit as a suffix such as px, pt, cm, or % (Any unit suppported by the browser).
-
-If no unit is specified, pixels (px) is assumed.
-
-### function
-
-A callback that receives the index of the element in the collection, and the current value of the dimension. Should return the new dimension value. `this` will reference the current item in the collection that is being processed.
+- **`val`** — either a number (treated as pixels), a CSS length string (`"50%"`, `"10rem"`, any unit the browser supports), or a callback receiving the index and current value and returning the new value. `this` inside the callback is the current element.
+- **`outerWidth(true)` / `outerHeight(true)`** — passing the boolean `true` to the getter includes the horizontal or vertical margin in the returned value.
 
 ## Returns
 
-An integer or float containing the requested dimension as a pixel unit, or if setting the dimension, the input Dabby collection will be returned.
+The getters return a number of pixels, or `undefined` for an empty collection. The setters return the original Dabby collection for chaining.
 
-## Example
+## Examples
 
-```javascript
-const obj = $("div"), // cache collection
-	width = obj.width(); // 800
-obj.width(600); // => dabby
-obj.width("50%"); // => dabby
-obj.width("4cm"); // => dabby
-obj.width("50%"); // => dabby
-obj.width((index, currentValue) => {
-	return currentValue + 20;
-}); // => dabby
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/dimensions/width-height/width-height";
+
+// Read the size of the first match
+const w = $(".card").width();
+const h = $(".card").outerHeight(true); // includes margin
+
+// Read the viewport
+const viewport = {
+    width: $(window).width(),
+    height: $(window).height()
+};
+```
+
+```ts
+// Make every card the same height
+let max = 0;
+$(".card").each(function () {
+    max = Math.max(max, $(this).outerHeight() ?? 0);
+});
+$(".card").height(max);
+```
+
+```ts
+// Set values using a callback — scale every image up by 20%
+$(".gallery img").width(function (index, current) {
+    return current * 1.2;
+});
+
+// Use a CSS length string
+$(".sidebar").width("25%");
 ```
 
 ## Differences to jQuery
 
-Doesn't support relative units such as "+2px".
+Relative units in the setter such as `"+=2px"` are not supported.
+
+## See also
+
+- [`.css()`](../../attributes/css/readme.md)
+- [`.offset()`](../offset/readme.md)
+- [`.position()`](../position/readme.md)
+- [`.scrollTop()` / `.scrollLeft()`](../scroll/readme.md)

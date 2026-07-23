@@ -1,57 +1,65 @@
-# .data()
+# $.fn.data()
 
-Get or set arbitrary data as properties of each node in a collection.
+Read or set `data-*` attributes on the elements in a collection. Internally, Dabby uses the native `dataset` property, so values are JSON-parsed when read and serialised to JSON when set.
 
-## Usage
+Names may be supplied in dash-case (e.g. `user-id`) or camelCase (e.g. `userId`); they are normalised to the camelCase form used by `dataset`.
 
-```javascript
-$(selector).data(key);
-$(selector).data(key, value);
-$(selector).data(obj);
+## Signatures
+
+```ts
+data(): Record<string, unknown>;
+data(name: string): unknown;
+data(name: string, value: string | number | boolean | object | null): this;
+data(props: Record<string, string | number | boolean | object | null>): this;
 ```
 
-#### key
+## Parameters
 
-The name of the data attribute to get/set. The key corresponds directly to any data-\* attributes, so when reading, if the node contains a corresponding data attribute, the value will be returned.
-
-The names of data attributes must conform to the naming convention of HTML data-\* attributes, so they must contain only lowercase alpha numeric characters and dashes. Names can also be sent in camelCase notation.
-
-#### value
-
-Can be anything, but note that internally, any data is converted to a JSON string, so objects that have a .toJSON() method may not return in the same format.
-
-#### obj
-
-An object of key/value pairs, enabling multiple data attributes to be set.
+- `name` (`string`) — the data attribute name, without the `data-` prefix.
+- `value` (`string | number | boolean | object | null`) — the value to store. Objects are serialised with `JSON.stringify`; primitives are stringified by the browser.
+- `props` (`object`) — a plain object of name/value pairs to set in one call.
 
 ## Returns
 
-When reading, the contained value will be returned, or undefined if the data attribute hasn't been set. When setting a value, the original collection will be returned.
+When called with no arguments, an object containing every data value from the first node. When called with a single name, the parsed value of that attribute, or `undefined` if it is not set. When setting, the original Dabby collection.
 
-## Example
-
-Using the following HTML:
+## Examples
 
 ```html
-<div id="item" data-value="5" data-longer-name="{'hello': 'world', 'foo': 'bar'}"></div>
+<div id="user" data-user-id="12345" data-role="admin"
+     data-preferences='{"theme":"dark","language":"en"}'></div>
 ```
 
-The following javascript will access the data attributes.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/data/data";
 
-```javascript
+// Read a single value (numbers and JSON are parsed automatically)
+const userId = $("#user").data("user-id");      // "12345"
+const prefs = $("#user").data("preferences");   // { theme: "dark", language: "en" }
 
-// read values
-var value = $("#item").data("value"); // = 5
-var obj = $("#item").data("longer-name"); // {hello: "world", foo: "bar"} - native javascript object
-var obj = $("#item").data("longerName"); // same as above
-
-// set values
-$("#item").data("value", 6); // overwrite value
-$("#item").data("new-value", {test: "me", test2: "me2"}); // create new value - object
-$("#item").data("longerName", {hello: "mars", foo: "pub"}); // overwrite value
-$("#item").data({value: 10, "newValue": "String now", "new-value-2": "Another string?"}); // set values as objects
+// Read every data value
+const all = $("#user").data();
 ```
 
-## Differences to jQuery
+```ts
+// Set one value
+$("#user").data("status", "active");
 
-jQuery may have its own internal data store to associate data with nodes in a collection, and thus may be able to retain more complex objects or those that have a .toJSON() method. The reason for this is simplicity, the Javascript API for the HTMLElement object provides the `dataset` property, which dabby uses internally.
+// Set an object — stored as JSON
+$("#user").data("settings", { notifications: true, autoSave: false });
+```
+
+```ts
+// Set several values at once
+$("#user").data({
+    role: "moderator",
+    verified: true,
+    lastLogin: "2026-05-07"
+});
+```
+
+## See also
+
+- [$.fn.attr()](../attr/readme.md) — read or set arbitrary HTML attributes (no JSON parsing).
+- [$.fn.prop()](../prop/readme.md) — read or set live DOM properties.

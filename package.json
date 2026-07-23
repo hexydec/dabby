@@ -1,6 +1,6 @@
 {
 	"name": "dabbyjs",
-	"version": "0.10.1",
+	"version": "0.11.0",
 	"homepage": "https://hexydec.github.io/dabby",
 	"author": "Will Earp <will@hexydec.com>",
 	"description": "A lightweight modular ES6 jQuery clone library built for modern browsers",
@@ -15,28 +15,79 @@
 		"javascript"
 	],
 	"contributors": [],
+	"type": "module",
 	"main": "dist/dabby.js",
-	"types": "dist/src/build.d.ts",
-	"source": "src/build.js",
+	"types": "dist/dabby.d.ts",
+	"source": "src/dabby.ts",
+	"exports": {
+		".": {
+			"types": "./dist/dabby.d.ts",
+			"default": "./dist/dabby.js"
+		},
+		"./full": {
+			"types": "./dist/build.d.ts",
+			"default": "./dist/full.js"
+		},
+		"./*": {
+			"types": "./dist/*.d.ts",
+			"default": "./dist/*.js"
+		},
+		"./src/*": "./src/*",
+		"./dist/*": "./dist/*"
+	},
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/hexydec/dabby/issues"
 	},
 	"scripts": {
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:types": "tsd",
+		"build": "tsc -p tsconfig.build.json && vite build",
+		"build:types": "tsc -p tsconfig.build.json",
+		"build:bundle": "vite build",
 		"dev": "vite build --watch",
-		"build": "vite build",
-		"deploy": "vite build --mode production"
+		"demo": "vite --config demo/vite.config.ts"
 	},
 	"browserslist": [
 		"defaults"
 	],
 	"files": [
-		"dist/*.js",
-		"src/**/*.js"
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
+		"dist/**/*.d.ts.map",
+		"src/**/*.ts",
+		"!src/**/test.ts"
 	],
+	"tsd": {
+		"directory": "test-d",
+		"compilerOptions": {
+			"lib": [
+				"ES2022",
+				"DOM",
+				"DOM.Iterable"
+			],
+			"paths": {
+				"dabbyjs": [
+					"./src/dabby.ts"
+				],
+				"dabbyjs/*": [
+					"./src/*",
+					"./dist/*"
+				]
+			}
+		}
+	},
 	"devDependencies": {
+		"@types/node": "^25.5.0",
+		"benchmark": "^2.1.4",
+		"happy-dom": "^20.8.9",
+		"jsdoc": "^4.0.4",
 		"terser": "^5.46.0",
-		"vite": "^6.0.0"
+		"tsd": "^0.33.0",
+		"typescript": "^5.9.2",
+		"vite": "^7.3.3",
+		"vitest": "^3.2.4"
 	},
 	"repository": {
 		"type": "git",

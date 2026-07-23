@@ -1,36 +1,52 @@
-# .hasClass()
+# $.fn.hasClass()
 
-See whether any elements in a collection have the requested class.
+Determine whether any node in the collection has the requested class. Returns as soon as a match is found.
 
-## Usage
+## Signatures
 
-```javascript
-$(selector).hasClass(className);
+```ts
+hasClass(cls: string): boolean;
 ```
 
-#### className
+## Parameters
 
-The name of the class to test against the collection.
+- `cls` (`string`) — the class name to test for.
 
 ## Returns
 
-True when any item in the supplied collection has the requested class, false if not.
+`true` when any node in the collection has the class, otherwise `false`.
 
-## Example
+## Examples
 
-Using the following HTML:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/hasclass/hasclass";
 
-```html
-<div class="foo"></div>
-<div class="bar"></div>
-<div class="foo bar"></div>
+// Test whether any element matches
+const isDark = $("body").hasClass("dark-mode");
 ```
 
-The following javascript will determine whether the requested class is set on any item in the collection:
-
-```javascript
-var foo = $("div").hasClass("foo"); // true
-var bar  = $("div").hasClass("bar"); // true
-var foo2 = $("div.foo").hasClass("bar"); //true
-var flu = $("div").hasClass("flu"); // false
+```ts
+// Test a specific element
+const $card = $(".card").eq(1);
+if ($card.hasClass("card--featured")) {
+    $card.addClass("card--highlighted");
+}
 ```
+
+```ts
+// Conditional behaviour
+$(".menu-button").on("click", () => {
+    const $nav = $(".navigation");
+    if ($nav.hasClass("navigation--open")) {
+        $nav.removeClass("navigation--open");
+    } else {
+        $nav.addClass("navigation--open");
+    }
+});
+```
+
+## See also
+
+- [$.fn.addClass(), $.fn.removeClass(), $.fn.toggleClass()](../class/readme.md) — modify the class list.
+- [$.fn.attr()](../attr/readme.md) — read the `class` attribute as a string.

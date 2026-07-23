@@ -1,0 +1,162 @@
+import $, { Dabby } from "../../core/dabby/dabby.js";
+import type {} from "../../dabby.js";
+import type { Selector } from "../../types.js";
+import getVal from "../../internal/getval/getval.js";
+
+type InsertCallback = (this: Element, index: number, html: string) => Selector;
+type InsertPosition = "beforebegin" | "afterbegin" | "beforeend" | "afterend";
+
+function factory(
+	name: string,
+	pos: InsertPosition,
+	obj: Dabby,
+	...content: Array<Selector | InsertCallback>
+): Dabby {
+	// Function tracking variables
+	const pre = ["prepend", "after"].includes(name);
+	let elems: Dabby;
+	let i = obj.length;
+	const len = i;
+	const isFunc = typeof content[0] === "function";
+
+	// Multiple arguments containing nodes
+	if (!isFunc) {
+		elems = content.reduce((dabby: Dabby, item) => {
+			const d = dabby as Dabby & { add?: (item: Selector) => Dabby };
+			if (d.add) {
+				return d.add(item as Selector);
+			}
+			return dabby;
+		}, $());
+	}
+
+	// Insert objects onto each element in collection
+	while (i--) {
+		const element = obj[i] as Element;
+
+		// Retrieve nodes from function
+		if (isFunc) {
+			const dabbyCollection = [element] as unknown as { readonly length: number; readonly [n: number]: Element };
+			const values = getVal(dabbyCollection, content[0], (obj: Element) => obj.innerHTML);
+			elems = values.reduce((dabby: Dabby, item) => {
+				const d = dabby as Dabby & { add?: (item: Selector) => Dabby };
+				if (d.add) {
+					return d.add(item as Selector);
+				}
+				return dabby;
+			}, $());
+		}
+
+		// Insert nodes
+		let backwards = elems!.length; // For counting down
+		let forwards = -1; // For counting up
+
+		while (pre ? backwards-- : ++forwards < backwards) {
+			const index = pre ? backwards : forwards;
+			const nodeToInsert = i === len - 1
+				? elems![index] as Element
+				: ((elems! as Dabby & { eq?: (index: number) => Dabby & { clone?: (deep: boolean) => Dabby } }).eq?.(index)?.clone?.(true)?.[0] as Element) ?? (elems![index] as Element);
+
+			element.insertAdjacentElement(pos, nodeToInsert);
+		}
+	}
+
+	return obj;
+}
+
+/**
+ * Insert content before each item in the collection (as a previous sibling).
+ *
+ * Accepts any number of selectors, HTML strings, nodes or Dabby collections;
+ * pass a single callback to receive the element's index and current HTML and
+ * return the content to insert. When the collection contains multiple items,
+ * the inserted nodes are deep-cloned (with data and events) for each but the
+ * last target so each receives its own copy.
+ *
+ * @param content - one or more values, or a callback, providing nodes to insert
+ * @returns the original Dabby collection
+ *
+ * @example
+ * $(".existing").before("<hr>", "<p>Intro</p>");
+ */
+function before(this: Dabby, ...content: Array<Selector | InsertCallback>): Dabby {
+	return factory("before", "beforebegin", this, ...content);
+}
+
+Object.defineProperty(Dabby.prototype, "before", { value: before, configurable: true });
+
+/**
+ * Prepend content to each item in the collection (as the first child).
+ *
+ * Accepts any number of selectors, HTML strings, nodes or Dabby collections;
+ * pass a single callback to receive the element's index and current HTML and
+ * return the content to insert. When the collection contains multiple items,
+ * the inserted nodes are deep-cloned (with data and events) for each but the
+ * last target so each receives its own copy.
+ *
+ * @param content - one or more values, or a callback, providing nodes to insert
+ * @returns the original Dabby collection
+ *
+ * @example
+ * $(".container").prepend("<h2>Title</h2>");
+ */
+function prepend(this: Dabby, ...content: Array<Selector | InsertCallback>): Dabby {
+	return factory("prepend", "afterbegin", this, ...content);
+}
+
+Object.defineProperty(Dabby.prototype, "prepend", { value: prepend, configurable: true });
+
+/**
+ * Append content to each item in the collection (as the last child).
+ *
+ * Accepts any number of selectors, HTML strings, nodes or Dabby collections;
+ * pass a single callback to receive the element's index and current HTML and
+ * return the content to insert. When the collection contains multiple items,
+ * the inserted nodes are deep-cloned (with data and events) for each but the
+ * last target so each receives its own copy.
+ *
+ * @param content - one or more values, or a callback, providing nodes to insert
+ * @returns the original Dabby collection
+ *
+ * @example
+ * $(".todo-list").append("<li>Buy milk</li>", "<li>Walk dog</li>");
+ */
+function append(this: Dabby, ...content: Array<Selector | InsertCallback>): Dabby {
+	return factory("append", "beforeend", this, ...content);
+}
+
+Object.defineProperty(Dabby.prototype, "append", { value: append, configurable: true });
+
+/**
+ * Insert content after each item in the collection (as a next sibling).
+ *
+ * Accepts any number of selectors, HTML strings, nodes or Dabby collections;
+ * pass a single callback to receive the element's index and current HTML and
+ * return the content to insert. When the collection contains multiple items,
+ * the inserted nodes are deep-cloned (with data and events) for each but the
+ * last target so each receives its own copy.
+ *
+ * @param content - one or more values, or a callback, providing nodes to insert
+ * @returns the original Dabby collection
+ *
+ * @example
+ * $(".article p").after("<hr>");
+ */
+function after(this: Dabby, ...content: Array<Selector | InsertCallback>): Dabby {
+	return factory("after", "afterend", this, ...content);
+}
+
+Object.defineProperty(Dabby.prototype, "after", { value: after, configurable: true });
+
+// Module augmentation for auto-inferred modular imports
+declare module '../../dabby.js' {
+  interface ModularDabbyMethods {
+    append(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
+    prepend(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
+    after(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
+    before(...content: Array<Selector | TrustedHTML | ((this: Element, index: number, html: string) => Selector)>): this;
+  }
+}
+
+export type __append = typeof append;
+export type __prepend = typeof prepend;

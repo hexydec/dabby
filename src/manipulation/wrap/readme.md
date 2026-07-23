@@ -1,46 +1,59 @@
-# .wrap()
-Wraps each element in the collection with the provided new elements.
+# $.fn.wrap(html)
 
-## Usage
-```javascript
-$(selector).wrap(html);
+Wrap each item in the collection with its own copy of the supplied content.
+
+If the wrapper has nested children, each element is placed inside the
+deepest descendant. Pass a callback to compute a different wrapper per
+element.
+
+## Signatures
+
+```ts
+wrap(html: Selector | ((this: Element, index: number) => Selector)): this;
 ```
 
-### html
-An HTML string, Node, array of Nodes, Dabby collection or a callback function.
+## Parameters
+
+- `html` (`Selector | callback`) — the wrapper, or a callback returning one.
+  - **`Selector`** — a CSS string, HTML string, node, array of nodes, or
+    Dabby collection. Each target receives its own deep clone.
+  - **callback** — invoked once per element with `(index)`, bound (`this`) to
+    the element. Return the wrapper to use.
 
 ## Returns
-The original Dabby collection.
 
-## Differences to jQuery
-None.
+The original Dabby collection for chaining.
 
 ## Examples
-Wrap a single element, this will wrap the `<p>` element with a `<div>` element:
 
-```javascript
-// HTML before
-// <p>Hello, World!</p>
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrap/wrap";
 
-$("p").wrap("<div>");
-
-// HTML after
-// <div><p>Hello, World!</p></div>
+// Wrap each thumbnail with its own zoom link
+$("img.thumbnail").wrap("<a class='zoom'></a>");
 ```
 
-Wrap multiple elements, this will wrap each `<li>` element with a `<div>` element:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrap/wrap";
 
-```javascript
-// HTML before
-// <p>Item 1</p>
-// <p>Item 2</p>
-// <p>Item 3</p>
-
-const div = $("<div>", {"class": "wrap"});
-$("p").wrap(div); // will be cloned for each item that is wrapped
-
-// HTML after
-// <div class="wrap"><p>Item 1</p></div>
-// <div class="wrap"><p>Item 2</p></div>
-// <div class="wrap"><p>Item 3</p></div>
+// Wrapper with nested elements — items end up in the deepest descendant
+$(".chip").wrap("<div class='chip-row'><span class='chip-inner'></span></div>");
 ```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrap/wrap";
+
+// Compute the wrapper per element
+$("p").wrap(function (index) {
+    return `<section data-index='${index}'></section>`;
+});
+```
+
+## See also
+
+- [$.fn.wrapAll()](../wrapall/readme.md) — single wrapper around the whole set
+- [$.fn.unwrap()](../unwrap/readme.md)
+- [$.fn.append()](../insert/readme.md)

@@ -1,41 +1,52 @@
-# $.isPlainObject()
-Tests a value to see if it is a plain object, that was defined with {} and has a prototype of Object.
+# $.isPlainObject(value)
 
-## Usage
-```javascript
-$.isPlainObject(obj);
+Test whether a value is a plain object literal — created with `{}`, `new Object()`,
+or `Object.create(null)`.
+
+Returns `false` for arrays, DOM nodes, dates, class instances, and primitive
+values. Useful for guarding deep-merge or copy-on-write logic.
+
+## Signatures
+
+```ts
+isPlainObject(obj: unknown): boolean;
 ```
 
-### obj
-The value to be tested.
+## Parameters
+
+- `obj` (`unknown`) — the value to test.
 
 ## Returns
-A boolean indicating whether the input value is a plain object.
 
-## Differences to jQuery
-None.
+`true` if the prototype of `obj` is `Object.prototype` or `null`, otherwise
+`false`.
 
 ## Examples
-This will return `true` because the object was created using object literal notation:
 
-```javascript
-const myObject = {};
-console.log($.isPlainObject(myObject));
-// Expected output: true
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/isplainobject/isplainobject";
+
+$.isPlainObject({});                 // true
+$.isPlainObject(Object.create(null)); // true
+$.isPlainObject([]);                 // false
+$.isPlainObject(new Date());         // false
+$.isPlainObject(null);               // false
+$.isPlainObject(document.body);      // false
 ```
 
-This will return `false` because an array's prototype is `Array`, not `Object`:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/isplainobject/isplainobject";
 
-```javascript
-const myArray = [];
-console.log($.isPlainObject(myArray));
-// Expected output: false
+// Use as a guard before deep-merging
+function merge(target: unknown, source: unknown) {
+    if (!$.isPlainObject(source)) return target;
+    return $.extend(true, target as Record<string, unknown>, source as Record<string, unknown>);
+}
 ```
 
-This will return `false` because a `Date` object's prototype is `Date`:
+## See also
 
-```javascript
-const myDate = new Date();
-console.log($.isPlainObject(myDate));
-// Expected output: false
-```
+- [$.extend()](../extend/readme.md)
+- [$.iswindow()](../iswindow/readme.md)

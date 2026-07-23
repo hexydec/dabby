@@ -1,31 +1,50 @@
-# .get()
+# $.fn.get(index?)
 
-Retrieve raw HTML nodes from a Dabby collection.
+Retrieve raw DOM nodes from a Dabby collection. With no argument the entire collection is returned as a plain array; with an index the single node at that position is returned. `.get()` is defined directly on the `Dabby` class, so it is always available — this module exists purely as a stub re-export for builds that import individual methods.
 
-## Usage
+For the canonical documentation see [core/dabby/readme.md](../dabby/readme.md).
 
-```javascript
-$(selector).get();
-$(selector).get(index);
+## Signatures
+
+```ts
+get(): DOMNode[];
+get(index: number): DOMNode | undefined;
 ```
 
-## Example
+## Parameters
 
-The following example puts the innerText of each DIV into an array:
+- **`index`** — optional zero-based index. Negative values count from the end of the collection (`-1` returns the last node).
 
-```html
-<div class="map">First</div>
-<div class="map">Second</div>
-<div class="map">Third</div>
+## Returns
+
+The matched node, `undefined` if `index` is out of range, or the full array of nodes when called without arguments.
+
+## Examples
+
+```ts
+import $ from "dabbyjs";
+
+// Whole collection as a plain array
+const items = $(".item").get();
+
+// First and last
+const first = $(".item").get(0);
+const last = $(".item").get(-1);
 ```
-```javascript
-let node = $(".map").get(1).innerText; // Second
-let nodes = $(".map").get(); // an array containing all the divs
+
+```ts
+// Hand a node to a native API
+const canvas = $("canvas").get(0);
+canvas?.getContext("2d")?.fillRect(0, 0, 100, 100);
+
+// Use Array methods on the result
+const externalLinks = $("a").get().filter(
+    (a) => (a as HTMLAnchorElement).hostname !== location.hostname
+);
 ```
-## Return value
 
-By passing `index` to this method, the node sitting at that index in the Dabby collection will be returned. If no value is passed, an array containing all nodes from the collection will be returned.
+## See also
 
-## Differences to jQuery
-
-None.
+- [Dabby class](../dabby/readme.md)
+- [`.each()`](../each/readme.md)
+- [`.eq()`](../../traversal/eq/readme.md)

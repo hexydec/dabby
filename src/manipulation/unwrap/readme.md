@@ -1,30 +1,45 @@
-# .unwrap()
-Removes the parents of some or all of the items in the collection, leaving the children in their place.
+# $.fn.unwrap([selector])
 
-## Usage
-```javascript
-$(collection).unwrap();
-$(collection).unwrap(selector);
+Remove the parent of every item in the collection, leaving the items in place
+as siblings of where the parent used to be.
+
+When a selector is supplied, only parents that match are removed. The
+`<body>` element is never removed, even if it would otherwise match.
+
+## Signatures
+
+```ts
+unwrap(selector?: Selector): this;
 ```
 
-### selector
-An optional selector to match the parent element to be removed.
+## Parameters
+
+- `selector` (`Selector`, optional) — narrows which parents are removed.
 
 ## Returns
-The original Dabby collection.
 
-## Differences to jQuery
-None.
+The original Dabby collection for chaining.
 
 ## Examples
-Unwrap all `<div>` elements, this will remove the `<div>` parent of all `p` tags with the target class, moving the `p` tags up one level in the DOM tree.
 
-```javascript
-$("p.target").unwrap("div");
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/unwrap/unwrap";
+
+// Strip the wrapper around every emphasised paragraph
+$("p.featured").unwrap();
 ```
 
-Unwrap a specific element, this will unwrap the `<p>` element from its `<span>` parent, leaving the `<span>`'s content in its place.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/unwrap/unwrap";
 
-```javascript
-$("p.my-paragraph").unwrap();
+// Only remove parents matching a selector
+$("img.thumbnail").unwrap(".zoom-link");
 ```
+
+## See also
+
+- [$.fn.wrap()](../wrap/readme.md)
+- [$.fn.wrapAll()](../wrapall/readme.md)
+- [$.fn.parent()](../../traversal/parents/readme.md)

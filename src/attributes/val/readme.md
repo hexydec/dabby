@@ -1,44 +1,75 @@
-# .val()
+# $.fn.val([value])
 
-Get the value of the first item in the collection, or set the values of all items in the collection.
+Get the value of the first form element in the collection, or set the value
+of every form element.
 
-This method is designed to use with `input`, `select` and `textarea` nodes.
+Handles the common form elements:
 
-## Usage
+- **`<input>`** — reads/writes the `value` property.
+- **`<input type="checkbox">`** — reads `value` only when checked, otherwise `undefined`.
+- **`<input type="radio">`** — pass an array to set the checked state by value.
+- **`<select multiple>`** — reads an array of selected option values; pass an array to select options.
+- **`<select>`** — reads/writes the selected option value.
+- **`<textarea>`** — reads/writes the textarea content.
 
-```javascript
-$(selector).val();
-$(selector).val(value);
-$(selector).val(function (index, currentValue) {});
+## Signatures
+
+```ts
+val(): string | string[] | undefined;
+val(value: string | number | string[] | ((this: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number, currentValue: string) => string | number | string[])): this;
 ```
 
-#### value
+## Parameters
 
-The value to set to each node in the collection.
-
-#### function
-
-A callback that receives the index of the element in the collection, and the current value. Should return a new value. `this` will reference the current item in the collection that is being processed.
+- `value` (`string | number | string[] | callback`, optional) —
+  - **string / number** — assigned to `value` (numbers are coerced via `String()`).
+  - **string[]** — selects the matching options (`<select multiple>`) or checks the matching radios/checkboxes by value.
+  - **callback** — invoked with `(index, currentValue)`, bound (`this`) to the input. Return the new value.
 
 ## Returns
 
-The original Dabby collection when setting the value, or the current value when getting, or undefined if the collection is empty.
+When getting, the current value (`string`, `string[]` for multi-selects, or
+`undefined` if the collection is empty or the element has no value). When
+setting, the original Dabby collection for chaining.
 
-## Example
+## Examples
 
-```javascript
-let val = $("input").val();
-let checkbox = $("input[type=checkbox]").val(); // doesn't matter whether it is checked
-let radio = $("input[type=radio]").val(); // won't get the checked value
-let checked = $("input[type=radio][name=myradio]:checked").val(); // get the checked value like this
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/val/val";
 
-$("input[type=text]").val("Hello world!"); // set the value of a text input
-$("select").val("option2"); // set the value of a select box
-$("select[multiple]").val(["option2", "option3", "option4"]); // set the value of a multi select box
-$("input[type=radio][name=myradio]").val("item2"); // make sure to select the radio buttons that will be checked
-$("input[type=radio]").val("item2"); // will set any radio button with the value "item2" to checked
+// Read the current value
+const email = $("input[name=email]").val();
 ```
 
-## Differences to jQuery
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/val/val";
 
-None.
+// Set a value
+$("input[name=q]").val("dabbyjs");
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/val/val";
+
+// Pre-select options in a multi-select
+$("select#tags").val(["typescript", "dom", "library"]);
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/val/val";
+
+// Trim every text input
+$("input[type=text]").val(function (index, current) {
+    return current.trim();
+});
+```
+
+## See also
+
+- [$.fn.prop()](../prop/readme.md)
+- [$.fn.attr()](../attr/readme.md)
+- [$.fn.serialize()](../../ajax/serialize/readme.md)

@@ -1,74 +1,70 @@
-# $.each()
+# $.each(obj, callback)
 
-A generic iterator method that can iterate over an array or an object, and run a callback function on each.
+Iterate over the keys of an array-like or plain object, calling a callback
+for each entry.
 
+Arrays (and array-likes with a numeric `length`) are iterated in index order;
+plain objects in `Object.keys` order. Returning `false` from the callback
+breaks the loop early.
 
-# $.each()
+## Signatures
 
-A generic iterator for looping through array-like objects or plain objects.
-
-## Usage
-
-```javascript
-$.each(obj, callback);
+```ts
+each<T>(
+    obj: ArrayLike<T> | Record<string, T>,
+    callback: (this: T, key: number | string, value: T) => void | false,
+): ArrayLike<T> | Record<string, T>;
 ```
 
-### obj
-The object or array to iterate over. This can be a Dabby object, a plain JavaScript object, or an array-like object.
+## Parameters
 
-### callback
-A function to execute for each item. The function is called with the current item's key (index for arrays, property name for objects) as the first argument, and the value as the second argument. Returning false from the callback will stop the loop early.
+- `obj` (`ArrayLike<T> | Record<string, T>`) — the collection to iterate.
+- `callback` — invoked once per entry. Bound (`this`) to the value, with
+  `(key, value)` as arguments. Returning `false` stops iteration.
 
 ## Returns
-The original object or array that was passed in.
 
-## Example
-Iterate over an array:
+The original `obj` for chaining.
 
-```javascript
-const arr = ["a", "b", "c"];
+## Examples
 
-$.each(arr, (index, value) => {
-	console.log(`Index: ${index}, Value: ${value}`);
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/each/each";
+
+// Iterate over an array
+$.each(["red", "green", "blue"], (i, colour) => {
+    console.log(i, colour);
 });
-// Logs:
-// "Index: 0, Value: a"
-// "Index: 1, Value: b"
-// "Index: 2, Value: c"
 ```
 
-Iterate over an object:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/each/each";
 
-```javascript
-const obj = {
-	foo: "bar",
-	baz: "qux"
-};
-
-$.each(obj, (key, value) => {
-	console.log(`Key: ${key}, Value: ${value}`);
+// Iterate over an object
+$.each({ name: "Ada", age: 36 }, (key, value) => {
+    console.log(key, value);
 });
-// Logs:
-// "Key: foo, Value: bar"
-// "Key: baz, Value: qux"
 ```
 
-Stop the loop early by returning false:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/each/each";
 
-```javascript
-const arr = [1, 2, 3, 4, 5];
-
-$.each(arr, (index, value) => {
-	if (value === 3) {
-		return false; // Stop the loop
-	}
-	console.log(value);
+// Break out early — return false
+$.each([1, 2, 3, 4], (i, n) => {
+    if (n > 2) return false;
+    console.log(n);
 });
-// Logs:
-// 1
-// 2
 ```
 
-## Differences to jQuery
+## Notes
 
-None.
+For iterating a Dabby collection, prefer the instance-level `$.fn.each()`,
+which is part of the core class and always available.
+
+## See also
+
+- [Dabby class — `each`](../../core/dabby/readme.md)
+- [$.map()](../map/readme.md)

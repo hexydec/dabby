@@ -1,35 +1,50 @@
-# .wrapAll()
-Wraps all elements in the collection with the provided new elements. Unlike .wrap(), this method wraps all elements with a single element, rather than wrapping each element individually.
+# $.fn.wrapAll(html)
 
-## Usage
-```javascript
-$(selector).wrapAll(html);
+Wrap every item in the collection together with a single shared wrapper.
+
+Unlike [`wrap`](../wrap/readme.md), only one copy of the wrapper is inserted;
+all items are gathered inside its deepest descendant in their original DOM
+order. The wrapper is inserted at the position of the first item in the
+collection.
+
+## Signatures
+
+```ts
+wrapAll(html: Selector | ((this: Element) => Selector)): this;
 ```
 
-### html
-An HTML string, Node, array of Nodes, Dabby collection or a callback function.
+## Parameters
+
+- `html` (`Selector | callback`) — the wrapper, or a callback returning one.
+  - **`Selector`** — a CSS string, HTML string, node, array of nodes, or
+    Dabby collection. Only the first matching node is used.
+  - **callback** — invoked once with no arguments, bound (`this`) to the first
+    element in the collection. Return the wrapper to use.
 
 ## Returns
-The original Dabby collection.
 
-## Differences to jQuery
-None.
+The original Dabby collection for chaining.
 
 ## Examples
-This will wrap all `<h2>` and `<p>` elements with a `<div>` element:
 
-```javascript
-// HTML before
-// <h2>Item 1</h2>
-// <p>Item 2</p>
-// <p>Item 3</p>
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrapall/wrapall";
 
-$("h2, p").wrapAll("<div>");
-
-// HTML after
-// <div>
-//	<h2>Item 1</h2>
-//	<p>Item 2</p>
-//	<p>Item 3</p>
-// </div>
+// Group every chip into a single shared row
+$(".chip").wrapAll("<div class='chip-row'></div>");
 ```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/wrapall/wrapall";
+
+// Wrapper with nested elements — items end up in the deepest descendant
+$(".error-message").wrapAll("<div class='alert'><div class='alert-body'></div></div>");
+```
+
+## See also
+
+- [$.fn.wrap()](../wrap/readme.md) — one wrapper per element
+- [$.fn.unwrap()](../unwrap/readme.md)
+- [$.fn.append()](../insert/readme.md)

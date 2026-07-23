@@ -1,41 +1,75 @@
-# .show()
+# $.fn.show() / $.fn.hide() / $.fn.toggle()
 
-Set the display property of each object in a collection to show the items.
+Show, hide or toggle the visibility of every element in the collection by
+modifying the inline `display` style.
 
-If the item was previously hidden, the initial display value will be used.
+The implementation remembers each element's previous `display` value so
+calling `show()` after `hide()` restores the original — even if it was
+something other than `block`.
 
-The display property is set as an inline property, if a CSS rule sets the property with !important, this method will have no effect.
+## Signatures
 
-# .hide()
-
-Set the display property of each object in a collection to `none`.
-
-The display property is set as an inline property, if a CSS rule sets the property with !important, this method will have no effect.
-
-# .toggle()
-
-Toggle the display property of each item in a collection to show or hide the items.
-
-If the item was previously hidden, the initial display value will be used.
-
-The display property is set as an inline property, if a CSS rule sets the property with !important, this method will have no effect.
-
-## Usage
-
-```javascript
-$(selector).show();
-$(selector).hide();
-$(selector).toggle(display);
+```ts
+show(): this;
+hide(): this;
+toggle(show?: boolean): this;
 ```
 
-### display
+## Parameters
 
-Sets the display value of the operation, equivalent to using `$.fn.show()` or `$.fn.hide()`.
+- For `toggle`:
+  - `show` (`boolean`, optional) — when `true`, force-show; when `false`,
+    force-hide. Omit to toggle based on current state.
 
 ## Returns
 
-The input Dabby collection will be returned.
+The original Dabby collection for chaining.
 
-## Differences to jQuery
+## Examples
 
-jQuery supports extra arguments to each function to control animations. Dabby doesn't support animations, and therefor does not support these properties.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
+
+// Hide the loading spinner
+$(".loading").hide();
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
+
+// Reveal a panel
+$("#confirm-dialog").show();
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
+
+// Toggle on a click
+$(".menu-trigger").on("click", () => {
+    $(".menu").toggle();
+});
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/show-hide/show-hide";
+
+// Toggle with explicit state, e.g. driven by a checkbox
+$("#advanced").on("change", function () {
+    $(".advanced-options").toggle((this as HTMLInputElement).checked);
+});
+```
+
+## Notes
+
+These methods modify the inline `display` style only. CSS rules with higher
+specificity (or `!important`) may override the result. For animation, prefer
+CSS transitions on a class you toggle with [`addClass`](../class/readme.md).
+
+## See also
+
+- [$.fn.addClass() / .removeClass() / .toggleClass()](../class/readme.md)
+- [$.fn.css()](../css/readme.md)

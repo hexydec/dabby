@@ -1,89 +1,72 @@
-# .is()
-Determine whether any item in a Dabby collection matches the given selector.
+# $.fn.filter(selector) / $.fn.is(selector) / $.fn.not(selector)
 
-## Usage
-```javascript
-$(collection).is(selector);
+Three closely-related methods that test or narrow a collection against a
+selector or callback.
+
+- **`filter`** — keep elements that match.
+- **`not`** — keep elements that do **not** match.
+- **`is`** — return a boolean: does at least one element match?
+
+## Signatures
+
+```ts
+filter(selector: Selector | ((this: Element, index: number) => boolean)): this;
+is(selector: Selector | ((this: Element, index: number) => boolean)): boolean;
+not(selector: Selector): this;
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection.
+## Parameters
+
+- `selector` (`Selector | (this: Element, index: number) => boolean`) — a
+  CSS selector, node, Dabby collection, or callback. The callback receives
+  the element's index and is bound (`this`) to the element; return `true` to
+  keep the element.
 
 ## Returns
-A boolean value indicating whether any item in the collection matches the input selector.
 
-## Example
-```javascript
-// Given the HTML:
-// <ul>
-//   <li>Item 1</li>
-//   <li class="active">Item 2</li>
-//   <li>Item 3</li>
-// </ul>
+- `filter` and `not` return a new Dabby collection.
+- `is` returns a `boolean`.
 
-$("li:first").is(".active"); // => false
-$("li:nth-child(2)").is(".active"); // => true
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/filter/filter";
+
+// Keep only the visible items
+$(".item").filter(":not(.hidden)");
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/filter/filter";
 
-# .filter()
-Create a new collection containing a subset of the nodes in the original Dabby collection that match the given selector.
-
-## Usage
-```javascript
-$(selector).filter(selector);
+// Drop items already marked as complete
+$(".task").not(".complete").addClass("pending");
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/filter/filter";
 
-## Returns
-A new Dabby collection containing the nodes that match the supplied selector.
-
-## Example
-```javascript
-// Given the HTML:
-// <ul>
-//   <li>Item 1</li>
-//   <li class="active">Item 2</li>
-//   <li class="active">Item 3</li>
-//   <li>Item 4</li>
-// </ul>
-
-$("li").filter(".active"); // returns a Dabby collection containing the <li> for "Item 2" and "Item 3"
+// Use a callback for arbitrary tests
+$("input").filter(function () {
+    return (this as HTMLInputElement).value.length > 0;
+});
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/filter/filter";
 
-# .not()
-Create a new collection containing only the items in the input collection that do not match the input selector.
-
-## Usage
-```javascript
-$(selector).not(selector);
+// Boolean check
+if ($("#submit").is(":disabled")) {
+    showLoadingMessage();
+}
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection.
+## See also
 
-## Returns
-A new Dabby collection containing the nodes that do not match the selector.
-
-## Example
-```javascript
-// Given the HTML:
-// <ul>
-//   <li>Item 1</li>
-//   <li class="active">Item 2</li>
-//   <li class="active">Item 3</li>
-//   <li>Item 4</li>
-// </ul>
-
-$("li").not(".active"); // returns a Dabby collection containing the <li> for "Item 1" and "Item 4"
-```
-
-## Differences to jQuery
-None.
+- [$.fn.find()](../find/readme.md)
+- [$.fn.has()](../has/readme.md)
+- [$.fn.children()](../children/readme.md)

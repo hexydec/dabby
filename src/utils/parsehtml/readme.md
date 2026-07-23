@@ -1,42 +1,78 @@
-# $.parseHTML()
-Parses a string of HTML into an array of DOM nodes.
+# $.parseHTML(html [, context] [, keepScripts])
 
-## Usage
-```javascript
-$.parseHTML(html);
-$.parseHTML(html, context);
-$.parseHTML(html, runscripts);
-$.parseHTML(html, context, runscripts);
+Parse a string of HTML into an array of `Element` nodes.
+
+Uses the browser's native `DOMParser`, so the result is a fully-realised DOM
+tree, not an inert document fragment. Comments and whitespace-only text
+nodes between top-level elements are discarded; only element children of
+`<body>` are returned.
+
+Pass `keepScripts` (or pass `true` as the second argument) to execute
+`<script>` tags by appending them to the supplied document — without this,
+scripts in the parsed markup will not run.
+
+A `TrustedHTML` value is accepted for environments enforcing the Trusted
+Types Content-Security-Policy.
+
+## Signatures
+
+```ts
+parseHTML(
+    html: string | TrustedHTML,
+    context?: Node | Document | boolean,
+    keepScripts?: boolean,
+): Element[];
 ```
 
-### html
-A string of HTML to parse.
+## Parameters
 
-### context
-A node to use as context for generating the DOM. If not specified, the document is used.
-
-### runscripts
-A boolean indicating whether to extract and run script tags from the html.
+- `html` (`string | TrustedHTML`) — the markup to parse.
+- `context` (`Node | Document | boolean`, optional) — the document used when
+  appending executed scripts. Pass `true` here as a shorthand for
+  `keepScripts: true` (legacy jQuery signature).
+- `keepScripts` (`boolean`, optional) — when `true`, `<script>` tags inside
+  the parsed markup are appended to the document and executed. Defaults to
+  `false`.
 
 ## Returns
-An array of DOM nodes.
 
-## Differences to jQuery
- The Dabby version allows `runscripts` to be passed as the second argument, acting as a shorthand for `context` and `runscripts`.
+An array of top-level `Element` nodes parsed from the input.
 
 ## Examples
-This will convert the string into an array of DOM nodes.
 
-```javascript
-const myNodes = $.parseHTML("<div>Hello, <b>world</b>!</div>");
-console.log(myNodes);
-// Expected output: [div]
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/parsehtml/parsehtml";
+
+// Parse and append
+const nodes = $.parseHTML("<p>One</p><p>Two</p>");
+$("#root").append(...nodes);
 ```
 
-Parse an HTML string with multiple elements, this will return an array containing both the <p> and <div> elements.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/parsehtml/parsehtml";
 
-```javascript
-const myNodes = $.parseHTML("<p>First paragraph</p><div>Second div</div>");
-console.log(myNodes);
-// Expected output: [p, div]
+// Execute scripts in the parsed markup
+const nodes = $.parseHTML("<script>console.log('ran')</script><p>Hi</p>", true);
 ```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/parsehtml/parsehtml";
+
+// Parse against a different document (e.g. an iframe)
+const iframeDoc = (document.querySelector("iframe") as HTMLIFrameElement).contentDocument!;
+const nodes = $.parseHTML("<p>From iframe</p>", iframeDoc);
+```
+
+## Trusted Types
+
+Accepts `TrustedHTML` directly. When given a string, the value is wrapped
+through Dabby's `dabby` policy if Trusted Types are enforced. See
+[TYPESCRIPT.md](../../../TYPESCRIPT.md#trusted-types-support) for details.
+
+## See also
+
+- [$.fn.html()](../../manipulation/html/readme.md)
+- [$.fn.append()](../../manipulation/insert/readme.md)

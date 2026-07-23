@@ -1,28 +1,43 @@
-# .siblings()
-Retrieve the siblings of each item in a collection, optionally filtered by a selector.
+# $.fn.siblings([selector])
 
-## Usage
-```javascript
-$(collection).siblings(selector);
+Get the siblings of every item in the collection. The element itself is always
+excluded from the result.
+
+## Signatures
+
+```ts
+siblings(selector?: Selector): this;
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection by.
+## Parameters
+
+- `selector` (`Selector`, optional) — a CSS selector that filters the collected
+  siblings; if omitted, all siblings are returned.
 
 ## Returns
-A new Dabby collection containing the siblings.
 
-## Example
-```javascript
-// Given the HTML:
-// <div>
-//   <span>Hello</span>
-//   <p>World</p>
-//   <a>Link</a>
-// </div>
+A new Dabby collection of sibling elements (excluding the originals).
 
-$("p").siblings(); // returns a new Dabby collection containing the <span> and <a> tags
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/siblings/siblings";
+
+// Reset siblings of the active tab
+$(".tab.active").siblings().removeClass("active");
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/siblings/siblings";
+
+// Only sibling list items that are still incomplete
+$("li.complete").siblings(".incomplete");
+```
+
+## See also
+
+- [$.fn.next()](../next-prev/readme.md)
+- [$.fn.prev()](../next-prev/readme.md)
+- [$.fn.parent()](../parents/readme.md)

@@ -1,78 +1,123 @@
-# $()
+# Dabby
 
-Create a Dabby.js object, containing nodes, selected with document nodes, CSS selector, or HTML. Or when supplied with a callback function, it will be triggered on the DOMContentLoaded event.
+The `Dabby` class is the core type behind the `$()` factory: an iterable, array-like collection of DOM nodes with a chainable API. Instances are created by calling `$(selector, context)` — you rarely need to reference the class directly, but it is exported so you can use it for `instanceof` checks and type annotations.
 
-## Usage
+A `Dabby` collection holds three things: a numeric `length`, indexed access to each node (`collection[0]`, `collection[1]`, ...), and the prototype methods loaded by the modules you import.
 
-```javascript
-$(selector [, context]) // => dabby
-$(element) // => dabby
-$(elementArray) // => dabby
-$(object) // => dabby
-$() // => dabby
-```
-When created with a CSS selector, DOM element, array of DOM elements, or Dabby object, selects the requested nodes and stores them internally ready for manipulation.
+## Signatures
 
-### $(selector)
+```ts
+class Dabby implements Iterable<DOMNode> {
+    readonly length: number;
+    readonly [index: number]: DOMNode;
 
-```javascript
-$("#id"); // select a node with the specified ID
-$(".className"); // select nodes with the specified class name
-$("ul"); // select nodes with the specified tag
-$("ul > li"); // select any nodes the browser supports
-$("#id, .className, ul"); // select multiple nodes in one
+    constructor(
+        selector?: Selector | TrustedHTML | ReadyCallback,
+        context?: Selector | Record<string, unknown>
+    );
 
-var body = $("body"); // can be any of the specified patterns
-$("ul", body); // select nodes inside a specified context
+    [Symbol.iterator](): Iterator<DOMNode>;
 
-$(document.getElementById("node")); // input native node
-$(document.getElementsByClassName("className")); // input native node or nodes
+    each<T extends DOMNode = DOMNode>(
+        callback: (this: T, index: number, element: T) => void | false
+    ): this;
 
-var dabby = $(".className"); // create a Dabby object
-$(dabby); // can be recycled later
+    get(): DOMNode[];
+    get(index: number): DOMNode | undefined;
 
-$(); // create an empty object
+    map<T extends DOMNode = DOMNode>(
+        callback: (this: T, index: number, element: T) => Selector
+    ): Dabby;
+}
 ```
 
-### $(html)
+The factory has the signature:
 
-```javascript
-$(html [, ownerDocument])
-$(html, attributes)
-```
-Create HTML nodes within a dabby object from the inputted HTML.
-
-```javascript
-$("<div>"); // create a single tag
-$("<div/>"); // create a single tag
-$("<div></div>");  // create a single tag
-$('<div class="demo">Some <strong>text</strong><div><p>More text</p>'); //parse a string of HTML into nodes
-
-$("<div>", iframe); // change ownerDocument
-
-$("<div>", {
-	"class": "demo",
-	text: "Some text",
-	click: function () {alert("Clicked");}
-}); // create HTML element with attributes, uses attr() internally
+```ts
+const $: DabbyFactory;
+$(selector?, context?): Dabby;
 ```
 
-### $(callback)
+## Parameters
 
-```javascript
-$(callback)
+- **`selector`** — what to wrap. Accepts:
+    - a CSS selector string (`"#header"`, `"ul li.active"`)
+    - an HTML string starting with `<` (parsed to nodes)
+    - a `TrustedHTML` instance
+    - a single `Node`, the `Window`, or `document`
+    - an array, `NodeList`, or `HTMLCollection` of nodes
+    - another `Dabby` instance (copied)
+    - a callback function (registered for `DOMContentLoaded`)
+- **`context`** — optional. Either a selector / element / Dabby to scope a CSS query inside, or a plain object of attributes to apply when creating a single tag (e.g. `$("<div>", { class: "card" })`).
+
+## Returns
+
+A new `Dabby` collection. When `selector` is a ready callback no collection is yielded — the callback fires once the DOM is parsed.
+
+## Examples
+
+```ts
+import $ from "dabbyjs";
+
+// CSS selector
+const $links = $("nav a.active");
+
+// Scoped query
+const $items = $("li", document.querySelector(".menu"));
+
+// Wrap a single node
+const $body = $(document.body);
+
+// Iterate with for...of
+for (const node of $(".product")) {
+    console.log(node.dataset.id);
+}
+
+// Indexed access and length
+const first = $(".product")[0];
+console.log($(".product").length);
 ```
-Attach a callback function to the DOMContentLoaded event. Called immediately if event has already been fired.
 
-```javascript
-$(function () {alert("Loaded");}); // fired when document is loaded
+```ts
+// Create elements from HTML
+const $card = $("<div>", {
+    class: "card",
+    text: "New product"
+});
+
+$("body").append($card);
+
+// Document-ready callback
+$(($) => {
+    console.log("DOM ready");
+});
 ```
 
-## Return value
+```ts
+// .each — iterate the collection
+$("li").each(function (index) {
+    this.dataset.position = String(index);
+});
 
-An instance of the Dabby.js object so it can be chained to other methods.
+// .get — unwrap to a plain array
+const nodes = $(".item").get();
+const last = $(".item").get(-1);
+
+// .map — build a new collection
+const $children = $(".panel").map(function () {
+    return this.firstElementChild;
+});
+```
 
 ## Differences to jQuery
 
-- Only supports selectors the browser supports, so for example `$("a:first");` will not work.
-- Parses HTML using the browsers innerHTML property, no other processing is performed.
+- Only browser-supported CSS selectors work — extensions like `:first` are not supported.
+- HTML is parsed via `innerHTML`; no further processing is performed.
+
+## See also
+
+- [`.each()`](../each/readme.md)
+- [`.get()`](../get/readme.md)
+- [`.map()`](../map/readme.md)
+- [`.find()`](../../traversal/find/readme.md)
+- [`.eq()`](../../traversal/eq/readme.md)

@@ -1,50 +1,67 @@
-# .load()
+# .load(url, data?, success?)
 
-Make an AJAX request and insert the resulting HTML it into the DOM
+Fetch HTML and append it to each element in the collection. The URL may include a trailing CSS selector (separated by a space) which filters the returned HTML before insertion — useful for pulling a single fragment out of a full page.
 
-## Usage
+If `data` is a plain object the request is sent with POST; otherwise GET is used.
 
-```javascript
-$(selector).load(url[, success]) // => dabby
-$(selector).load(url[, data, success]) // => dabby
-$(selector).load(url fragment[, data, success]) // => dabby
+## Signatures
+
+```ts
+load(url: string, data: string | PlainObject, success: XhrCallback): this;
+load(url: string, success: XhrCallback): this;
+load(url: string): this;
 ```
 
-### url
+## Parameters
 
-The URL of the HTML page to fetch.
+- `url` (`string`) — URL to fetch. Anything after the first space is treated as a CSS selector applied to the response.
+- `data` (`string | object`, optional) — parameters to send with the request. A plain object switches the method to POST.
+- `success` (`(response, status, xhr) => void`, optional) — callback fired once per element in the collection after insertion. Inside the callback `this` is the element being populated.
 
-### data
+## Returns
 
-Either a plain object or a string containing data to send to the receiving script. If the `data` parameter is sent as a plain object, the data will be sent with the POST method, otherwise GET will be used.
+The original Dabby collection so the call can be chained.
 
-### success
+## Examples
 
-A callback function that is fired once for each node in the Dabby collection when the request is successful.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/ajax/load/load";
 
-### url fragment
-
-A special way of specifying the URL string, which includes a refinement selector. Here anything after the first space will be considered as a CSS selector, the resulting HTML will then be filtered by the selector before being placed into each node.
-
-## Return value
-
-Returns the original dabby collection so it can be chained.
-
-## Example
-
-This full example fetches a script from the server and sets the result to each node in the collection.
-
-```html
-<div class="container1"></div>
-<div class="container2"></div>
+// Drop a full HTML page into a container
+$("#main").load("/pages/about.html");
 ```
 
-```javascript
-$(".container1, .container2").load("fragment.html #wrap", {foo: "bar"}, function (response, status, xhr) {
-	alert($(this).attr("class")); // container1 then container2
+```ts
+// Load only the .article fragment from another page
+$("#preview").load("/posts/42.html .article", function () {
+    $(this).find("img").addClass("loaded");
 });
+```
+
+```ts
+// POST data and use the rendered response
+$(".comments").load("/api/comments.html", { post: 42 }, (response, status) => {
+    if (status === "error") {
+        console.warn("Failed to load comments");
+    }
+});
+```
+
+```ts
+// Refresh a panel on an interval
+setInterval(() => {
+    $(".live-feed").load("/feed.html .feed-item");
+}, 30000);
 ```
 
 ## Differences to jQuery
 
-In jQuery, the `xhr` parameter of any callback functions are returned as an enhanced XMLHttpRequest called the `jqXHR` object, whereas in Dabby.js, the orignal XMLHttpRequest object is returned.
+The `xhr` argument passed to the success callback is the native `XMLHttpRequest`, not jQuery's `jqXHR` wrapper.
+
+## See also
+
+- [$.ajax()](../ajax/readme.md)
+- [$.get() / $.post()](../getpost/readme.md)
+- [.append()](../../manipulation/insert/readme.md)
+- [.filter()](../../traversal/filter/readme.md)

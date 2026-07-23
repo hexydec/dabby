@@ -1,53 +1,63 @@
-# .replaceAll()
-Replaces all elements matched by a selector with the elements in the current Dabby collection. This method is the reverse of `.replaceWith()`.
+# $.fn.replaceWith(content) / $.fn.replaceAll(target)
 
-## Usage
-```javascript
-$(content).replaceAll(selector);
+Swap elements out of the DOM for new content. The two methods are mirror
+images:
+
+- **`replaceWith`** — replaces *each element in this collection* with the
+  given content.
+- **`replaceAll`** — replaces *the targets matched by the argument* with
+  this collection.
+
+## Signatures
+
+```ts
+replaceWith(html: Selector | ((this: Element, index: number, html: string) => Selector)): this;
+replaceAll(html: Selector): this;
 ```
 
-### selector
-A selector string, Node, array of Nodes, Dabby collection or a callback function.
+## Parameters
 
-### content
-An HTML string, Node, array of Nodes, or a Dabby collection.
+- For `replaceWith`:
+  - `html` (`Selector | callback`) — the replacement, or a callback returning
+    one. The callback is invoked with `(index, currentHTML)` and bound (`this`)
+    to the element being replaced.
+- For `replaceAll`:
+  - `html` (`Selector`) — the targets to replace with the current collection.
 
 ## Returns
-The original Dabby collection.
 
-## Differences to jQuery
-None.
+A new Dabby collection wrapping the elements that have been swapped in.
 
 ## Examples
-This will replace all `<h2>` elements with the `<p>` element.
 
-```javascript
-$("<p>A new paragraph</p>").replaceAll("h2");
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/replace/replace";
+
+// Replace every placeholder with rendered content
+$(".placeholder").replaceWith("<p class='loaded'>Ready</p>");
 ```
 
-# .replaceWith()
-Replaces each element in the current Dabby collection with the provided new elements.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/replace/replace";
 
-## Usage
-```javascript
-$(selector).replaceWith(content);
+// Use a callback to compute the new node from the old
+$(".price").replaceWith(function (index, current) {
+    return `<strong>£${current}</strong>`;
+});
 ```
 
-### selector
-A selector string, Node, array of Nodes, Dabby collection or a callback function.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/replace/replace";
 
-### content
-An HTML string, Node, array of Nodes, or a Dabby collection.
-
-## Returns
-The original Dabby collection.
-
-## Differences to jQuery
-None.
-
-## Examples
-This will replace each `.item` div with a new `<li>` element:
-
-```javascript
-$(".item").replaceWith("<li>New List Item</li>");
+// replaceAll — push new markup over existing targets
+$("<button class='btn'>Buy</button>").replaceAll(".old-buy-link");
 ```
+
+## See also
+
+- [$.fn.append() / .prepend() / .before() / .after()](../insert/readme.md)
+- [$.fn.html()](../html/readme.md)
+- [$.fn.remove()](../remove/readme.md)

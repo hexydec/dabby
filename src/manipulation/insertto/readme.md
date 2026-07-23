@@ -1,61 +1,62 @@
-# .insertBefore()
-Add nodes before each object in a Dabby collection.
+# $.fn.insertBefore() / $.fn.prependTo() / $.fn.appendTo() / $.fn.insertAfter()
 
-# .prependTo()
-Prepend nodes to each object in a Dabby collection.
+Insert the **current** collection into a target. These are the inverse of
+`before`, `prepend`, `append` and `after`: instead of *receiving* content,
+the current collection is *moved* (or cloned) into a target you specify.
 
-# .appendTo()
-Append nodes to each object in a Dabby collection.
+| Method        | Where the current collection ends up         |
+|---------------|----------------------------------------------|
+| `insertBefore`| immediately before the target (sibling)      |
+| `prependTo`   | as the target's first child                  |
+| `appendTo`    | as the target's last child                   |
+| `insertAfter` | immediately after the target (sibling)       |
 
-# .insertAfter()
-Add nodes after each object in a Dabby collection.
+## Signatures
 
-## Usage
-```javascript
-$(content).insertBefore(selector);
-$(content).prependTo(selector);
-$(content).appendTo(selector);
-$(content).insertAfter(selector);
+```ts
+insertBefore(selector: Selector): this;
+prependTo(selector: Selector): this;
+appendTo(selector: Selector): this;
+insertAfter(selector: Selector): this;
 ```
 
-### content
-The Dabby collection, node, array of nodes, or document to insert.
+## Parameters
 
-### selector
-A string specifying a CSS selector, a node, an array of nodes, a document, or a Dabby collection to attach the Dabby collection to.
+- `selector` (`Selector`) — a CSS selector string, node, array of nodes, or
+  Dabby collection identifying the target(s) to insert into.
 
 ## Returns
-The original Dabby collection.
 
-## Differences to jQuery
-None.
+The original Dabby collection for chaining.
 
 ## Examples
 
-### Using .insertBefore()
-This will insert the `<span>` element before the` <p>` element.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/insertto/insertto";
 
-```javascript
-$("<span>Hello</span>").insertBefore("p.target");
+// Move an existing element into a new container
+$("#announcement").appendTo("#topbar");
 ```
 
-### Using .prependTo()
-This will prepend the `<h2>` element to the `<section>` element.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/insertto/insertto";
 
-```javascript
-$("<h2>My Title</h2>").prependTo("section.main");
+// Insert a freshly created element before a known node
+$("<hr class='separator'>").insertBefore("#footer");
 ```
 
-### Using .appendTo()
-This will append the `<li>` element to the `<ul>` element.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/insertto/insertto";
 
-```javascript
-$("<li>Item 3</li>").appendTo("ul#my-list");
+// prependTo — appears as the first child of every target
+$("<span class='badge'>New</span>").prependTo(".product-card");
 ```
 
-### Using .insertAfter()
-This will insert the `<button>` element after the `<div>` element.
+## See also
 
-```javascript
-$("<button>Click Me</button>").insertAfter("div#container");
-```
+- [$.fn.append() / .prepend() / .before() / .after()](../insert/readme.md)
+- [$.fn.clone()](../clone/readme.md)
+- [$.fn.replaceWith()](../replace/readme.md)

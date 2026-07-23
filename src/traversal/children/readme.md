@@ -1,44 +1,55 @@
-# .children()
-Retrieves the children of each element in the collection, optionally filtered by a selector.
+# $.fn.children(selector?)
 
-## Usage
-```javascript
-$(item).children();
-$(item).children(selector);
+Retrieve the direct children of every element in the collection, optionally
+filtered by a selector. Only immediate children are included — for elements
+nested at any depth, use [`.find()`](../find/readme.md).
+
+## Signatures
+
+```ts
+children(selector?: Selector): this;
 ```
 
-### selector
-An optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by.
+## Parameters
+
+- `selector` (`Selector`, optional) — narrows the returned children to those
+  that match the supplied selector.
 
 ## Returns
-A new Dabby collection containing all the matched children.
 
-## Example
-Find all direct children of an element:
+A new Dabby collection containing the matched direct children of every
+element in the original collection.
 
-```javascript
-// HTML:
-// <ul id="my-list">
-//   <li>Item 1</li>
-//   <li>Item 2</li>
-//   <li class="special">Item 3</li>
-// </ul>
+## Examples
 
-const items = $("#my-list").children();
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/children/children";
 
-// The `items` collection will now contain all three `<li>` elements.
-console.log(items.length); // 3
+// All direct children of the menu
+const $items = $(".menu").children();
 ```
 
-Find children that match a specific selector:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/children/children";
 
-```javascript
-// Using the same HTML as above
-const special = $("#my-list").children(".special");
-
-// The `special` collection will now contain only the `<li>` with the class "special".
-console.log(special.length); // 1
+// Only the active list items, immediately under the nav
+$("nav.primary").children("li.active").addClass("highlighted");
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/children/children";
+
+// Toggle visibility of every direct child of an accordion
+$(".accordion-header").on("click", function () {
+    $(this).parent().children(".accordion-content").toggle();
+});
+```
+
+## See also
+
+- [$.fn.find()](../find/readme.md)
+- [$.fn.parent()](../parents/readme.md)
+- [$.fn.siblings()](../siblings/readme.md)

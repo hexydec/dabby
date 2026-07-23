@@ -1,27 +1,48 @@
-# .clone()
+# $.fn.clone([withDataAndEvents [, deepWithDataAndEvents]])
 
-Clones the items in the collection, and return a new collection.
+Make a deep copy of every element in the collection. By default the copy is
+data-and-events free; opt in to copying jQuery-style `data()` values and bound
+event handlers.
 
-## Usage
+## Signatures
 
-```javascript
-const cloned = $(selector).clone();
-const clonedWithData = $(selector).clone(withDataAndEvents);
-const clonedDeep = $(selector).clone(withDataAndEvents, deepWithDataAndEvents);
+```ts
+clone(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean | null): this;
 ```
 
-### withDataAndEvents
+## Parameters
 
-A boolean indicating whether to clone the data and events attached to the items in the collection
-
-### deepWithDataAndEvents
-
-A boolean indicating whether the data and events on the children of cloned elements shold be copied, defaults to the same value as withDataAndEvents
+- `withDataAndEvents` (`boolean`, optional) — when `true`, copies data values
+  set via `$.fn.data()` and event handlers bound via `$.fn.on()` to the
+  cloned root element. Defaults to `false`.
+- `deepWithDataAndEvents` (`boolean | null`, optional) — when `true`, also
+  copies data and events from descendants. Defaults to the value of
+  `withDataAndEvents`. Pass `null` to inherit the first argument explicitly.
 
 ## Returns
 
-A new Dabby collection containing the cloned nodes.
+A new Dabby collection wrapping the cloned elements.
 
-## Differences to jQuery
+## Examples
 
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/clone/clone";
+
+// Plain copy — like Element.cloneNode(true)
+const $copy = $(".card").clone();
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/clone/clone";
+
+// Copy data and events too
+$(".widget").clone(true, true).appendTo("#stage");
+```
+
+## See also
+
+- [$.fn.append()](../insert/readme.md)
+- [$.fn.appendTo()](../insertto/readme.md)
+- [$.fn.empty()](../empty/readme.md)

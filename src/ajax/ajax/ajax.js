@@ -107,12 +107,17 @@ const ajax = (url, settings) => {
 
 	// process data add data to query string for GET requests
 	if (settings.data) {
-		data = isPlainObject(settings.data) ? $.param(settings.data) : settings.data;
+		if (settings.data instanceof FormData) {
+			data = settings.data;
+			settings.contentType = null; // let browser set multipart boundary
+		} else {
+			data = isPlainObject(settings.data) ? $.param(settings.data) : settings.data;
 
-		if (settings.method === "GET") {
-			settings.url += join + data;
-			join = "&";
-			data = null;
+			if (settings.method === "GET") {
+				settings.url += join + data;
+				join = "&";
+				data = null;
+			}
 		}
 	}
 

@@ -1,61 +1,60 @@
-# .detach()
-Detaches some or all of the items in the collection from the DOM. This method is similar to .remove(), except it keeps all data and events associated with the detached elements. This is useful if you want to reinsert the elements into the DOM later.
+# $.fn.remove([selector]) / $.fn.detach([selector])
 
-## Usage
-```javascript
-$(selector).detach();
-$(selector).detach(selector);
+Remove elements from the DOM. The two methods differ only in what they do
+with the data and events bound to the removed nodes:
+
+- **`remove`** — also unbinds events, clearing memory.
+- **`detach`** — keeps data and events intact, ready to be re-inserted later.
+
+Both accept an optional selector to filter which elements in the collection
+get removed.
+
+## Signatures
+
+```ts
+remove(selector?: Selector): this;
+detach(selector?: Selector): this;
 ```
 
-### selector
-A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by.
+## Parameters
+
+- `selector` (`Selector`, optional) — if supplied, only elements that match
+  are removed; the others stay in place.
 
 ## Returns
-A new Dabby collection containing the detached nodes.
 
-## Differences to jQuery
-None.
-
-## Examples
-Detach all `<li>` elements from a `<ul>`, this will remove all list items from the `<ul>` and store them in a variable:
-
-```javascript
-const items = $("ul#my-list li").detach();
-```
-
-Detach a specific `<div>` with a filter, this will detach any `<p>` elements that are children of `#my-div`:
-
-```javascript
-const items = $("div#my-div p").detach("p");
-```
-
-# .remove()
-Removes some or all of the items in the collection from the DOM. This method removes the selected elements and all of their associated data and events.
-
-## Usage
-```javascript
-$(collection).remove();
-$(collection).remove(selector);
-```
-
-### selector
-A optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to filter the collection by.
-
-## Returns
-The original Dabby collection.
-
-## Differences to jQuery
-None.
+The original Dabby collection for chaining (with the removed elements still
+referenced by it, so you can re-insert them later).
 
 ## Examples
-Remove a button from the page, this will completely remove the button and its associated data from the page:
 
-```javascript
-$("button#my-button").remove();
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/remove/remove";
+
+// Remove every error message
+$(".error").remove();
 ```
 
-Remove specific `<li>` elements, this will remove any list items with the class completed:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/remove/remove";
 
-```javascript
-$("ul#my-list li").remove(".completed");
+// Filter inside the collection — drop only items marked complete
+$("li.task").remove(".complete");
 ```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/manipulation/remove/remove";
+
+// detach — re-insert later with handlers intact
+const $widget = $("#widget").detach();
+$("#sidebar").append($widget);
+```
+
+## See also
+
+- [$.fn.empty()](../empty/readme.md) — remove children, keep the element
+- [$.fn.clone()](../clone/readme.md)
+- [$.fn.replaceWith()](../replace/readme.md)

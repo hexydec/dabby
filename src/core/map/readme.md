@@ -1,39 +1,49 @@
-# .map()
+# $.fn.map(callback)
 
-Run a callback function on each node in a Dabby collection, and return an array.
+Run a callback over every node in the collection and gather the returned values into a new Dabby collection. `.map()` is defined directly on the `Dabby` class, so it is always available — this module exists purely as a stub re-export for builds that import individual methods.
 
-## Usage
+For the canonical documentation see [core/dabby/readme.md](../dabby/readme.md).
 
-```javascript
-$(selector).map(callback);
+## Signatures
+
+```ts
+map<T extends DOMNode = DOMNode>(
+    callback: (this: T, index: number, element: T) => Selector
+): Dabby;
 ```
 
-The callback uses the following pattern:
+## Parameters
 
-```javascript
-function (index, element) {
-	// your code here, this is the same as element
-}
-```
+- **`callback`** — function called with `(index, element)`. `this` is bound to the current node. May return a single node, an array of nodes, or another Dabby collection; the results are merged.
 
-## Example
+## Returns
 
-The following example extracts the innerText from the HTML as an array:
+A new Dabby collection containing the mapped nodes.
 
-```html
-<div class="map">First</div>
-<div class="map">Second</div>
-<div class="map">Third</div>
-```
-```javascript
-var arr = $(".map").map(function () {
-	return this.innerText;
+## Examples
+
+```ts
+import $ from "dabbyjs";
+
+// Project each panel down to its first child
+const $headers = $(".panel").map(function () {
+    return this.firstElementChild as Element;
 });
 ```
-## Return value
 
-An array containing the values returned from the callback.
+```ts
+// Collect a flat collection from a nested query
+const $allLinks = $("nav").map(function () {
+    return this.querySelectorAll("a");
+});
+```
 
 ## Differences to jQuery
 
-Dabby does not support making a collection from anything but nodes, whereas in jQuery this method returns a jQuery collection wrapping the return values, Dabby returns a plain array.
+jQuery's `.map()` returns a wrapped collection of the callback's return values (which may be primitives). Dabby's `.map()` only deals in DOM nodes — to build an array of strings or numbers from a collection use `.get()` and `Array.prototype.map`, or write a `for...of` loop.
+
+## See also
+
+- [Dabby class](../dabby/readme.md)
+- [`.each()`](../each/readme.md)
+- [`.add()`](../../traversal/add/readme.md)

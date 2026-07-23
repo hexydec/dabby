@@ -1,24 +1,42 @@
-# .last()
-Retrieve the last item in the collection.
-## Usage
-```javascript
-$(selector).last();
+# $.fn.last()
+
+Reduce the collection to its last element. Equivalent to `eq(-1)`.
+
+## Signatures
+
+```ts
+last(): this;
 ```
+
+## Parameters
+
+None.
 
 ## Returns
-A new Dabby collection containing the last item in the collection, or an empty collection if the original collection is empty.
 
-## Example
-```javascript
-// Given the HTML:
-// <ul>
-//   <li>Item 1</li>
-//   <li>Item 2</li>
-//   <li>Item 3</li>
-// </ul>
+A new Dabby collection containing only the last element. If the original
+collection is empty, the returned collection is also empty.
 
-$("li").last(); // returns a Dabby collection containing only the <li> for "Item 3"
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/last/last";
+
+// Style the final list item differently
+$("li").last().addClass("final");
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/last/last";
+
+// Append a separator after the last paragraph in an article
+$("article p").last().after("<hr>");
+```
+
+## See also
+
+- [$.fn.first()](../first/readme.md)
+- [$.fn.eq()](../eq/readme.md)
+- [$.fn.slice()](../slice/readme.md)

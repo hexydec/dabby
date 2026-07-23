@@ -1,4 +1,4 @@
-import $ from "../../core/dabby/dabby.js";
+import $ from "../../../dist/core/dabby/dabby.js";
 
 /**
  * @callback eachCallback

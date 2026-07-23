@@ -1,39 +1,64 @@
-# $.param()
+# $.param(obj)
 
-Render a query string from an object.
+Serialise a plain object into a URL-encoded query string. Nested objects and arrays are encoded with bracket notation, function values are evaluated and their return value encoded, and `null` becomes an empty string.
 
-## Usage
+## Signatures
 
-```javascript
-$.param(object) // => String
+```ts
+param(obj: { [key: string]: string | number | boolean | null | ParamValue[] | { [key: string]: ParamValue } | (() => ParamValue) }): string;
 ```
 
-### object
+## Parameters
 
-A plain object containing any variable types except functions. Objects can be nested.
+- `obj` (`object`) — values to serialise. May contain strings, numbers, booleans, `null`, nested objects, arrays, or functions that return any of the above.
 
 ## Returns
 
-A string containing the inputted object rendered as a URL encoded query string.
+A URL-encoded query string with no leading `?`.
 
-## Example
+## Examples
 
-```javascript
-var query = $.param({
-	name: "Dave Angel",
-	email: "dave.angel@geezmail.com",
-	settings: {
-		color: "black",
-		bgcolor: "green",
-		roles: [2, 3, 5]
-	}
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/ajax/param/param";
+
+// Flat object
+$.param({ q: "hello world", page: 2 });
+// => "q=hello%20world&page=2"
+```
+
+```ts
+// Nested object — bracket notation
+$.param({
+    user: {
+        name: "Ada Lovelace",
+        roles: ["admin", "editor"]
+    }
 });
+// => "user%5Bname%5D=Ada%20Lovelace&user%5Broles%5D%5B%5D=admin&user%5Broles%5D%5B%5D=editor"
+```
 
-console.log(query); // "name=Dave%20Angel&email=dave.angel%40geezmail.com&settings%5Bcolor%5D=black&settings%5Bbgcolor%5D=green&settings%5Broles%5D%5B0%5D=2&settings%5Broles%5D%5B1%5D=3&settings%5Broles%5D%5B2%5D=5"
+```ts
+// Building a search URL
+const filters = { category: "books", price_max: 25, in_stock: true };
+location.href = `/search?${$.param(filters)}`;
+```
+
+```ts
+// Function values are called at serialisation time
+$.param({
+    timestamp: () => Date.now(),
+    user: "ada"
+});
+// => "timestamp=1700000000000&user=ada"
 ```
 
 ## Differences to jQuery
 
-jQuery has a second argument to this method `traditional`, which specifies whether to shallow encode the inputted object (Instead of encoding nested objects, it will encode a string saying "[object Object]"), which dabby does not support.
+jQuery's second `traditional` argument (and the global `jQuery.ajaxSettings.traditional`) is not supported — Dabby always uses the modern bracket-notation encoding.
 
-It also has a global ajax setting `jQuery.ajaxSettings.traditional = true;` which is not supported.
+## See also
+
+- [$.ajax()](../ajax/readme.md)
+- [.serialize()](../serialize/readme.md)
+- [$.get() / $.post()](../getpost/readme.md)

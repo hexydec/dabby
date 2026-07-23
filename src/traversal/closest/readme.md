@@ -1,79 +1,59 @@
-# .closest()
-Finds the first ancestor of each element in the collection that matches a given selector, starting with the element itself.
+# $.fn.closest(selector, context?)
 
-## Usage
-```javascript
-$(collection).closest(selector);
-$(collection).closest(selector, context);
+For each element in the collection, find the first matching ancestor by
+walking upwards through the parent chain. The search begins with the element
+itself, so an element that matches `selector` will be returned as its own
+closest ancestor.
+
+## Signatures
+
+```ts
+closest(selector: Selector, context?: Selector): this;
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to find the matching ancestor.
+## Parameters
 
-### context
-An optional HTML string, Node, array of Nodes, or a function that returns HTML, indicating where the search for an ancestor should stop.
+- `selector` (`Selector`) — the selector used to identify the target ancestor.
+- `context` (`Selector`, optional) — scopes the search; only ancestors within
+  the supplied context are considered.
 
 ## Returns
-A new Dabby collection containing the matched ancestors.
 
-## Example
-Find the closest div ancestor:
+A new Dabby collection containing the matched ancestors. If no ancestor
+matches for a given element, that element contributes nothing to the result.
 
-```javascript
-// HTML:
-// <div class="container">
-//   <p>
-//     <span>Hello</span>
-//   </p>
-// </div>
+## Examples
 
-const span = $("span");
-const div = span.closest("div");
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/closest/closest";
 
-// The `div` collection will now contain the `<div class="container">` element.
-console.log(div.length); // 1
+// Remove the list item that owns the clicked delete button
+$(".list").on("click", ".delete-button", function () {
+    $(this).closest(".list-item").remove();
+});
 ```
 
-Find the closest list item with a specific class:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/closest/closest";
 
-```javascript
-// HTML:
-// <ul>
-//   <li class="item-a">
-//     <p>
-//       <a href="#">Link</a>
-//     </p>
-//   </li>
-//   <li class="item-b">...</li>
-// </ul>
-
-const link = $("a");
-const closest = link.closest("li.item-a");
-
-// The `closest` collection will contain the `<li>` with class "item-a".
-console.log(closest.length); // 1
+// Find the form that contains an input
+const $form = $("input[name='email']").closest("form");
 ```
 
-Find the closest ancestor up to a specific context:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/closest/closest";
 
-```javascript
-// HTML:
-// <div id="main-content">
-//   <div class="card">
-//     <p>
-//       <span>Text</span>
-//     </p>
-//   </div>
-// </div>
-// <div id="sidebar">...</div>
-
-const span = $("span");
-const ancestor = span.closest(".card", "#main-content");
-
-// The search will stop at `#main-content`, and `.card` is an ancestor within that context.
-console.log(ancestor.length); // 1
+// Toggle the surrounding accordion section
+$(".accordion-header").on("click", function () {
+    $(this).closest(".accordion-section").toggleClass("expanded");
+});
 ```
 
-## Differences to jQuery
+## See also
 
-None.
+- [$.fn.parent()](../parents/readme.md)
+- [$.fn.parents()](../parents/readme.md)
+- [$.fn.find()](../find/readme.md)

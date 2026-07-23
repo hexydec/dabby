@@ -1,87 +1,57 @@
-# .parent()
-Retrieve the parent of each item in a collection.
+# $.fn.parent() / $.fn.parents() / $.fn.parentsUntil()
 
-## Usage
-```javascript
-$(collection).parent(selector);
+Walk upwards through the ancestor chain of every item in the collection. Three
+related methods: a single step (`parent`), all the way to the document
+(`parents`), or stopping at a boundary selector (`parentsUntil`).
+
+## Signatures
+
+```ts
+parent(selector?: Selector): this;
+parents(selector?: Selector): this;
+parentsUntil(selector: Selector, filter?: Selector): this;
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection by.
+## Parameters
+
+- `selector` (`Selector`, optional on `parent`/`parents`) — a CSS selector
+  that filters the collected ancestors.
+- For `parentsUntil`:
+  - `selector` (`Selector`, **required**) — the boundary; iteration stops at the first ancestor that matches.
+  - `filter` (`Selector`, optional) — narrows the collected ancestors.
 
 ## Returns
-A new Dabby collection containing the parent nodes.
 
-## Example
-```javascript
-// Given the HTML:
-// <div>
-//   <p>Hello World</p>
-// </div>
+A new Dabby collection of ancestor elements.
 
-$("p").parent(); // returns a new Dabby collection containing the <div>
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/parents/parents";
+
+// The immediate parent
+$("a.external").parent();
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/parents/parents";
 
-# .parents()
-Retrieve all the parents of each item in a collection.
-
-## Usage
-```javascript
-$(collection).parents(selector);
+// Every ancestor that is a section
+$(".callout").parents("section");
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection by.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/parents/parents";
 
-## Returns
-A new Dabby collection containing the parents.
-
-## Example
-```javascript
-// Given the HTML:
-// <body>
-//   <div class="container">
-//     <p>Hello World</p>
-//   </div>
-// </body>
-
-$("p").parents(); // returns a new Dabby collection containing the <div> and <body>
+// Walk up only as far as the article boundary
+$(".callout").parentsUntil("article");
 ```
 
-## Differences to jQuery
-None.
+## See also
 
-# .parentsUntil()
-Retrieve the parents of each item in a collection until, but not including, the matched selector.
-
-## Usage
-```javascript
-$(collection).parentsUntil(selector, filter);
-```
-
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function indicating where to stop matching parent nodes.
-
-### filter
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function to filter the collection by.
-
-## Returns
-A new Dabby collection containing the parents.
-
-## Example
-```javascript
-// Given the HTML:
-// <body>
-//   <div class="container">
-//     <p>Hello World</p>
-//   </div>
-// </body>
-
-$("p").parentsUntil(".container"); // returns a new Dabby collection containing only the <body>
-```
-
-## Differences to jQuery
-None.
+- [$.fn.closest()](../closest/readme.md) — nearest matching ancestor
+- [$.fn.children()](../children/readme.md)
+- [$.fn.siblings()](../siblings/readme.md)

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>DabbyJS — Type Inference & Autocomplete Demo</title>
+	<style>
+		body { font: 14px/1.5 -apple-system, system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+		.box { padding: 1rem; border: 1px solid #ccc; border-radius: 4px; margin: 0.5rem 0; cursor: pointer; }
+		.box.active { background: #cfc; }
+		.box.clicked { outline: 2px solid orange; }
+		.child { padding: 4px; background: #eee; margin: 4px 0; }
+		pre { background: #f4f4f4; padding: 0.5rem; border-radius: 4px; }
+	</style>
+</head>
+<body>
+	<h1>DabbyJS Modular Demo</h1>
+	<p>Open <code>demo/modular-autocomplete.ts</code> in your IDE to see the type inference experience.</p>
+
+	<h2>Live demo</h2>
+	<div id="app">
+		<div class="box">
+			<strong>Box 1</strong>
+			<div class="child">child 1a</div>
+			<div class="child">child 1b</div>
+		</div>
+		<div class="box">
+			<strong>Box 2</strong>
+			<div class="child">child 2a</div>
+		</div>
+	</div>
+
+	<h2>Console output</h2>
+	<pre id="log"></pre>
+
+	<script type="module" src="./modular-runtime.ts"></script>
+</body>
+</html>

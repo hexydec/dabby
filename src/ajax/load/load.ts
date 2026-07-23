@@ -1,0 +1,99 @@
+import $, { Dabby } from "../../core/dabby/dabby.js";
+import type {} from "../../dabby.js";
+import "../ajax/ajax.js";
+import "../../traversal/filter/filter.js";
+import "../../manipulation/insert/insert.js";
+
+type PlainObject = { [key: string]: string | number | boolean | null | string[] | number[] };
+type XhrResponse = string | ArrayBuffer | Blob | Document | object | null;
+type XhrCallback = (this: Element, response: XhrResponse, status: string | number, xhr: XMLHttpRequest) => void;
+
+// Overload signatures
+/**
+ * Fetch HTML and append it to each element in the collection.
+ *
+ * If `data` is a plain object the request is sent as POST, otherwise GET. The URL may include a trailing CSS selector (e.g. `"/page.html #main"`) to filter the returned HTML before insertion.
+ *
+ * @param url - URL to fetch (optionally followed by a space and a CSS selector)
+ * @param data - parameters to send with the request
+ * @param success - callback invoked once per element after insertion
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $("#sidebar").load("/widgets.html .widget", { user: 42 }, function () {
+ *   $(this).fadeIn();
+ * });
+ */
+function load(this: Dabby, url: string, data: string | PlainObject, success: XhrCallback): Dabby;
+/**
+ * Fetch HTML via GET and append it to each element in the collection.
+ *
+ * @param url - URL to fetch (optionally followed by a space and a CSS selector)
+ * @param success - callback invoked once per element after insertion
+ */
+function load(this: Dabby, url: string, success: XhrCallback): Dabby;
+/**
+ * Fetch HTML via GET and append it to each element in the collection.
+ *
+ * @param url - URL to fetch (optionally followed by a space and a CSS selector)
+ */
+function load(this: Dabby, url: string): Dabby;
+
+// Implementation
+function load(this: Dabby, url: string, data?: string | PlainObject | XhrCallback, success?: XhrCallback): Dabby {
+	if (this[0]) {
+		// get selector from URL
+		const urlParts = url.split(" ", 2);
+		const uri = urlParts[0];
+		const selector = urlParts[1];
+
+		// check for data
+		if (typeof data === "function") {
+			success = data as XhrCallback;
+			data = undefined;
+		}
+
+		// make AJAX request
+		($ as typeof $ & { ajax: (url: string, settings: Record<string, unknown>) => void }).ajax(uri, {
+			data: data,
+			method: data instanceof Object ? "POST" : "GET",
+			success: (response: XhrResponse, status: string | number, xhr: XMLHttpRequest) => {
+				// if a selector is specified, find it in the returned document
+				let html: string | Dabby = "";
+				let i = this.length;
+
+				// refine by selector if supplied
+				if (selector && response && typeof response === "string") {
+					html = ($(response, (this[0] as Element).ownerDocument) as Dabby & { filter: (selector: string) => Dabby }).filter(selector);
+				} else {
+					html = (response as string) || "";
+				}
+
+				// set HTML to nodes in collection
+				(this as Dabby & { append: (html: string | Dabby) => Dabby }).append(html);
+
+				// fire success callback on nodes
+				if (success) {
+					while (i--) {
+						success.call(this[i] as Element, response, status, xhr);
+					}
+				}
+			}
+		});
+	}
+	return this;
+}
+
+Object.defineProperty(Dabby.prototype, "load", { value: load, configurable: true });
+
+// Augment ModularDabbyMethods for modular builds
+declare module '../../dabby.js' {
+  interface ModularDabbyMethods {
+    load(url: string, data: string | PlainObject, success: XhrCallback): this;
+    load(url: string, success: XhrCallback): this;
+    load(url: string): this;
+  }
+}
+
+// Export type witness to force TypeScript to include this file's augmentation
+export type __load = typeof load;

@@ -1,70 +1,98 @@
-# $.on()
+# $.fn.on(events, selector?, data?, callback)
 
-Bind event callbacks to DOM nodes.
+Bind one or more event handlers to every element in the collection. Supports a single event name, a space-separated list, or a plain object mapping events to handlers, with optional event delegation and per-binding data.
 
-## Usage
+A handler may return `false` to call `preventDefault()` and `stopPropagation()` on the event. Inside the handler, `this` references the element the handler is currently being invoked on (the matched delegate when delegating, otherwise the bound element).
 
-```javascript
-$(selector).on(events[, delegate][, data], handler);
-$(selector).on(events[, delegate][, data]);
+## Signatures
+
+```ts
+on(events: EventMap): this;
+on(events: string, callback: OnCallback): this;
+on(events: string, selector: string, callback: OnCallback): this;
+on(events: string, selector: string, data: unknown, callback: OnCallback): this;
+
+one(events: EventMap): this;
+one(events: string, callback: OnCallback): this;
+one(events: string, selector: string, callback: OnCallback): this;
+one(events: string, selector: string, data: unknown, callback: OnCallback): this;
 ```
 
-### events
+`OnCallback` is `(this: Element, event: Event, ...args: unknown[]) => void | false`. `EventMap` is `Record<string, OnCallback>`.
 
-A string containing a space separated list of events to bind to, or a plain object where the key is a space separated list of events to bind to and the value is the event handler.
+## Parameters
 
-### delegate
-
-A string specifying a selector to delegate the event to.
-
-### data
-
-Data to be passed to the handler when the event is triggered.
-
-### handler
-
-When `events` is a string, this is the callback function to be fired when the event is triggered on the selected node(s).
+- `events` (`string | EventMap`) — A space-separated list of event names, or a plain object whose keys are space-separated event names and whose values are the handlers for those events.
+- `selector` (`string`, optional) — A descendant selector. When supplied, the handler only fires for events whose target (or its ancestor) matches this selector. Implements event delegation.
+- `data` (`unknown`, optional) — Arbitrary data exposed on the event as `event.data`. If the native event already has a non-writable `data` property, the value is exposed as `event._data` instead.
+- `callback` (`OnCallback`) — The handler. Invoked with the native event; additional arguments passed via `.trigger("event", [...])` are spread after the event.
 
 ## Returns
 
-The original dabby collection.
+The original Dabby collection, for chaining.
 
-## Example
+## Examples
 
-```javascript
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
 
-// simple example
-$("a").on("click", function (e) {
-	alert($(this).attr("href")); // alert the href of the link
-	e.preventDefault(); // don't visit the link
-});
-
-// multiple events as a string
-$("a").on("click hover", function (e) {
-	alert($(this).attr("href")); // alert the href of the link
-	e.preventDefault(); // don't visit the link
-});
-
-// pass data
-$("a").on("click hover", {type: "simple"}, function (e) {
-	console.log(e.data); // the data passed to the event
-	alert($(this).attr("href")); // alert the href of the link
-	e.preventDefault(); // don't visit the link
-});
-
-// delegate the event
-$(".container").on("click hover", "a", function (e) {
-	alert($(this).attr("href")); // alert the href of the link
-	e.preventDefault(); // don't visit the link
-});
-
-// multiple events as an object
-$("a").on({
-	click: e => alert(e.type), // click
-	hover: e => alert(e.type) // hover
+// Simple click handler
+$("a").on("click", function (event) {
+    event.preventDefault();
+    console.log("link clicked", this.href);
 });
 ```
 
-## Differences to jQuery
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
 
-Doesn't suport the jQuery.Event object. When the data property is passed, depending on the type of event, the data property of the event object may already be set and unwritable. In this case the data is available to the callback as event._data.
+// Multiple events sharing one handler
+$("input").on("focus blur", function (event) {
+    this.classList.toggle("focused", event.type === "focus");
+});
+
+// Multi-event handler object
+$("button").on({
+    mouseenter() { this.classList.add("hover"); },
+    mouseleave() { this.classList.remove("hover"); },
+    click()      { this.classList.add("clicked"); },
+});
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+
+// Delegation: one listener on the container handles all current and future buttons
+$(".list").on("click", ".delete-button", function () {
+    this.closest(".list-item")?.remove();
+});
+
+// Per-binding data exposed as event.data
+$("#save").on("click", { role: "primary" }, (event) => {
+    console.log((event as Event & { data: { role: string } }).data.role);
+});
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+
+// .one() detaches the handler after it fires once
+$(".banner").one("click", function () {
+    this.classList.add("dismissed");
+});
+```
+
+## See also
+
+- [$.fn.off()](../off/readme.md) — remove handlers bound by `.on()` / `.one()`
+- [$.fn.trigger()](../trigger/readme.md) — dispatch a real event
+- [$.fn.triggerHandler()](../triggerhandler/readme.md) — invoke handlers without dispatching
+- [Named event shortcuts](../named/readme.md) — `.click()`, `.keydown()`, etc.
+
+## Differences from jQuery
+
+Does not support the `jQuery.Event` wrapper; handlers receive native `Event` objects. When the `data` property of the underlying event is not writable (which can happen for some native events), the handler reads the value from `event._data` instead of `event.data`.

@@ -1,49 +1,66 @@
-# .addClass(), .removeClass(), .toggleClass()
+# $.fn.addClass(), $.fn.removeClass(), $.fn.toggleClass()
 
-Add, remove, or toggle a class or classes to every item in a collection.
+Add, remove or toggle one or more classes on every node in a collection. All three methods accept the same value forms — a single class name, a space-separated string, an array of class names, or a callback returning any of those.
 
-## Usage
+`toggleClass()` accepts an optional second argument that forces the toggle on (`true`, equivalent to `addClass()`) or off (`false`, equivalent to `removeClass()`).
 
-```javascript
-$(selector).addClass(className);
-$(selector).addClass(classArray);
-$(selector).addClass(function (index, currentClassName));
-$(selector).removeClass(className);
-$(selector).removeClass(classArray);
-$(selector).removeClass(function (index, currentClassName));
-$(selector).toggleClass(className, state);
-$(selector).toggleClass(classArray, state);
-$(selector).toggleClass(function (index, currentClassName), state);
+## Signatures
+
+```ts
+addClass(cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;
+removeClass(cls?: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[])): this;
+toggleClass(cls: string | string[] | ((this: Element, index: number, currentClass: string) => string | string[]), state?: boolean): this;
 ```
 
-#### className
+## Parameters
 
-A string of space separated class names.
-
-#### classArray
-
-An array of class names.
-
-#### function (index, currentClassName)
-
-A function that receives the index of the current item and the current class name(s) as a string, and returns either a space separated list of class names, or an array.
-
-#### state
-
-A boolean to force the toggle state on or off, or anything else to ignore
+- `cls` (`string | string[] | function`) — the class or classes to add, remove or toggle. A string can contain multiple class names separated by spaces. A callback receives `(index, currentClass)` and `this` set to the current element; it should return a string or an array of class names.
+- `state` (`boolean`, `toggleClass` only) — when `true` the classes are forced on, when `false` they are forced off. Omit to flip each class to the opposite of its current state.
 
 ## Returns
 
-The original collection.
+The original Dabby collection.
 
-## Example
+## Examples
 
-```javascript
-$(".hub__item").addCLass("hub__item--on");
-$(".hub__item").addCLass("hub__item--on hub__item-purple");
-$(".hub__item").addCLass(["hub__item--on", "hub__item-purple"]);
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/class/class";
+
+// Add a single class
+$(".card").addClass("card--active");
+
+// Add several classes from an array
+$(".card").addClass(["card--active", "card--highlighted"]);
 ```
 
-## Differences to jQuery
+```ts
+// Remove a class
+$(".product-item").removeClass("product-item--selected");
 
-It supports everything jQuery supports, plus it can handle an array of class names.
+// Remove several classes via a space-separated string
+$(".alert").removeClass("alert--error alert--warning");
+```
+
+```ts
+// Toggle a class on click
+$(".menu-button").on("click", () => {
+    $(".navigation").toggleClass("navigation--open");
+});
+
+// Force a specific state
+$(".panel").toggleClass("panel--expanded", true);
+```
+
+```ts
+// Derive class names from the index
+$(".list-item").addClass(function (index) {
+    return index % 2 === 0 ? "list-item--even" : "list-item--odd";
+});
+```
+
+## See also
+
+- [$.fn.hasClass()](../hasclass/readme.md) — test whether any node carries a given class.
+- [$.fn.attr()](../attr/readme.md) — read or set arbitrary HTML attributes.
+- [$.fn.css()](../css/readme.md) — read or set inline styles directly.

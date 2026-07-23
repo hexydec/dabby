@@ -1,39 +1,95 @@
-# .triggerHandler()
+# $.fn.triggerHandler(name, data?)
 
-Trigger any handlers attached to the first object in a collection that were attached with [$.fn.on()](../on/readme.md). It will not trigger the native event like [$.fn.trigger()](../trigger/readme.md).
+Invoke the handlers bound to the first element in the collection without dispatching a real DOM event. No event bubbles, no native default action runs, and the return value of the last matching handler is returned to the caller, which makes `.triggerHandler()` ideal for treating event handlers as ordinary functions whose result you want to read.
 
-## Usage
+Each matching handler receives a synthetic event-like object with `target`, `currentTarget`, and `arg` properties — the supplied `data` is exposed as `arg` rather than `detail`.
 
-```javascript
-$(selector).triggerHandler(event, data);
+## Signatures
+
+```ts
+triggerHandler(name: string, data?: unknown): unknown;
 ```
 
-### event
+## Parameters
 
-The name of the event to trigger the handlers on.
-
-### data
-
-Any data to be sent to the handler function.
+- `name` (`string`) — The event name whose bound handlers should be invoked.
+- `data` (`unknown`, optional) — A value passed to handlers via the synthetic event's `arg` property.
 
 ## Returns
 
-The return value from the last handler that was triggered.
+The return value of the last matching handler, or `undefined` if no handler is bound to that event on the first element.
 
-## Example
+## Examples
 
-```javascript
-const obj = $("a");
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
 
-// attach an evnt handler
-obj.on("click", () => {
-	alert("Clicked");
+// Run a validation handler and read its return value
+$("form").on("validate", function () {
+    return (this as HTMLFormElement).checkValidity();
 });
 
-// trigger just the handler, won't trigger navigation like if you actually clicked it
-obj.triggerHandler("click");
+const isValid = $("form").triggerHandler("validate") as boolean;
+if (!isValid) {
+    console.log("form has errors");
+}
 ```
 
-## Differences to jQuery
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
 
-Doesn't suport the jQuery.Event object.
+// Compute a value from the first matching element without changing the DOM
+$(".price").on("calculateTotal", function () {
+    const price = parseFloat(this.textContent ?? "0");
+    const quantity = Number((this as HTMLElement).dataset.quantity ?? "1");
+    return price * quantity;
+});
+
+const total = $(".price").triggerHandler("calculateTotal") as number;
+$(".total").text(`£${total.toFixed(2)}`);
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
+
+// Run a click handler without following the link
+$("a[href='#save']").on("click", function (event) {
+    event.preventDefault();
+    saveDocument();
+    return "saved";
+});
+
+const result = $("a[href='#save']").triggerHandler("click");
+console.log(result); // "saved"
+
+declare function saveDocument(): void;
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/events/on/on";
+import "dabbyjs/events/triggerhandler/triggerhandler";
+
+// When several handlers are bound, only the last return value comes back
+$("button").on("process", () => "step1");
+$("button").on("process", () => "step2");
+
+const last = $("button").triggerHandler("process");
+console.log(last); // "step2"
+```
+
+## See also
+
+- [$.fn.trigger()](../trigger/readme.md) — dispatch a real bubbling event
+- [$.fn.on()](../on/readme.md) — bind handlers
+- [$.fn.off()](../off/readme.md) — remove bound handlers
+
+## Differences from jQuery
+
+Does not support the `jQuery.Event` wrapper. Only handlers attached through Dabby's `.on()` are invoked — native listeners attached directly with `addEventListener` are not. Only the first element in the collection is processed, matching jQuery's behaviour.

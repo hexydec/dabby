@@ -1,29 +1,53 @@
-# .has()
-Reduce the input collection to those that have descendants matching the input selector.
+# $.fn.has(selector)
 
-## Usage
-```javascript
-$(selector).has(selector);
+Filter the collection to elements that contain at least one descendant matching
+the selector. Useful for selecting parents that hold a particular kind of child.
+
+## Signatures
+
+```ts
+has(selector: Selector): this;
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection.
+## Parameters
+
+- `selector` (`Selector`) — a CSS selector string, node, array of nodes, or
+  Dabby collection identifying nodes to look for inside each element.
 
 ## Returns
-A new Dabby collection containing the nodes in the original collection that have descendants matching the selector.
 
-## Example
-```javascript
-// Given the HTML:
-// <div>
-//   <p>Hello World</p>
-// </div>
-// <div>
-//   <span>Goodbye World</span>
-// </div>
+A new Dabby collection containing only elements that contain a matching
+descendant.
 
-$("div").has("p"); // returns a Dabby collection containing only the first <div> tag
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/has/has";
+
+// List items that contain a link
+$("li").has("a").addClass("has-link");
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/has/has";
+
+// Articles that contain at least one image
+const $illustrated = $("article").has("img");
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/has/has";
+
+// Pass a node directly — keep parents that contain a specific element
+const target = document.getElementById("featured")!;
+$(".panel").has(target);
+```
+
+## See also
+
+- [$.fn.filter()](../filter/readme.md)
+- [$.fn.find()](../find/readme.md)
+- [$.fn.children()](../children/readme.md)

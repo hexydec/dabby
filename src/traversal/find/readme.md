@@ -1,29 +1,54 @@
-# .find()
-Find descendants underneath the input collection that match the given selector.
+# $.fn.find(selector)
 
-## Usage
-```javascript
-$(collection).find(selector);
+Find descendants of every item in the collection that match the selector. The
+selector is evaluated against each element's subtree (not against the elements
+themselves), and the results are gathered into a single new collection.
+
+## Signatures
+
+```ts
+find(selector: Selector): this;
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection.
+## Parameters
+
+- `selector` (`Selector`) — a CSS selector string, node, array of nodes, or
+  Dabby collection identifying descendants to keep.
 
 ## Returns
-A new Dabby collection containing the matched descendants.
 
-## Example
-```javascript
-// Given the HTML:
-// <div>
-//   <p>Text</p>
-// </div>
-// <div>
-//   <span>More Text</span>
-// </div>
+A new Dabby collection containing every matched descendant of the original
+collection.
 
-$("div").find("p"); // returns a Dabby collection containing the <p> tag
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/find/find";
+
+// All external links inside any article
+$("article").find("a.external");
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/find/find";
+
+// Find a particular form field within a known wrapper
+const $email = $(".signup-form").find("input[name=email]");
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/find/find";
+
+// Find can take a Dabby collection or node, not just a string
+const $rows = $("table");
+const $cells = $rows.find($("td.value"));
+```
+
+## See also
+
+- [$.fn.children()](../children/readme.md) — direct children only
+- [$.fn.filter()](../filter/readme.md) — filter the current collection
+- [$.fn.closest()](../closest/readme.md) — walk up to the nearest matching ancestor

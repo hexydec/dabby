@@ -1,32 +1,51 @@
-# .slice()
-Reduce a collection by the specified indices.
+# $.fn.slice(start [, end])
 
-## Usage
-```javascript
-$(collection).slice(start, end);
+Reduce the collection to a contiguous subset, mirroring `Array.prototype.slice`.
+
+## Signatures
+
+```ts
+slice(start: number, end?: number): this;
 ```
 
-### start
-A number indicating the beginning of the selection.
+## Parameters
 
-### end
-An optional number indicating the end of the selection.
+- `start` (`number`) — zero-based start index, or a negative offset from the end.
+- `end` (`number`, optional) — exclusive end index, or a negative offset from
+  the end. If omitted, the slice runs to the end.
 
 ## Returns
-A new Dabby collection containing the specified subset of the original collection.
 
-## Example
-```javascript
-// Given the HTML:
-// <ul>
-//   <li>Item 1</li>
-//   <li>Item 2</li>
-//   <li>Item 3</li>
-//   <li>Item 4</li>
-// </ul>
+A new Dabby collection containing the sliced elements in their original order.
 
-$("li").slice(1, 3); // returns a new Dabby collection containing the <li> for "Item 2" and "Item 3"
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/slice/slice";
+
+// First three list items
+$("li").slice(0, 3);
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/slice/slice";
+
+// Last two rows of a table
+$("table tr").slice(-2);
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/slice/slice";
+
+// Page 3 of a paged list (10 items per page)
+$(".item").slice(20, 30);
+```
+
+## See also
+
+- [$.fn.eq()](../eq/readme.md)
+- [$.fn.first()](../first/readme.md)
+- [$.fn.last()](../last/readme.md)

@@ -1,79 +1,68 @@
-# $.extend()
+# $.extend([deep,] target [, source1] [, source2] [, …])
 
-Extend one or more objects/arrays into the first object. Can perform either a shallow or deep copy.
+Merge the properties of one or more sources into a target object.
 
-## Usage
+By default the merge is shallow — top-level properties are copied and any
+nested objects/arrays are shared by reference. Pass `true` as the first
+argument for a recursive deep merge in which plain objects and arrays are
+merged in place.
 
-```javascript
-$.extend(target, obj1[, ...objN]); // shallow copy
-$.extend(deep, target, obj1[, ...objN]); // deep copy
-$.extend(target, obj1[, ...objN]); // shallow copy
-$.extend(deep, target, obj1[, ...objN]); // deep copy
-$.extend(obj); // copy into the dabby prototype
+The own-property `__proto__` is skipped to avoid prototype pollution.
+
+## Signatures
+
+```ts
+extend(deep: true, target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;
+extend(target: Record<string, unknown>, ...sources: Record<string, unknown>[]): Record<string, unknown>;
 ```
 
-#### deep
+## Parameters
 
-If the first parameter is set to `true`, a deep merge will be performed.
+- `deep` (literal `true`, optional) — request a deep merge.
+- `target` (`Record<string, unknown>`) — the object to merge into. For deep
+  merges, the target is mutated in place; for shallow merges, a new object
+  is returned (the target is not modified).
+- `sources` (`Record<string, unknown>[]`) — one or more objects whose
+  properties are copied across.
 
-#### target
-
-The object/array the other arguments will be merged into. To merge into a new object, pass an empty object as the first argument.
-
-#### ...objs
-
-One or more objects/arrays to merge recursively into `target`.
+When called with a single argument (shallow only), the properties are merged
+onto the factory `$` itself, mirroring jQuery's `$.extend(plugin)` plug-in
+pattern.
 
 ## Returns
 
-`target` updated with the properties from the other arguments copied onto the object/array.
+For deep merges, the mutated target. For shallow merges, a new object.
 
-## Example
+## Examples
 
-Shallow merge some objects:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/extend/extend";
 
-```javascript
-const obj1 = {foo: "bar", bar: "foo"},
-	obj2 = {foo: "foo", foobar: "foo"},
-	obj3 = {bar: "bar", foobar: "foobar"};
-
-// merge obj2 and obj3 into obj1
-$.extend(obj1, obj2, obj3);
-console.log(obj1); // {foo: "foo", bar: "bar", foobar: "foobar"}
+// Shallow merge
+const settings = $.extend({}, defaults, overrides);
 ```
 
-Deep merge some objects:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/extend/extend";
 
-```javascript
-const obj1 = {foo: "bar", bar: "foo", foobar: {foo: "bar"}},
-	obj2 = {foo: "foo", foobar: {bar: "foo"}, foobar: "foo"},
-	obj3 = {bar: "bar", foobar: {foo: "foo", foobar: "foo"}};
-
-// merge obj2 and obj3 into obj1
-$.extend(true, obj1, obj2, obj3);
-console.log(obj1); // {foo: "foo", bar: "bar", foobar: {bar: "foo", foo: "foo", foobar: "foo"}}
+// Deep merge — nested objects are recursed
+const merged = $.extend(true, { ui: { theme: "light" } }, { ui: { dense: true } });
+// merged.ui === { theme: "light", dense: true }
 ```
 
-Deep merge some objects into a new object:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/utils/extend/extend";
 
-```javascript
-const obj1 = {foo: "bar", bar: "foo", foobar: {foo: "bar"}},
-	obj2 = {foo: "foo", foobar: {bar: "foo"}, foobar: "foo"},
-	obj3 = {bar: "bar", foobar: {foo: "foo", foobar: "foo"}};
-
-// merge obj2 and obj3 into obj1
-const newobj = $.extend(true, {}, obj1, obj2, obj3);
-console.log(newobj); // {foo: "foo", bar: "bar", foobar: {bar: "foo", foo: "foo", foobar: "foo"}}
+// Plug-in pattern — augment $ itself
+$.extend({
+    log(message: string) { console.log("[dabby]", message); },
+});
 ```
 
-## Notes
+## See also
 
-Because properties are copied into the first object, even though the method returns the final object, the `target` object will be updated. To copy everything into a new object, pass an empty object as the first argument and save the output via the return.
-
-Whilst the first object can be of any type, any objects to be merged must be only plain objects or arrays, otherwise the entire object or value will be copied over the respective key, it will not be merged.
-
-Any `__proto__` property from the objects being merged will not be copied to prevent pollution of the base object's prototype.
-
-## Differences to jQuery
-
-None.
+- [$.isPlainObject()](../isplainobject/readme.md) — used internally to decide what is recursable
+- [$.each()](../each/readme.md)

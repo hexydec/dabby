@@ -1,44 +1,53 @@
-# .each()
+# $.fn.each(callback)
 
-Run a custom callback function on each item in a Dabby collection.
+Iterate every node in a Dabby collection, calling the supplied callback once per node. `.each()` is defined directly on the `Dabby` class, so it is always available — this module exists purely as a stub re-export for builds that import individual methods.
 
-## Usage
+For the canonical documentation see [core/dabby/readme.md](../dabby/readme.md).
 
-```javascript
-$(selector).each(callback);
+## Signatures
+
+```ts
+each<T extends DOMNode = DOMNode>(
+    callback: (this: T, index: number, element: T) => void | false
+): this;
 ```
 
-The `this` variable will be set to the node of each item in the collection.
+## Parameters
 
-The callback uses the following pattern:
+- **`callback`** — function called with `(index, element)`. `this` is bound to the current node. Return `false` to break out of the loop early.
 
-```javascript
-function (index, element) {
-	// your code here, this is the same as element
-}
-```
+## Returns
 
-By returning `false` from a callback function, execution of subsequent callbacks in the current process will be halted.
+The original Dabby collection, so calls can be chained.
 
-## Example
+## Examples
 
-The following example puts the innerText of each DIV into an array:
+```ts
+import $ from "dabbyjs";
 
-```html
-<div class="map">First</div>
-<div class="map">Second</div>
-<div class="map">Third</div>
-```
-```javascript
-let text = [];
-$(".map").each(function () {
-	text.push(this.innerText);
+// Iterate and read
+$("li").each(function (index) {
+    console.log(index, this.textContent);
+});
+
+// Break early
+$(".item").each(function () {
+    if (this.classList.contains("target")) {
+        return false; // stop here
+    }
 });
 ```
-## Return value
 
-Returns the inputted Dabby object.
+```ts
+// Build a list of values
+const ids: string[] = [];
+$(".product").each(function () {
+    ids.push(this.dataset.id ?? "");
+});
+```
 
-## Differences to jQuery
+## See also
 
-None.
+- [Dabby class](../dabby/readme.md)
+- [`.map()`](../map/readme.md)
+- [`.get()`](../get/readme.md)

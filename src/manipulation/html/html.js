@@ -1,5 +1,6 @@
 import {Dabby} from "../../core/dabby/dabby.js";
 import getVal from "../../internal/getval/getval.js";
+import toTrustedHTML from "../../internal/trustedhtml/trustedhtml.js";
 
 /**
  * Sets or retrieves the HTML within each item in the collection
@@ -20,7 +21,7 @@ const html = function (html) {
 		let i = this.length,
 			values = getVal(this, html, obj => obj.innerHTML);
 		while (i--) {
-			this[i].innerHTML = values[i];
+			this[i].innerHTML = toTrustedHTML(values[i]);
 		}
 		return this;
 	}

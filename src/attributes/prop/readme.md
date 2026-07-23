@@ -1,53 +1,64 @@
-# .prop()
+# $.fn.prop(name [, value])
 
-Get the requested property on the first element in a collection or set properties on each item in a collection.
+Get a JavaScript property from the first element, or set one on every
+element. Properties differ from attributes — they live on the DOM node
+object, not on the rendered HTML — and reflect the *current* state of the
+element rather than the markup that created it.
 
-## Usage
+Common examples include `checked` (vs the `checked` attribute), `selected`,
+`disabled`, `value`, `tagName`, `nodeName`, `htmlFor` (the `for` attribute),
+and `className` (the `class` attribute).
 
-```javascript
-$(selector).prop(propertyName);
-$(selector).prop(propertyName, value);
-$(selector).prop(propertyName, function (index, currentValue) {});
-$(selector).prop(properties);
+## Signatures
+
+```ts
+prop(prop: string): unknown;
+prop(prop: string, value: unknown | ((this: Element, index: number, currentValue: unknown) => unknown)): this;
+prop(props: Record<string, unknown>): this;
 ```
 
-#### propertyName
+## Parameters
 
-The name of the property you wish to get or set.
-
-#### value
-
-The value of the property you wish to set.
-
-#### function
-
-A callback function to generate a value for the property you wish to set. Receives the index of the current node in the collection, and the current value. `this` will be set to the current node.
-
-Where attributes are set as an object, callback functions can also be supplied.
+- `prop` (`string`) — the property name. Common HTML→DOM aliases (e.g.
+  `for` → `htmlFor`, `class` → `className`) are handled automatically.
+- `value` (`unknown | callback`) — the value to assign, or a callback
+  invoked with `(index, currentValue)` and bound (`this`) to the element.
+- `props` (`Record<string, unknown>`) — a map of property names to values
+  for setting many at once.
 
 ## Returns
 
-When retrieving a value, a string will be returned containing the value of the property. If there are no elements in the collection or the requested property does not exist, `undefined` will be returned.
+When getting, the property's current value. When setting, the original
+Dabby collection for chaining.
 
-When setting a value or values, the original collection will be returned.
+## Examples
 
-## Example
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/prop/prop";
 
-Consider the following HTML:
-
-```html
-<a href="https://github.com/hexydec/dabby" class="foo">Dabby.js</a>
-<input type="checkbox" name="foo" value="bar" checked="checked" />
+// Read a checkbox's current state (vs the markup attribute)
+const isOn = $("#agree").prop("checked"); // boolean
 ```
 
-The following javascript will get and set properties:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/prop/prop";
 
-```javascript
-var href = $("a").prop("href"); // https://github.com/hexydec/dabby - may be formatted by the browser
-var bar  = $("input").prop("checked"); // true, attr() will return checked
-var a = $("a").prop("title", "Go to the Dabby.js GitHub page"); // set title and returns collection
+// Disable every form input
+$("form input").prop("disabled", true);
 ```
 
-## Differences to jQuery
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/prop/prop";
 
-None.
+// Set multiple properties on each option
+$("option").prop({ disabled: false, selected: false });
+```
+
+## See also
+
+- [$.fn.attr()](../attr/readme.md) — read/write HTML attributes
+- [$.fn.removeProp()](../removeprop/readme.md)
+- [$.fn.val()](../val/readme.md)

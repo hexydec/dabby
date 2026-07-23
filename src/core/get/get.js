@@ -1,4 +1,4 @@
-import {Dabby} from "../../core/dabby/dabby.js";
+import {Dabby} from "../../../dist/core/dabby/dabby.js";
 	
 /**
  * Retrieve raw HTML nodes from a Dabby collection

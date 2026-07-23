@@ -1,28 +1,67 @@
-# .scrollLeft() / .scrollTop()
+# $.fn.scrollLeft(pos?), $.fn.scrollTop(pos?)
 
-Retrieves the left or top scroll position of the first element in the collection, or sets the scroll position on each item in the collection.
+Get or set the horizontal and vertical scroll positions of nodes in a Dabby collection. Both methods follow the same pattern: with no argument they return the value of the first node; with an argument they set every node and return the collection for chaining.
 
-## Usage
+When the wrapped element is `window`, the getter reads `pageXOffset` / `pageYOffset` rather than `scrollLeft` / `scrollTop`, so `$(window).scrollTop()` always reports the document scroll.
 
-```javascript
-const left = $(selector).scrollLeft();
-const top = $(selector).scrollTop();
-$(selector).scrollLeft(scroll);
-$(selector).scrollTop(scroll);
-$(selector).scrollLeft(function (index, currentValue) {});
-$(selector).scrollTop(function (index, currentValue) {});
+## Signatures
+
+```ts
+scrollLeft(): number | undefined;
+scrollLeft(
+    pos: number | ((this: Element | Window, index: number, currentValue: number) => number)
+): this;
+
+scrollTop(): number | undefined;
+scrollTop(
+    pos: number | ((this: Element | Window, index: number, currentValue: number) => number)
+): this;
 ```
 
-### scroll
+## Parameters
 
-The scroll value to be set on each item in the input collection.
+- **`pos`** — either a pixel value to assign, or a callback receiving the index and current scroll value and returning the new value. `this` inside the callback is the current node (or `window`).
 
 ## Returns
 
-The scroll position of the first item in the collection when retrieving, or the original Dabby collection when setting.
+The getter returns the current scroll position in pixels, or `undefined` if the collection is empty. The setter returns the original Dabby collection for chaining.
 
+## Examples
 
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/dimensions/scroll/scroll";
 
-## Differences to jQuery
+// Read the document scroll
+const y = $(window).scrollTop();
 
-None.
+// Scroll the page back to the top
+$(window).scrollTop(0);
+
+// Scroll a container horizontally
+$(".gallery").scrollLeft(320);
+```
+
+```ts
+// Step a scrollable region forward by 200px
+$(".gallery").scrollLeft(function (index, current) {
+    return current + 200;
+});
+```
+
+```ts
+// Toggle a sticky header based on scroll direction
+let lastY = 0;
+
+$(window).on("scroll", () => {
+    const y = $(window).scrollTop() ?? 0;
+    $(".header").toggleClass("hidden", y > lastY && y > 80);
+    lastY = y;
+});
+```
+
+## See also
+
+- [`.offset()`](../offset/readme.md)
+- [`.height()` / `.outerHeight()`](../width-height/readme.md)
+- [`.position()`](../position/readme.md)

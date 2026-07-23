@@ -1,69 +1,89 @@
-# $.get()
+# $.get(...) / $.post(...)
 
-Shorthand to make AJAX requests using the GET method.
+Shorthand wrappers around `$.ajax` for GET and POST requests. They accept loose argument lists so you can supply only what you need: a URL, optionally some data, optionally a success callback, and optionally a data type.
 
-## Usage
+## Signatures
 
-```javascript
-$.get(url[, data, success, type]); // => xhr
-$.get(url, success[, type]); // => xhr
+```ts
+get(url: string, data: DataParam, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+get(url: string, data: DataParam, success: XhrCallback): XMLHttpRequest | undefined;
+get(url: string, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+get(url: string, success: XhrCallback): XMLHttpRequest | undefined;
+get(url: string): XMLHttpRequest | undefined;
+get(url: string, data: DataParam): XMLHttpRequest | undefined;
+get(settings: AjaxSettings): XMLHttpRequest | undefined;
+
+post(url: string, data: DataParam, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+post(url: string, data: DataParam, success: XhrCallback): XMLHttpRequest | undefined;
+post(url: string, success: XhrCallback, dataType: string): XMLHttpRequest | undefined;
+post(url: string, success: XhrCallback): XMLHttpRequest | undefined;
+post(url: string): XMLHttpRequest | undefined;
+post(url: string, data: DataParam): XMLHttpRequest | undefined;
+post(settings: AjaxSettings): XMLHttpRequest | undefined;
 ```
 
-See [$.ajax()](../ajax/readme.md) for a description of the input parameters.
+## Parameters
 
-## Return value
+- `url` (`string`) — URL to request.
+- `data` (`string | object`) — parameters appended to the query string (GET) or sent in the request body (POST). Plain objects are serialised with `$.param`.
+- `success` (`(response, status, xhr) => void`) — callback invoked on success. The `response` is parsed JSON when `dataType` is `"json"` or when the response looks like JSON.
+- `dataType` (`string`) — expected response type, e.g. `"json"`, `"script"`, `"jsonp"`.
+- `settings` (`AjaxSettings`) — full settings object, see [$.ajax()](../ajax/readme.md).
 
-For asynchronous requests, the generated XMLHttpRequest object will be returned. Synchronous requests will return `undefined`.
+## Returns
 
-## Example
+The underlying `XMLHttpRequest`, or `undefined` for `script` / `jsonp` loads.
 
-The following example makes an AJAX request using the GET method:
+## Examples
 
-```javascript
-$.get(
-	"/api.php",
-	{action: "update", id: 5},
-	function (response) {
-		console.log(response);
-	},
-	"json"
-);
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/ajax/getpost/getpost";
+
+// Simple GET with JSON response
+$.get("/api/products", (products) => {
+    console.log(products);
+}, "json");
 ```
+
+```ts
+// GET with query parameters
+$.get("/api/search", { q: "laptop", category: "electronics" }, (results) => {
+    renderResults(results);
+}, "json");
+```
+
+```ts
+// POST a form payload
+$.post("/api/contact", {
+    name: "Ada Lovelace",
+    email: "ada@example.com",
+    message: "Hello"
+}, (res) => {
+    console.log(res.id);
+}, "json");
+```
+
+```ts
+// POST inside a submit handler
+import "dabbyjs/ajax/serialize/serialize";
+
+$("#login-form").on("submit", function (e) {
+    e.preventDefault();
+    $.post("/api/login", $(this).serialize(), (res) => {
+        location.href = res.redirect;
+    }, "json");
+});
+```
+
 ## Differences to jQuery
 
-Dabby doesn't return a deferred object like jQuery does, so you cannot chain any deferred methods to this method.
+No `Deferred` is returned, so you cannot chain `.done()` / `.fail()` / `.always()`. Use the `success` and `error` callbacks (or wrap the call in a `Promise`) instead.
 
-# $.post()
+## See also
 
-Shorthand to make AJAX requests using the POST method.
-
-## Usage
-
-```javascript
-$.post(url[, data, success, type]) // => xhr
-$.post(url, success[, type]) // => xhr
-```
-
-See [$.ajax()](../ajax/readme.md) for a description of the input parameters.
-
-## Return value
-
-For asynchronous requests, the generated XMLHttpRequest object will be returned. Synchronous requests will return `undefined`.
-
-## Example
-
-The following example makes an AJAX request using the POST method:
-
-```javascript
-$.post(
-	"/api.php",
-	{action: "update", id: 5},
-	function (response) {
-		console.log(response);
-	},
-	"json"
-);
-```
-## Differences to jQuery
-
-Dabby doesn't return a deferred object like jQuery does, so you cannot chain any deferred methods to this method.
+- [$.ajax()](../ajax/readme.md)
+- [$.getScript()](../getscript/readme.md)
+- [.load()](../load/readme.md)
+- [.serialize()](../serialize/readme.md)
+- [$.param()](../param/readme.md)

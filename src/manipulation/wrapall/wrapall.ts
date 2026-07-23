@@ -1,0 +1,63 @@
+import $, { Dabby } from "../../core/dabby/dabby.js";
+import type {} from "../../dabby.js";
+import type { Selector } from "../../types.js";
+
+type WrapCallback = (this: Element) => Selector;
+
+/**
+ * Wrap every item in the collection together with a single shared wrapper.
+ *
+ * Unlike {@link wrap}, only one copy of the wrapper is inserted; all items
+ * are gathered inside its deepest descendant in their original DOM order.
+ *
+ * @param html - a selector, HTML string, node or Dabby collection describing the wrapper, or a callback returning one
+ * @returns the original Dabby collection for chaining
+ *
+ * @example
+ * $(".chip").wrapAll("<div class='chip-row'></div>");
+ */
+function wrapAll(this: Dabby, html: Selector | WrapCallback): Dabby {
+	if (this[0]) {
+		let wrapper: Selector;
+
+		if (typeof html === "function") {
+			wrapper = html.call(this[0] as Element);
+		} else {
+			wrapper = html;
+		}
+
+		// Set variables
+		const len = this.length;
+		let i = 0;
+		const wrapperDabby = $(wrapper) as Dabby & { eq?: (index: number) => Dabby & { clone?: (deep: boolean) => Dabby & { get?: (index: number) => Element } } };
+		let node: Element = (wrapperDabby.eq?.(0)?.clone?.(true)?.get?.(0) as Element) ?? (wrapperDabby[0] as Element);
+
+		// Insert clone into parent
+		(this[0] as Element).parentNode!.insertBefore(node, null);
+
+		// Find innermost child of node
+		while (node.firstElementChild) {
+			node = node.firstElementChild;
+		}
+
+		// Attach nodes to the new node
+		for (; i < len; i++) {
+			node.appendChild(this[i] as Node);
+		}
+	}
+
+	return this;
+}
+
+Object.defineProperty(Dabby.prototype, "wrapAll", { value: wrapAll, configurable: true });
+
+// Augment ModularDabbyMethods for modular builds
+declare module '../../dabby.js' {
+  interface ModularDabbyMethods {
+    wrapAll(html: Selector | WrapCallback): this;
+  }
+}
+
+// Export type witnesses to force TypeScript to include this file's augmentation
+export type __wrapAll = typeof wrapAll;
+

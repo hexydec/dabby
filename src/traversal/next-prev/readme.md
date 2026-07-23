@@ -1,155 +1,61 @@
-# .next()
-Retrieve the next sibling of the first item in the collection.
+# $.fn.next() / $.fn.nextAll() / $.fn.nextUntil() / $.fn.prev() / $.fn.prevAll() / $.fn.prevUntil()
 
-## Usage
-```javascript
-$(collection).next(selector);
+Walk forwards or backwards through the immediate sibling chain of every item
+in the collection. The six methods share the same shape, differing only in
+direction (`next` vs `prev`) and how far they walk (one step, all the way, or
+until a boundary).
+
+## Signatures
+
+```ts
+next(selector?: Selector): this;
+nextAll(selector?: Selector): this;
+nextUntil(selector: Selector, filter?: Selector): this;
+prev(selector?: Selector): this;
+prevAll(selector?: Selector): this;
+prevUntil(selector: Selector, filter?: Selector): this;
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection by.
+## Parameters
+
+- `selector` (`Selector`, optional on `next`/`nextAll`/`prev`/`prevAll`) — a
+  CSS selector that filters the collected siblings.
+- For `nextUntil` / `prevUntil`:
+  - `selector` (`Selector`, **required**) — the boundary; iteration stops at the first sibling that matches.
+  - `filter` (`Selector`, optional) — narrows the collected siblings.
 
 ## Returns
-A new Dabby collection containing the next sibling.
 
-## Example
-```javascript
-// Given the HTML:
-// <div><p></p><span></span></div>
+A new Dabby collection of sibling elements gathered in document order.
 
-$("p").next(); // returns a new Dabby collection containing the <span>
+## Examples
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/next-prev/next-prev";
+
+// Highlight whatever directly follows the active item
+$("li.active").next().addClass("up-next");
 ```
 
-## Differences to jQuery
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/next-prev/next-prev";
 
-# .nextAll()
-Retrieve all following siblings of each item in the collection.
-
-## Usage
-```javascript
-$(collection).nextAll(selector);
+// All paragraphs after a section heading, until the next heading
+$("h2").nextUntil("h2", "p");
 ```
 
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection by.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/next-prev/next-prev";
 
-## Returns
-A new Dabby collection containing the matching siblings.
-
-## Example
-```javascript
-// Given the HTML:
-// <div><p></p><span></span><a></a></div>
-
-$("p").nextAll(); // returns a new Dabby collection containing the <span> and <a>
+// Every previous form group, regardless of selector
+$(".form-group.error").prevAll(".form-group");
 ```
 
-## Differences to jQuery
-None.
+## See also
 
-# .nextUntil()
-Retrieve the following siblings of each item in the collection up until the matched selector.
-
-## Usage
-```javascript
-$(collection).nextUntil(selector, filter);
-```
-
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function to capture all the following siblings until but not including the matched node.
-
-### filter
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function to filter the collection by.
-
-## Returns
-A new Dabby collection containing the matching siblings.
-
-## Example
-```javascript
-// Given the HTML:
-// <div><p></p><span></span><a></a></div>
-
-$("p").nextUntil("a"); // returns a new Dabby collection containing the <span>
-```
-
-## Differences to jQuery
-None.
-
-# .prev()
-Retrieve the previous sibling of the first item in the collection.
-
-## Usage
-```javascript
-$(collection).prev(selector);
-```
-
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection by.
-
-## Returns
-A new Dabby collection containing the previous sibling.
-
-## Example
-```javascript
-// Given the HTML:
-// <div><span></span><p></p></div>
-
-$("p").prev(); // returns a new Dabby collection containing the <span>
-```
-
-## Differences to jQuery
-None.
-
-# .prevAll()
-Retrieve all preceding siblings of each item in the collection.
-
-## Usage
-```javascript
-$(collection).prevAll(selector);
-```
-
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function used to filter the collection by.
-
-## Returns
-A new Dabby collection containing the matching siblings.
-
-## Example
-```javascript
-// Given the HTML:
-// <div><a></a><span></span><p></p></div>
-
-$("p").prevAll(); // returns a new Dabby collection containing the <span> and <a>
-```
-
-## Differences to jQuery
-None.
-
-# .prevUntil()
-Retrieve the preceding siblings of each item in the collection up until the matched selector.
-
-## Usage
-```javascript
-$(collection).prevUntil(selector, filter);
-```
-
-### selector
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function to capture all the preceding siblings until but not including the matched node.
-
-### filter
-A selector, HTML string, Node, array of Nodes, Dabby collection, or a callback function to filter the collection by.
-
-## Returns
-A new Dabby collection containing the matching siblings.
-
-## Example
-```javascript
-// Given the HTML:
-// <div><a></a><span></span><p></p></div>
-
-$("p").prevUntil("a"); // returns a new Dabby collection containing the <span>
-```
-
-## Differences to jQuery
-None.
+- [$.fn.siblings()](../siblings/readme.md)
+- [$.fn.parents()](../parents/readme.md)
+- [$.fn.children()](../children/readme.md)

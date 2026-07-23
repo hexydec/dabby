@@ -1,23 +1,44 @@
-# .removeProp()
+# $.fn.removeProp(name)
 
-Removes the selected property from all objects in a collection.
+Delete a JavaScript property from every element in the collection.
 
-## Usage
+This affects only the DOM node's property — it does not remove the matching
+HTML attribute. For removing markup attributes use
+[`attr(name, null)`](../attr/readme.md).
 
-```javascript
-$(selector).removeProp(propertyName);
+## Signatures
+
+```ts
+removeProp(prop: string): this;
 ```
 
-**It is recommended that you only use this method to remove custom properties, as removing native elements from DOM objects or the `window` object may cause a browser error**
+## Parameters
 
-#### propertyName
-
-The name of the property you wish to remove.
+- `prop` (`string`) — the property name to delete.
 
 ## Returns
 
-The original Dabby collection.
+The original Dabby collection for chaining.
 
-## Differences to jQuery
+## Examples
 
-None.
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/removeprop/removeprop";
+
+// Strip a custom property set earlier
+$("#widget").removeProp("dabbyState");
+```
+
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/attributes/removeprop/removeprop";
+
+// Remove an inline-bound handler reference
+$("button").removeProp("onclick");
+```
+
+## See also
+
+- [$.fn.prop()](../prop/readme.md)
+- [$.fn.attr()](../attr/readme.md) — pass `null` to remove an attribute

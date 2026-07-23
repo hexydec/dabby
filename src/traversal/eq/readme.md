@@ -1,55 +1,57 @@
-# .eq()
-Creates a new Dabby collection containing the element at the specified index.
+# $.fn.eq(index)
 
-## Usage
-```javascript
-$(collection).eq(index);
+Reduce the collection to the single element at the given index. Negative
+indices count back from the end of the collection.
+
+## Signatures
+
+```ts
+eq(index: number): this;
 ```
 
-### index
-The zero-based index of the element to select. A negative number will select elements from the end of the collection.
+## Parameters
+
+- `index` (`number`) — the zero-based index of the element to select. A
+  negative value selects from the end of the collection (e.g. `-1` is the
+  last element).
 
 ## Returns
-A new Dabby collection containing the single element at the requested index. If the index does not exist, an empty collection will be returned.
 
-## Example
-Select the first element of a collection:
+A new Dabby collection containing the single element at the requested index.
+If the index is out of range, the returned collection is empty.
 
-```javascript
-// HTML:
-// <ul>
-//   <li>Item 1</li>
-//   <li>Item 2</li>
-//   <li>Item 3</li>
-// </ul>
+## Examples
 
-const items = $('li'); // The collection contains all three <li> elements
-const first = items.eq(0);
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/eq/eq";
 
-// The `first` collection now contains only the first <li> element.
-console.log(first.text()); // "Item 1"
+// Highlight the third list item
+$("li").eq(2).addClass("highlighted");
 ```
 
-Select the last element of a collection using a negative index:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/eq/eq";
 
-```javascript
-// Using the same HTML as above
-const last = items.eq(-1);
-
-// The `last` collection now contains only the last <li> element.
-console.log(last.text()); // "Item 3"
+// Select the last row of a table
+const $lastRow = $("table tr").eq(-1);
 ```
 
-Select an element that doesn't exist:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/eq/eq";
 
-```javascript
-// Using the same HTML as above
-const nonexistentItem = items.eq(5);
-
-// The `nonexistentItem` collection will be empty.
-console.log(nonexistentItem.length); // 0
+// Simple carousel — show the slide for the active dot
+$(".carousel-dot").on("click", function () {
+    const index = $(".carousel-dot").index(this);
+    $(".slide").hide().eq(index).show();
+});
 ```
 
-## Differences to jQuery
+## See also
 
-None.
+- [$.fn.first()](../first/readme.md)
+- [$.fn.last()](../last/readme.md)
+- [$.fn.slice()](../slice/readme.md)
+- [$.fn.index()](../index/readme.md)

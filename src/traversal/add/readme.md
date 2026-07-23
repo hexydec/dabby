@@ -1,59 +1,57 @@
-# .add()
+# $.fn.add(selector)
 
-Creates a new Dabby collection with elements added to the end of the existing collection.
+Create a new Dabby collection by appending elements to the end of the current
+collection. Duplicate nodes are removed so each element appears at most once.
 
-## Usage
+## Signatures
 
-```javascript
-$(selector).add(nodes);
-$(selector).add(nodes, context);
+```ts
+add(selector: Selector): this;
 ```
 
-#### nodes
+## Parameters
 
-A selector, HTML string, Node, array of Nodes, Dabby collection or a callback function to add to the collection.
-
-#### context
-
-An optional selector, HTML string, Node, array of Nodes, Dabby collection or a callback function indicating where the `nodes` selector should start matching.
+- `selector` (`Selector`) — a CSS selector string, HTML string, `Element`,
+  array of elements, `NodeList`, `HTMLCollection` or another Dabby collection
+  whose nodes should be appended to the current collection.
 
 ## Returns
 
-A new Dabby collection containing the nodes from the original collection plus the new nodes that were added.
+A new Dabby collection containing the original nodes followed by the added
+nodes, with duplicates removed.
 
-## Example
+## Examples
 
-Add a new element to an existing collection:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/add/add";
 
-```javascript
-// Assume we have a collection of list items
-const items = $("li");
-console.log(items.length); // 3
-
-// Add a new list item to the collection
-const newitems = items.add("<li>Item 4</li>");
-console.log(newitems.length); // 4
+// Combine selections by selector
+$("button").add("a.button").addClass("clickable");
 ```
 
-Add elements that match a selector from a specific context:
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/add/add";
 
-```javascript
-// HTML:
-// <div id="container1">
-//   <p>Hello</p>
-// </div>
-// <div id="container2">
-//   <p>World</p>
-// </div>
-
-const container1 = $("#container1");
-const paragraphs = container1.add("p", "#container2");
-
-// The paragraphs collection will now contain the <p> from #container1
-// and the <p> from #container2.
-console.log(paragraphs.length); // 2
+// Add a freshly-created element to an existing collection
+const $existing = $(".product");
+const $new = $("<div class='product'>New product</div>");
+const $all = $existing.add($new);
 ```
 
-## Differences to jQuery
+```ts
+import $ from "dabbyjs";
+import "dabbyjs/traversal/add/add";
 
-None.
+// Build a collection across several form field types
+const $fields = $("form").find("input")
+    .add($("form").find("textarea"))
+    .add($("form").find("select"));
+```
+
+## See also
+
+- [$.fn.filter()](../filter/readme.md)
+- [$.fn.find()](../find/readme.md)
+- [$.fn.has()](../has/readme.md)
