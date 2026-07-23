@@ -83,7 +83,7 @@
 		"benchmark": "^2.1.4",
 		"happy-dom": "^20.8.9",
 		"jsdoc": "^4.0.4",
-		"terser": "^5.43.1",
+		"terser": "^5.46.0",
 		"tsd": "^0.33.0",
 		"typescript": "^5.9.2",
 		"vite": "^7.3.3",
